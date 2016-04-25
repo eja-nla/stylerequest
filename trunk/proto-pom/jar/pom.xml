@@ -19,4 +19,7 @@
     <description>
         Parent pom for jars.
     </description>
+
+    <dependencies>
+    </dependencies>
 </project>
