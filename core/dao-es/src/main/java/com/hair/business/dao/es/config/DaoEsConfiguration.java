@@ -10,7 +10,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 import java.util.Properties;
 
 /**
- * Created by olukoredeaguda on 25/04/2016.
+ * Created by Olukorede Aguda on 25/04/2016.
  */
 @Configuration
 @ComponentScan("com.hair.business.dao.es")

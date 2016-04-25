@@ -1,11 +1,10 @@
 package com.hair.business.dao.entity;
 
 import org.joda.time.DateTime;
-import org.springframework.data.domain.Auditable;
 
 /**
  * Transaction entity.
- * Created by olukoredeaguda on 25/04/2016.
+ * Created by Olukorede Aguda on 25/04/2016.
  *
  */
 public abstract class AbstractTransactionEntity extends AbstractPersistentEntity {

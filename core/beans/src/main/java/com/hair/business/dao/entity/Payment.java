@@ -10,7 +10,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 
 /**
- * Created by olukoredeaguda on 25/04/2016.
+ * Created by Olukorede Aguda on 25/04/2016.
  *
  * Represents a payment between two entities
  */

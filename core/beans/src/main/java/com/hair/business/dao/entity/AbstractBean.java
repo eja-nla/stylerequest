@@ -5,7 +5,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * Abstract bean.
- * Created by olukoredeaguda on 25/04/2016.
+ * Created by Olukorede Aguda on 25/04/2016.
  */
 public abstract class AbstractBean {
 

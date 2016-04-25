@@ -2,7 +2,7 @@ package com.hair.business.dao.constants;
 
 /**
  * Entity constants for persistor
- * Created by olukoredeaguda on 25/04/2016.
+ * Created by Olukorede Aguda on 25/04/2016.
  */
 public class EntityConstants {
     public static final String STYLE_REQUEST_INDEX = "styleRequests";

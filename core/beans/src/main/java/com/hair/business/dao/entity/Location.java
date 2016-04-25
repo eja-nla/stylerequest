@@ -5,14 +5,12 @@ import static com.hair.business.dao.constants.EntityConstants.LOCATION_INDEX;
 import static com.hair.business.dao.constants.EntityConstants.LOCATION_TYPE;
 
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 
 import java.util.Collection;
 
 /**
- * Created by olukoredeaguda on 25/04/2016.
+ * Created by Olukorede Aguda on 25/04/2016.
  *
  * Represents a location of a client or a merchant
  */
@@ -39,3 +37,4 @@ public class Location extends AbstractActorEnablerEntity {
         this.previous = previous;
     }
 }
+
