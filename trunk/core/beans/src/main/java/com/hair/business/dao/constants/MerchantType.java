@@ -1,7 +1,7 @@
 package com.hair.business.dao.constants;
 
 /**
- * Created by olukoredeaguda on 25/04/2016.
+ * Created by Olukorede Aguda on 25/04/2016.
  */
 public enum MerchantType {
     PAYPAL ("Paypal"),

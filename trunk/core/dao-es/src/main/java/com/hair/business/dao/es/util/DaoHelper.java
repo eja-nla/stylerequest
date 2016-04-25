@@ -7,7 +7,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import javax.inject.Named;
 
 /**
- * Created by olukoredeaguda on 25/04/2016.
+ * Created by Olukorede Aguda on 25/04/2016.
  */
 @Named
 public class DaoHelper {
