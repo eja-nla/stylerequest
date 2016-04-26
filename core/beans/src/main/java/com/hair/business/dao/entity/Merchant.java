@@ -4,7 +4,7 @@ package com.hair.business.dao.entity;
 
 import static com.hair.business.dao.constants.EntityConstants.*;
 
-import com.hair.business.dao.constants.StyleRequestState;
+import com.hair.business.dao.abstracts.AbstractActorEntity;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;

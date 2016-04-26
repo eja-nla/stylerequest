@@ -4,15 +4,17 @@ package com.hair.business.dao.entity;
 import static com.hair.business.dao.constants.EntityConstants.PAYMENT_INDEX;
 import static com.hair.business.dao.constants.EntityConstants.PAYMENT_TYPE;
 
+import com.hair.business.dao.abstracts.AbstractActorEnablerEntity;
 import com.hair.business.dao.constants.MerchantType;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 
 /**
- * Created by Olukorede Aguda on 25/04/2016.
+ * Represents a payment between two entities.
  *
- * Represents a payment between two entities
+ *  Created by Olukorede Aguda on 25/04/2016.
+ *
  */
 @Document(indexName = PAYMENT_INDEX, type = PAYMENT_TYPE)
 @Mapping(mappingPath = "/es/payment_mapping.json")

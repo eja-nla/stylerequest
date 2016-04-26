@@ -1,13 +1,14 @@
-package com.hair.business.dao.entity;
+package com.hair.business.dao.abstracts;
 
 import org.joda.time.DateTime;
 
 /**
  * Transaction entity.
+ *
  * Created by Olukorede Aguda on 25/04/2016.
  *
  */
-public abstract class AbstractTransactionEntity extends AbstractPersistentEntity {
+public abstract class AbstractTransactionEntity extends AbstractPersistenceEntity {
     private DateTime lastUpdated;
     private DateTime created;
     private String name;

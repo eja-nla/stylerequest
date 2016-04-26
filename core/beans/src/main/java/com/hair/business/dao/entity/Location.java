@@ -4,6 +4,8 @@ package com.hair.business.dao.entity;
 import static com.hair.business.dao.constants.EntityConstants.LOCATION_INDEX;
 import static com.hair.business.dao.constants.EntityConstants.LOCATION_TYPE;
 
+import com.hair.business.dao.abstracts.AbstractActorEnablerEntity;
+
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 
