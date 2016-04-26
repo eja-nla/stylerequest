@@ -1,6 +1,8 @@
-package com.hair.business.dao.entity;
+package com.hair.business.dao.abstracts;
 
 /**
+ * Abstract actor entity e.g. Customer, Merchant etc.
+ *
  * Created by Olukorede Aguda on 25/04/2016.
  */
 public abstract class AbstractActorEntity extends AbstractTransactionEntity{

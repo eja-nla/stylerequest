@@ -3,10 +3,8 @@ package com.hair.business.dao.entity;
 
 import static com.hair.business.dao.constants.EntityConstants.CUSTOMER_INDEX;
 import static com.hair.business.dao.constants.EntityConstants.CUSTOMER_TYPE;
-import static com.hair.business.dao.constants.EntityConstants.STYLE_REQUEST_INDEX;
-import static com.hair.business.dao.constants.EntityConstants.STYLE_REQUEST_TYPE;
 
-import com.hair.business.dao.constants.StyleRequestState;
+import com.hair.business.dao.abstracts.AbstractActorEntity;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;

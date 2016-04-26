@@ -18,6 +18,16 @@
 
     <properties></properties>
 
-    <dependencies></dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.hair.business</groupId>
+            <artifactId>hair-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hair.business</groupId>
+            <artifactId>hair-dao-es</artifactId>
+            <version>0.1</version>
+        </dependency>
+    </dependencies>
 
 </project>
