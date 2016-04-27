@@ -17,7 +17,12 @@
 
     <properties></properties>
 
-    <dependencies></dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.hair.business</groupId>
+            <artifactId>hair-services</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <finalName>${project.artifactId}</finalName>

@@ -1,0 +1,18 @@
+<ehcache xmlms:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ehcache.xsd"
+         updateCheck="true"
+         monitoring="autodetect"
+         dynamicConfig="true">
+
+    <diskStore path="hairApp-cache" />
+
+    <cache
+            name="customerCache"
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="10"
+            overflowToDisk="false"
+            memoryStoreEvictionPolicy="LFU"
+    />
+
+</ehcache>

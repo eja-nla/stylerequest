@@ -6,7 +6,7 @@ package com.hair.business.dao.constants;
 public enum MerchantType {
     PAYPAL ("Paypal"),
     CARD ("Credit/Debit card"),
-    APPLEPAY ("apple Pay");
+    APPLEPAY ("Apple Pay");
 
     public final String name;
 

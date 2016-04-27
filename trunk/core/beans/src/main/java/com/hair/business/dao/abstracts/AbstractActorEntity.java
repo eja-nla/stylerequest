@@ -9,6 +9,7 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
     private String rating;
     private String email;
     private String phone;
+    private boolean active;
 
 
     public String getEmail() {
@@ -33,5 +34,13 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
 
     public void setRating(String rating) {
         this.rating = rating;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
