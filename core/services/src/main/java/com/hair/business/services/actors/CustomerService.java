@@ -14,7 +14,7 @@ import java.util.Collection;
  *
  * Created by Olukorede Aguda on 25/04/2016.
  */
-public interface ConstomerService extends PersistenceService<Customer, String> {
+public interface CustomerService extends PersistenceService<Customer, String> {
 
     boolean saveCustomer(Customer customer);
 
@@ -22,12 +22,12 @@ public interface ConstomerService extends PersistenceService<Customer, String> {
 
     Collection<StyleRequest> findCustomerStyleRequests(Customer customer);
 
-    Collection<StyleRequest> findMerchantStyleRequests(Customer customer);
+    void deactivateCustomer(Customer customer);
 
     boolean placeStyleRequest(Customer customer, Merchant merchant);
 
     boolean cancelStyleRequest(Customer customer, StyleRequest request);
 
-    Payment pay(Customer customer, Merchant merchant);
+    Payment pay(Customer customer, Merchant merchant); //70440612
 
 }

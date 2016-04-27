@@ -12,9 +12,9 @@ import com.hair.business.services.stereotype.PersistenceService;
  */
 public interface ReviewsService extends PersistenceService<Customer, String> {
 
-    void saveCustomerReview(Customer customer, Review review);
+    boolean saveCustomerReview(Customer customer, Review review);
 
-    void saveMerchantReview(Merchant merchant, Review review);
+    boolean saveMerchantReview(Merchant merchant, Review review);
 
     void findCustomerReview(Customer customer, Merchant merchant);
 
