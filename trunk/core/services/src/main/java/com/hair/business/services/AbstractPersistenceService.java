@@ -15,9 +15,7 @@ import java.io.Serializable;
  *
  * Created by Olukorede Aguda on 26/04/2016.
  */
-public abstract class AbstractPersistenceService<R extends AbstractRepository<T, PK>,
-        T extends AbstractPersistenceEntity, PK extends Serializable>
-        extends AbstractFindService<R, T, PK> implements PersistenceService<T, PK> {
+public abstract class AbstractPersistenceService<R extends AbstractRepository<T, PK>, T extends AbstractPersistenceEntity, PK extends Serializable> extends AbstractFindService<R, T, PK> implements PersistenceService<T, PK> {
 
     public AbstractPersistenceService(R repository) {
         super(repository);

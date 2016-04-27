@@ -13,5 +13,4 @@ import org.springframework.context.annotation.Import;
 @Import({ ClientConfiguration.class})
 @ComponentScan({ "com.hair.business.services" })
 public class ServiceConfiguration {
-
 }

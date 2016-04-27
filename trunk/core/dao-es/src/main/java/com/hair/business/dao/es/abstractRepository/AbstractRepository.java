@@ -1,6 +1,5 @@
 package com.hair.business.dao.es.abstractRepository;
 
-
 import java.io.Serializable;
 
 

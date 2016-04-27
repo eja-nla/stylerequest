@@ -1,5 +1,6 @@
 package com.hair.business.cache.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
@@ -22,14 +23,14 @@ import org.springframework.core.io.ClassPathResource;
 public class CacheConfiguration {
 
     @Bean
-    public CacheManager cacheManager() {
-        return new EhCacheCacheManager(ehCacheCacheManager().getObject());
+    public CacheManager cacheManager(@Value("${ehcache.config.filepath}") String ehcacheXml) {
+        return new EhCacheCacheManager(ehCacheCacheManager(ehcacheXml).getObject());
     }
 
     @Bean
-    public EhCacheManagerFactoryBean ehCacheCacheManager() {
+    public EhCacheManagerFactoryBean ehCacheCacheManager(String ehcacheXml) {
         EhCacheManagerFactoryBean cmfb = new EhCacheManagerFactoryBean();
-        cmfb.setConfigLocation(new ClassPathResource("ehcache.xml"));
+        cmfb.setConfigLocation(new ClassPathResource(ehcacheXml));
         cmfb.setShared(true);
         return cmfb;
     }
