@@ -7,8 +7,8 @@ import java.io.Serializable;
  *
  * Created by Olukorede Aguda on 25/04/2016.
  */
-public interface PersistenceService<TYPE, PRIMARYKEY extends Serializable> extends FindService<TYPE, PRIMARYKEY>  {
-    TYPE save(TYPE bean);
+public interface PersistenceService<T, PK extends Serializable> extends FindService<T, PK>  {
+    T save(T bean);
 
-    void delete(TYPE bean);
+    void delete(T bean);
 }
