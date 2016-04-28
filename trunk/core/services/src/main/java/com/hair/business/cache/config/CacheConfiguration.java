@@ -17,13 +17,12 @@ import org.springframework.core.io.ClassPathResource;
  * Created by Olukorede Aguda on 26/04/2016.
  */
 @Configuration
-//@ImportResource("classpath:/*-spring-config.xml")
 @EnableCaching
 @ComponentScan({ "com.hair.business.cache" })
 public class CacheConfiguration {
 
     @Bean
-    public CacheManager cacheManager(@Value("${ehcache.config.filepath}") String ehcacheXml) {
+    public CacheManager customCacheManager(@Value("${ehcache.config.filepath}") String ehcacheXml) {
         return new EhCacheCacheManager(ehCacheCacheManager(ehcacheXml).getObject());
     }
 

@@ -17,7 +17,7 @@ import org.springframework.context.annotation.PropertySources;
  */
 @Configuration
 @Import({ServiceConfiguration.class, DaoEsConfiguration.class, CacheConfiguration.class})
-@PropertySources({ @PropertySource("file:hair-app.properties") })
+@PropertySources({ @PropertySource("file:${app.home}/hair-app.properties") })
 @ComponentScan({ "com.hair.business.app.main" })
 public class HairConfiguration {
 
