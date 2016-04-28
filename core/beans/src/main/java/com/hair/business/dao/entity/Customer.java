@@ -26,4 +26,19 @@ public class Customer extends AbstractActorEntity {
     @Field(type = FieldType.Nested)
     private Location location;
 
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }

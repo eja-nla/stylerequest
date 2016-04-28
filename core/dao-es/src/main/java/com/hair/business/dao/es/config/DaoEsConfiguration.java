@@ -1,15 +1,23 @@
 package com.hair.business.dao.es.config;
 
+import org.elasticsearch.client.node.NodeClient;
+import org.elasticsearch.node.NodeBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.data.elasticsearch.client.TransportClientFactoryBean;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
+import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMappingContext;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 import java.util.Properties;
 
 /**
+ * Elasticsearch configuration.
+ *
  * Created by Olukorede Aguda on 25/04/2016.
  */
 @Configuration
@@ -43,5 +51,20 @@ public class DaoEsConfiguration {
         factory.setProperties(props);
 
         return factory;
+    }
+
+    @Bean
+    public MappingElasticsearchConverter getMappingElasticsearchConverter(SimpleElasticsearchMappingContext ctx){
+        return new MappingElasticsearchConverter(ctx);
+    }
+
+    @Bean
+    private static NodeClient getNodeClient(@Value("${es.cluster.name}") String clusterName) {
+        return (NodeClient) new NodeBuilder().clusterName(clusterName).local(true).node().client();
+    }
+
+    @Bean
+    public ElasticsearchTemplate elasticsearchTemplate(@Value("${es.cluster.name}") String clusterName) {
+        return new ElasticsearchTemplate(getNodeClient(clusterName));
     }
 }

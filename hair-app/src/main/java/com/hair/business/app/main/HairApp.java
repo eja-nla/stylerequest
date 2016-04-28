@@ -20,5 +20,7 @@ public class HairApp {
         context.register(HairConfiguration.class);
         context.registerShutdownHook();
         context.refresh();
+
+        System.out.println("done");
     }
 }

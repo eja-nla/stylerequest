@@ -7,6 +7,8 @@ import com.hair.business.dao.entity.Payment;
 import com.hair.business.dao.entity.StyleRequest;
 import com.hair.business.services.stereotype.PersistenceService;
 
+import org.springframework.stereotype.Service;
+
 import java.util.Collection;
 
 /**
@@ -14,6 +16,7 @@ import java.util.Collection;
  *
  * Created by Olukorede Aguda on 25/04/2016.
  */
+@Service
 public interface CustomerService extends PersistenceService<Customer, String> {
 
     boolean saveCustomer(Customer customer);
