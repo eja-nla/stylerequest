@@ -22,6 +22,11 @@
             <groupId>com.hair.business</groupId>
             <artifactId>hair-services</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.hair.business</groupId>
+            <artifactId>hair-rest-services</artifactId>
+            <version>0.1</version>
+        </dependency>
     </dependencies>
 
     <build>
