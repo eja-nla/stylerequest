@@ -54,7 +54,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.hair.business.app.main.HairApp</mainClass>
+                            <mainClass>com.hair.business.app.main.HairAppMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
