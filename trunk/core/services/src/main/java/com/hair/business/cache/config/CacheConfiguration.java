@@ -26,7 +26,6 @@ public class CacheConfiguration {
         return new EhCacheCacheManager(ehCacheCacheManager(ehcacheXml).getObject());
     }
 
-    @Bean
     public EhCacheManagerFactoryBean ehCacheCacheManager(String ehcacheXml) {
         EhCacheManagerFactoryBean cmfb = new EhCacheManagerFactoryBean();
         cmfb.setConfigLocation(new ClassPathResource(ehcacheXml));

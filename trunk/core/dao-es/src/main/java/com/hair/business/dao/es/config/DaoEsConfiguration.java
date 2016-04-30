@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.data.elasticsearch.client.TransportClientFactoryBean;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMappingContext;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
@@ -54,17 +54,14 @@ public class DaoEsConfiguration {
     }
 
     @Bean
-    public MappingElasticsearchConverter getMappingElasticsearchConverter(SimpleElasticsearchMappingContext ctx){
-        return new MappingElasticsearchConverter(ctx);
+    public ElasticsearchTemplate elasticsearchTemplate(@Value("${es.cluster.name}") String clusterName, @Value("${es.path.home}") String eshome) {
+        return new ElasticsearchTemplate(getNodeClient(clusterName, eshome));
     }
 
-    @Bean
-    private static NodeClient getNodeClient(@Value("${es.cluster.name}") String clusterName) {
-        return (NodeClient) new NodeBuilder().clusterName(clusterName).local(true).node().client();
+    private static NodeClient getNodeClient(String clusterName, String eshome) {
+        NodeBuilder builder = new NodeBuilder().clusterName(clusterName);
+        builder.settings().put("path.home", eshome);
+        return (NodeClient) builder.local(true).node().client();
     }
 
-    @Bean
-    public ElasticsearchTemplate elasticsearchTemplate(@Value("${es.cluster.name}") String clusterName) {
-        return new ElasticsearchTemplate(getNodeClient(clusterName));
-    }
 }

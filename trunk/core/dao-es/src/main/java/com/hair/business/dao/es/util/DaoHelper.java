@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
@@ -15,7 +16,7 @@ public class DaoHelper {
 
     private final ElasticsearchTemplate elasticsearchTemplate;
 
-
+    @Inject
     public DaoHelper(ElasticsearchTemplate elasticsearchTemplate) {
         this.elasticsearchTemplate = elasticsearchTemplate;
     }
@@ -28,5 +29,7 @@ public class DaoHelper {
         elasticsearchTemplate.createIndex(type);
         elasticsearchTemplate.putMapping(type, mapping);
         elasticsearchTemplate.refresh(type);
+
+        logger.info("Created index {} successfully with mapping {}.", type.getCanonicalName(), mapping);
     }
 }
