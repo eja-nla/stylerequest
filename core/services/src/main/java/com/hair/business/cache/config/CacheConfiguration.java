@@ -8,7 +8,7 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.PathResource;
 
 
 /**
@@ -26,10 +26,12 @@ public class CacheConfiguration {
         return new EhCacheCacheManager(ehCacheCacheManager(ehcacheXml).getObject());
     }
 
-    public EhCacheManagerFactoryBean ehCacheCacheManager(String ehcacheXml) {
+    private EhCacheManagerFactoryBean ehCacheCacheManager(String ehcacheXml) {
         EhCacheManagerFactoryBean cmfb = new EhCacheManagerFactoryBean();
-        cmfb.setConfigLocation(new ClassPathResource(ehcacheXml));
+        cmfb.setConfigLocation(new PathResource(ehcacheXml));
         cmfb.setShared(true);
+
+        cmfb.afterPropertiesSet();
         return cmfb;
     }
 
