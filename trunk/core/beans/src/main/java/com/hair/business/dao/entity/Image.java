@@ -22,6 +22,8 @@ public class Image extends AbstractActorEntity {
 
     private String owner;
 
+    private long views;
+
     public String getUrl() {
         return url;
     }
@@ -36,5 +38,13 @@ public class Image extends AbstractActorEntity {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public long getViews() {
+        return views;
+    }
+
+    public void setViews(long views) {
+        this.views = views;
     }
 }
