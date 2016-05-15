@@ -9,6 +9,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 /**
+ * Spring context loader.
+ *
  * Created by Olukorede Aguda on 14/05/2016.
  */
 public class SpringContextLoaderListener implements ServletContextListener {
