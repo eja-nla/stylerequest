@@ -46,5 +46,6 @@ public class CustomerRequestController {
     @Timed
     public Customer getCustomerInfo(@PathParam(ID) String customerId) {
         return customerService.find(customerId);
+
     }
 }

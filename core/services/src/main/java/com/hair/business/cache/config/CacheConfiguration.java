@@ -29,7 +29,7 @@ public class CacheConfiguration {
     private EhCacheManagerFactoryBean ehCacheCacheManager(String ehcacheXml) {
         EhCacheManagerFactoryBean cmfb = new EhCacheManagerFactoryBean();
         cmfb.setConfigLocation(new PathResource(ehcacheXml));
-        cmfb.setShared(true);
+        //cmfb.setShared(true);
 
         cmfb.afterPropertiesSet();
         return cmfb;

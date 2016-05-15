@@ -13,50 +13,46 @@
            timeToLiveSeconds="20"
            overflowToDisk="false"
            memoryStoreEvictionPolicy="LFU">
-        <persistence strategy="distributed"/>
-        <terracotta clustered="true"
-                    consistency="eventual"
-                    synchronousWrites="false"
-        />
+        <persistence strategy="none"/>
+        <!--<terracotta clustered="true"-->
+                    <!--consistency="eventual"-->
+                    <!--synchronousWrites="false"/>-->
+
+        <cacheWriter maxWriteDelay="10"
+                     notifyListenersOnException="true"
+                     rateLimitPerSecond="5"
+                     retryAttemptDelaySeconds="2"
+                     retryAttempts="4"
+                     writeBatching="true"
+                     writeBatchSize="2"
+                     writeCoalescing="false"
+                     writeMode="write-behind">
+
+            <cacheWriterFactory class="com.hair.business.cache.repository.ehcache.WritebehindFactory"> </cacheWriterFactory>
+        </cacheWriter>
     </cache>
 
-    <terracottaConfig>
-        <tc-config>
-            <servers>
-                <server host="localhost"
-                        name="s1">
-                        <tsa-port>9510</tsa-port>
-                        <jmx-port>9520</jmx-port>
-                        <tsa-group-port>9530</tsa-group-port>
-                </server>
+    <!--<terracottaConfig>-->
+        <!--<tc-config>-->
+            <!--<servers>-->
                 <!--<server host="localhost"-->
                         <!--name="s1">-->
-                    <!--<tsa-port>9510</tsa-port>-->
-                    <!--<jmx-port>9520</jmx-port>-->
-                    <!--<tsa-group-port>9530</tsa-group-port>-->
+                        <!--<tsa-port>9510</tsa-port>-->
+                        <!--<jmx-port>9520</jmx-port>-->
+                        <!--<tsa-group-port>9530</tsa-group-port>-->
                 <!--</server>-->
-            </servers>
-            <clients>
-                <logs>cache/logs-%i</logs>
-            </clients>
-        </tc-config>
-    </terracottaConfig>
-
-    <cachewriter maxwritedelay="10"
-                 notifylistenersonexception="true"
-                 ratelimitpersecond="5"
-                 retryattemptdelayseconds="2"
-                 retryattempts="4"
-                 writebatching="false"
-                 writebatchsize="20"
-                 writecoalescing="false"
-                 writemode="write-behind">
-
-        <cachewriterfactory class="WritebehindFactory"> </cachewriterfactory>
-    </cachewriter>
+                <!--&lt;!&ndash;<server host="localhost"&ndash;&gt;-->
+                        <!--&lt;!&ndash;name="s1">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<tsa-port>9510</tsa-port>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<jmx-port>9520</jmx-port>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<tsa-group-port>9530</tsa-group-port>&ndash;&gt;-->
+                <!--&lt;!&ndash;</server>&ndash;&gt;-->
+            <!--</servers>-->
+            <!--<clients>-->
+                <!--<logs>cache-logs/logs-%i</logs>-->
+            <!--</clients>-->
+        <!--</tc-config>-->
+    <!--</terracottaConfig>-->
 
 
-
-
-
-        </ehcache>
+</ehcache>

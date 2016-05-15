@@ -8,6 +8,7 @@ import com.hair.business.dao.entity.StyleRequest;
 import com.hair.business.dao.es.repository.CustomerRepository;
 import com.hair.business.services.AbstractPersistenceService;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
@@ -76,7 +77,9 @@ public class CustomerServiceImpl extends AbstractPersistenceService<CustomerRepo
 
     @Cacheable(cacheNames = {"customerCache"})
     public Customer find(String s) {
-        return null;
+        Customer x = new Customer();
+        x.setId("xId"); x.setCreated(DateTime.now());
+        return x;
     }
 
     @Cacheable(cacheNames = {"customerCache"})
