@@ -1,6 +1,7 @@
 package com.hair.business.rest;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hair.business.rest.context.SpringContextLoaderListener;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -27,13 +28,14 @@ public class DropWizardApplicationEntry extends Application<DropwizardConfigurat
 
     private AnnotationConfigWebApplicationContext rootContext;
     private final String appName;
+    private final String DROPWIZARD_SERVER_COMMAND = "server";
 
     @Inject
     public DropWizardApplicationEntry(AnnotationConfigWebApplicationContext parent, @Value("${config.file.yaml}") String yamlConfig, @Value("${app.rootName}") String appName) throws Exception {
         this.rootContext = parent;
         this.appName = appName;
 
-        run("server", yamlConfig);
+        run(DROPWIZARD_SERVER_COMMAND, yamlConfig);
     }
 
 	@Override
@@ -62,6 +64,9 @@ public class DropWizardApplicationEntry extends Application<DropwizardConfigurat
         for(Map.Entry<String,Object> entry : resources.entrySet()) {
             environment.jersey().register(entry.getValue());
         }
+
+        // configure mapper
+        environment.getObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         environment.servlets().addServletListeners(new SpringContextLoaderListener(rootContext));
 	}

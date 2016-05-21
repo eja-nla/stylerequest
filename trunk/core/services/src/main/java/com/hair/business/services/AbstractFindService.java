@@ -3,6 +3,9 @@ package com.hair.business.services;
 import com.hair.business.dao.es.abstractRepository.AbstractRepository;
 import com.hair.business.services.stereotype.FindService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
+
 import java.io.Serializable;
 
 /**
@@ -24,5 +27,10 @@ public abstract class AbstractFindService<R extends AbstractRepository<T, PK>, T
 
     public Iterable<T> find(){
         return repository.findAll();
+    }
+
+    public Page<T> findWithQuery(SearchQuery searchQuery){
+        // TODO implement me
+        return repository.search(searchQuery);
     }
 }

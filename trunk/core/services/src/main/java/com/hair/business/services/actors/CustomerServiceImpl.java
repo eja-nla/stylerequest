@@ -28,6 +28,7 @@ import javax.inject.Named;
 public class CustomerServiceImpl extends AbstractPersistenceService<CustomerRepository, Customer, String> implements CustomerService {
 
     static final Logger logger = LoggerFactory.getLogger(CustomerServiceImpl.class);
+    public static final String CUSTOMER_CACHE = "customerCache";
 
     private final CustomerRepository cRepository;
     private final WriteBehind asyncPersistor;
@@ -44,17 +45,17 @@ public class CustomerServiceImpl extends AbstractPersistenceService<CustomerRepo
         return false;
     }
 
-    @Cacheable(value = "customerCache", key = "#customer.getId()")
+    @Cacheable(value = CUSTOMER_CACHE, key = "#customer.getId()")
     public Customer findCustomer(Customer customer) {
         return null;
     }
 
-    @Cacheable(value = "customerCache", key = "#customer.getId()")
+    @Cacheable(value = CUSTOMER_CACHE, key = "#customer.getId()")
     public Collection<StyleRequest> findCustomerStyleRequests(Customer customer) {
         return null;
     }
 
-    @CacheEvict(value = "customerCache", key = "#customer.getId()")
+    @CacheEvict(value = CUSTOMER_CACHE, key = "#customer.getId()")
     public void deactivateCustomer(Customer customer) {
 
     }
@@ -75,14 +76,14 @@ public class CustomerServiceImpl extends AbstractPersistenceService<CustomerRepo
 
     }
 
-    @Cacheable(cacheNames = {"customerCache"})
+    @Cacheable(cacheNames = {CUSTOMER_CACHE})
     public Customer find(String s) {
         Customer x = new Customer();
         x.setId("xId"); x.setCreated(DateTime.now());
         return x;
     }
 
-    @Cacheable(cacheNames = {"customerCache"})
+    @Cacheable(cacheNames = {CUSTOMER_CACHE})
     public Iterable<Customer> find() {
         return null;
     }
