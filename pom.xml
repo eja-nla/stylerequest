@@ -6,7 +6,7 @@
 
     <groupId>com.hair.business</groupId>
     <artifactId>hair-parent</artifactId>
-    <version>0.1</version>
+    <version>1.0-SNAPSHOT</version>
 
     <name>Hair Application</name>
     <description>
@@ -17,6 +17,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+
 
     <modules>
         <module>core</module>
@@ -37,17 +39,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <developers>
-        <developer>
-            <id>olukoredeaguda</id>
-            <name>Olukorede Aguda</name>
-            <email>koredyte@icloud.com</email>
-            <roles>
-                <role>soleOwner</role>
-                <role>author</role>
-            </roles>
-        </developer>
-    </developers>
 
 </project>

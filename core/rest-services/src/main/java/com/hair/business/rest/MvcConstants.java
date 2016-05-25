@@ -7,6 +7,8 @@ package com.hair.business.rest;
  */
 public class MvcConstants {
 
+    public static final String  REQUEST_CONTROLLER_BASE = "/api/v1";
+
     public static final String CUSTOMER_URI="/customer";
 
     public static final String IMAGE_URI="/images";

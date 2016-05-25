@@ -5,29 +5,36 @@
     <parent>
         <groupId>com.hair.business</groupId>
         <artifactId>proto-pom-jar</artifactId>
-        <version>0.1</version>
+        <version>1.0-SNAPSHOT</version>
         <relativePath>../proto-pom/jar</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>hair-app</artifactId>
+    <packaging>war</packaging>
     <name>Hair App</name>
-    <description>Messaging consumer/listener for processing request. (should we need some form of batching)</description>
+    <description>Main application</description>
 
-    <properties></properties>
 
     <dependencies>
         <dependency>
             <groupId>com.hair.business</groupId>
-            <artifactId>hair-services</artifactId>
+            <artifactId>hair-rest-services</artifactId>
         </dependency>
         <dependency>
             <groupId>com.hair.business</groupId>
-            <artifactId>hair-rest-services</artifactId>
-            <version>0.1</version>
+            <artifactId>hair-dao-datastore</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.hair.business</groupId>
+            <artifactId>hair-services</artifactId>
+        </dependency>
+
     </dependencies>
+
+
+    <properties></properties>
 
     <build>
         <finalName>${project.artifactId}</finalName>
@@ -59,7 +66,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.hair.business.app.main.HairAppMain</mainClass>
+                            <mainClass>com.hair.business.app.main.HairApp</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -79,6 +86,30 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!--From vanilla appengine archetype-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <archiveClasses>true</archiveClasses>
+                    <webResources>
+                        <!-- in order to interpolate version from pom into appengine-web.xml -->
+                        <resource>
+                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+                            <filtering>true</filtering>
+                            <targetPath>WEB-INF</targetPath>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.google.appengine</groupId>
+                <artifactId>appengine-maven-plugin</artifactId>
+                <version>${appengine.target.version}</version>
             </plugin>
         </plugins>
     </build>

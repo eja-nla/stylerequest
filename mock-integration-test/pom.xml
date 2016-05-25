@@ -5,7 +5,7 @@
     <parent>
         <artifactId>proto-pom-jar</artifactId>
         <groupId>com.hair.business</groupId>
-        <version>0.1</version>
+        <version>1.0-SNAPSHOT</version>
         <relativePath>../proto-pom/jar</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
