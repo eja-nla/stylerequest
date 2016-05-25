@@ -9,4 +9,8 @@
 
         <property name="app.home" value="/Users/olukoredeaguda/IdeaProjects/hairApp/hairApp-guice/"/>
     </system-properties>
+
+    <resource-files>
+        <include path="/**.properties" />
+    </resource-files>
 </appengine-web-app>
