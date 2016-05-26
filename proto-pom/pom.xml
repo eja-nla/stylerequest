@@ -21,6 +21,7 @@
         <!--AppEngine stuff-->
         <appengine.app.version>1</appengine.app.version>
         <appengine.target.version>1.9.37</appengine.target.version>
+        <org.apache.commons.version>3.4</org.apache.commons.version>
     </properties>
 
     <modules>
@@ -55,6 +56,15 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
         </dependency>
 
     </dependencies>
@@ -116,6 +126,16 @@
                 <artifactId>servlet-api</artifactId>
                 <version>2.5</version>
             </dependency>
+
+
+            <!--Apache-->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${org.apache.commons.version}</version>
+            </dependency>
+
+            <!--Jersey/Jackson-->
             <dependency>
                 <groupId>com.sun.jersey</groupId>
                 <artifactId>jersey-server</artifactId>
@@ -145,6 +165,15 @@
                 <artifactId>guice-servlet</artifactId>
                 <version>${guice.inject.version}</version>
             </dependency>
+
+
+            <!--Others-->
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.9.3</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
