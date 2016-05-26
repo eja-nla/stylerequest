@@ -2,9 +2,9 @@ package com.hair.business.rest.resources.customer;
 
 import static com.hair.business.rest.MvcConstants.CUSTOMER_URI;
 import static com.hair.business.rest.MvcConstants.ID;
+import static com.hair.business.rest.MvcConstants.INFO;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import com.hair.business.rest.MvcConstants;
 import com.hair.business.services.customer.CustomerService;
 
 import javax.inject.Inject;
@@ -29,7 +29,7 @@ public class CustomerRequestServlet {
     }
 
     @GET
-    @Path(MvcConstants.INFO)
+    @Path(INFO)
     @Produces(APPLICATION_JSON)
     public String getCustomerInfo(@QueryParam(ID) String customerId) {
         return "yay, you're here with id " + customerId + " app name " + customerService.getSomeProperty();

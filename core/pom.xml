@@ -19,7 +19,7 @@
         <module>util</module>
         <module>security</module>
         <module>beans</module>
-        <module>dao-es</module>
+        <module>dao-datastore</module>
         <module>services</module>
         <module>rest-services</module>
         <module>hair-test</module>
