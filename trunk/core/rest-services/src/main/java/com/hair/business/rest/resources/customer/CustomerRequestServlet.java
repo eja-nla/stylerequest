@@ -8,10 +8,12 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import com.hair.business.services.customer.CustomerService;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 
 /**
  * Customer request controller.
@@ -31,8 +33,8 @@ public class CustomerRequestServlet {
     @GET
     @Path(INFO)
     @Produces(APPLICATION_JSON)
-    public String getCustomerInfo(@QueryParam(ID) String customerId) {
-        return "yay, you're here with id " + customerId + " app name " + customerService.getSomeProperty();
+    public String getCustomerInfo(@Context HttpServletRequest request, @QueryParam(ID) Long customerId) {
+        return "yay, you're here with id " + customerId + " app name " + customerService.findCustomer(customerId);
 
     }
 }

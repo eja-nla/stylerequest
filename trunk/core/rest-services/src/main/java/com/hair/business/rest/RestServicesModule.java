@@ -2,9 +2,12 @@ package com.hair.business.rest;
 
 import com.google.inject.servlet.ServletModule;
 
+import com.googlecode.objectify.ObjectifyFilter;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+
+import javax.inject.Singleton;
 
 /**
  * Rest services module.
@@ -17,15 +20,22 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
  */
 public class RestServicesModule extends ServletModule {
 
+    private final String ENDPOINT = "/api/v1/*";
+    private final String RESOURCE_PACKAGES = "com.hair.business.rest.resources";
+
     @Override
     protected void configureServlets() {
 
-        ResourceConfig rc = new PackagesResourceConfig("com.hair.business.rest.resources");
+        ResourceConfig rc = new PackagesResourceConfig(RESOURCE_PACKAGES);
         for ( Class<?> resource : rc.getClasses() ) {
             bind( resource );
         }
 
-        serve("/api/v1/*").with(GuiceContainer.class);
+        serve(ENDPOINT).with(GuiceContainer.class);
+
+        filter(ENDPOINT).through(ObjectifyFilter.class);
+
+        bind(ObjectifyFilter.class).in(Singleton.class);
 
     }
 

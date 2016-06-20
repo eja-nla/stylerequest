@@ -19,6 +19,11 @@
 
     <properties></properties>
 
-    <dependencies></dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+        </dependency>
+    </dependencies>
     
 </project>

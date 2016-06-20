@@ -21,7 +21,14 @@
     </properties>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.googlecode.objectify</groupId>
+            <artifactId>objectify</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hair.business</groupId>
+            <artifactId>hair-beans</artifactId>
+        </dependency>
     </dependencies>
     
 </project>

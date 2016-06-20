@@ -16,7 +16,7 @@ public interface CustomerService {
 
     boolean saveCustomer(Customer customer);
 
-    Customer findCustomer(Customer customer);
+    Customer findCustomer(Long id);
 
     Collection<StyleRequest> findStyleRequests(Customer customer);
 
