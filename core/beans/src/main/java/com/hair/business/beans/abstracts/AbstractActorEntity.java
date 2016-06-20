@@ -11,7 +11,6 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
     private String phone;
     private boolean active;
 
-
     public String getEmail() {
         return email;
     }
