@@ -30,6 +30,10 @@
             <groupId>com.hair.business</groupId>
             <artifactId>hair-services</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.hair.business</groupId>
+            <artifactId>security</artifactId>
+        </dependency>
 
     </dependencies>
 

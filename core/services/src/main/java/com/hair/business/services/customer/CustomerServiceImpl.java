@@ -3,8 +3,7 @@ package com.hair.business.services.customer;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.StyleRequest;
-import com.hair.business.dao.datastore.abstractRepository.AbstractAsyncRepository;
-import com.hair.business.dao.datastore.abstractRepository.AbstractSyncRepository;
+import com.hair.business.dao.datastore.abstractRepository.Repository;
 
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -19,23 +18,23 @@ import javax.inject.Inject;
 public class CustomerServiceImpl implements CustomerService {
 
     static final Logger logger = Logger.getLogger(CustomerServiceImpl.class.getName());
+    private final Repository repository;
 
-    private final AbstractSyncRepository syncRepository;
-    private final AbstractAsyncRepository asyncRepository;
 
     @Inject
-    public CustomerServiceImpl(AbstractSyncRepository syncRepository, AbstractAsyncRepository asyncRepository) {
-        this.syncRepository = syncRepository;
-        this.asyncRepository = asyncRepository;
+    public CustomerServiceImpl(Repository repository) {
+        this.repository = repository;
 
     }
 
     public boolean saveCustomer(Customer customer) {
-        return false;
+
+        repository.saveCustomerNow(customer);
+        return true;
     }
 
-    public Customer findCustomer(Customer customer) {
-        return null;
+    public Customer findCustomer(Long id ) {
+        return repository.findCustomerNow(id);
     }
 
     public Collection<StyleRequest> findStyleRequests(Customer customer) {
@@ -43,7 +42,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public void deactivateCustomer(Customer customer) {
-
+        customer.setActive(false);
+        repository.saveCustomerNow(customer);
     }
 
     public boolean placeStyleRequest(Customer customer, Merchant merchant) {

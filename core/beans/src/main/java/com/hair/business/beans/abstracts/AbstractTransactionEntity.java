@@ -13,7 +13,6 @@ public abstract class AbstractTransactionEntity extends AbstractPersistenceEntit
     private DateTime created;
     private String name;
 
-
     public DateTime getLastUpdated() {
         return lastUpdated;
     }

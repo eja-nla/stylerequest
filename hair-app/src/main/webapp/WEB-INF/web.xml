@@ -17,7 +17,7 @@
     </filter-mapping>
 
     <listener>
-        <listener-class>com.hair.business.app.GuiceServletConfig</listener-class>
+        <listener-class>com.hair.business.app.AppConfigurationMain</listener-class>
     </listener>
 
 </web-app>

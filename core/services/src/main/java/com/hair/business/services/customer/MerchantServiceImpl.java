@@ -4,8 +4,7 @@ import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
-import com.hair.business.dao.datastore.abstractRepository.AbstractAsyncRepository;
-import com.hair.business.dao.datastore.abstractRepository.AbstractSyncRepository;
+import com.hair.business.dao.datastore.abstractRepository.Repository;
 
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -20,14 +19,12 @@ import javax.inject.Inject;
 public class MerchantServiceImpl implements MerchantService {
 
     static final Logger logger = Logger.getLogger(MerchantServiceImpl.class.getName());
-    private final AbstractSyncRepository syncRepository;
-    private final AbstractAsyncRepository asyncRepository;
+
+    private final Repository repository;
 
     @Inject
-    public MerchantServiceImpl(AbstractSyncRepository syncRepository, AbstractAsyncRepository asyncRepository) {
-        this.syncRepository = syncRepository;
-        this.asyncRepository = asyncRepository;
-
+    public MerchantServiceImpl(Repository repository) {
+        this.repository = repository;
     }
 
     public Merchant findMerchant(long id) {

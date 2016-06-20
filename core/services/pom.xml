@@ -27,6 +27,7 @@
             <groupId>com.hair.business</groupId>
             <artifactId>hair-beans</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

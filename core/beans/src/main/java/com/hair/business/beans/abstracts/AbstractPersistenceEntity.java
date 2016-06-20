@@ -10,7 +10,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public abstract class AbstractPersistenceEntity extends AbstractBean {
 
-    private String id;
+    private Long permanentId; // stores the very first id every assigned to this entity. If we ever move/reindex/reimport the entity, this ensures a unique identifier that never changes
 
     private Long version;
 
@@ -23,26 +23,27 @@ public abstract class AbstractPersistenceEntity extends AbstractBean {
         if(!(obj instanceof AbstractPersistenceEntity)){
             return false;
         }
+
         if(this == obj){
             return true;
         }
 
         AbstractPersistenceEntity bean = (AbstractPersistenceEntity) obj;
 
-        return new EqualsBuilder().append(this.id, bean.id).isEquals();
+        return new EqualsBuilder().append(this.permanentId, bean.permanentId).isEquals();
     }
 
     @Override
     public int hashCode(){
-        return new HashCodeBuilder().append(id).toHashCode();
+        return new HashCodeBuilder().append(permanentId).toHashCode();
     }
 
-    public String getId() {
-        return id;
+    public Long getPermanentId() {
+        return permanentId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setPermanentId(Long permanentId) {
+        this.permanentId = permanentId;
     }
 
     public Long getVersion() {

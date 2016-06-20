@@ -8,6 +8,7 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 
 import com.hair.business.app.servlets.HealthcheckServlet;
+import com.hair.business.auth.config.SecurityModule;
 import com.hair.business.dao.datastore.config.DaoDatastoreModule;
 import com.hair.business.rest.RestServicesModule;
 import com.hair.business.services.config.ServicesModule;
@@ -24,9 +25,9 @@ import java.util.logging.Logger;
  *
  *
  */
-public class GuiceServletConfig extends GuiceServletContextListener {
+public class AppConfigurationMain extends GuiceServletContextListener {
 
-    private static final Logger log = Logger.getLogger(GuiceServletConfig.class.getName());
+    private static final Logger log = Logger.getLogger(AppConfigurationMain.class.getName());
 
     /**
      * Main application entry point.
@@ -34,15 +35,18 @@ public class GuiceServletConfig extends GuiceServletContextListener {
      * */
     protected Injector getInjector() {
 
-        Injector appInjector = Guice.createInjector(new HealthcheckModule(), new RestServicesModule(),
-                new DaoDatastoreModule(), new ServicesModule(), new AbstractModule() {
-                    @Override
-                    protected void configure() {
-                        Properties props = loadProperties();
-                        log.info("found properties " + props.propertyNames());
-                        Names.bindProperties(binder(), props);
-                    }
+
+        // now create the injector
+        Injector appInjector = Guice.createInjector(new DaoDatastoreModule(), new HealthcheckModule(), new RestServicesModule(),
+                    new ServicesModule(), new SecurityModule(), new AbstractModule() {
+                @Override
+                protected void configure() {
+                    Properties props = loadProperties();
+                    log.info("found properties " + props.propertyNames());
+                    Names.bindProperties(binder(), props);
                 }
+            }
+
         );
 
         log.info("Application initialisation completed successfully");
@@ -50,7 +54,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
         return appInjector;
     }
 
-    private static Properties loadProperties() {
+    private Properties loadProperties() {
 
         Properties properties = new Properties();
 
