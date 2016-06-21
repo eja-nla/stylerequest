@@ -22,5 +22,10 @@
             <artifactId>hair-test</artifactId>
             <version>${hair.app.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.hair.business</groupId>
+            <artifactId>hair-beans</artifactId>
+        </dependency>
+
     </dependencies>
 </project>

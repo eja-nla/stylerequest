@@ -3,7 +3,6 @@ package com.hair.business.services.customer;
 
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
-import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
@@ -47,7 +46,7 @@ public interface CustomerService {
     /**
      * Cancels a placed request by this customer
      */
-    boolean cancelStyleRequest(Customer customer, StyleRequest request);
+    boolean cancelStyleRequest(Customer customer, Merchant merchant, StyleRequest request);
 
     /**
      *  Issues a payment request from a customer to a merchant
@@ -57,7 +56,7 @@ public interface CustomerService {
     /**
      * Fetches trending styles for this user based on location
      */
-    Collection<Image> findTrendingStyles(Location location);
+    Collection<Style> findTrendingStyles(Location location);
 
     /**
      * Contacts the given merchant with given message

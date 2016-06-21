@@ -1,7 +1,11 @@
 package com.hair.business.beans.entity;
 
 
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
+
+import java.util.Collection;
 
 /**
  * Represents a style
@@ -9,9 +13,11 @@ import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
  * Created by Olukorede Aguda on 25/04/2016.
  *
  */
+@Entity
 public class Style extends AbstractActorEnablerEntity {
 
-    private long id;
+    @Id
+    private Long id;
 
     private long requestCount; // how many styleRequests on this ever?
 
@@ -20,6 +26,8 @@ public class Style extends AbstractActorEnablerEntity {
     private boolean active;
 
     private Location location;
+
+    private Collection<Image> styleImages; // a style can have multiple images e.g. showing the sides, the back, the front etc.
 
     public Style(long requestCount, boolean trending, boolean active, Location location) {
         this.requestCount = requestCount;
@@ -66,5 +74,13 @@ public class Style extends AbstractActorEnablerEntity {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public Collection<Image> getStyleImages() {
+        return styleImages;
+    }
+
+    public void setStyleImages(Collection<Image>  styleImages) {
+        this.styleImages = styleImages;
     }
 }
