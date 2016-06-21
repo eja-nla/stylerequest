@@ -7,6 +7,7 @@ import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.ObjectifyRepository;
+import com.x.business.notif.Notification;
 
 import java.util.Collection;
 import java.util.List;
@@ -58,6 +59,10 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
     }
 
     public void saveStyleRequest(StyleRequest styleRequest) {
+
+    }
+
+    public void saveNotification(Notification notification) {
 
     }
 

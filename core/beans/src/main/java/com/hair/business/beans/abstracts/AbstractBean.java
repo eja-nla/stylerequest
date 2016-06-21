@@ -16,4 +16,8 @@ public abstract class AbstractBean implements Serializable{
     public String toString(){
         return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).toString();
     }
+
+    public String toJson(){
+        return new ReflectionToStringBuilder(this, ToStringStyle.JSON_STYLE).toString();
+    }
 }

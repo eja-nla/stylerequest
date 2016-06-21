@@ -4,6 +4,7 @@ import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
+import com.x.business.notif.Notification;
 
 import java.util.Collection;
 import java.util.List;
@@ -50,4 +51,6 @@ public interface Repository {
     Long saveStyle(Style style);
 
     void saveStyleRequest(StyleRequest styleRequest);
+
+    void saveNotification(Notification notification);
 }

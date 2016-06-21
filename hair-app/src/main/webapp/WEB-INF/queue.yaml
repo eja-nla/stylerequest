@@ -1,0 +1,20 @@
+#see https://cloud.google.com/appengine/docs/java/config/queueref#example
+
+queue:
+- name: customer-email-queue
+  rate: 50/s
+  retry_parameters:
+    task_retry_limit: 7
+    task_age_limit: 2d
+- name: merchant-email-queue
+  rate: 50/s
+  retry_parameters:
+    task_retry_limit: 7
+    task_age_limit: 2d
+- name: stylerequest-queue
+  rate: 1000/s
+  retry_parameters:
+    task_retry_limit: 15
+    min_backoff_seconds: 10
+    max_backoff_seconds: 200
+    max_doublings: 0

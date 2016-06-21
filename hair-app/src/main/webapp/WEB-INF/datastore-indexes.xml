@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<datastore-indexes
+        autoGenerate="true">
+    <datastore-index kind="Customer" ancestor="false">
+        <property name="location" direction="asc" />
+        <property name="payment" direction="desc" />
+    </datastore-index>
+    <datastore-index kind="Merchant" ancestor="false">
+        <property name="location" direction="asc" />
+        <property name="payment" direction="desc" />
+    </datastore-index>
+</datastore-indexes>
