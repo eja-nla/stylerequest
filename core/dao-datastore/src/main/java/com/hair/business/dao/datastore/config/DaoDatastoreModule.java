@@ -2,7 +2,6 @@ package com.hair.business.dao.datastore.config;
 
 import com.google.inject.AbstractModule;
 
-import com.hair.business.dao.datastore.abstractRepository.ObjectifyRepository;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.dao.datastore.repository.ObjectifyDatastoreRepositoryImpl;
 
@@ -14,7 +13,7 @@ import com.hair.business.dao.datastore.repository.ObjectifyDatastoreRepositoryIm
 public class DaoDatastoreModule extends AbstractModule {
 
     protected void configure() {
-        bind(ObjectifyRepository.class).to(ObjectifyDatastoreRepositoryImpl.class);
+        bind(Repository.class).to(ObjectifyDatastoreRepositoryImpl.class);
 
         requireBinding(Repository.class);
     }

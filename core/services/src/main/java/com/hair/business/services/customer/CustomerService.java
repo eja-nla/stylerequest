@@ -1,9 +1,15 @@
 package com.hair.business.services.customer;
 
 
+import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
+import com.hair.business.beans.entity.Image;
+import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
+import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
+
+import org.joda.time.DateTime;
 
 import java.util.Collection;
 
@@ -14,18 +20,49 @@ import java.util.Collection;
  */
 public interface CustomerService {
 
-    boolean saveCustomer(Customer customer);
-
+    /**
+     * Finds customer with given id*/
     Customer findCustomer(Long id);
 
-    Collection<StyleRequest> findStyleRequests(Customer customer);
+    /**
+     * Saves new customer
+     * */
+    void saveCustomer(Customer customer);
 
+    /**
+     * Finds style requests by this customer in the given state
+     */
+    Collection<StyleRequest> findStyleRequests(Long customerId, StyleRequestState styleRequestState);
+
+    /**
+     * Deactivates customer account
+     */
     void deactivateCustomer(Customer customer);
 
-    boolean placeStyleRequest(Customer customer, Merchant merchant);
+    /**
+     * Place a new style request for this customer
+     */
+    boolean placeStyleRequest(Style style, Customer customer, Merchant merchant, Location location, DateTime dateTime);
 
+    /**
+     * Cancels a placed request by this customer
+     */
     boolean cancelStyleRequest(Customer customer, StyleRequest request);
 
-    boolean pay(Customer customer, Merchant merchant); //70440612
+    /**
+     *  Issues a payment request from a customer to a merchant
+     */
+    boolean pay(Customer customer, Merchant merchant);
+
+    /**
+     * Fetches trending styles for this user based on location
+     */
+    Collection<Image> findTrendingStyles(Location location);
+
+    /**
+     * Contacts the given merchant with given message
+     */
+    void contactMerchant(Long merchantId, String message);
+
 
 }

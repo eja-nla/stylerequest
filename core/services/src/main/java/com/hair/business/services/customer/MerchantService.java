@@ -36,6 +36,9 @@ public interface MerchantService {
 
     void updateRequest(StyleRequest styleRequest);
 
+    /**
+     * Publish a new style that can be requested
+     */
     void publishStyle(Style style);
 
 

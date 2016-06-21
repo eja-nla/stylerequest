@@ -1,9 +1,17 @@
 package com.hair.business.services.customer;
 
+import static org.joda.time.DateTime.*;
+
+import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
+import com.hair.business.beans.entity.Image;
+import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
+import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+
+import org.joda.time.DateTime;
 
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -27,30 +35,45 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
-    public boolean saveCustomer(Customer customer) {
-
-        repository.saveCustomerNow(customer);
-        return true;
-    }
-
-    public Customer findCustomer(Long id ) {
+    public Customer findCustomer(Long id) {
         return repository.findCustomerNow(id);
     }
 
-    public Collection<StyleRequest> findStyleRequests(Customer customer) {
-        return null;
-    }
-
-    public void deactivateCustomer(Customer customer) {
-        customer.setActive(false);
+    public void saveCustomer(Customer customer) {
         repository.saveCustomerNow(customer);
     }
 
-    public boolean placeStyleRequest(Customer customer, Merchant merchant) {
-        return false;
+    public Collection<StyleRequest> findStyleRequests(Long customerId, StyleRequestState styleRequestState) {
+
+        return repository.findStyleRequests(customerId, styleRequestState);
     }
 
-    public boolean cancelStyleRequest(Customer customer, StyleRequest request) {
+    public void deactivateCustomer(Customer customer) {
+
+        customer.setActive(false);
+        repository.saveCustomerNow(customer);
+
+    }
+
+    public boolean placeStyleRequest(Style style, Customer customer, Merchant merchant, Location location, DateTime dateTime) {
+        //create new request
+        // increment style counter
+        // TODO notify merchant via task queue
+
+        style.setRequestCount(style.getRequestCount() + 1);
+        StyleRequest styleRequest = new StyleRequest(style, merchant.getId(), customer.getId(), location, StyleRequestState.PENDING, now());
+
+        repository.saveStyle(style);
+        repository.saveStyleRequest(styleRequest);
+
+        return true;
+    }
+
+    public boolean cancelStyleRequest(Customer customer, StyleRequest styleRequest) {
+        styleRequest.setState(StyleRequestState.CANCELLED);
+        repository.saveStyleRequest(styleRequest);
+        //TODO notify merchant
+
         return false;
     }
 
@@ -58,15 +81,13 @@ public class CustomerServiceImpl implements CustomerService {
         return false;
     }
 
-    public void delete(Customer bean) {
-
-    }
-
-    public Customer find(String s) {
+    public Collection<Image> findTrendingStyles(Location location) {
         return null;
     }
 
-    public Iterable<Customer> find() {
-        return null;
+    public void contactMerchant(Long merchantId, String message) {
+
     }
+
+
 }
