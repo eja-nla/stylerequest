@@ -1,6 +1,7 @@
 package com.hair.business.dao.datastore.repository;
 
-import static com.googlecode.objectify.ObjectifyService.ofy;
+
+import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
 
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;

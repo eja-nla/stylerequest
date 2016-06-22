@@ -4,15 +4,17 @@ import com.google.appengine.api.taskqueue.DeferredTask;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
-import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 import com.hair.business.beans.constants.NotificationType;
+import com.x.business.notif.email.EmailSender;
+
+import javax.inject.Inject;
 
 /**
  * Notification object
  * Created by Olukorede Aguda on 21/06/2016.
  */
 @Entity
-public class Notification extends AbstractActorEnablerEntity implements DeferredTask {
+public class Notification implements DeferredTask {
 
     @Id
     private Long id;
@@ -24,6 +26,14 @@ public class Notification extends AbstractActorEnablerEntity implements Deferred
     private Long to; // id of recipient
 
     private NotificationType type;
+
+    @Inject
+    private EmailSender emailSender;
+
+    @Inject
+    public Notification(EmailSender emailSender){
+        this.emailSender = emailSender;
+    }
 
     public Notification(String message, Long from, Long to, NotificationType type) {
         this.message = message;
@@ -39,6 +49,7 @@ public class Notification extends AbstractActorEnablerEntity implements Deferred
         switch (type) {
             case EMAIL:
                 //do create an EmailSenderImpl to send the email based on this
+                emailSender.sendEmail(this, null); //TODO where do we get attachment data from?
                 break;
             case PUSH:
                 // do stuff

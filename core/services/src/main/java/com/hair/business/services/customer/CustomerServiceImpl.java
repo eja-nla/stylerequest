@@ -67,7 +67,7 @@ public class CustomerServiceImpl implements CustomerService {
         style.setRequestCount(style.getRequestCount() + 1);
         repository.saveStyle(style);
 
-        StyleRequest styleRequest = new StyleRequest(style, merchant.getId(), customer.getId(), location, StyleRequestState.PENDING, now());
+        StyleRequest styleRequest = new StyleRequest(style, merchant, customer, location, StyleRequestState.PENDING, now());
         repository.saveStyleRequest(styleRequest); // needs to be saved to get an id
 
         Notification notification = new Notification(styleRequest.toJson(), customer.getId(), merchant.getId(), NotificationType.PUSH_EMAIL);

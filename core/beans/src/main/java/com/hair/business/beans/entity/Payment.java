@@ -1,6 +1,8 @@
 package com.hair.business.beans.entity;
 
 
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 import com.hair.business.beans.constants.MerchantType;
 
@@ -10,7 +12,11 @@ import com.hair.business.beans.constants.MerchantType;
  *  Created by Olukorede Aguda on 25/04/2016.
  *
  */
+@Entity
 public class Payment extends AbstractActorEnablerEntity {
+
+    @Id
+    private Long id;
 
     private long amount;
     private long from;

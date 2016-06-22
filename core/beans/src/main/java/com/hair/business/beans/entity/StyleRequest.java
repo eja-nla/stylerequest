@@ -1,8 +1,11 @@
 package com.hair.business.beans.entity;
 
 
+import com.googlecode.objectify.Ref;
+import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Load;
 import com.hair.business.beans.abstracts.AbstractActorEntity;
 import com.hair.business.beans.constants.StyleRequestState;
 
@@ -15,25 +18,26 @@ import org.joda.time.DateTime;
  *
  */
 @Entity
+@Cache
 public class StyleRequest extends AbstractActorEntity {
 
     @Id
     private Long id;
 
-    private Style style;
+    private @Load Ref<Style> style;
 
-    private Long merchantId;
+    private @Load Ref<Merchant> merchant; // with @Load, Ofy efficiently fetches for large dataset
 
-    private Long customerId;
+    private @Load Ref<Customer> customer;
 
     private Location location;
 
     private StyleRequestState state;
 
-    public StyleRequest(Style style, Long merchantId, Long customerId, Location location, StyleRequestState state, DateTime createdDate) {
-        this.style = style;
-        this.merchantId = merchantId;
-        this.customerId = customerId;
+    public StyleRequest(Style style, Merchant merchant, Customer customer, Location location, StyleRequestState state, DateTime createdDate) {
+        this.style = Ref.create(style);
+        this.merchant = Ref.create(merchant);
+        this.customer = Ref.create(customer);
         this.location = location;
         this.state = state;
         this.setCreated(createdDate);
@@ -48,27 +52,27 @@ public class StyleRequest extends AbstractActorEntity {
     }
 
     public Style getStyle() {
-        return style;
+        return style.get();
     }
 
-    public void setStyle(Style style) {
+    public void setStyle(Ref<Style> style) {
         this.style = style;
     }
 
-    public Long getMerchantId() {
-        return merchantId;
+    public Merchant getMerchant() {
+        return merchant.get();
     }
 
-    public void setMerchantId(Long merchantId) {
-        this.merchantId = merchantId;
+    public void setMerchant(Ref<Merchant> merchant) {
+        this.merchant = merchant;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public void setCustomer(Ref<Customer> customer) {
+        this.customer = customer;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public Customer getCustomer() {
+        return customer.get();
     }
 
     public Location getLocation() {
