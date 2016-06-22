@@ -2,6 +2,7 @@ package com.hair.business.beans.entity;
 
 import static org.joda.time.DateTime.now;
 
+import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.hair.business.beans.abstracts.AbstractActorEntity;
@@ -12,6 +13,7 @@ import com.hair.business.beans.abstracts.AbstractActorEntity;
  * Represents a placed style request from client to a merchant
  */
 @Entity
+@Cache
 public class Customer extends AbstractActorEntity {
 
     @Id
@@ -22,19 +24,20 @@ public class Customer extends AbstractActorEntity {
     private Location location;
 
 
-    public Customer(String name, String rating, String email, String phone){
+    public Customer(String name, String rating, String email, String phone, Device device){
         this.setName(name);
         this.setRating(rating);
         this.setEmail(email);
         this.setPhone(phone);
+        this.setDevice(device);
         this.setActive(true);
         this.setCreated(now());
         this.setLastUpdated(now());
 
     }
 
-    public Customer(String name, String rating, String email, String phone, Location location, Payment payment) {
-        this(name, rating, email, phone);
+    public Customer(String name, String rating, String email, String phone, Device device, Location location, Payment payment) {
+        this(name, rating, email, phone, device);
         this.payment = payment;
         this.location = location;
 

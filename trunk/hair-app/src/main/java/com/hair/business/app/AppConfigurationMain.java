@@ -12,6 +12,7 @@ import com.hair.business.auth.config.SecurityModule;
 import com.hair.business.dao.datastore.config.DaoDatastoreModule;
 import com.hair.business.rest.RestServicesModule;
 import com.hair.business.services.config.ServicesModule;
+import com.x.business.config.UtilModule;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import javax.servlet.ServletContextEvent;
 
 /**
  * Created by Olukorede Aguda on 23/05/2016.
@@ -38,7 +41,7 @@ public class AppConfigurationMain extends GuiceServletContextListener {
 
         // now create the injector
         Injector appInjector = Guice.createInjector(new DaoDatastoreModule(), new HealthcheckModule(), new RestServicesModule(),
-                    new ServicesModule(), new SecurityModule(), new AbstractModule() {
+                    new ServicesModule(), new SecurityModule(), new UtilModule(), new AbstractModule() {
                 @Override
                 protected void configure() {
                     Properties props = loadProperties();
@@ -49,7 +52,7 @@ public class AppConfigurationMain extends GuiceServletContextListener {
 
         );
 
-        log.info("Application initialisation completed successfully");
+        log.info("Application initialization completed successfully");
 
         return appInjector;
     }
@@ -76,5 +79,16 @@ public class AppConfigurationMain extends GuiceServletContextListener {
             serve("/health").with(HealthcheckServlet.class);
 
         }
+    }
+
+    @Override
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+        long time = System.currentTimeMillis();
+
+        super.contextInitialized(servletContextEvent);
+
+        long millis = System.currentTimeMillis() - time;
+
+        log.info("Guice initialization took " + millis + " millis");
     }
 }

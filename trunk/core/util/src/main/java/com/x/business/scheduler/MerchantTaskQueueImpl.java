@@ -9,13 +9,13 @@ import com.x.business.notif.Notification;
 /**
  * Created by Olukorede Aguda on 21/06/2016.
  */
-public class TaskQueueImpl implements TaskQueue {
+public class MerchantTaskQueueImpl implements TaskQueue {
 
     private Queue taskQueue;
-    private static final String NOTIFICATION_URL = "/notifications";
+    private static final String QUEUE_NAME = "merchant-email-queue";
 
-    public TaskQueueImpl() {
-        this.taskQueue = QueueFactory.getDefaultQueue();
+    public MerchantTaskQueueImpl() {
+        this.taskQueue = QueueFactory.getQueue(QUEUE_NAME);
     }
 
     public void addNotification(Notification notification) {

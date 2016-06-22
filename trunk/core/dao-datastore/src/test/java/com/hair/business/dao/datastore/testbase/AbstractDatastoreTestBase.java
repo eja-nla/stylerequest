@@ -10,12 +10,12 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
-import com.googlecode.objectify.ObjectifyFactory;
-import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cache.AsyncCacheFilter;
 import com.googlecode.objectify.impl.translate.opt.joda.JodaTimeTranslators;
 import com.googlecode.objectify.util.Closeable;
 import com.hair.business.beans.entity.Customer;
+import com.hair.business.dao.datastore.ofy.OfyFactory;
+import com.hair.business.dao.datastore.ofy.OfyService;
 
 import org.junit.After;
 import org.junit.Before;
@@ -37,17 +37,18 @@ public class AbstractDatastoreTestBase {
     @BeforeClass
     public static void setUpBeforeClass()
     {
-        ObjectifyFactory objectifyFactory = new ObjectifyFactory();
+
+        OfyFactory objectifyFactory = new OfyFactory();
         JodaTimeTranslators.add(objectifyFactory);
-        ObjectifyService.setFactory(objectifyFactory);
-        ObjectifyService.register(Customer.class);
+        OfyService.setObjectifyFactory(objectifyFactory);
+        OfyService.register(Customer.class);
     }
 
     @Before
     public void setUp() {
         PersistentEntityTestConstants.init();
 
-        this.session = ObjectifyService.begin();
+        this.session = OfyService.begin();
         helper.setUp();
     }
 
