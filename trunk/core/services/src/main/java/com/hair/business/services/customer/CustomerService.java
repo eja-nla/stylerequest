@@ -11,6 +11,7 @@ import com.hair.business.beans.entity.StyleRequest;
 import org.joda.time.DateTime;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Consumer Service.
@@ -31,7 +32,7 @@ public interface CustomerService {
     /**
      * Finds style requests by this customer in the given state
      */
-    Collection<StyleRequest> findStyleRequests(Long customerId, StyleRequestState styleRequestState);
+    Collection<StyleRequest> findStyleRequests(List<Long> customerId, StyleRequestState styleRequestState);
 
     /**
      * Deactivates customer account

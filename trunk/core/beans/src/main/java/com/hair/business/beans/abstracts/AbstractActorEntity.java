@@ -8,7 +8,7 @@ import com.hair.business.beans.entity.Device;
  * Created by Olukorede Aguda on 25/04/2016.
  */
 public abstract class AbstractActorEntity extends AbstractTransactionEntity{
-    private String rating;
+    private int rating;
     private String email;
     private String phone;
     private Device device;
@@ -32,11 +32,11 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
         this.phone = phone;
     }
 
-    public String getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 

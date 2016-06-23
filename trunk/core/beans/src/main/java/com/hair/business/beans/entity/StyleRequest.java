@@ -5,6 +5,7 @@ import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Load;
 import com.hair.business.beans.abstracts.AbstractActorEntity;
 import com.hair.business.beans.constants.StyleRequestState;
@@ -32,15 +33,21 @@ public class StyleRequest extends AbstractActorEntity {
 
     private Location location;
 
-    private StyleRequestState state;
+    private @Index StyleRequestState state;
 
-    public StyleRequest(Style style, Merchant merchant, Customer customer, Location location, StyleRequestState state, DateTime createdDate) {
+    private DateTime date;
+
+    public StyleRequest(){}
+
+    public StyleRequest(Style style, Merchant merchant, Customer customer, Location location, StyleRequestState state, DateTime date) {
+        this();
         this.style = Ref.create(style);
         this.merchant = Ref.create(merchant);
         this.customer = Ref.create(customer);
         this.location = location;
         this.state = state;
-        this.setCreated(createdDate);
+        this.date = date;
+        this.setCreated(DateTime.now());
     }
 
     public Long getId() {
@@ -89,5 +96,13 @@ public class StyleRequest extends AbstractActorEntity {
 
     public void setState(StyleRequestState state) {
         this.state = state;
+    }
+
+    public DateTime getDate() {
+        return date;
+    }
+
+    public void setDate(DateTime date) {
+        this.date = date;
     }
 }

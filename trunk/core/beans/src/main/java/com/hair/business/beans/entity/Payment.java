@@ -1,10 +1,14 @@
 package com.hair.business.beans.entity;
 
 
+import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Load;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 import com.hair.business.beans.constants.MerchantType;
+
+import org.joda.time.DateTime;
 
 /**
  * Represents a payment between two entities.
@@ -19,10 +23,31 @@ public class Payment extends AbstractActorEnablerEntity {
     private Long id;
 
     private long amount;
-    private long from;
-    private long to;
+    private @Load Ref<Customer> customer;
+    private @Load Ref<Merchant> merchant;
     private boolean settled;
     private MerchantType type;
+    private DateTime date;
+
+    public Payment(){}
+
+    public Payment(long amount, Customer customer, Merchant merchant, boolean settled, MerchantType type, DateTime date) {
+        this();
+        this.amount = amount;
+        this.customer = Ref.create(customer);
+        this.merchant = Ref.create(merchant);
+        this.settled = settled;
+        this.type = type;
+        this.date = date;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public long getAmount() {
         return amount;
@@ -32,20 +57,20 @@ public class Payment extends AbstractActorEnablerEntity {
         this.amount = amount;
     }
 
-    public long getFrom() {
-        return from;
+    public Customer getCustomer() {
+        return customer.get();
     }
 
-    public void setFrom(long from) {
-        this.from = from;
+    public void setCustomer(Ref<Customer> customer) {
+        this.customer = customer;
     }
 
-    public long getTo() {
-        return to;
+    public Merchant getMerchant() {
+        return merchant.get();
     }
 
-    public void setTo(long to) {
-        this.to = to;
+    public void setMerchant(Ref<Merchant> merchant) {
+        this.merchant = merchant;
     }
 
     public boolean isSettled() {
@@ -62,5 +87,13 @@ public class Payment extends AbstractActorEnablerEntity {
 
     public void setType(MerchantType type) {
         this.type = type;
+    }
+
+    public DateTime getDate() {
+        return date;
+    }
+
+    public void setDate(DateTime date) {
+        this.date = date;
     }
 }

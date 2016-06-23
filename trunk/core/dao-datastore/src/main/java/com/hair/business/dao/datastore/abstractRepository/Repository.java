@@ -28,10 +28,12 @@ public interface Repository {
      * */
     Collection<Customer> findCustomers(List<Long> ids);
 
+    StyleRequest findStyleRequest(Long id);
+
     /**
      * finds style requests booked by given customer
      */
-    Collection<StyleRequest> findStyleRequests(Long entityId, StyleRequestState requestState);
+    Collection<StyleRequest> findStyleRequests(List<Long> ids, StyleRequestState requestState);
 
     /**
      * Finds details for a given style Id
@@ -46,11 +48,17 @@ public interface Repository {
     /**
      * saves many customers
      * */
-    void saveCustomersNow(Collection<Customer> customers);
+    void saveCustomers(Collection<Customer> customers);
 
     Long saveStyle(Style style);
 
-    void saveStyleRequest(StyleRequest styleRequest);
+    Long saveStyleRequest(StyleRequest styleRequest);
 
-    void saveNotification(Notification notification);
+    void saveStyleRequests(Collection<StyleRequest> styleRequests);
+
+    Long saveNotification(Notification notification);
+
+    void deleteCustomer(Customer cus);
+
+
 }
