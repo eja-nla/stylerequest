@@ -30,16 +30,14 @@ public class OfyFactory extends ObjectifyFactory{
     public OfyFactory(Injector injector) {
         this.injector = injector;
 
+        JodaTimeTranslators.add(this);
+
         this.register(Customer.class);
         this.register(Merchant.class);
         this.register(Style.class);
         this.register(StyleRequest.class);
         this.register(Payment.class);
 
-    }
-
-    public OfyFactory() { // for test purposes
-        JodaTimeTranslators.add(this);
     }
 
     /** Use guice to make instances instead! */

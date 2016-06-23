@@ -1,20 +1,20 @@
 package com.x.business.notif;
 
-import com.google.appengine.api.taskqueue.DeferredTask;
-
-import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.hair.business.beans.abstracts.AbstractPersistenceEntity;
 import com.hair.business.beans.constants.NotificationType;
-import com.x.business.notif.email.EmailSender;
+import com.hair.business.beans.entity.Payment;
+import com.hair.business.beans.entity.StyleRequest;
+import com.x.business.scheduler.TaskQueue;
+import com.x.business.tasks.EmailTask;
 
-import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Notification object
  * Created by Olukorede Aguda on 21/06/2016.
  */
-@Entity
-public class Notification implements DeferredTask {
+public class Notification<T extends AbstractPersistenceEntity> {
 
     @Id
     private Long id;
@@ -27,38 +27,45 @@ public class Notification implements DeferredTask {
 
     private NotificationType type;
 
-    @Inject
-    private EmailSender emailSender;
+    private T value;
 
-    @Inject
-    public Notification(EmailSender emailSender){
-        this.emailSender = emailSender;
-    }
+    @Named("app.admin.email") String adminEmail;
 
-    public Notification(String message, Long from, Long to, NotificationType type) {
-        this.message = message;
-        this.from = from;
-        this.to = to;
+//    public Notification(String message, Long from, Long to, NotificationType type) {
+//        this.message = message;
+//        this.from = from;
+//        this.to = to;
+//        this.type = type;
+//    }
+
+    public Notification(T o, NotificationType type) {
+        this.value = o;
         this.type = type;
     }
 
-    public void run() {
-        // TODO depending on the notification type, send email or sent push notification
-        // This should probably move elsewhere as it's no longer a plain entity
+    public void schedule(){
+        if (type.equals(NotificationType.EMAIL)){
+            // add to email task queue
+            if(value instanceof StyleRequest){
+                StyleRequest request = (StyleRequest) value;
+                EmailTask mailTask = new EmailTask(adminEmail, request.getMerchant().getEmail(), null, null, "New Style Request", null, "I'd like to fix my hair on " + request.getDate(), null, "text/html");
 
-        switch (type) {
-            case EMAIL:
-                //do create an EmailSenderImpl to send the email based on this
-                emailSender.sendEmail(this, null); //TODO where do we get attachment data from?
-                break;
-            case PUSH:
-                // do stuff
-                break;
-            case PUSH_EMAIL:
-                //do stuff
-                break;
-            default:
-                // nothing?
+                TaskQueue.emailQueue().add(mailTask);
+            }
+
+            if(value instanceof Payment){
+                Payment request = (Payment) value;
+                EmailTask mailTask = new EmailTask(adminEmail, request.getMerchant().getEmail(), null, null, "New Style Request", null, "I'd like to fix my hair on " + request.getDate(), null, "text/html");
+
+                TaskQueue.emailQueue().add(mailTask);
+            }
+
+        }
+        if (type.equals(NotificationType.PUSH)){
+            // add to push task queue
+        }
+        if (type.equals(NotificationType.PUSH_EMAIL)){
+            // add to both
         }
     }
 

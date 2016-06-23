@@ -23,8 +23,11 @@ public class Customer extends AbstractActorEntity {
 
     private Location location;
 
+    public Customer() {
+    }
 
-    public Customer(String name, String rating, String email, String phone, Device device){
+    public Customer(String name, int rating, String email, String phone, Device device){
+        this();
         this.setName(name);
         this.setRating(rating);
         this.setEmail(email);
@@ -36,7 +39,7 @@ public class Customer extends AbstractActorEntity {
 
     }
 
-    public Customer(String name, String rating, String email, String phone, Device device, Location location, Payment payment) {
+    public Customer(String name, int rating, String email, String phone, Device device, Location location, Payment payment) {
         this(name, rating, email, phone, device);
         this.payment = payment;
         this.location = location;

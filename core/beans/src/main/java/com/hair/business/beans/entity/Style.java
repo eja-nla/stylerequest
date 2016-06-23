@@ -5,6 +5,8 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 
+import org.joda.time.DateTime;
+
 import java.util.Collection;
 
 /**
@@ -27,13 +29,19 @@ public class Style extends AbstractActorEnablerEntity {
 
     private Location location;
 
+    private DateTime date;
+
     private Collection<Image> styleImages; // a style can have multiple images e.g. showing the sides, the back, the front etc.
 
+    public Style(){}
+
     public Style(long requestCount, boolean trending, boolean active, Location location) {
+        this();
         this.requestCount = requestCount;
         this.trending = trending;
         this.active = active;
         this.location = location;
+        this.date = DateTime.now();
     }
 
     public long getId() {
@@ -82,5 +90,13 @@ public class Style extends AbstractActorEnablerEntity {
 
     public void setStyleImages(Collection<Image>  styleImages) {
         this.styleImages = styleImages;
+    }
+
+    public DateTime getDate() {
+        return date;
+    }
+
+    public void setDate(DateTime date) {
+        this.date = date;
     }
 }

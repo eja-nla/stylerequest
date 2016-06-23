@@ -1,8 +1,6 @@
 package com.hair.business.beans.entity;
 
 
-import com.google.appengine.api.search.GeoPoint;
-
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 
 import java.util.Collection;
@@ -17,10 +15,21 @@ public class Location extends AbstractActorEnablerEntity {
     private String city;
     private String state;
     private String country;
-    private GeoPoint geoPoint; // has the long and lat
+    private GeoPointExt geoPoint; // has the long and lat
 
     private String current;
     private Collection<String> previous;
+
+    public Location(){
+    }
+
+    public Location(String city, String state, String country, GeoPointExt geoPoint) {
+        this();
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.geoPoint = geoPoint;
+    }
 
     public String getCurrent() {
         return current;
@@ -62,11 +71,11 @@ public class Location extends AbstractActorEnablerEntity {
         this.country = country;
     }
 
-    public GeoPoint getGeoPoint() {
+    public GeoPointExt getGeoPoint() {
         return geoPoint;
     }
 
-    public void setGeoPoint(GeoPoint geoPoint) {
+    public void setGeoPoint(GeoPointExt geoPoint) {
         this.geoPoint = geoPoint;
     }
 }

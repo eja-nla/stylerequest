@@ -1,5 +1,7 @@
 package com.hair.business.beans.entity;
 
+import static org.joda.time.DateTime.now;
+
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.hair.business.beans.abstracts.AbstractActorEntity;
@@ -15,7 +17,39 @@ public class Merchant extends AbstractActorEntity {
     @Id
     private Long id;
 
+    private Payment payment;
+
     private Location location;
+
+    public Merchant(){}
+
+    public Merchant(String name, int rating, String email, String phone, Device device){
+        this();
+        this.setName(name);
+        this.setRating(rating);
+        this.setEmail(email);
+        this.setPhone(phone);
+        this.setDevice(device);
+        this.setActive(true);
+        this.setCreated(now());
+        this.setLastUpdated(now());
+
+    }
+
+    public Merchant(String name, int rating, String email, String phone, Device device, Location location, Payment payment) {
+        this(name, rating, email, phone, device);
+        this.payment = payment;
+        this.location = location;
+
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
 
     public Location getLocation() {
         return location;

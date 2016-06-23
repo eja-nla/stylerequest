@@ -33,8 +33,14 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
         return ofy().load().type(Customer.class).ids(ids).values();
     }
 
-    public Collection<StyleRequest> findStyleRequests(Long entityId, StyleRequestState requestState) {
-        return null;
+    @Override
+    public StyleRequest findStyleRequest(Long id) {
+        return ofy().load().type(StyleRequest.class).id(id).now();
+    }
+
+    public Collection<StyleRequest> findStyleRequests(List<Long> ids, StyleRequestState requestState) {
+
+        return ofy().load().type(StyleRequest.class).filter("state ==", requestState).list();
     }
 
     public Style findStyle(Long id) {
@@ -51,20 +57,28 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
     /**
      * saves many customers
      */
-    public void saveCustomersNow(Collection<Customer> customers) {
-        ofy().save().entities(customers).now();
+    public void saveCustomers(Collection<Customer> customers) {
+        ofy().save().entities(customers);
     }
 
     public Long saveStyle(Style style) {
         return ofy().save().entity(style).now().getId();
     }
 
-    public void saveStyleRequest(StyleRequest styleRequest) {
-
+    public Long saveStyleRequest(StyleRequest styleRequest) {
+        return ofy().save().entity(styleRequest).now().getId();
     }
 
-    public void saveNotification(Notification notification) {
+    public void saveStyleRequests(Collection<StyleRequest> styleRequests) {
+        ofy().save().entities(styleRequests);
+    }
 
+    public Long saveNotification(Notification notification) {
+        return ofy().save().entity(notification).now().getId();
+    }
+
+    public void deleteCustomer(Customer cus) {
+        // Not implemented. set active to false and update instead
     }
 
 }

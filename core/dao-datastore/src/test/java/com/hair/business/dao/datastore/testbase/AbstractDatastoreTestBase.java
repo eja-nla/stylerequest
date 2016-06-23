@@ -9,13 +9,13 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.inject.Guice;
 
 import com.googlecode.objectify.cache.AsyncCacheFilter;
-import com.googlecode.objectify.impl.translate.opt.joda.JodaTimeTranslators;
 import com.googlecode.objectify.util.Closeable;
-import com.hair.business.beans.entity.Customer;
-import com.hair.business.dao.datastore.ofy.OfyFactory;
+import com.hair.business.dao.datastore.config.DaoDatastoreModule;
 import com.hair.business.dao.datastore.ofy.OfyService;
+import com.x.y.PersistentEntityTestConstants;
 
 import org.junit.After;
 import org.junit.Before;
@@ -35,21 +35,15 @@ public class AbstractDatastoreTestBase {
     protected Closeable session;
 
     @BeforeClass
-    public static void setUpBeforeClass()
-    {
-
-        OfyFactory objectifyFactory = new OfyFactory();
-        JodaTimeTranslators.add(objectifyFactory);
-        OfyService.setObjectifyFactory(objectifyFactory);
-        OfyService.register(Customer.class);
+    public static void setUpBeforeClass() {
+          Guice.createInjector(new DaoDatastoreModule());
     }
 
     @Before
     public void setUp() {
-        PersistentEntityTestConstants.init();
-
         this.session = OfyService.begin();
         helper.setUp();
+        PersistentEntityTestConstants.init();
     }
 
     @After
@@ -70,12 +64,12 @@ public class AbstractDatastoreTestBase {
     }
 
     @Test
-    public void testInsert1() {
+    public void datastoreLeakageTest0() {
         doTest();
     }
 
     @Test
-    public void testInsert2() {
+    public void datastoreLeakageTest1() {
         doTest();
     }
 

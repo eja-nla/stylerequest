@@ -16,6 +16,7 @@ import com.x.business.scheduler.TaskQueue;
 import org.joda.time.DateTime;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -47,7 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
         repository.saveCustomerNow(customer);
     }
 
-    public Collection<StyleRequest> findStyleRequests(Long customerId, StyleRequestState styleRequestState) {
+    public Collection<StyleRequest> findStyleRequests(List<Long> customerId, StyleRequestState styleRequestState) {
 
         return repository.findStyleRequests(customerId, styleRequestState);
     }
@@ -70,9 +71,7 @@ public class CustomerServiceImpl implements CustomerService {
         StyleRequest styleRequest = new StyleRequest(style, merchant, customer, location, StyleRequestState.PENDING, now());
         repository.saveStyleRequest(styleRequest); // needs to be saved to get an id
 
-        Notification notification = new Notification(styleRequest.toJson(), customer.getId(), merchant.getId(), NotificationType.PUSH_EMAIL);
-        taskQueue.addNotification(notification);
-        repository.saveNotification(notification);
+        new Notification<StyleRequest>(styleRequest, NotificationType.PUSH_EMAIL).schedule();
 
         return true;
     }
@@ -82,9 +81,9 @@ public class CustomerServiceImpl implements CustomerService {
         repository.saveStyleRequest(styleRequest);
 
         //TODO notify merchant
-        Notification notification = new Notification(styleRequest.toJson(), customer.getId(), merchant.getId(), NotificationType.PUSH_EMAIL);
-        taskQueue.addNotification(notification);
-        repository.saveNotification(notification);
+        new Notification<StyleRequest>(styleRequest, NotificationType.PUSH_EMAIL);
+        //taskQueue.addNotification(notification);
+        //repository.saveNotification(notification);
 
         return true;
     }

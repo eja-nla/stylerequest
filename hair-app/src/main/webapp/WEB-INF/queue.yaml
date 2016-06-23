@@ -6,7 +6,7 @@ queue:
   retry_parameters:
     task_retry_limit: 7
     task_age_limit: 2d
-- name: merchant-email-queue
+- name: email-queue
   rate: 50/s
   retry_parameters:
     task_retry_limit: 7
