@@ -3,12 +3,13 @@ package com.hair.business.dao.datastore.repository;
 
 import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
 
+import com.googlecode.objectify.Key;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
+import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.ObjectifyRepository;
-import com.x.business.notif.Notification;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,6 +20,12 @@ import java.util.List;
  * Created by Olukorede Aguda on 25/04/2016.
  */
 public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
+
+    @Override
+    public Key<?> allocateId(Class clazz) {
+        return ofy().factory().allocateId(clazz);
+    }
+
     /**
      * finds customer with given id
      */
@@ -54,6 +61,10 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
         return ofy().save().entity(customer).now().getId();
     }
 
+    public Long saveMerchantNow(Merchant merchant){
+        return ofy().save().entity(merchant).now().getId();
+    }
+
     /**
      * saves many customers
      */
@@ -73,7 +84,11 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
         ofy().save().entities(styleRequests);
     }
 
-    public Long saveNotification(Notification notification) {
+    public <E> void saveMany(E... entities) {
+        ofy().save().entities(entities);
+    }
+
+    public Long saveNotification(Object notification) {
         return ofy().save().entity(notification).now().getId();
     }
 

@@ -2,10 +2,10 @@ package com.hair.business.dao.datastore.repository;
 
 
 import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
-import static com.x.y.PersistentEntityTestConstants.CUSTOMER;
-import static com.x.y.PersistentEntityTestConstants.createCustomer;
-import static com.x.y.PersistentEntityTestConstants.createStyle;
-import static com.x.y.PersistentEntityTestConstants.createStyleRequest;
+import static com.x.y.EntityTestConstants.CUSTOMER;
+import static com.x.y.EntityTestConstants.createCustomer;
+import static com.x.y.EntityTestConstants.createStyle;
+import static com.x.y.EntityTestConstants.createStyleRequest;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;

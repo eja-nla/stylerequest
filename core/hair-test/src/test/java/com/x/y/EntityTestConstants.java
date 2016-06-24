@@ -21,7 +21,7 @@ import java.util.Random;
  *
  * Created by Olukorede Aguda on 20/06/2016.
  */
-public class PersistentEntityTestConstants {
+public class EntityTestConstants {
 
     public static Payment PAYMENT;
     public static Customer CUSTOMER;
@@ -50,7 +50,7 @@ public class PersistentEntityTestConstants {
         MERCHANT = new Merchant("Test seed Merchant Name", new Random().nextInt(), "merchant0@email.com", "+1134555643654", DEVICE, LOCATION, PAYMENT);
         MERCHANT.setId(new Random().nextLong());
 
-        STYLE = new Style(new Random().nextLong(), true, true, LOCATION);
+        STYLE = new Style(new Random().nextLong(), MERCHANT, true, true, LOCATION);
         STYLE.setId(new Random().nextLong());
 
     }
@@ -84,7 +84,8 @@ public class PersistentEntityTestConstants {
     }
 
     public static Style createStyle(){
-        Style s = new Style(new Random().nextLong(), true, true, LOCATION);
+        Style s = new Style(2, MERCHANT, true, true, LOCATION);
+        s.setId(new Random().nextLong());
         return s;
     }
 }

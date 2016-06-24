@@ -1,10 +1,11 @@
 package com.hair.business.dao.datastore.abstractRepository;
 
+import com.googlecode.objectify.Key;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
+import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
-import com.x.business.notif.Notification;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +19,10 @@ import java.util.List;
  */
 public interface Repository {
 
+    /**
+     * Allocates an id
+     * */
+    Key<?> allocateId(Class clazz);
     /**
      * finds customer with given id sync
      * */
@@ -46,6 +51,11 @@ public interface Repository {
     Long saveCustomerNow(Customer customer);
 
     /**
+     * saves a single merchant information
+     * */
+    Long saveMerchantNow(Merchant merchant);
+
+    /**
      * saves many customers
      * */
     void saveCustomers(Collection<Customer> customers);
@@ -56,9 +66,13 @@ public interface Repository {
 
     void saveStyleRequests(Collection<StyleRequest> styleRequests);
 
-    Long saveNotification(Notification notification);
+    /**
+     * Saves multiple entities regardless of type
+     * */
+    <E> void saveMany(E... entities);
+
+    Long saveNotification(Object notification);
 
     void deleteCustomer(Customer cus);
-
 
 }

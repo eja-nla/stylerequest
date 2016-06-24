@@ -34,16 +34,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.googlecode.objectify</groupId>
-            <artifactId>objectify</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.hair.business</groupId>
             <artifactId>hair-beans</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.hair.business</groupId>
-            <artifactId>hair-util</artifactId>
+            <groupId>com.googlecode.objectify</groupId>
+            <artifactId>objectify</artifactId>
         </dependency>
         <dependency>
             <groupId>com.hair.business</groupId>
@@ -52,6 +48,7 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
     
 </project>
