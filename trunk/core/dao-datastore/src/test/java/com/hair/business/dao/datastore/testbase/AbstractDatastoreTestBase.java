@@ -15,7 +15,7 @@ import com.googlecode.objectify.cache.AsyncCacheFilter;
 import com.googlecode.objectify.util.Closeable;
 import com.hair.business.dao.datastore.config.DaoDatastoreModule;
 import com.hair.business.dao.datastore.ofy.OfyService;
-import com.x.y.PersistentEntityTestConstants;
+import com.x.y.EntityTestConstants;
 
 import org.junit.After;
 import org.junit.Before;
@@ -43,7 +43,7 @@ public class AbstractDatastoreTestBase {
     public void setUp() {
         this.session = OfyService.begin();
         helper.setUp();
-        PersistentEntityTestConstants.init();
+        EntityTestConstants.init();
     }
 
     @After
@@ -76,8 +76,7 @@ public class AbstractDatastoreTestBase {
     /**
      * Get a DatastoreService
      */
-    protected DatastoreService ds()
-    {
+    protected DatastoreService ds() {
 
         return DatastoreServiceFactory.getDatastoreService();
     }

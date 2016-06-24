@@ -40,7 +40,7 @@
 
     <organization>
         <name>Hair Technologies</name>
-        <url>http://hair.io.maybe.one.day</url>
+        <url>http://xyz.com</url>
     </organization>
 
     <dependencies>
@@ -104,10 +104,6 @@
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
         </dependency>
 
         <dependency>

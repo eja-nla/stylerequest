@@ -18,11 +18,13 @@
     <name>Hair Test</name>
 
     <dependencies>
+
         <dependency>
             <groupId>com.hair.business</groupId>
             <artifactId>hair-beans</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
     <build>
         <plugins>

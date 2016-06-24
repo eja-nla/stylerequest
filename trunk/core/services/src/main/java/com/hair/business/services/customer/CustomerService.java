@@ -42,17 +42,17 @@ public interface CustomerService {
     /**
      * Place a new style request for this customer
      */
-    boolean placeStyleRequest(Style style, Customer customer, Merchant merchant, Location location, DateTime dateTime);
+    void placeStyleRequest(Style style, Customer customer, Merchant merchant, Location location, DateTime dateTime);
 
     /**
      * Cancels a placed request by this customer
      */
-    boolean cancelStyleRequest(Customer customer, Merchant merchant, StyleRequest request);
+    void cancelStyleRequest(Customer customer, Merchant merchant, StyleRequest request);
 
     /**
      *  Issues a payment request from a customer to a merchant
      */
-    boolean pay(Customer customer, Merchant merchant);
+    void pay(Customer customer, Merchant merchant);
 
     /**
      * Fetches trending styles for this user based on location

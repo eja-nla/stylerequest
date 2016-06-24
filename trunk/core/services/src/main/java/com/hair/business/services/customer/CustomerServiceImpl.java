@@ -11,7 +11,6 @@ import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.x.business.notif.Notification;
-import com.x.business.scheduler.TaskQueue;
 
 import org.joda.time.DateTime;
 
@@ -30,13 +29,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     static final Logger logger = Logger.getLogger(CustomerServiceImpl.class.getName());
     private final Repository repository;
-    private final TaskQueue taskQueue;
-
 
     @Inject
-    public CustomerServiceImpl(Repository repository, TaskQueue taskQueue) {
+    public CustomerServiceImpl(Repository repository) {
         this.repository = repository;
-        this.taskQueue = taskQueue;
 
     }
 
@@ -60,37 +56,29 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
-    public boolean placeStyleRequest(Style style, Customer customer, Merchant merchant, Location location, DateTime dateTime) {
-        //create new request
-        // increment style counter
-        // TODO notify merchant via task queue to send push notification
+    public void placeStyleRequest(Style style, Customer customer, Merchant merchant, Location location, DateTime dateTime) {
 
         style.setRequestCount(style.getRequestCount() + 1);
-        repository.saveStyle(style);
 
         StyleRequest styleRequest = new StyleRequest(style, merchant, customer, location, StyleRequestState.PENDING, now());
-        repository.saveStyleRequest(styleRequest); // needs to be saved to get an id
 
-        new Notification<StyleRequest>(styleRequest, NotificationType.PUSH_EMAIL).schedule();
+        repository.saveMany(styleRequest, style);
 
-        return true;
+        new Notification<StyleRequest>(styleRequest, NotificationType.EMAIL).schedule();
+
     }
 
-    public boolean cancelStyleRequest(Customer customer, Merchant merchant, StyleRequest styleRequest) {
+    public void cancelStyleRequest(Customer customer, Merchant merchant, StyleRequest styleRequest) {
         styleRequest.setState(StyleRequestState.CANCELLED);
         repository.saveStyleRequest(styleRequest);
 
         //TODO notify merchant
         new Notification<StyleRequest>(styleRequest, NotificationType.PUSH_EMAIL);
-        //taskQueue.addNotification(notification);
-        //repository.saveNotification(notification);
 
-        return true;
     }
 
-    public boolean pay(Customer customer, Merchant merchant) {
+    public void pay(Customer customer, Merchant merchant) {
         //TODO implement
-        return false;
     }
 
     public Collection<Style> findTrendingStyles(Location location) {

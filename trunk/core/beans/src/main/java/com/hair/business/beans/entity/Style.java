@@ -27,6 +27,8 @@ public class Style extends AbstractActorEnablerEntity {
 
     private boolean active;
 
+    private Merchant publisher;
+
     private Location location;
 
     private DateTime date;
@@ -35,9 +37,10 @@ public class Style extends AbstractActorEnablerEntity {
 
     public Style(){}
 
-    public Style(long requestCount, boolean trending, boolean active, Location location) {
+    public Style(long requestCount, Merchant publisher, boolean trending, boolean active, Location location) {
         this();
         this.requestCount = requestCount;
+        this.publisher = publisher;
         this.trending = trending;
         this.active = active;
         this.location = location;
@@ -50,6 +53,14 @@ public class Style extends AbstractActorEnablerEntity {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Merchant getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(Merchant publisher) {
+        this.publisher = publisher;
     }
 
     public long getRequestCount() {

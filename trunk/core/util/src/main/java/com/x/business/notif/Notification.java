@@ -1,12 +1,13 @@
 package com.x.business.notif;
 
 import com.googlecode.objectify.annotation.Id;
-import com.hair.business.beans.abstracts.AbstractPersistenceEntity;
 import com.hair.business.beans.constants.NotificationType;
 import com.hair.business.beans.entity.Payment;
 import com.hair.business.beans.entity.StyleRequest;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.tasks.EmailTask;
+
+import java.util.Optional;
 
 import javax.inject.Named;
 
@@ -14,7 +15,7 @@ import javax.inject.Named;
  * Notification object
  * Created by Olukorede Aguda on 21/06/2016.
  */
-public class Notification<T extends AbstractPersistenceEntity> {
+public class Notification<T> {
 
     @Id
     private Long id;
@@ -48,7 +49,7 @@ public class Notification<T extends AbstractPersistenceEntity> {
             // add to email task queue
             if(value instanceof StyleRequest){
                 StyleRequest request = (StyleRequest) value;
-                EmailTask mailTask = new EmailTask(adminEmail, request.getMerchant().getEmail(), null, null, "New Style Request", null, "I'd like to fix my hair on " + request.getDate(), null, "text/html");
+                EmailTask mailTask = new EmailTask(Optional.ofNullable(adminEmail).orElse("koredyte@gmail.com"), request.getMerchant().getEmail(), null, null, "New Style Request", null, "I'd like to fix my hair on " + request.getDate(), null, "text/html");
 
                 TaskQueue.emailQueue().add(mailTask);
             }

@@ -71,7 +71,7 @@ public class TaskQueue {
     }
 
     public static QueueHelper emailQueue() {
-        return new QueueHelper(QueueFactory.getQueue(MERCHANT_QUEUE));
+        return new QueueHelper(QueueFactory.getDefaultQueue());
     }
 
     public static QueueHelper styleRequestQueue() {

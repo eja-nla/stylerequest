@@ -29,11 +29,7 @@
     <name>Hair Util</name>
 
     <dependencies>
-        <dependency>
-            <groupId>com.hair.business</groupId>
-            <artifactId>hair-test</artifactId>
-            <version>${hair.app.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>com.hair.business</groupId>
             <artifactId>hair-beans</artifactId>
