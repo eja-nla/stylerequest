@@ -47,4 +47,8 @@ public class RestServicesModule extends ServletModule {
         bind(RestEndpointServletFilter.class).toInstance(new RestEndpointServletFilter(servletContext));
     }
 
+    // exposed for testing purposes
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
 }
