@@ -91,12 +91,20 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
 
             <!--From vanilla appengine archetype-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.3</version>
+                <version>2.4</version>
                 <configuration>
                     <archiveClasses>true</archiveClasses>
                     <webResources>
@@ -106,6 +114,13 @@
                             <filtering>true</filtering>
                             <targetPath>WEB-INF</targetPath>
                         </resource>
+                        <resource>
+                            <!--because of maven corrupting the p12 file, so we move it elsewhere and ask it not be filtered while copying-->
+                            <directory>src/main/resources</directory>
+                            <filtering>false</filtering>
+                            <targetPath>WEB-INF</targetPath>
+                        </resource>
+
                     </webResources>
                 </configuration>
             </plugin>
@@ -114,6 +129,12 @@
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
                 <version>${appengine.target.version}</version>
+                <configuration>
+                    <enableJarClasses>false</enableJarClasses>
+                    <!--also update in RunDebug Configurations-->
+                    <port>4567</port>
+                    <address>0.0.0.0</address>
+                </configuration>
             </plugin>
         </plugins>
     </build>

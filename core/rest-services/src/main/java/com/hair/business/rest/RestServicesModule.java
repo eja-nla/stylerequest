@@ -8,6 +8,7 @@ import com.sun.jersey.api.core.ResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
 import javax.inject.Singleton;
+import javax.servlet.ServletContext;
 
 /**
  * Rest services module.
@@ -20,22 +21,31 @@ import javax.inject.Singleton;
  */
 public class RestServicesModule extends ServletModule {
 
-    private final String ENDPOINT = "/api/v1/*";
+    private final String API_ENDPOINT = "/api/v1/*";
     private final String RESOURCE_PACKAGES = "com.hair.business.rest.resources";
+
+    private ServletContext servletContext;
+
+    public RestServicesModule(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
 
     @Override
     protected void configureServlets() {
 
         ResourceConfig rc = new PackagesResourceConfig(RESOURCE_PACKAGES);
+
         for ( Class<?> resource : rc.getClasses() ) {
             bind( resource );
         }
 
-        serve(ENDPOINT).with(GuiceContainer.class);
+        serve(API_ENDPOINT).with(GuiceContainer.class);
 
-        filter(ENDPOINT).through(ObjectifyFilter.class);
+        filter(API_ENDPOINT).through(ObjectifyFilter.class);
 
         bind(ObjectifyFilter.class).in(Singleton.class);
+
+        bind(RestEndpointServletFilter.class).toInstance(new RestEndpointServletFilter(servletContext));
 
     }
 
