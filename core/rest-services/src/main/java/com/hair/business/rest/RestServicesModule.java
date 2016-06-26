@@ -26,8 +26,8 @@ public class RestServicesModule extends ServletModule {
 
     private ServletContext servletContext;
 
-    public RestServicesModule(ServletContext servletContext) {
-        this.servletContext = servletContext;
+    public RestServicesModule() {
+        this.servletContext = this.getServletContext();
     }
 
     @Override
@@ -42,11 +42,9 @@ public class RestServicesModule extends ServletModule {
         serve(API_ENDPOINT).with(GuiceContainer.class);
 
         filter(API_ENDPOINT).through(ObjectifyFilter.class);
-
         bind(ObjectifyFilter.class).in(Singleton.class);
 
         bind(RestEndpointServletFilter.class).toInstance(new RestEndpointServletFilter(servletContext));
-
     }
 
 }

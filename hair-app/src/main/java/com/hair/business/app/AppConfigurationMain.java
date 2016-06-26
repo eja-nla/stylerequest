@@ -40,8 +40,7 @@ public class AppConfigurationMain extends GuiceServletContextListener {
      *
      * */
     protected Injector getInjector() {
-        // now create the injector
-        Injector appInjector = Guice.createInjector(new DaoDatastoreModule(), new HealthcheckModule(), new RestServicesModule(servletContext),
+        Injector appInjector = Guice.createInjector(new DaoDatastoreModule(), new HealthcheckModule(), new RestServicesModule(),
                     new ServicesModule(), new SecurityModule(), new UtilModule(), new AbstractModule() {
                 @Override
                 protected void configure() {
@@ -85,8 +84,6 @@ public class AppConfigurationMain extends GuiceServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         long time = System.currentTimeMillis();
-
-        servletContext = servletContextEvent.getServletContext();
 
         super.contextInitialized(servletContextEvent);
 

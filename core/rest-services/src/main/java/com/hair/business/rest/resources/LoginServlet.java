@@ -27,7 +27,7 @@ public class LoginServlet extends HttpServlet {
 //        }
 
         try {
-            GitkitUser gitkitUser = (GitkitUser) request.getAttribute("name");
+            GitkitUser gitkitUser = (GitkitUser) request.getAttribute("user");
             String userInfo = null;
             if (gitkitUser != null) {
                 userInfo = "Welcome back!<br><br> Email: " + gitkitUser.getEmail() + "<br> Id: "

@@ -19,7 +19,8 @@ public class HealthcheckServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String response = "\"code\":200,\"message\":\"Hair app is healthy.\"";
+        String response = "{\"code\":200,\"message\":\"I'm healthy. I Hope you are?\"}";
+        resp.setContentType("application/json");
         resp.getOutputStream().print(response);
 
     }
