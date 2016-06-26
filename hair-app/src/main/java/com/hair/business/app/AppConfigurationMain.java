@@ -7,6 +7,10 @@ import com.google.inject.name.Names;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.hair.business.app.provider.JacksonJsonProvidersProvider;
+import com.hair.business.app.provider.ObjectMapperProvider;
 import com.hair.business.app.servlets.HealthcheckServlet;
 import com.hair.business.auth.config.SecurityModule;
 import com.hair.business.dao.datastore.config.DaoDatastoreModule;
@@ -21,7 +25,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
+import javax.inject.Singleton;
 import javax.servlet.ServletContextEvent;
 
 /**
@@ -32,8 +36,6 @@ import javax.servlet.ServletContextEvent;
 public class AppConfigurationMain extends GuiceServletContextListener {
 
     private static final Logger log = Logger.getLogger(AppConfigurationMain.class.getName());
-
-    private ServletContext servletContext;
 
     /**
      * Main application entry point.
@@ -47,6 +49,11 @@ public class AppConfigurationMain extends GuiceServletContextListener {
                     Properties props = loadProperties();
                     log.info("found properties " + props.propertyNames());
                     Names.bindProperties(binder(), props);
+
+                    // Jackson
+                    bind(ObjectMapper.class).toProvider(ObjectMapperProvider.class).in(Singleton.class);
+                    bind(JacksonJsonProvider.class).toProvider(JacksonJsonProvidersProvider.class).in(Singleton.class);
+
                 }
             }
 
