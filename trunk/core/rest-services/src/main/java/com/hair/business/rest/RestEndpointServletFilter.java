@@ -21,24 +21,24 @@ import javax.servlet.http.HttpServletResponse;
  * Created by Olukorede Aguda on 25/06/2016.
  */
 
-public class RestEndpointServletFilter extends GuiceFilter {
+public final class RestEndpointServletFilter extends GuiceFilter {
 
     private static final Logger log = Logger.getLogger(RestEndpointServletFilter.class.getName());
     static GitkitClient gitkitClient;
 
     ServletContext context;
-    private final String loginUrl = "http://localhost:4567/";
-    private final String projectId = "amyrrh-test1";
-    private final String gitkitUrl = "http://localhost:4567/gitkit";
-    private final String clientId = "363084678705-mt0m4svcp4vg6i7j47kkng6e881loshu.apps.googleusercontent.com";
+    private static final String loginUrl = "http://localhost:4567/";
+    private static final String projectId = "amyrrh-test1";
+    private static final String gitkitUrl = "http://localhost:4567/gitkit";
+    private static final String clientId = "363084678705-mt0m4svcp4vg6i7j47kkng6e881loshu.apps.googleusercontent.com";
 
     public RestEndpointServletFilter(){
 
     }
 
-    public RestEndpointServletFilter(ServletContext context1) {
+    public RestEndpointServletFilter(ServletContext ctx) {
         this();
-        this.context = context1;
+        this.context = ctx;
 
         InputStream keyStream = context.getResourceAsStream("/WEB-INF/amyrrh-test1-48c176ef2baa.p12");
 
@@ -56,7 +56,7 @@ public class RestEndpointServletFilter extends GuiceFilter {
         GitkitUser gitkitUser = null;
         try {
             gitkitUser = gitkitClient.validateTokenInRequest((HttpServletRequest) servletRequest);
-            if (gitkitUser == null && servletResponse.isCommitted() == false){
+            if (gitkitUser == null && !servletResponse.isCommitted()){
                 HttpServletResponse res = ((HttpServletResponse) servletResponse);
                 //res.sendError(HttpServletResponse.SC_FORBIDDEN, "Not logged in.");
                 res.sendRedirect(loginUrl);
