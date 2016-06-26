@@ -103,8 +103,8 @@ public class Style extends AbstractActorEnablerEntity {
         this.styleImages = styleImages;
     }
 
-    public DateTime getDate() {
-        return date;
+    public long getDate() {
+        return date.getMillis();
     }
 
     public void setDate(DateTime date) {

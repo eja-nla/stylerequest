@@ -27,7 +27,7 @@ public class Payment extends AbstractActorEnablerEntity {
     private @Load Ref<Merchant> merchant;
     private boolean settled;
     private MerchantType type;
-    private DateTime date;
+    private long date;
 
     public Payment(){}
 
@@ -38,7 +38,7 @@ public class Payment extends AbstractActorEnablerEntity {
         this.merchant = Ref.create(merchant);
         this.settled = settled;
         this.type = type;
-        this.date = date;
+        this.date = date.getMillis();
     }
 
     public Long getId() {
@@ -89,11 +89,11 @@ public class Payment extends AbstractActorEnablerEntity {
         this.type = type;
     }
 
-    public DateTime getDate() {
+    public long getDate() {
         return date;
     }
 
     public void setDate(DateTime date) {
-        this.date = date;
+        this.date = date.getMillis();
     }
 }

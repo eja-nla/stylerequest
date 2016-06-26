@@ -12,6 +12,7 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
     private String email;
     private String phone;
     private Device device;
+    private String photoUrl;
 
     private boolean active;
 
@@ -54,5 +55,13 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }
