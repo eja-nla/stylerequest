@@ -37,6 +37,11 @@
             <groupId>com.hair.business</groupId>
             <artifactId>hair-services</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+            <artifactId>jersey-test-framework-provider-jetty</artifactId>
+        </dependency>
     </dependencies>
     
 </project>
