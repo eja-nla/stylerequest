@@ -5,6 +5,8 @@ import static com.hair.business.rest.MvcConstants.ID;
 import static com.hair.business.rest.MvcConstants.INFO;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hair.business.services.customer.CustomerService;
 
 import javax.inject.Inject;
@@ -23,18 +25,22 @@ import javax.ws.rs.core.Context;
 @Path(CUSTOMER_URI)
 public class CustomerRequestServlet {
 
-    private CustomerService customerService;
+    private final CustomerService customerService;
+    private final ObjectMapper mapper;
 
     @Inject
-    public CustomerRequestServlet(CustomerService customerService) {
+    public CustomerRequestServlet(CustomerService customerService, ObjectMapper mapper) {
         this.customerService = customerService;
+        this.mapper = mapper;
     }
 
     @GET
     @Path(INFO)
     @Produces(APPLICATION_JSON)
-    public String getCustomerInfo(@Context HttpServletRequest request, @QueryParam(ID) Long customerId) {
-        return "yay, you're here with id " + customerId + " app name " + customerService.findCustomer(customerId);
-
+    public String getCustomerInfo(@Context HttpServletRequest request, @QueryParam(ID) Long customerId) throws JsonProcessingException {
+//        GitkitUser user = (GitkitUser) request.getAttribute("user");
+//
+//        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString("Your stuff " + user + "you're here with id " + customerId + " app name " + customerService.findCustomer(customerId));
+        return null;
     }
 }
