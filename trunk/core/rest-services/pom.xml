@@ -25,13 +25,13 @@
             <artifactId>jersey-server</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.identitytoolkit</groupId>
-            <artifactId>gitkitclient</artifactId>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-guice</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-guice</artifactId>
+            <groupId>com.google.identitytoolkit</groupId>
+            <artifactId>gitkitclient</artifactId>
         </dependency>
         <dependency>
             <groupId>com.hair.business</groupId>

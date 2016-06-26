@@ -8,6 +8,8 @@ public class EntityConstants {
 
     public static final long VERSION_DEFAULT =1L;
 
+    public static final String DATETIMEFORMAT ="yyyy-MMM-dd hh.mm.ss aa";
+
     public static final String STYLE_REQUEST_INDEX = "styles";
     public static final String CUSTOMER_INDEX = "customers";
     public static final String MERCHANT_INDEX = "merchants";

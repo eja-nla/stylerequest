@@ -17,6 +17,8 @@ public class MvcConstants {
 
     public static final String INFO="/info";
 
+    public static final String CREATE="/create";
+
     public static final String ID="id";
 
 

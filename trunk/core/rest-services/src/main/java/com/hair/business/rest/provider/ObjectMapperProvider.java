@@ -1,7 +1,8 @@
-package com.hair.business.app.provider;
+package com.hair.business.rest.provider;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import javax.inject.Provider;
 
@@ -17,7 +18,7 @@ public class ObjectMapperProvider implements Provider<ObjectMapper> {
 
         final ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         return mapper;
     }
 }

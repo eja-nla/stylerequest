@@ -5,6 +5,8 @@ import static com.hair.business.rest.MvcConstants.ID;
 import static com.hair.business.rest.MvcConstants.INFO;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import com.google.identitytoolkit.GitkitUser;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hair.business.services.customer.CustomerService;
@@ -38,9 +40,7 @@ public class CustomerRequestServlet {
     @Path(INFO)
     @Produces(APPLICATION_JSON)
     public String getCustomerInfo(@Context HttpServletRequest request, @QueryParam(ID) Long customerId) throws JsonProcessingException {
-//        GitkitUser user = (GitkitUser) request.getAttribute("user");
-//
-//        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString("Your stuff " + user + "you're here with id " + customerId + " app name " + customerService.findCustomer(customerId));
+        GitkitUser user = (GitkitUser) request.getAttribute("user");
         return null;
     }
 }

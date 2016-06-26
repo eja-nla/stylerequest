@@ -9,24 +9,24 @@ import org.joda.time.DateTime;
  *
  */
 public abstract class AbstractTransactionEntity extends AbstractPersistenceEntity {
-    private DateTime lastUpdated;
-    private DateTime created;
+    private long lastUpdated;
+    private long created;
     private String name;
 
-    public DateTime getLastUpdated() {
+    public long getLastUpdated() {
         return lastUpdated;
     }
 
     public void setLastUpdated(DateTime lastUpdated) {
-        this.lastUpdated = lastUpdated;
+        this.lastUpdated = lastUpdated.getMillis();
     }
 
-    public DateTime getCreated() {
+    public long getCreated() {
         return created;
     }
 
     public void setCreated(DateTime created) {
-        this.created = created;
+        this.created = created.getMillis();
     }
 
     public String getName() {
