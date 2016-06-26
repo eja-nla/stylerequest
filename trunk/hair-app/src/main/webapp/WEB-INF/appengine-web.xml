@@ -12,7 +12,6 @@
 
     <resource-files>
         <include path="/**.properties" />
-        <include path="/openCV/**.xml" />
 
     </resource-files>
 </appengine-web-app>

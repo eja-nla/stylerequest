@@ -75,7 +75,7 @@ public class MerchantServiceImpl implements MerchantService {
 
     }
 
-    public void publishStyle(Style style) {
+    public void publishStyle(Style style, Merchant merchant) {
 
     }
 

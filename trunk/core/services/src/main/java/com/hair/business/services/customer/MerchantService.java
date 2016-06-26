@@ -39,7 +39,7 @@ public interface MerchantService {
     /**
      * Publish a new style that can be requested
      */
-    void publishStyle(Style style);
+    void publishStyle(Style style, Merchant merchant);
 
 
 

@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 /**
@@ -32,15 +33,15 @@ public class AppConfigurationMain extends GuiceServletContextListener {
 
     private static final Logger log = Logger.getLogger(AppConfigurationMain.class.getName());
 
+    private ServletContext servletContext;
+
     /**
      * Main application entry point.
      *
      * */
     protected Injector getInjector() {
-
-
         // now create the injector
-        Injector appInjector = Guice.createInjector(new DaoDatastoreModule(), new HealthcheckModule(), new RestServicesModule(),
+        Injector appInjector = Guice.createInjector(new DaoDatastoreModule(), new HealthcheckModule(), new RestServicesModule(servletContext),
                     new ServicesModule(), new SecurityModule(), new UtilModule(), new AbstractModule() {
                 @Override
                 protected void configure() {
@@ -62,7 +63,7 @@ public class AppConfigurationMain extends GuiceServletContextListener {
         Properties properties = new Properties();
 
         try {
-            InputStream is = new FileInputStream(new File("WEB-INF/config.properties"));
+            InputStream is = new FileInputStream(new File("/WEB-INF/config.properties"));
             properties.load(is);
 
         } catch (IOException e) {
@@ -84,6 +85,8 @@ public class AppConfigurationMain extends GuiceServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         long time = System.currentTimeMillis();
+
+        servletContext = servletContextEvent.getServletContext();
 
         super.contextInitialized(servletContextEvent);
 

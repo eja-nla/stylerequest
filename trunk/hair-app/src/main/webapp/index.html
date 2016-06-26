@@ -1,17 +1,22 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<!-- The HTML 4.01 Transitional DOCTYPE declaration-->
-<!-- above set at the top of the file will set     -->
-<!-- the browser's rendering engine into           -->
-<!-- "Quirks Mode". Replacing this declaration     -->
-<!-- with a "Standards Mode" doctype is supported, -->
-<!-- but may lead to some differences in layout.   -->
-
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  </head>
+<head>
+    <script type="text/javascript" src="//www.gstatic.com/authtoolkit/js/gitkit.js"></script>
+    <link type=text/css rel=stylesheet href="//www.gstatic.com/authtoolkit/css/gitkit.css" />
+    <script type=text/javascript>
+        window.google.identitytoolkit.signInButton(
+                '#navbar', // accepts any CSS selector
+                {
+                    widgetUrl: "http://localhost:4567/gitkit",
+                    signOutUrl: "/",
+                }
+        );
+    </script>
+</head>
+<body>
+<div id="navbar"></div>
+<p>
+    Home Page
+</p>
+</body></html>
 
-  <body>
-    <h1>Tada! You've hit the homepage!</h1>
-  </body>
-</html>
