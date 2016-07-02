@@ -2,6 +2,8 @@ package com.hair.business.services.customer;
 
 import static org.joda.time.DateTime.now;
 
+import com.google.appengine.repackaged.com.google.common.collect.Lists;
+
 import com.hair.business.beans.constants.NotificationType;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
@@ -36,56 +38,65 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
+    @Override
     public Customer findCustomer(Long id) {
-        return repository.findCustomerNow(id);
+        return repository.findOne(id, Customer.class);
     }
 
+    @Override
     public void saveCustomer(Customer customer) {
-        repository.saveCustomerNow(customer);
+        repository.saveOne(customer);
     }
 
+    @Override
     public Collection<StyleRequest> findStyleRequests(List<Long> customerId, StyleRequestState styleRequestState) {
 
-        return repository.findStyleRequests(customerId, styleRequestState);
+        return repository.findByQuery(customerId, StyleRequest.class, "state ==", styleRequestState);
     }
 
+    @Override
     public void deactivateCustomer(Customer customer) {
 
         customer.setActive(false);
-        repository.saveCustomerNow(customer);
+        repository.saveOne(customer);
 
     }
 
+    @Override
     public void placeStyleRequest(Style style, Customer customer, Merchant merchant, Location location, DateTime dateTime) {
 
         style.setRequestCount(style.getRequestCount() + 1);
 
         StyleRequest styleRequest = new StyleRequest(style, merchant, customer, location, StyleRequestState.PENDING, now());
 
-        repository.saveMany(styleRequest, style);
+        repository.saveMany(Lists.newArrayList(styleRequest, style));
 
-        new Notification<StyleRequest>(styleRequest, NotificationType.EMAIL).schedule();
+        new Notification<>(styleRequest, NotificationType.EMAIL).schedule();
 
     }
 
+    @Override
     public void cancelStyleRequest(Customer customer, Merchant merchant, StyleRequest styleRequest) {
         styleRequest.setState(StyleRequestState.CANCELLED);
-        repository.saveStyleRequest(styleRequest);
+        repository.saveOne(styleRequest);
 
         //TODO notify merchant
-        new Notification<StyleRequest>(styleRequest, NotificationType.PUSH_EMAIL);
+        new Notification<>(styleRequest, NotificationType.PUSH_EMAIL);
 
     }
 
+    @Override
     public void pay(Customer customer, Merchant merchant) {
         //TODO implement
     }
 
+    @Override
     public Collection<Style> findTrendingStyles(Location location) {
         //TODO implement
         return null;
     }
 
+    @Override
     public void contactMerchant(Long merchantId, String message) {
 
     }

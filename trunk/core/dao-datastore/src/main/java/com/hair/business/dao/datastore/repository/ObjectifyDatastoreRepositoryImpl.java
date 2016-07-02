@@ -4,15 +4,12 @@ package com.hair.business.dao.datastore.repository;
 import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
 
 import com.googlecode.objectify.Key;
-import com.hair.business.beans.constants.StyleRequestState;
-import com.hair.business.beans.entity.Customer;
-import com.hair.business.beans.entity.Merchant;
-import com.hair.business.beans.entity.Style;
-import com.hair.business.beans.entity.StyleRequest;
+import com.googlecode.objectify.Result;
 import com.hair.business.dao.datastore.abstractRepository.ObjectifyRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Objectify Datastore repository impl.
@@ -27,73 +24,34 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
     }
 
     /**
-     * finds customer with given id
+     * finds entity with given id
      */
-    public Customer findCustomerNow(Long id) {
-        return ofy().load().type(Customer.class).id(id).now();
-    }
+    public <T> T findOne(Long id, Class clazz) {
 
-    /**
-     * finds customers. There is no Ofy sync for this.
-     */
-    public Collection<Customer> findCustomers(List<Long> ids) {
-        return ofy().load().type(Customer.class).ids(ids).values();
+        return (T) ofy().load().type(clazz).id(id).now();
     }
 
     @Override
-    public StyleRequest findStyleRequest(Long id) {
-        return ofy().load().type(StyleRequest.class).id(id).now();
+    public <T> Map<Long, T> findMany(List<Long> ids, Class clazz) {
+        return ofy().load().type(clazz).ids(ids);
     }
 
-    public Collection<StyleRequest> findStyleRequests(List<Long> ids, StyleRequestState requestState) {
-
-        return ofy().load().type(StyleRequest.class).filter("state ==", requestState).list();
+    @Override
+    public <T> Collection<T> findByQuery(List<Long> ids, Class clazz, String condition, Object object) {
+        return ofy().load().type(clazz).filter(condition, object).list();
     }
 
-    public Style findStyle(Long id) {
-        return ofy().load().type(Style.class).id(id).now();
+    @Override
+    public <E> Key<E> saveOne(E entity) {
+        return ofy().save().entity(entity).now();
     }
 
-    /**
-     * saves a single customer information
-     */
-    public Long saveCustomerNow(Customer customer) {
-        return ofy().save().entity(customer).now().getId();
+    public <E> Result<Map<Key<E>, E>> saveMany(Collection<E> entities) {
+        return ofy().save().entities(entities);
     }
 
-    public Long saveMerchantNow(Merchant merchant){
-        return ofy().save().entity(merchant).now().getId();
-    }
-
-    /**
-     * saves many customers
-     */
-    public void saveCustomers(Collection<Customer> customers) {
-        ofy().save().entities(customers);
-    }
-
-    public Long saveStyle(Style style) {
-        return ofy().save().entity(style).now().getId();
-    }
-
-    public Long saveStyleRequest(StyleRequest styleRequest) {
-        return ofy().save().entity(styleRequest).now().getId();
-    }
-
-    public void saveStyleRequests(Collection<StyleRequest> styleRequests) {
-        ofy().save().entities(styleRequests);
-    }
-
-    public <E> void saveMany(E... entities) {
-        ofy().save().entities(entities);
-    }
-
-    public Long saveNotification(Object notification) {
-        return ofy().save().entity(notification).now().getId();
-    }
-
-    public void deleteCustomer(Customer cus) {
-        // Not implemented. set active to false and update instead
+    public <T> void delete(T entity) {
+        ofy().delete().entity(entity);
     }
 
 }

@@ -1,14 +1,11 @@
 package com.hair.business.dao.datastore.abstractRepository;
 
 import com.googlecode.objectify.Key;
-import com.hair.business.beans.constants.StyleRequestState;
-import com.hair.business.beans.entity.Customer;
-import com.hair.business.beans.entity.Merchant;
-import com.hair.business.beans.entity.Style;
-import com.hair.business.beans.entity.StyleRequest;
+import com.googlecode.objectify.Result;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Abstract Repository interface
@@ -23,56 +20,34 @@ public interface Repository {
      * Allocates an id
      * */
     Key<?> allocateId(Class clazz);
-    /**
-     * finds customer with given id sync
-     * */
-    Customer findCustomerNow(Long id);
 
     /**
-     * finds customers. There is no Ofy sync for this.
-     * */
-    Collection<Customer> findCustomers(List<Long> ids);
-
-    StyleRequest findStyleRequest(Long id);
-
-    /**
-     * finds style requests booked by given customer
+     * finds entity with given id
      */
-    Collection<StyleRequest> findStyleRequests(List<Long> ids, StyleRequestState requestState);
+    <T> T findOne(Long id, Class clazz);
 
     /**
-     * Finds details for a given style Id
+     * finds entities with given id
      */
-    Style findStyle(Long id);
+    <T> Map findMany(List<Long> ids, Class clazz);
+
+    /**
+     * returns entities matching given condition from the list of ids
+     * */
+    <T> Collection<T> findByQuery(List<Long> ids, Class clazz, String condition, Object object);
 
     /**
      * saves a single customer information
      * */
-    Long saveCustomerNow(Customer customer);
+    <E> Key<E> saveOne(E entity);
 
     /**
-     * saves a single merchant information
+     * Saves multiple entities
      * */
-    Long saveMerchantNow(Merchant merchant);
+    <E> Result<Map<Key<E>, E>> saveMany(Collection<E> entities);
 
     /**
-     * saves many customers
+     * Deletes the given entity
      * */
-    void saveCustomers(Collection<Customer> customers);
-
-    Long saveStyle(Style style);
-
-    Long saveStyleRequest(StyleRequest styleRequest);
-
-    void saveStyleRequests(Collection<StyleRequest> styleRequests);
-
-    /**
-     * Saves multiple entities regardless of type
-     * */
-    <E> void saveMany(E... entities);
-
-    Long saveNotification(Object notification);
-
-    void deleteCustomer(Customer cus);
-
+    <T> void delete(T entity);
 }
