@@ -67,7 +67,9 @@ public class CustomerServiceImpl implements CustomerService {
 
         style.setRequestCount(style.getRequestCount() + 1);
 
+        Long id = repository.allocateId(StyleRequest.class);
         StyleRequest styleRequest = new StyleRequest(style, merchant, customer, location, StyleRequestState.PENDING, now());
+        styleRequest.setId(id);
 
         repository.saveMany(Lists.newArrayList(styleRequest, style));
 
