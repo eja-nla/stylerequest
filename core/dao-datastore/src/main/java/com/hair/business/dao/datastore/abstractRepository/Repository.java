@@ -19,7 +19,7 @@ public interface Repository {
     /**
      * Allocates an id
      * */
-    Key<?> allocateId(Class clazz);
+    Long allocateId(Class clazz);
 
     /**
      * finds entity with given id

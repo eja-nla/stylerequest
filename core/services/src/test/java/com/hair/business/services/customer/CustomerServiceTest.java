@@ -30,7 +30,7 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
     @Test
     public void testPlaceStyleRequest() throws Exception {
         Merchant m = createMerchant();
-        injector.getInstance(Repository.class).saveMerchantNow(m);
+        injector.getInstance(Repository.class).saveOne(m);
 
         cs.placeStyleRequest(createStyle(), createCustomer(), m, createLocation(), DateTime.now());
     }

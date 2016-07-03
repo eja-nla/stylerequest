@@ -19,8 +19,8 @@ import java.util.Map;
 public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
 
     @Override
-    public Key<?> allocateId(Class clazz) {
-        return ofy().factory().allocateId(clazz);
+    public Long allocateId(Class clazz) {
+        return ofy().factory().allocateId(clazz).getId();
     }
 
     /**
