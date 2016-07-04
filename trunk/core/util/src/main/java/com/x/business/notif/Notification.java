@@ -1,11 +1,16 @@
 package com.x.business.notif;
 
+import com.google.appengine.api.taskqueue.DeferredTask;
+
 import com.googlecode.objectify.annotation.Id;
+import com.hair.business.beans.abstracts.AbstractActorEntity;
 import com.hair.business.beans.constants.NotificationType;
 import com.hair.business.beans.entity.Payment;
 import com.hair.business.beans.entity.StyleRequest;
-import com.x.business.scheduler.TaskQueue;
-import com.x.business.tasks.EmailTask;
+import com.sendgrid.Attachments;
+import com.sendgrid.Email;
+import com.sendgrid.Personalization;
+import com.x.business.tasks.SendgridEmailHandler;
 
 import java.util.Optional;
 
@@ -15,59 +20,55 @@ import javax.inject.Named;
  * Notification object
  * Created by Olukorede Aguda on 21/06/2016.
  */
-public class Notification<T> {
+public class Notification extends AbstractActorEntity implements DeferredTask {
 
     @Id
     private Long id;
 
     private String message;
 
-    private Long from; // id of sender
+    private Email from;
 
-    private Long to; // id of recipient
+    private Email to;
+
+    private Attachments attachments;
+
+    private Personalization[] personalizations;
 
     private NotificationType type;
 
-    private T value;
+    private static @Named("app.admin.email") String adminEmail; // FIXME: 03/07/2016 Can't inject static
 
-    @Named("app.admin.email") String adminEmail;
-
-//    public Notification(String message, Long from, Long to, NotificationType type) {
-//        this.message = message;
-//        this.from = from;
-//        this.to = to;
-//        this.type = type;
-//    }
-
-    public Notification(T o, NotificationType type) {
-        this.value = o;
+    public Notification(Long id, String message, Email from, Email to, Attachments attachments, Personalization[] personalizations, NotificationType type) {
+        this.id = id;
+        this.message = message;
+        this.from = from;
+        this.to = to;
+        this.attachments = attachments;
+        this.personalizations = personalizations;
         this.type = type;
     }
 
-    public void schedule(){
-        if (type.equals(NotificationType.EMAIL)){
-            // add to email task queue
-            if(value instanceof StyleRequest){
-                StyleRequest request = (StyleRequest) value;
-                EmailTask mailTask = new EmailTask(Optional.ofNullable(adminEmail).orElse("koredyte@gmail.com"), request.getMerchant().getEmail(), null, null, "New Style Request", null, "I'd like to fix my hair on " + request.getDate(), null, "text/html");
+    public Notification(StyleRequest styleRequest, NotificationType type) {
+        super();
 
-                TaskQueue.emailQueue().add(mailTask);
-            }
+        this.message = "You've got a new Style Request"; // TODO should be a template html with this injected message
+        this.from = new Email(Optional.ofNullable(adminEmail).orElse("koredyte@gmail.com"), "Style Request");
+        this.to = new Email(styleRequest.getMerchant().getEmail(), styleRequest.getMerchant().getName());
+        this.attachments = new Attachments();
 
-            if(value instanceof Payment){
-                Payment request = (Payment) value;
-                EmailTask mailTask = new EmailTask(adminEmail, request.getMerchant().getEmail(), null, null, "New Style Request", null, "I'd like to fix my hair on " + request.getDate(), null, "text/html");
+        this.type = type;
+    }
 
-                TaskQueue.emailQueue().add(mailTask);
-            }
+    public Notification(Payment payment, NotificationType type) {
+        super();
 
-        }
-        if (type.equals(NotificationType.PUSH)){
-            // add to push task queue
-        }
-        if (type.equals(NotificationType.PUSH_EMAIL)){
-            // add to both
-        }
+        this.message = "You've got a new Payment"; // TODO should be a template html with this injected message
+        this.from = new Email(Optional.ofNullable(adminEmail).orElse("koredyte@gmail.com"), "Style Request");
+        this.to = new Email(payment.getMerchant().getEmail(), payment.getMerchant().getName());
+        this.attachments = new Attachments();
+
+        this.type = type;
     }
 
     public Long getId() {
@@ -78,37 +79,8 @@ public class Notification<T> {
         this.id = id;
     }
 
-    public String getMessage() {
-        return message;
+    @Override
+    public void run() {
+        SendgridEmailHandler.sendMail(this);
     }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public Long getFrom() {
-        return from;
-    }
-
-    public void setFrom(Long from) {
-        this.from = from;
-    }
-
-    public Long getTo() {
-        return to;
-    }
-
-    public void setTo(Long to) {
-        this.to = to;
-    }
-
-    public NotificationType getType() {
-        return type;
-    }
-
-    public void setType(NotificationType type) {
-        this.type = type;
-    }
-
-
 }

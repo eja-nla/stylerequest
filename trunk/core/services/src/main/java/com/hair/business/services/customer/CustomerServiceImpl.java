@@ -13,6 +13,7 @@ import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.x.business.notif.Notification;
+import com.x.business.scheduler.TaskQueue;
 
 import org.joda.time.DateTime;
 
@@ -73,7 +74,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         repository.saveMany(Lists.newArrayList(styleRequest, style));
 
-        new Notification<>(styleRequest, NotificationType.EMAIL).schedule();
+        TaskQueue.emailQueue().add(new Notification(styleRequest, NotificationType.PUSH_EMAIL));
 
     }
 
@@ -83,7 +84,7 @@ public class CustomerServiceImpl implements CustomerService {
         repository.saveOne(styleRequest);
 
         //TODO notify merchant
-        new Notification<>(styleRequest, NotificationType.PUSH_EMAIL);
+        TaskQueue.emailQueue().add(new Notification(styleRequest, NotificationType.PUSH_EMAIL));
 
     }
 
