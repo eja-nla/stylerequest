@@ -1,10 +1,10 @@
 package com.x.business.tasks;
 
-import com.hair.business.beans.abstracts.AbstractActorEntity;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
+import com.x.business.notif.Notification;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -17,17 +17,18 @@ public class SendgridEmailHandler {
 
     private static final Logger logger = Logger.getLogger(SendgridEmailHandler.class.getName());
 
-    private static final SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY")); //TODO add API key and use getProperty() instead
+    private static final SendGrid sg = new SendGrid(System.getProperty("SENDGRID_API_KEY"));
     private static final Request request = new Request();
+    private static Response response = null;
 
-    public static synchronized <T extends AbstractActorEntity> void sendMail(T o){
+    public static synchronized void sendMail(Notification n){
 
         try {
             request.method = Method.POST;
             request.endpoint = "mail/send";
-            request.body = o.toJson();
+            request.body = n.getBody();
 
-            Response response = sg.api(request);
+            response = sg.api(request);
 
             logger.info("SendGrid email response " + response.statusCode + " Response body " + response.body + " Response header " + response.headers);
         } catch (IOException ex) {

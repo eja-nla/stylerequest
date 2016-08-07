@@ -14,8 +14,6 @@ import com.x.business.tasks.SendgridEmailHandler;
 
 import java.util.Optional;
 
-import javax.inject.Named;
-
 /**
  * Notification object
  * Created by Olukorede Aguda on 21/06/2016.
@@ -37,7 +35,11 @@ public class Notification extends AbstractActorEntity implements DeferredTask {
 
     private NotificationType type;
 
-    private static @Named("app.admin.email") String adminEmail; // FIXME: 03/07/2016 Can't inject static
+    private String body;
+
+    private final String emailBody = "{\"personalizations\":[{\"to\":[{\"email\":\"%s\"}],\"subject\":\"%s\"}],\"from\":{\"email\":\"%s\"},\"content\":[{\"type\":\"%s\",\"value\": \"%s\"}]}";
+
+    private static final String adminEmail = System.getProperty("SENDGRID_FROM_EMAIL");
 
     public Notification(Long id, String message, Email from, Email to, Attachments attachments, Personalization[] personalizations, NotificationType type) {
         this.id = id;
@@ -52,12 +54,19 @@ public class Notification extends AbstractActorEntity implements DeferredTask {
     public Notification(StyleRequest styleRequest, NotificationType type) {
         super();
 
-        this.message = "You've got a new Style Request"; // TODO should be a template html with this injected message
-        this.from = new Email(Optional.ofNullable(adminEmail).orElse("koredyte@gmail.com"), "Style Request");
-        this.to = new Email(styleRequest.getMerchant().getEmail(), styleRequest.getMerchant().getName());
-        this.attachments = new Attachments();
+//        this.message = "You've got a new Style Request"; // TODO should be a template html with this injected message
+//        this.from = new Email(Optional.ofNullable(adminEmail).orElse("koredyte@gmail.com"), "Style Request");
+//        this.to = new Email(styleRequest.getMerchant().getEmail(), styleRequest.getMerchant().getName());
+//        this.attachments = new Attachments();
+//
+//        this.type = type;
 
-        this.type = type;
+        this.body = String.format(emailBody,
+                styleRequest.getMerchant().getEmail(),
+                "New Style Notification",
+                Optional.ofNullable(adminEmail).orElse("koredyte@gmail.com"),
+                "text/html",
+                message);
     }
 
     public Notification(Payment payment, NotificationType type) {
@@ -79,8 +88,13 @@ public class Notification extends AbstractActorEntity implements DeferredTask {
         this.id = id;
     }
 
+    public String getBody() {
+        return body;
+    }
+
     @Override
     public void run() {
         SendgridEmailHandler.sendMail(this);
     }
+
 }
