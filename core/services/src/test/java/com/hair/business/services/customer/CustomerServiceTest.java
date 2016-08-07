@@ -6,15 +6,20 @@ import static com.x.y.EntityTestConstants.createMerchant;
 import static com.x.y.EntityTestConstants.createStyle;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.x.business.notif.Notification;
+import com.x.business.scheduler.TaskQueue;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Created by Olukorede Aguda on 23/06/2016.
@@ -22,19 +27,22 @@ import org.junit.Test;
 public class CustomerServiceTest extends AbstractServicesTestBase {
 
     CustomerService cs;
+    TaskQueue queue = Mockito.mock(TaskQueue.class);
 
     @Before
     public void setUp(){
-        cs = injector.getInstance(CustomerService.class);
+        cs = new CustomerServiceImpl(injector.getInstance(Repository.class), queue);
     }
 
-    @Ignore("Until we figure out why TaskQueue is throwing serializable exception for Sendgrid's attachment field")
     @Test
     public void testPlaceStyleRequest() throws Exception {
         Merchant m = createMerchant();
         injector.getInstance(Repository.class).saveOne(m);
 
         cs.placeStyleRequest(createStyle(), createCustomer(), m, createLocation(), DateTime.now());
+
+        verify(queue, times(1)).add(any(Notification.class));
+
     }
 
     @Test

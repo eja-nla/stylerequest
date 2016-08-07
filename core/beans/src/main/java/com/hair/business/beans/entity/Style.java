@@ -21,6 +21,8 @@ public class Style extends AbstractActorEnablerEntity {
     @Id
     private Long id;
 
+    private String name;
+
     private long requestCount; // how many styleRequests on this ever?
 
     private boolean trending; // separate batch job will run queries and set this field based on a defined criteria
@@ -53,6 +55,14 @@ public class Style extends AbstractActorEnablerEntity {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Merchant getPublisher() {
