@@ -47,6 +47,11 @@ public interface Repository {
     <E> Result<Map<Key<E>, E>> saveMany(Collection<E> entities);
 
     /**
+     * Array backed entity save suitable for fewer entities
+     */
+    <E> Result<Map<Key<E>, E>> saveFew(E... entities);
+
+    /**
      * Deletes the given entity
      * */
     <T> void delete(T entity);

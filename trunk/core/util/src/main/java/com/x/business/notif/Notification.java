@@ -10,6 +10,7 @@ import com.hair.business.beans.entity.StyleRequest;
 import com.sendgrid.Attachments;
 import com.sendgrid.Email;
 import com.sendgrid.Personalization;
+import com.x.business.notif.mail.handler.EmailHandler;
 import com.x.business.tasks.SendgridEmailHandler;
 
 import java.util.Optional;
@@ -41,6 +42,8 @@ public class Notification extends AbstractActorEntity implements DeferredTask {
 
     private static final String adminEmail = System.getProperty("SENDGRID_FROM_EMAIL");
 
+    private static final EmailHandler emailHandler = new SendgridEmailHandler();
+
     public Notification(Long id, String message, Email from, Email to, Attachments attachments, Personalization[] personalizations, NotificationType type) {
         this.id = id;
         this.message = message;
@@ -66,7 +69,8 @@ public class Notification extends AbstractActorEntity implements DeferredTask {
                 "New Style Notification",
                 Optional.ofNullable(adminEmail).orElse("koredyte@gmail.com"),
                 "text/html",
-                message);
+                "Just wanted to let you know Style request for Style " + styleRequest.getStyle().getName());
+        this.type = type;
     }
 
     public Notification(Payment payment, NotificationType type) {
@@ -94,7 +98,7 @@ public class Notification extends AbstractActorEntity implements DeferredTask {
 
     @Override
     public void run() {
-        SendgridEmailHandler.sendMail(this);
+        emailHandler.send(this);
     }
 
 }

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <queue-entries>
     <queue>
-        <name>customer-email-queue</name>
-    </queue>
-    <queue>
         <name>email-queue</name>
         <rate>50/s</rate>
     </queue>

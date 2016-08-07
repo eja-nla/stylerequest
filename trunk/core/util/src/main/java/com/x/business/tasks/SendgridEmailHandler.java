@@ -5,15 +5,17 @@ import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.x.business.notif.Notification;
+import com.x.business.notif.mail.handler.EmailHandler;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.logging.Logger;
 
 /**
  * Created by Olukorede Aguda on 22/06/2016.
  *
  */
-public class SendgridEmailHandler {
+public class SendgridEmailHandler implements EmailHandler {
 
     private static final Logger logger = Logger.getLogger(SendgridEmailHandler.class.getName());
 
@@ -21,12 +23,12 @@ public class SendgridEmailHandler {
     private static final Request request = new Request();
     private static Response response = null;
 
-    public static synchronized void sendMail(Notification n){
-
+    @Override
+    public synchronized void send(Notification notification) {
         try {
             request.method = Method.POST;
             request.endpoint = "mail/send";
-            request.body = n.getBody();
+            request.body = notification.getBody();
 
             response = sg.api(request);
 
@@ -36,5 +38,10 @@ public class SendgridEmailHandler {
         } finally {
             request.reset();
         }
+    }
+
+    @Override
+    public void sendBulk(Collection<Notification> notifications) {
+
     }
 }

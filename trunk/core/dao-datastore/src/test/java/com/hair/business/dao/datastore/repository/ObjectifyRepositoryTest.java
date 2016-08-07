@@ -83,6 +83,25 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase{
         delete(c);
     }
 
+    @Test
+    public void testSaveFew() throws Exception {
+        Merchant mer = createMerchant();
+        StyleRequest st = createStyleRequest();
+        Customer cu = createCustomer();
+
+        repository.saveFew(mer, st, cu);
+
+        Merchant r = repository.findOne(mer.getId(), mer.getClass());
+        StyleRequest s = repository.findOne(st.getId(), st.getClass());
+        Customer t = repository.findOne(cu.getId(), cu.getClass());
+
+        assertThat(r, is(mer));
+        assertThat(s, is(st));
+        assertThat(t, is(cu));
+
+        delete(com.google.appengine.repackaged.com.google.common.collect.Lists.newArrayList(mer, st, cu));
+    }
+
     private List<Customer> createCustomers(){
         List<Customer> cus = new ArrayList<>();
         for (int i = 0; i < 5; i++) {

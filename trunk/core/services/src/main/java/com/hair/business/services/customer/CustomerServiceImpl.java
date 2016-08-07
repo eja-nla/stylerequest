@@ -2,8 +2,6 @@ package com.hair.business.services.customer;
 
 import static org.joda.time.DateTime.now;
 
-import com.google.appengine.repackaged.com.google.common.collect.Lists;
-
 import com.hair.business.beans.constants.NotificationType;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
@@ -32,10 +30,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     static final Logger logger = Logger.getLogger(CustomerServiceImpl.class.getName());
     private final Repository repository;
+    private final TaskQueue emailTaskQueue;
 
     @Inject
-    public CustomerServiceImpl(Repository repository) {
+    public CustomerServiceImpl(Repository repository, TaskQueue emailTaskQueue) {
         this.repository = repository;
+        this.emailTaskQueue = emailTaskQueue;
 
     }
 
@@ -72,9 +72,9 @@ public class CustomerServiceImpl implements CustomerService {
         StyleRequest styleRequest = new StyleRequest(style, merchant, customer, location, StyleRequestState.PENDING, now());
         styleRequest.setId(id);
 
-        repository.saveMany(Lists.newArrayList(styleRequest, style));
+        repository.saveFew(styleRequest, style);
 
-        TaskQueue.emailQueue().add(new Notification(styleRequest, NotificationType.PUSH_EMAIL));
+        emailTaskQueue.add(new Notification(styleRequest, NotificationType.PUSH_EMAIL));
 
     }
 
@@ -84,7 +84,7 @@ public class CustomerServiceImpl implements CustomerService {
         repository.saveOne(styleRequest);
 
         //TODO notify merchant
-        TaskQueue.emailQueue().add(new Notification(styleRequest, NotificationType.PUSH_EMAIL));
+        emailTaskQueue.add(new Notification(styleRequest, NotificationType.PUSH_EMAIL));
 
     }
 

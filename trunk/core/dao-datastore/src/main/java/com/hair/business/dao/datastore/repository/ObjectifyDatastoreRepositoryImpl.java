@@ -23,9 +23,7 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
         return ofy().factory().allocateId(clazz).getId();
     }
 
-    /**
-     * finds entity with given id
-     */
+    @Override
     public <T> T findOne(Long id, Class clazz) {
 
         return (T) ofy().load().type(clazz).id(id).now();
@@ -46,10 +44,17 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
         return ofy().save().entity(entity).now();
     }
 
+    @Override
     public <E> Result<Map<Key<E>, E>> saveMany(Collection<E> entities) {
         return ofy().save().entities(entities);
     }
 
+    @Override
+    public <E> Result<Map<Key<E>, E>> saveFew(E... entities) {
+        return ofy().save().entities(entities);
+    }
+
+    @Override
     public <T> void delete(T entity) {
         ofy().delete().entity(entity);
     }
