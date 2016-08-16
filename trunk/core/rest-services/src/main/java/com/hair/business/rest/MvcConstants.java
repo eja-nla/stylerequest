@@ -21,5 +21,7 @@ public class MvcConstants {
 
     public static final String ID="id";
 
+    public static final String ADMIN_URI="admin";
+
 
 }
