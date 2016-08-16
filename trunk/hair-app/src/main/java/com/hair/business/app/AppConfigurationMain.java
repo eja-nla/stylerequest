@@ -60,11 +60,11 @@ public class AppConfigurationMain extends GuiceServletContextListener {
         Properties properties = new Properties();
 
         try {
-            InputStream is = new FileInputStream(new File("/WEB-INF/config.properties"));
+            InputStream is = new FileInputStream(new File("WEB-INF/config.properties"));
             properties.load(is);
 
         } catch (IOException e) {
-            log.severe("Failed to load properties file.");
+            log.severe("Failed to load properties file with errors: " + e.getMessage());
         }
 
         return properties;
