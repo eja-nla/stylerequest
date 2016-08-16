@@ -10,8 +10,11 @@ import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.hair.business.services.pushNotification.SendPushNotificationToApnsTask;
 import com.x.business.notif.Notification;
+import com.x.business.scheduler.EmailTaskQueue;
 import com.x.business.scheduler.TaskQueue;
+import com.x.business.scheduler.ApnsTaskQueue;
 
 import org.joda.time.DateTime;
 
@@ -20,6 +23,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
+
+import apns.PushNotification;
 
 /**
  * Customer Service Impl.
@@ -31,11 +36,13 @@ public class CustomerServiceImpl implements CustomerService {
     static final Logger logger = Logger.getLogger(CustomerServiceImpl.class.getName());
     private final Repository repository;
     private final TaskQueue emailTaskQueue;
+    private final TaskQueue apnsQueue;
 
     @Inject
-    public CustomerServiceImpl(Repository repository, TaskQueue emailTaskQueue) {
+    public CustomerServiceImpl(Repository repository, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue) {
         this.repository = repository;
         this.emailTaskQueue = emailTaskQueue;
+        this.apnsQueue = apnsQueue;
 
     }
 
@@ -76,6 +83,12 @@ public class CustomerServiceImpl implements CustomerService {
 
         emailTaskQueue.add(new Notification(styleRequest, NotificationType.PUSH_EMAIL));
 
+        PushNotification pushNotification = new PushNotification()
+                .setAlert("New Style Request")
+                .setBadge(9)
+                .setSound("styleRequestSound.aiff")
+                .setDeviceTokens(customer.getDevice().getDeviceId()); // Nullable?
+        apnsQueue.add(new SendPushNotificationToApnsTask(pushNotification));
     }
 
     @Override

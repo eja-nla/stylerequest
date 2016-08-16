@@ -8,6 +8,8 @@ import static com.x.y.EntityTestConstants.createStyleRequest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import com.google.common.collect.Lists;
+
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Result;
 import com.hair.business.beans.constants.StyleRequestState;
@@ -99,7 +101,7 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase{
         assertThat(s, is(st));
         assertThat(t, is(cu));
 
-        delete(com.google.appengine.repackaged.com.google.common.collect.Lists.newArrayList(mer, st, cu));
+        delete(Lists.newArrayList(mer, st, cu));
     }
 
     private List<Customer> createCustomers(){

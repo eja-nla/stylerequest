@@ -13,6 +13,7 @@ import static org.mockito.Mockito.verify;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.hair.business.services.pushNotification.SendPushNotificationToApnsTask;
 import com.x.business.notif.Notification;
 import com.x.business.scheduler.TaskQueue;
 
@@ -27,11 +28,12 @@ import org.mockito.Mockito;
 public class CustomerServiceTest extends AbstractServicesTestBase {
 
     CustomerService cs;
-    TaskQueue queue = Mockito.mock(TaskQueue.class);
+    TaskQueue queue1 = Mockito.mock(TaskQueue.class);
+    TaskQueue queue2 = Mockito.mock(TaskQueue.class);
 
     @Before
     public void setUp(){
-        cs = new CustomerServiceImpl(injector.getInstance(Repository.class), queue);
+        cs = new CustomerServiceImpl(injector.getInstance(Repository.class), queue1, queue2);
     }
 
     @Test
@@ -41,7 +43,8 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
 
         cs.placeStyleRequest(createStyle(), createCustomer(), m, createLocation(), DateTime.now());
 
-        verify(queue, times(1)).add(any(Notification.class));
+        verify(queue1, times(1)).add(any(Notification.class));
+        verify(queue2, times(1)).add(any(SendPushNotificationToApnsTask.class));
 
     }
 

@@ -1,0 +1,120 @@
+package com.hair.business.services.pushNotification;
+
+import static apns.DefaultApnsConnectionFactory.Builder;
+
+import com.google.appengine.api.taskqueue.DeferredTask;
+
+import java.util.logging.Logger;
+
+import apns.ApnsConnection;
+import apns.ApnsConnectionFactory;
+import apns.ApnsConnectionPool;
+import apns.ApnsException;
+import apns.ApnsRuntimeException;
+import apns.CannotOpenConnectionException;
+import apns.CannotUseConnectionException;
+import apns.DefaultPushNotificationService;
+import apns.PayloadException;
+import apns.PushNotification;
+import apns.PushNotificationService;
+import apns.keystore.ClassPathResourceKeyStoreProvider;
+import apns.keystore.KeyStoreProvider;
+import apns.keystore.KeyStoreType;
+
+/**
+ * Created by Olukorede Aguda on 15/08/2016.
+ */
+public class SendPushNotificationToApnsTask implements DeferredTask {
+
+    private static final long serialVersionUID = 1L;
+
+    static final Logger logger = Logger.getLogger(SendPushNotificationToApnsTask.class.getName());
+
+    private static volatile ApnsConnectionFactory sApnsConnectionFactory;
+    private static volatile ApnsConnectionPool sApnsConnectionPool;
+    private static volatile PushNotificationService sPushNotificationService;
+    private static final int APNS_CONNECTION_POOL_CAPACITY = 5;
+
+    private final PushNotification mPushNotification;
+
+    public SendPushNotificationToApnsTask(PushNotification pushNotification) {
+        mPushNotification = pushNotification;
+    }
+
+    @Override
+    public void run() {
+        try {
+            trySendingPushNotification();
+        } catch (CannotOpenConnectionException e) {
+            throw new RuntimeException("Could not connect to APNS", e);
+        } catch (CannotUseConnectionException e) {
+            throw new RuntimeException("Could not send: " + mPushNotification, e);
+        } catch (PayloadException e) {
+            logger.severe("Could not send push notification (dropping task) " + e.getMessage());
+        }
+    }
+
+    private void trySendingPushNotification() throws CannotOpenConnectionException, CannotUseConnectionException, PayloadException {
+        ApnsConnection apnsConnection = getApnsConnectionPool().obtain();
+        if (apnsConnection == null) {
+            apnsConnection = openConnection();
+        }
+
+        try {
+            logger.fine("Sending push notification: {} " + mPushNotification.toString());
+            getPushNotificationService().send(mPushNotification, apnsConnection);
+            getApnsConnectionPool().put(apnsConnection);
+        } catch (CannotUseConnectionException e) {
+            logger.fine("Could not send push notification - opening new connection");
+            apnsConnection = openConnection();
+            logger.fine("Retrying sending push notification");
+            getPushNotificationService().send(mPushNotification, apnsConnection);
+            getApnsConnectionPool().put(apnsConnection);
+        }
+    }
+
+    private static ApnsConnectionPool getApnsConnectionPool() {
+        if (sApnsConnectionPool == null) {
+            synchronized (SendPushNotificationToApnsTask.class) {
+                if (sApnsConnectionPool == null) {
+                    sApnsConnectionPool = new ApnsConnectionPool(APNS_CONNECTION_POOL_CAPACITY);
+                }
+            }
+        }
+        return sApnsConnectionPool;
+    }
+
+    private static PushNotificationService getPushNotificationService() {
+        if (sPushNotificationService == null) {
+            synchronized (SendPushNotificationToApnsTask.class) {
+                if (sPushNotificationService == null) {
+                    sPushNotificationService = new DefaultPushNotificationService();
+                }
+            }
+        }
+        return sPushNotificationService;
+    }
+
+    private static ApnsConnection openConnection() throws CannotOpenConnectionException {
+        logger.fine("Connecting to APNS");
+        return getApnsConnectionFactory().openPushConnection();
+    }
+
+    private static ApnsConnectionFactory getApnsConnectionFactory() {
+        if (sApnsConnectionFactory == null) {
+            synchronized (SendPushNotificationToApnsTask.class) {
+                if (sApnsConnectionFactory == null) {
+                    Builder builder = Builder.get();
+                    KeyStoreProvider ksp = new ClassPathResourceKeyStoreProvider("apns/apns_certificates_production.p12", KeyStoreType.PKCS12, "".toCharArray()); //TODO change to WrapperKeyStoreProvider
+                    builder.setSandboxKeyStoreProvider(ksp);
+                    try {
+                        sApnsConnectionFactory = builder.build();
+                    } catch (ApnsException e) {
+                        throw new ApnsRuntimeException("Could not create APNS connection factory", e);
+                    }
+                }
+            }
+        }
+        return sApnsConnectionFactory;
+    }
+}

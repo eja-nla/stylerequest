@@ -31,6 +31,12 @@
             <groupId>com.hair.business</groupId>
             <artifactId>hair-util</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.zsoltsafrany</groupId>
+            <artifactId>java-apns-gae</artifactId>
+            <version>1.3.0</version>
+
+        </dependency>
 
 
         <dependency>
