@@ -9,6 +9,8 @@ import apns.PushNotificationService;
 
 /**
  * Created by Olukorede Aguda on 17/08/2016.
+ *
+ * Push Notification Service implementation.
  */
 public class PushNotificationServiceImpl implements PushNotificationService {
 
