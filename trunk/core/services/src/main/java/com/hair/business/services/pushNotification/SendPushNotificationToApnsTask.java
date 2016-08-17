@@ -9,7 +9,6 @@ import apns.ApnsConnectionFactory;
 import apns.ApnsConnectionPool;
 import apns.CannotOpenConnectionException;
 import apns.CannotUseConnectionException;
-import apns.DefaultPushNotificationService;
 import apns.PayloadException;
 import apns.PushNotification;
 import apns.PushNotificationService;
@@ -83,7 +82,7 @@ public class SendPushNotificationToApnsTask implements DeferredTask {
         if (sPushNotificationService == null) {
             synchronized (SendPushNotificationToApnsTask.class) {
                 if (sPushNotificationService == null) {
-                    sPushNotificationService = new DefaultPushNotificationService();
+                    sPushNotificationService = new PushNotificationServiceImpl();
                 }
             }
         }

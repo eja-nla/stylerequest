@@ -16,7 +16,7 @@ import apns.MockApnsConnectionFactory;
  */
 public class ApnsConnectionFactoryImplTest {
 
-    final ApnsConnectionFactory apnsConnection = new MockApnsConnectionFactory();
+    final ApnsConnectionFactory apnsConnection = new ApnsConnectionFactoryImpl(new MockApnsConnectionFactory());
 
     @Test
     public void getApnsConnection() throws Exception {
