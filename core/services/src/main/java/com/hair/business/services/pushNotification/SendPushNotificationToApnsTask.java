@@ -1,7 +1,5 @@
 package com.hair.business.services.pushNotification;
 
-import static apns.DefaultApnsConnectionFactory.Builder;
-
 import com.google.appengine.api.taskqueue.DeferredTask;
 
 import java.util.logging.Logger;
@@ -9,20 +7,17 @@ import java.util.logging.Logger;
 import apns.ApnsConnection;
 import apns.ApnsConnectionFactory;
 import apns.ApnsConnectionPool;
-import apns.ApnsException;
-import apns.ApnsRuntimeException;
 import apns.CannotOpenConnectionException;
 import apns.CannotUseConnectionException;
 import apns.DefaultPushNotificationService;
 import apns.PayloadException;
 import apns.PushNotification;
 import apns.PushNotificationService;
-import apns.keystore.ClassPathResourceKeyStoreProvider;
-import apns.keystore.KeyStoreProvider;
-import apns.keystore.KeyStoreType;
 
 /**
  * Created by Olukorede Aguda on 15/08/2016.
+ *
+ * APNS Push notification impl
  */
 public class SendPushNotificationToApnsTask implements DeferredTask {
 
@@ -104,14 +99,7 @@ public class SendPushNotificationToApnsTask implements DeferredTask {
         if (sApnsConnectionFactory == null) {
             synchronized (SendPushNotificationToApnsTask.class) {
                 if (sApnsConnectionFactory == null) {
-                    Builder builder = Builder.get();
-                    KeyStoreProvider ksp = new ClassPathResourceKeyStoreProvider("apns/apns_certificates_production.p12", KeyStoreType.PKCS12, "".toCharArray()); //TODO change to WrapperKeyStoreProvider
-                    builder.setSandboxKeyStoreProvider(ksp);
-                    try {
-                        sApnsConnectionFactory = builder.build();
-                    } catch (ApnsException e) {
-                        throw new ApnsRuntimeException("Could not create APNS connection factory", e);
-                    }
+                    sApnsConnectionFactory = new ApnsConnectionFactoryImpl();
                 }
             }
         }
