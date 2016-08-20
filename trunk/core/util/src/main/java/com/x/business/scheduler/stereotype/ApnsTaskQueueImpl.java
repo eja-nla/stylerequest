@@ -1,17 +1,19 @@
-package com.x.business.scheduler;
+package com.x.business.scheduler.stereotype;
 
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 
+import com.x.business.scheduler.AbstractTaskQueue;
+
 /**
  * Created by Olukorede Aguda on 07/08/2016.
  */
-public class EmailTaskQueueImpl extends AbstractTaskQueue {
+public class ApnsTaskQueueImpl extends AbstractTaskQueue {
 
     private final Queue queue;
-    private final String queueName = "email-queue";
+    private final String queueName = "apns-queue";
 
-    public EmailTaskQueueImpl() {
+    public ApnsTaskQueueImpl() {
         super();
         this.queue = QueueFactory.getQueue(queueName);
     }

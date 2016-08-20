@@ -12,9 +12,9 @@ import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.pushNotification.SendPushNotificationToApnsTask;
 import com.x.business.notif.Notification;
-import com.x.business.scheduler.EmailTaskQueue;
+import com.x.business.scheduler.stereotype.EmailTaskQueue;
 import com.x.business.scheduler.TaskQueue;
-import com.x.business.scheduler.ApnsTaskQueue;
+import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 
 import org.joda.time.DateTime;
 

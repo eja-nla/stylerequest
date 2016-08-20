@@ -1,4 +1,4 @@
-package com.x.business.scheduler;
+package com.x.business.scheduler.stereotype;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -14,4 +14,4 @@ import java.lang.annotation.Target;
  * Created by Olukorede Aguda on 16/08/2016.
  */
 @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
-public @interface EmailTaskQueue {}
+public @interface ApnsTaskQueue {}
