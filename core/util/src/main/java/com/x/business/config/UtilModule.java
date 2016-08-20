@@ -2,11 +2,11 @@ package com.x.business.config;
 
 import com.google.inject.AbstractModule;
 
-import com.x.business.scheduler.ApnsTaskQueueImpl;
-import com.x.business.scheduler.EmailTaskQueue;
-import com.x.business.scheduler.EmailTaskQueueImpl;
+import com.x.business.scheduler.stereotype.ApnsTaskQueueImpl;
+import com.x.business.scheduler.stereotype.EmailTaskQueue;
+import com.x.business.scheduler.stereotype.EmailTaskQueueImpl;
 import com.x.business.scheduler.TaskQueue;
-import com.x.business.scheduler.ApnsTaskQueue;
+import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 import com.x.business.tasks.SendgridEmailHandler;
 
 import javax.inject.Singleton;
