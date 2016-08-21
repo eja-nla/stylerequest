@@ -1,0 +1,35 @@
+{
+  "permanentId" : 3386044021519656260,
+  "version" : 1,
+  "lastUpdated" : 1471799716643,
+  "created" : 1471799716397,
+  "name" : "Test Customer Name",
+  "rating" : 1034185128,
+  "email" : "customer@email.com",
+  "phone" : "+4453635436237",
+  "device" : {
+    "permanentId" : -3527412377463735933,
+    "version" : 1,
+    "id" : -1027427842717547668,
+    "deviceId" : "ja5uupnqrktk232aod39s9q5qt",
+    "os" : "ios9",
+    "deviceType" : "IOS"
+  },
+  "photoUrl" : "http://some.photo.url",
+  "gender" : "M",
+  "active" : true,
+  "id" : 1318458267407058069,
+  "location" : {
+    "permanentId" : 2662733504377310052,
+    "version" : 1,
+    "id" : -3569069319274547549,
+    "city" : "London",
+    "state" : "Alabama",
+    "country" : "UK",
+    "geoPoint" : {
+      "id" : null,
+      "latitude" : 51.503407,
+      "longitude" : -0.127592
+    }
+  }
+}

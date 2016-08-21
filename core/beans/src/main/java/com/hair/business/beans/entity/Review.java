@@ -1,15 +1,21 @@
 package com.hair.business.beans.entity;
 
-import com.hair.business.beans.abstracts.AbstractActorEntity;
+import com.googlecode.objectify.annotation.Cache;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 
 /**
  * Review.
  *
  * Created by Olukorede Aguda on 26/04/2016.
  */
+@Entity
+@Cache
+public class Review extends AbstractActorEnablerEntity {
 
-public class Review extends AbstractActorEntity {
-
+    @Id
+    private Long id;
     private String authorDisplayName; // writer of the review
     private String ownerDisplayName; // for who the review is meant
 
@@ -19,6 +25,26 @@ public class Review extends AbstractActorEntity {
     private int stars;
     private String comment;
 
+    public Review() {
+    }
+
+    public Review(String authorDisplayName, String ownerDisplayName, long authorId, long ownerId, int stars, String comment) {
+        this();
+        this.authorDisplayName = authorDisplayName;
+        this.ownerDisplayName = ownerDisplayName;
+        this.authorId = authorId;
+        this.ownerId = ownerId;
+        this.stars = stars;
+        this.comment = comment;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getAuthorDisplayName() {
         return authorDisplayName;

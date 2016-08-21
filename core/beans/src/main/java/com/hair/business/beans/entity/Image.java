@@ -1,6 +1,9 @@
 package com.hair.business.beans.entity;
 
-import com.hair.business.beans.abstracts.AbstractActorEntity;
+import com.googlecode.objectify.annotation.Cache;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 
 /**
  * An image.
@@ -9,8 +12,12 @@ import com.hair.business.beans.abstracts.AbstractActorEntity;
  *
  * Created by Olukorede Aguda on 26/04/2016.
  */
+@Entity
+@Cache
+public class Image extends AbstractActorEnablerEntity {
 
-public class Image extends AbstractActorEntity {
+    @Id
+    private Long id;
 
     private String url;
 
@@ -18,10 +25,22 @@ public class Image extends AbstractActorEntity {
 
     private long views;
 
+    public Image() {
+    }
+
     public Image(String url, String owner, long views) {
+        this();
         this.url = url;
         this.owner = owner;
         this.views = views;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUrl() {

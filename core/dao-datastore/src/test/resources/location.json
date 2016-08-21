@@ -1,0 +1,12 @@
+{
+  "id": -4689755787767186645,
+  "permanentId": -46897557877675904,
+  "version" : 1,
+  "city" : "London",
+  "state" : "Alabama",
+  "country" : "UK",
+  "geoPoint" : {
+    "latitude" : 51.503407,
+    "longitude" : -0.127592
+  }
+}

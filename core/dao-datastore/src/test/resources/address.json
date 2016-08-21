@@ -1,0 +1,20 @@
+{
+  "permanentId" : 2358642139787759061,
+  "version" : 1,
+  "id" : 6458457713289434592,
+  "addressLine" : "flat x",
+  "postCode" : "SE5 tgg",
+  "location" : {
+    "permanentId" : -5548167299915680332,
+    "version" : 1,
+    "id" : 8524502489650483363,
+    "city" : "London",
+    "state" : "Alabama",
+    "country" : "UK",
+    "geoPoint" : {
+      "id" : 1876326184284852804,
+      "latitude" : 51.503407,
+      "longitude" : -0.127592
+    }
+  }
+}

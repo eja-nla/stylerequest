@@ -1,6 +1,7 @@
 package com.hair.business.beans.entity;
 
 
+import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
@@ -16,6 +17,7 @@ import java.util.Collection;
  *
  */
 @Entity
+@Cache
 public class Style extends AbstractActorEnablerEntity {
 
     @Id
@@ -39,8 +41,9 @@ public class Style extends AbstractActorEnablerEntity {
 
     public Style(){}
 
-    public Style(long requestCount, Merchant publisher, boolean trending, boolean active, Location location) {
+    public Style(long requestCount, String name, Merchant publisher, boolean trending, boolean active, Location location) {
         this();
+        this.name = name;
         this.requestCount = requestCount;
         this.publisher = publisher;
         this.trending = trending;

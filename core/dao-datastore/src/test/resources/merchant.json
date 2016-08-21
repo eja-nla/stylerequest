@@ -1,0 +1,35 @@
+{
+  "permanentId" : -6706565071946804110,
+  "version" : 1,
+  "lastUpdated" : 1471803012709,
+  "created" : 1471803012541,
+  "name" : "Test Merchant Name",
+  "rating" : -1063633263,
+  "email" : "merchant@email.com",
+  "phone" : "+1134555643654",
+  "device" : {
+    "permanentId" : -9110906127396206994,
+    "version" : 1,
+    "id" : 2755042496319612459,
+    "deviceId" : "92r9er1gl2a6b6cn336uhd3t65",
+    "os" : "ios9",
+    "deviceType" : "IOS"
+  },
+  "photoUrl" : "http://some.photo.url",
+  "gender" : "F",
+  "active" : true,
+  "id" : -8475911961709217172,
+  "location" : {
+    "permanentId" : 90516028250466966,
+    "version" : 1,
+    "id" : -1429334429489568566,
+    "city" : "London",
+    "state" : "Alabama",
+    "country" : "UK",
+    "geoPoint" : {
+      "id" : -7656850568886097239,
+      "latitude" : 51.503407,
+      "longitude" : -0.127592
+    }
+  }
+}
