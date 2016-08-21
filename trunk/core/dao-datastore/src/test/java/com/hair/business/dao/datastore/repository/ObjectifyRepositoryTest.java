@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Olukorede Aguda on 08/06/2016.
  */
-public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase{
+public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
 
     private final Repository repository = new ObjectifyDatastoreRepositoryImpl();
 

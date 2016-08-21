@@ -7,7 +7,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Load;
-import com.hair.business.beans.abstracts.AbstractActorEntity;
+import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 import com.hair.business.beans.constants.StyleRequestState;
 
 import org.joda.time.DateTime;
@@ -20,7 +20,7 @@ import org.joda.time.DateTime;
  */
 @Entity
 @Cache
-public class StyleRequest extends AbstractActorEntity {
+public class StyleRequest extends AbstractActorEnablerEntity {
 
     @Id
     private Long id;
@@ -47,7 +47,6 @@ public class StyleRequest extends AbstractActorEntity {
         this.location = location;
         this.state = state;
         this.date = date;
-        this.setCreated(DateTime.now());
     }
 
     public Long getId() {

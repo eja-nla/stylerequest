@@ -21,8 +21,6 @@ public class Customer extends AbstractActorEntity {
     @Id
     private Long id;
 
-    private Payment payment;
-
     private @Index @Load Location location;
 
     public Customer() {
@@ -41,9 +39,8 @@ public class Customer extends AbstractActorEntity {
 
     }
 
-    public Customer(String name, int rating, String email, String phone, Device device, Location location, Payment payment) {
+    public Customer(String name, int rating, String email, String phone, Device device, Location location) {
         this(name, rating, email, phone, device);
-        this.payment = payment;
         this.location = location;
 
     }
@@ -54,14 +51,6 @@ public class Customer extends AbstractActorEntity {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
     }
 
     public Location getLocation() {

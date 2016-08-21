@@ -9,7 +9,6 @@ import com.googlecode.objectify.cache.AsyncCacheFilter;
 import com.googlecode.objectify.util.Closeable;
 import com.hair.business.dao.datastore.config.DaoDatastoreModule;
 import com.hair.business.dao.datastore.ofy.OfyService;
-import com.x.y.EntityTestConstants;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -27,20 +26,10 @@ public class AbstractServicesTestBase {
     @BeforeClass
     public static void setUpBeforeClass() {
 
-
-
-//        AbstractModule testModule = new AbstractModule() {
-//            @Override
-//            protected void configure() {
-//                //bind(Repository.class).toInstance(mock(Repository.class));
-//
-//            }
-//        };
         injector = Guice.createInjector(new DaoDatastoreModule());
 
         session = OfyService.begin();
         helper.setUp();
-        EntityTestConstants.init();
     }
 
     @AfterClass
