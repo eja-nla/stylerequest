@@ -44,9 +44,7 @@ public class RestServicesModule extends ServletModule {
 
         ResourceConfig rc = new PackagesResourceConfig(RESOURCE_PACKAGES);
         // Register jersey resources
-        for ( Class<?> resource : rc.getClasses() ) {
-            bind( resource );
-        }
+        rc.getClasses().forEach(this::bind);
 
         serve(API_ENDPOINT).with(GuiceContainer.class);
         filter(API_ENDPOINT).through(ObjectifyFilter.class);

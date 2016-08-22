@@ -2,6 +2,7 @@ package com.hair.business.dao.datastore.repository;
 
 
 import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
+import static com.x.y.EntityTestConstants.createAddress;
 import static com.x.y.EntityTestConstants.createCustomer;
 import static com.x.y.EntityTestConstants.createMerchant;
 import static com.x.y.EntityTestConstants.createStyleRequest;
@@ -13,13 +14,13 @@ import com.google.common.collect.Lists;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Result;
 import com.hair.business.beans.constants.StyleRequestState;
+import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.dao.datastore.testbase.AbstractDatastoreTestBase;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -86,24 +87,23 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
         delete(c);
     }
 
-    @Ignore // unstable test. Disabling till i find the chance to revisit.
     @Test
     public void testSaveFew() throws Exception {
         Merchant mer = createMerchant();
-        StyleRequest st = createStyleRequest();
+        Address a = createAddress();
         Customer cu = createCustomer();
 
-        repository.saveFew(mer, st, cu);
+        repository.saveFew(mer, a, cu);
 
         Merchant r = repository.findOne(mer.getId(), mer.getClass());
-        StyleRequest s = repository.findOne(st.getId(), st.getClass());
+        Address ad = repository.findOne(a.getId(), a.getClass());
         Customer t = repository.findOne(cu.getId(), cu.getClass());
 
         assertThat(r, is(mer));
-        assertThat(s, is(st));
+        assertThat(ad, is(a));
         assertThat(t, is(cu));
 
-        delete(Lists.newArrayList(mer, st, cu));
+        delete(Lists.newArrayList(mer, ad, cu));
     }
 
     private List<Customer> createCustomers(){
