@@ -31,11 +31,11 @@ public class StyleRequest extends AbstractActorEnablerEntity {
 
     private @Load Ref<Customer> customer;
 
-    private Location location;
+    private @Load Ref<Location> location;
 
     private @Index StyleRequestState state;
 
-    private DateTime date;
+    private long date;
 
     public StyleRequest(){}
 
@@ -44,9 +44,9 @@ public class StyleRequest extends AbstractActorEnablerEntity {
         this.style = Ref.create(style);
         this.merchant = Ref.create(merchant);
         this.customer = Ref.create(customer);
-        this.location = location;
+        this.location = Ref.create(location);
         this.state = state;
-        this.date = date;
+        this.date = date.getMillis();
     }
 
     public Long getId() {
@@ -61,20 +61,21 @@ public class StyleRequest extends AbstractActorEnablerEntity {
         return style.get();
     }
 
-    public void setStyle(Ref<Style> style) {
-        this.style = style;
+    public void setStyle(Style style) {
+        this.style = Ref.create(style);
     }
 
     public Merchant getMerchant() {
         return merchant.get();
     }
 
-    public void setMerchant(Ref<Merchant> merchant) {
-        this.merchant = merchant;
+    public void setMerchant(Merchant merchant) {
+        this.merchant = Ref.create(merchant);
     }
 
-    public void setCustomer(Ref<Customer> customer) {
-        this.customer = customer;
+    public void setCustomer(Customer customer) {
+        this.customer = Ref.create(customer);
+
     }
 
     public Customer getCustomer() {
@@ -82,11 +83,11 @@ public class StyleRequest extends AbstractActorEnablerEntity {
     }
 
     public Location getLocation() {
-        return location;
+        return location.get();
     }
 
     public void setLocation(Location location) {
-        this.location = location;
+        this.location = Ref.create(location);
     }
 
     public StyleRequestState getState() {
@@ -97,11 +98,11 @@ public class StyleRequest extends AbstractActorEnablerEntity {
         this.state = state;
     }
 
-    public DateTime getDate() {
+    public long getDate() {
         return date;
     }
 
     public void setDate(DateTime date) {
-        this.date = date;
+        this.date = date.getMillis();
     }
 }

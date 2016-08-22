@@ -61,16 +61,16 @@ public class Payment extends AbstractActorEnablerEntity {
         return customer.get();
     }
 
-    public void setCustomer(Ref<Customer> customer) {
-        this.customer = customer;
+    public void setCustomer(Customer customer) {
+        this.customer = Ref.create(customer);
     }
 
     public Merchant getMerchant() {
         return merchant.get();
     }
 
-    public void setMerchant(Ref<Merchant> merchant) {
-        this.merchant = merchant;
+    public void setMerchant(Merchant merchant) {
+        this.merchant = Ref.create(merchant);
     }
 
     public boolean isSettled() {

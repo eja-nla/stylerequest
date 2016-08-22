@@ -1,1 +1,79 @@
-//pending resolving test issues
+{
+  "permanentId" : 80335654845595125,
+  "version" : 1,
+  "id" : 6693571338314973165,
+  "amount" : -3212211644303766594,
+  "customer" : {
+    "permanentId" : 1242741573356646536,
+    "version" : 1,
+    "lastUpdated" : 1471897283521,
+    "created" : 1471897283288,
+    "name" : "Test Customer Name",
+    "rating" : 848744174,
+    "email" : "customer@email.com",
+    "phone" : "+4453635436237",
+    "device" : {
+      "permanentId" : -191800768616229086,
+      "version" : 1,
+      "id" : -7720026938659111949,
+      "deviceId" : "oe8tpfad6l4rtrjtt07n3kuft0",
+      "os" : "ios9",
+      "deviceType" : "IOS"
+    },
+    "photoUrl" : "http://some.photo.url",
+    "gender" : "M",
+    "active" : true,
+    "id" : 1273908133457972432,
+    "location" : {
+      "permanentId" : 2557702550767141189,
+      "version" : 1,
+      "id" : -8007815474664831944,
+      "city" : "London",
+      "state" : "Alabama",
+      "country" : "UK",
+      "geoPoint" : {
+        "id" : 7968804881357736042,
+        "latitude" : 51.503407,
+        "longitude" : -0.127592
+      }
+    }
+  },
+  "merchant" : {
+    "permanentId" : 2199963037732132151,
+    "version" : 1,
+    "lastUpdated" : 1471897283522,
+    "created" : 1471897283522,
+    "name" : "Test Merchant Name",
+    "rating" : -578765057,
+    "email" : "merchant@email.com",
+    "phone" : "+1134555643654",
+    "device" : {
+      "permanentId" : 4756823332370527192,
+      "version" : 1,
+      "id" : -2139841698913979988,
+      "deviceId" : "87q0tphhhbf3pdm32j7kbm2cm6",
+      "os" : "ios9",
+      "deviceType" : "IOS"
+    },
+    "photoUrl" : "http://some.photo.url",
+    "gender" : "F",
+    "active" : true,
+    "id" : 7095275481600968703,
+    "location" : {
+      "permanentId" : -6431386354062680060,
+      "version" : 1,
+      "id" : 7259424020072448987,
+      "city" : "London",
+      "state" : "Alabama",
+      "country" : "UK",
+      "geoPoint" : {
+        "id" : -3390148017053450109,
+        "latitude" : 51.503407,
+        "longitude" : -0.127592
+      }
+    }
+  },
+  "settled" : true,
+  "type" : "PAYPAL",
+  "date" : 1471897284442
+}
