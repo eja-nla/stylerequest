@@ -41,8 +41,14 @@ public interface CustomerService {
 
     /**
      * Place a new style request for this customer
+     * @param styleId the ID of the style to be made
+     * @param customerId customer id
+     * @param merchantId merchant id
+     * @param appointmentTime when the customer will be styled
+     *
+     * Sets the location to the location of the merchant
      */
-    void placeStyleRequest(Style style, Customer customer, Merchant merchant, Location location, DateTime dateTime);
+    StyleRequest placeStyleRequest(Long styleId, Long customerId, Long merchantId, DateTime appointmentTime);
 
     /**
      * Cancels a placed request by this customer
@@ -63,6 +69,5 @@ public interface CustomerService {
      * Contacts the given merchant with given message
      */
     void contactMerchant(Long merchantId, String message);
-
 
 }

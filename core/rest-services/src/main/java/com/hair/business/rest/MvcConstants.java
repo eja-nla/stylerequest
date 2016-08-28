@@ -19,7 +19,11 @@ public class MvcConstants {
 
     public static final String CREATE="/create";
 
-    public static final String ID="id";
+    public static final String STYLE_REQUEST_PATH = "/request/style";
+
+    public static final String ID ="id";
+
+    public static final String EMAIL="email";
 
     public static final String ADMIN_URI="admin";
 

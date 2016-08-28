@@ -2,6 +2,7 @@ package com.hair.business.beans.abstracts;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.joda.time.DateTime;
 
 /**
  * Abstract persistence entity
@@ -14,8 +15,11 @@ public abstract class AbstractPersistenceEntity extends AbstractBean {
 
     private Long version;
 
+    private Long createdDate;
+
     public AbstractPersistenceEntity(){
         this.version = 1L;
+        this.createdDate = DateTime.now().getMillis();
     }
 
     @Override
@@ -52,5 +56,13 @@ public abstract class AbstractPersistenceEntity extends AbstractBean {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    public Long getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Long createdDate) {
+        this.createdDate = createdDate;
     }
 }

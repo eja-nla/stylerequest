@@ -23,6 +23,5 @@ public class SecurityModule extends AbstractModule {
         } catch (IOException e) {
             log.severe(e.getMessage());
         }
-        System.out.println( credential.getServiceAccountId());
     }
 }

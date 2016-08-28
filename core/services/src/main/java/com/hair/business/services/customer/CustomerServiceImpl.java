@@ -12,9 +12,9 @@ import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.pushNotification.SendPushNotificationToApnsTask;
 import com.x.business.notif.Notification;
-import com.x.business.scheduler.stereotype.EmailTaskQueue;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.ApnsTaskQueue;
+import com.x.business.scheduler.stereotype.EmailTaskQueue;
 
 import org.joda.time.DateTime;
 
@@ -71,12 +71,16 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void placeStyleRequest(Style style, Customer customer, Merchant merchant, Location location, DateTime dateTime) {
+    public StyleRequest placeStyleRequest(Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
+
+        Style style = repository.findOne(styleId, Style.class);
+        Customer customer = repository.findOne(customerId, Customer.class);
+        Merchant merchant = repository.findOne(merchantId, Merchant.class);
 
         style.setRequestCount(style.getRequestCount() + 1);
 
         Long id = repository.allocateId(StyleRequest.class);
-        StyleRequest styleRequest = new StyleRequest(style, merchant, customer, location, StyleRequestState.PENDING, now());
+        StyleRequest styleRequest = new StyleRequest(style, merchant, customer, merchant.getLocation(), StyleRequestState.PENDING, now());
         styleRequest.setId(id);
 
         repository.saveFew(styleRequest, style);
@@ -89,6 +93,8 @@ public class CustomerServiceImpl implements CustomerService {
                 .setSound("styleRequestSound.aiff")
                 .setDeviceTokens(customer.getDevice().getDeviceId()); // Nullable?
         apnsQueue.add(new SendPushNotificationToApnsTask(pushNotification));
+
+        return styleRequest;
     }
 
     @Override
@@ -116,6 +122,5 @@ public class CustomerServiceImpl implements CustomerService {
     public void contactMerchant(Long merchantId, String message) {
 
     }
-
 
 }

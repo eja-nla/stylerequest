@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -30,6 +31,8 @@ public class EntityTestUtils {
 
     public EntityTestUtils() {
         objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JodaModule());
+
     }
 
 
