@@ -1,7 +1,7 @@
 package com.hair.business.rest.resources.merchant;
 
 import static com.hair.business.rest.MvcConstants.CREATE;
-import static com.hair.business.rest.MvcConstants.ID;
+import static com.hair.business.rest.MvcConstants.EMAIL;
 import static com.hair.business.rest.MvcConstants.INFO;
 import static com.hair.business.rest.MvcConstants.MERCHANT_URI;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -43,9 +43,9 @@ public class MerchantRequestServlet {
     @GET
     @Path(INFO)
     @Produces(APPLICATION_JSON)
-    public String getMerchantInfo(@Context HttpServletRequest request, @QueryParam(ID) Long customerId) {
+    public String getMerchantInfo(@Context HttpServletRequest request, @QueryParam(EMAIL) Long customerEmail) {
         GitkitUser user = (GitkitUser) request.getAttribute("user");
-        return "hey " + customerId + request.getHeader("gtoken");
+        return "hey " + customerEmail + request.getHeader("gtoken");
     }
 
     @POST

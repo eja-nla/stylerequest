@@ -1,5 +1,7 @@
 package com.hair.business.rest;
 
+import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
+
 import com.google.identitytoolkit.GitkitClient;
 import com.google.identitytoolkit.GitkitClientException;
 import com.google.identitytoolkit.GitkitUser;
@@ -27,7 +29,7 @@ public final class RestEndpointServletFilter extends GuiceFilter {
     static GitkitClient gitkitClient;
 
     ServletContext context;
-    private static final String loginUrl = "http://localhost:4567/";
+    private static final String loginUrl = "http://localhost:4567/"; // FIXME: 27/08/2016 use System properties
     private static final String projectId = "amyrrh-test1";
     private static final String gitkitUrl = "http://localhost:4567/gitkit";
     private static final String clientId = "363084678705-mt0m4svcp4vg6i7j47kkng6e881loshu.apps.googleusercontent.com";
@@ -40,12 +42,12 @@ public final class RestEndpointServletFilter extends GuiceFilter {
         this();
         this.context = ctx;
 
-        InputStream keyStream = context.getResourceAsStream("/WEB-INF/amyrrh-test1-48c176ef2baa.p12");
+        InputStream keyStream = context.getResourceAsStream("WEB-INF/amyrrh-test1-48c176ef2baa.p12");
 
         gitkitClient = new GitkitClient.Builder()
                 .setGoogleClientId(clientId)
                 .setProjectId(projectId)
-                .setServiceAccountEmail("")
+                .setServiceAccountEmail(System.getProperty("service.account.email"))
                 .setKeyStream(keyStream)
                 .setWidgetUrl(gitkitUrl)
                 .setCookieName("gtoken").build();
@@ -65,7 +67,7 @@ public final class RestEndpointServletFilter extends GuiceFilter {
         } catch (GitkitClientException e) {
             log.severe(e.getMessage());
         }
-        servletRequest.setAttribute("user", gitkitUser);
+        servletRequest.setAttribute(REST_USER_ATTRIBUTE, gitkitUser);
 
         filterChain.doFilter(servletRequest, servletResponse);
     }

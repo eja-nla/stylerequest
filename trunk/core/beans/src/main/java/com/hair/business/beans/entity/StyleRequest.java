@@ -35,18 +35,19 @@ public class StyleRequest extends AbstractActorEnablerEntity {
 
     private @Index StyleRequestState state;
 
-    private long date;
+    private DateTime appointmentDateTime;
 
-    public StyleRequest(){}
+    public StyleRequest(){
+    }
 
-    public StyleRequest(Style style, Merchant merchant, Customer customer, Location location, StyleRequestState state, DateTime date) {
+    public StyleRequest(Style style, Merchant merchant, Customer customer, Location location, StyleRequestState state, DateTime appointmentDateTime) {
         this();
         this.style = Ref.create(style);
         this.merchant = Ref.create(merchant);
         this.customer = Ref.create(customer);
         this.location = Ref.create(location);
         this.state = state;
-        this.date = date.getMillis();
+        this.appointmentDateTime = appointmentDateTime;
     }
 
     public Long getId() {
@@ -98,11 +99,11 @@ public class StyleRequest extends AbstractActorEnablerEntity {
         this.state = state;
     }
 
-    public long getDate() {
-        return date;
+    public DateTime getAppointmentDateTime() {
+        return appointmentDateTime;
     }
 
-    public void setDate(DateTime date) {
-        this.date = date.getMillis();
+    public void setAppointmentDateTime(DateTime appointmentDateTime) {
+        this.appointmentDateTime = appointmentDateTime;
     }
 }
