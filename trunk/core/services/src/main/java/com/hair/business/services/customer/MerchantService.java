@@ -1,6 +1,8 @@
 package com.hair.business.services.customer;
 
 import com.hair.business.beans.entity.Customer;
+import com.hair.business.beans.entity.Device;
+import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
@@ -32,6 +34,11 @@ public interface MerchantService {
 
     Collection<Style> findStylesByDescription(String description);
 
+    /**
+     * Creates a new Merchant
+     * */
+    void createMerchant(String name, String email, String phone, Device device, Location location);
+
     void updateMerchant(Merchant merchant);
 
     void updateRequest(StyleRequest styleRequest);
@@ -41,9 +48,8 @@ public interface MerchantService {
      */
     void publishStyle(Style style, Merchant merchant);
 
-
-
     boolean cancelStyleRequest(Customer customer, StyleRequest request);
 
-    boolean pay(Customer customer, Merchant merchant); //70440612
+    boolean pay(Customer customer, Merchant merchant);
+
 }

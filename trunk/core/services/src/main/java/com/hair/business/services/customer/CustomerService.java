@@ -3,6 +3,7 @@ package com.hair.business.services.customer;
 
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
+import com.hair.business.beans.entity.Device;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
@@ -23,6 +24,11 @@ public interface CustomerService {
     /**
      * Finds customer with given id*/
     Customer findCustomer(Long id);
+
+    /**
+     * Creates a new customer
+     * */
+    void createCustomer(String name, String email, String phone, Device device, Location location);
 
     /**
      * Saves new customer

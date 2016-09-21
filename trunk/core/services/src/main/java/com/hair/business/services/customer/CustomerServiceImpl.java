@@ -1,10 +1,12 @@
 package com.hair.business.services.customer;
 
+import static java.util.logging.Logger.getLogger;
 import static org.joda.time.DateTime.now;
 
 import com.hair.business.beans.constants.NotificationType;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
+import com.hair.business.beans.entity.Device;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
@@ -33,7 +35,7 @@ import apns.PushNotification;
  */
 public class CustomerServiceImpl implements CustomerService {
 
-    static final Logger logger = Logger.getLogger(CustomerServiceImpl.class.getName());
+    static final Logger logger = getLogger(CustomerServiceImpl.class.getName());
     private final Repository repository;
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;
@@ -50,6 +52,17 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer findCustomer(Long id) {
         return repository.findOne(id, Customer.class);
     }
+
+
+    @Override
+    public void createCustomer(String name, String email, String phone, Device device, Location location) {
+        Long permId = repository.allocateId(Customer.class);
+        Customer customer = new Customer(name, 0, email, phone, device, location);
+        customer.setId(permId);
+        customer.setPermanentId(permId);
+        saveCustomer(customer);
+    }
+
 
     @Override
     public void saveCustomer(Customer customer) {
@@ -82,6 +95,7 @@ public class CustomerServiceImpl implements CustomerService {
         Long id = repository.allocateId(StyleRequest.class);
         StyleRequest styleRequest = new StyleRequest(style, merchant, customer, merchant.getLocation(), StyleRequestState.PENDING, now());
         styleRequest.setId(id);
+        styleRequest.setPermanentId(id);
 
         repository.saveFew(styleRequest, style);
 

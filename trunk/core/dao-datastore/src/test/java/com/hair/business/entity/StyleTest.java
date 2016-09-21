@@ -12,11 +12,16 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.logging.Logger;
 
 /**
+ *
+ *
  * Created by Olukorede Aguda on 20/08/2016.
  */
-public class StyleTest  extends AbstractDatastoreTestBase {
+public class StyleTest extends AbstractDatastoreTestBase {
+
+    private static final Logger LOGGER = Logger.getLogger(StyleTest.class.getName());
 
     @Before
     public void setUp() {
@@ -28,6 +33,7 @@ public class StyleTest  extends AbstractDatastoreTestBase {
 
         Style style1 = createStyle();
 
+        LOGGER.info(TEST_UTILS.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(style1));
         String toJsonString = IOUtils.toString(new FileInputStream(new File("src/test/resources/style.json")));
         Style style2 = TEST_UTILS.getObjectMapper().readValue(toJsonString, Style.class);
 

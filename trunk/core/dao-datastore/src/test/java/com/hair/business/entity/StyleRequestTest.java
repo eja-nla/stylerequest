@@ -24,6 +24,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Random;
+import java.util.logging.Logger;
 
 /**
  * Created by Olukorede Aguda on 20/08/2016.
@@ -31,6 +32,8 @@ import java.util.Random;
  *
  */
 public class StyleRequestTest extends AbstractDatastoreTestBase {
+
+    private static final Logger LOGGER = Logger.getLogger(StyleRequestTest.class.getName());
 
     ObjectifyRepository repo = new ObjectifyDatastoreRepositoryImpl();
 
@@ -43,7 +46,7 @@ public class StyleRequestTest extends AbstractDatastoreTestBase {
     public void validateJsonFieldsMatchObjectFields() throws Exception {
         StyleRequest styleRequest1 = createStyleRequest();
 
-        System.out.println(TEST_UTILS.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(styleRequest1));
+        LOGGER.info(TEST_UTILS.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(styleRequest1));
         String toJsonString = IOUtils.toString(new FileInputStream(new File("src/test/resources/stylerequest.json")));
         StyleRequest styleRequest2 = TEST_UTILS.getObjectMapper().readValue(toJsonString, StyleRequest.class);
 

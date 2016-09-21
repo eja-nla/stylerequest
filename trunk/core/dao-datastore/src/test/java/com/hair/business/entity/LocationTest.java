@@ -12,11 +12,14 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.logging.Logger;
 
 /**
  * Created by Olukorede Aguda on 20/08/2016.
  */
 public class LocationTest  extends AbstractDatastoreTestBase {
+
+    private static final Logger LOGGER = Logger.getLogger(LocationTest.class.getName());
 
     @Before
     public void setUp() {
@@ -28,6 +31,7 @@ public class LocationTest  extends AbstractDatastoreTestBase {
 
         Location location1 = createLocation();
 
+        LOGGER.info(TEST_UTILS.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(location1));
         String toJsonString = IOUtils.toString(new FileInputStream(new File("src/test/resources/location.json")));
         Location location2 = TEST_UTILS.getObjectMapper().readValue(toJsonString, Location.class);
 

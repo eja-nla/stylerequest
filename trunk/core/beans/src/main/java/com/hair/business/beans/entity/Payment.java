@@ -31,14 +31,13 @@ public class Payment extends AbstractActorEnablerEntity {
 
     public Payment(){}
 
-    public Payment(long amount, Customer customer, Merchant merchant, boolean settled, MerchantType type, DateTime date) {
+    public Payment(long amount, Customer customer, Merchant merchant, boolean settled, MerchantType type) {
         this();
         this.amount = amount;
         this.customer = Ref.create(customer);
         this.merchant = Ref.create(merchant);
         this.settled = settled;
         this.type = type;
-        this.date = date.getMillis();
     }
 
     public Long getId() {

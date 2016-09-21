@@ -6,8 +6,6 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 
-import org.joda.time.DateTime;
-
 import java.util.Collection;
 
 /**
@@ -25,7 +23,7 @@ public class Style extends AbstractActorEnablerEntity {
 
     private String name;
 
-    private long requestCount; // how many styleRequests on this ever?
+    private long requestCount;
 
     private boolean trending; // separate batch job will run queries and set this field based on a defined criteria
 
@@ -35,21 +33,18 @@ public class Style extends AbstractActorEnablerEntity {
 
     private Location location;
 
-    private DateTime date;
-
-    private Collection<Image> styleImages; // a style can have multiple images e.g. showing the sides, the back, the front etc.
+    private Collection<Image> styleImages; // a style will have multiple images e.g. showing the sides, the back, the front etc.
 
     public Style(){}
 
-    public Style(long requestCount, String name, Merchant publisher, boolean trending, boolean active, Location location) {
+    public Style(String name, Merchant publisher, Collection<Image> styleImages) {
         this();
         this.name = name;
-        this.requestCount = requestCount;
         this.publisher = publisher;
-        this.trending = trending;
-        this.active = active;
-        this.location = location;
-        this.date = DateTime.now();
+        this.trending = true;
+        this.active = true;
+        this.location = publisher.getLocation();
+        this.styleImages = styleImages;
     }
 
     public long getId() {
@@ -116,11 +111,4 @@ public class Style extends AbstractActorEnablerEntity {
         this.styleImages = styleImages;
     }
 
-    public long getDate() {
-        return date.getMillis();
-    }
-
-    public void setDate(DateTime date) {
-        this.date = date;
-    }
 }

@@ -1,6 +1,8 @@
 package com.hair.business.services.customer;
 
 import com.hair.business.beans.entity.Customer;
+import com.hair.business.beans.entity.Device;
+import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
@@ -67,11 +69,21 @@ public class MerchantServiceImpl implements MerchantService {
         return null;
     }
 
-    public void updateMerchant(Merchant merchant) {
+    @Override
+    public void createMerchant(String name, String email, String phone, Device device, Location location) {
+        Long permId = repository.allocateId(Merchant.class);
+        Merchant merchant = new Merchant(name, 0, email, phone, device, location);
+        merchant.setId(permId);
+        merchant.setPermanentId(permId);
+        updateMerchant(merchant);
+    }
 
+    public void updateMerchant(Merchant merchant) {
+        repository.saveOne(merchant);
     }
 
     public void updateRequest(StyleRequest styleRequest) {
+        repository.saveOne(styleRequest);
 
     }
 
@@ -86,4 +98,6 @@ public class MerchantServiceImpl implements MerchantService {
     public boolean pay(Customer customer, Merchant merchant) {
         return false;
     }
+
+
 }

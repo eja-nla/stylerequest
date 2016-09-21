@@ -31,6 +31,7 @@ public class EntityTestUtils {
 
     public EntityTestUtils() {
         objectMapper = new ObjectMapper();
+        objectMapper.configure(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS , false);
         objectMapper.registerModule(new JodaModule());
 
     }
