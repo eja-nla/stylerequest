@@ -20,6 +20,7 @@ import com.x.business.notif.Notification;
 import com.x.business.scheduler.TaskQueue;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -54,7 +55,7 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
         verify(queue2, times(1)).add(any(SendPushNotificationToApnsTask.class));
 
         assertThat(styleRequest, is(notNullValue()));
-        assertThat(styleRequest.getStyle().getRequestCount(), is(new Long(3)));
+        assertThat(styleRequest.getStyle().getRequestCount(), is(new Long(1)));
 
     }
 
@@ -63,5 +64,11 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
         Customer customer = createCustomer();
         cs.deactivateCustomer(customer);
         assertThat(customer.isActive(), is(false));
+    }
+
+    @Test
+    public void testDate(){
+        DateTime dt = new DateTime(1472499011389L, DateTimeZone.UTC);
+        System.out.println(DateTime.now());
     }
 }

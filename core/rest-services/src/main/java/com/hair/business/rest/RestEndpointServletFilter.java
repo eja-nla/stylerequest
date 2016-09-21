@@ -28,7 +28,7 @@ public final class RestEndpointServletFilter extends GuiceFilter {
     private static final Logger log = Logger.getLogger(RestEndpointServletFilter.class.getName());
     static GitkitClient gitkitClient;
 
-    ServletContext context;
+    private ServletContext context;
     private static final String loginUrl = "http://localhost:4567/"; // FIXME: 27/08/2016 use System properties
     private static final String projectId = "amyrrh-test1";
     private static final String gitkitUrl = "http://localhost:4567/gitkit";
@@ -56,15 +56,15 @@ public final class RestEndpointServletFilter extends GuiceFilter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
         GitkitUser gitkitUser = null;
+        HttpServletResponse res = ((HttpServletResponse) servletResponse);
         try {
             gitkitUser = gitkitClient.validateTokenInRequest((HttpServletRequest) servletRequest);
             if (gitkitUser == null && !servletResponse.isCommitted()){
-                HttpServletResponse res = ((HttpServletResponse) servletResponse);
-                //res.sendError(HttpServletResponse.SC_FORBIDDEN, "Not logged in.");
                 res.sendRedirect(loginUrl);
                 return;
             }
         } catch (GitkitClientException e) {
+            res.sendError(401, e.getMessage());
             log.severe(e.getMessage());
         }
         servletRequest.setAttribute(REST_USER_ATTRIBUTE, gitkitUser);

@@ -15,11 +15,11 @@ public abstract class AbstractPersistenceEntity extends AbstractBean {
 
     private Long version;
 
-    private Long createdDate;
+    private DateTime createdDate;
 
     public AbstractPersistenceEntity(){
         this.version = 1L;
-        this.createdDate = DateTime.now().getMillis();
+        this.createdDate = DateTime.now();
     }
 
     @Override
@@ -58,11 +58,11 @@ public abstract class AbstractPersistenceEntity extends AbstractBean {
         this.version = version;
     }
 
-    public Long getCreatedDate() {
+    public DateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Long createdDate) {
+    public void setCreatedDate(DateTime createdDate) {
         this.createdDate = createdDate;
     }
 }

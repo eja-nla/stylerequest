@@ -12,11 +12,14 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.logging.Logger;
 
 /**
  * Created by Olukorede Aguda on 20/08/2016.
  */
 public class DeviceTest extends AbstractDatastoreTestBase {
+
+    private static final Logger LOGGER = Logger.getLogger(DeviceTest.class.getName());
 
     @Before
     public void setUp() {
@@ -27,6 +30,7 @@ public class DeviceTest extends AbstractDatastoreTestBase {
     public void validateJsonFieldsMatchObjectFields() throws Exception {
         Device device1 = createDevice();
 
+        LOGGER.info(TEST_UTILS.getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(device1));
         String toJsonString = IOUtils.toString(new FileInputStream(new File("src/test/resources/device.json")));
         Device device2 = TEST_UTILS.getObjectMapper().readValue(toJsonString, Device.class);
 

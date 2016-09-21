@@ -19,8 +19,6 @@ public class Merchant extends AbstractActorEntity {
     @Id
     private Long id;
 
-//    private Payment payment;
-
     private Location location;
 
     public Merchant(){}
@@ -33,7 +31,6 @@ public class Merchant extends AbstractActorEntity {
         this.setPhone(phone);
         this.setDevice(device);
         this.setActive(true);
-        this.setCreated(now());
         this.setLastUpdated(now());
 
     }

@@ -1,11 +1,10 @@
 package com.hair.business.rest.resources.customer;
 
-import static com.hair.business.rest.MvcConstants.CREATE;
+import static com.hair.business.rest.MvcConstants.CREATE_CUSTOMER_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.CUSTOMER_URI;
 import static com.hair.business.rest.MvcConstants.ID;
 import static com.hair.business.rest.MvcConstants.INFO;
 import static com.hair.business.rest.MvcConstants.STYLE_REQUEST_PATH;
-import static com.hair.business.rest.RestServicesConstants.DATE_TIME_FORMATTER;
 import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -14,6 +13,8 @@ import com.google.identitytoolkit.GitkitUser;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.services.customer.CustomerService;
+
+import org.joda.time.DateTime;
 
 import java.util.logging.Logger;
 
@@ -46,7 +47,7 @@ public class CustomerRequestServlet {
     }
 
     @POST
-    @Path(CREATE)
+    @Path(CREATE_CUSTOMER_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     public Response createNewCustomer(@Context HttpServletRequest request, Customer customer) {
@@ -59,7 +60,7 @@ public class CustomerRequestServlet {
 
         customerService.saveCustomer(customer);
 
-        return Response.created(null).build();
+        return Response.ok().build();
     }
 
     @GET
@@ -74,9 +75,9 @@ public class CustomerRequestServlet {
     @Path(STYLE_REQUEST_PATH)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    //Style style, Customer customer, Merchant merchant, Location location, DateTime dateTime
     public StyleRequest placeStyleRequest(@QueryParam("styleId") Long styleId, @QueryParam("customerId") Long customerId, @QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String when) {
-        StyleRequest styleRequest = customerService.placeStyleRequest(styleId, customerId, merchantId, DATE_TIME_FORMATTER.parseDateTime(when));
+        DateTime dateOfRequest = new DateTime(when);
+        StyleRequest styleRequest = customerService.placeStyleRequest(styleId, customerId, merchantId, dateOfRequest);
         return styleRequest;
     }
 }

@@ -22,6 +22,7 @@ public class ObjectMapperProvider implements Provider<ObjectMapper> {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.configure(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS , false);
 
         mapper.registerModule(new JodaModule());
 

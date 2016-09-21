@@ -20,7 +20,7 @@ import org.joda.time.DateTime;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -81,7 +81,7 @@ public class EntityTestConstants {
     }
 
     public static Payment createPayment(){
-        Payment p = new Payment(new Random().nextLong(), createCustomer(), createMerchant(), true, MerchantType.PAYPAL, DateTime.now());
+        Payment p = new Payment(new Random().nextLong(), createCustomer(), createMerchant(), true, MerchantType.PAYPAL);
         p.setId(new Random().nextLong());
         p.setPermanentId(new Random().nextLong());
         return p;
@@ -102,10 +102,9 @@ public class EntityTestConstants {
     }
 
     public static Style createStyle(){
-        Style s = new Style(2, "didi", createMerchant(), true, true, createLocation());
+        Style s = new Style("didi", createMerchant(), Arrays.asList(createImage()));
         s.setId(new Random().nextLong());
         s.setPermanentId(new Random().nextLong());
-        s.setStyleImages(Collections.singleton(createImage()));
         return s;
     }
 }

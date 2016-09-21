@@ -26,7 +26,7 @@ public class Customer extends AbstractActorEntity {
     public Customer() {
     }
 
-    public Customer(String name, int rating, String email, String phone, Device device){
+    protected Customer(String name, int rating, String email, String phone, Device device){
         this();
         this.setName(name);
         this.setRating(rating);
@@ -34,7 +34,6 @@ public class Customer extends AbstractActorEntity {
         this.setPhone(phone);
         this.setDevice(device);
         this.setActive(true);
-        this.setCreated(now());
         this.setLastUpdated(now());
 
     }

@@ -19,6 +19,10 @@ public class MvcConstants {
 
     public static final String CREATE="/create";
 
+    public static final String CREATE_MERCHANT_ENDPOINT = CREATE + "/merchant";
+    public static final String CREATE_CUSTOMER_ENDPOINT = CREATE + "/customer";
+    public static final String CREATE_STYLE_ENDPOINT = CREATE + "/style";
+
     public static final String STYLE_REQUEST_PATH = "/request/style";
 
     public static final String ID ="id";
