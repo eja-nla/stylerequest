@@ -10,7 +10,8 @@ import java.util.Map;
 /**
  * Abstract Repository interface
  *
- * Underlying impl can simply be changed by making this interface extend a new Abstract{New impl}SyncRepository wrapper
+ * Underlying impl can simply be changed by making this interface
+ * extend a new Abstract{New impl}SyncRepository wrapper
  *
  * Created by Olukorede Aguda on 25/04/2016.
  */

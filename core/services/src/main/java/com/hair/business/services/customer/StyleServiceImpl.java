@@ -1,10 +1,12 @@
 package com.hair.business.services.customer;
 
+import static java.lang.String.format;
+
 import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
-import com.hair.business.services.exception.EntityNotFoundException;
+import com.x.business.utilities.Assert;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,9 +31,7 @@ public class StyleServiceImpl implements StyleService {
     public Style createStyle(String styleName, Long publisherId, Collection<Image> styleImages) {
         Merchant merchant = repository.findOne(publisherId, Merchant.class);
 
-        if (merchant == null){
-            throw new EntityNotFoundException(String.format("Could not find Merchant with id %s", publisherId));
-        }
+        Assert.isFound(merchant, format("Could not find Merchant with id %s", publisherId));
 
         Long stylePermId = repository.allocateId(Style.class);
         Style style = new Style(styleName, merchant, styleImages);
@@ -47,9 +47,7 @@ public class StyleServiceImpl implements StyleService {
     public void updateStyle(Long styleId, Collection<Image> styleImages) {
         Style style = repository.findOne(styleId, Style.class);
 
-        if (style == null){
-            throw new EntityNotFoundException(String.format("Could not find Style with id %s", styleId));
-        }
+        Assert.isFound(style, format("Could not find Style with id %s", styleId));
 
         Collection<Image> images = new ArrayList<>();
 

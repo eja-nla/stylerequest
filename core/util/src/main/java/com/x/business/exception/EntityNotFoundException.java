@@ -1,4 +1,4 @@
-package com.hair.business.services.exception;
+package com.x.business.exception;
 
 /**
  * Created by Olukorede Aguda on 20/09/2016.
