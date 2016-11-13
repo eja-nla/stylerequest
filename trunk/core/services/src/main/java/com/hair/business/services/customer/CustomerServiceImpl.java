@@ -17,6 +17,7 @@ import com.x.business.notif.Notification;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 import com.x.business.scheduler.stereotype.EmailTaskQueue;
+import com.x.business.utilities.Assert;
 
 import org.joda.time.DateTime;
 
@@ -87,8 +88,11 @@ public class CustomerServiceImpl implements CustomerService {
     public StyleRequest placeStyleRequest(Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
 
         Style style = repository.findOne(styleId, Style.class);
+        Assert.isFound(style, String.format("Style with id %s not found", styleId));
         Customer customer = repository.findOne(customerId, Customer.class);
+        Assert.isFound(style, String.format("Customer with id %s not found", customerId));
         Merchant merchant = repository.findOne(merchantId, Merchant.class);
+        Assert.isFound(style, String.format("Merchant with id %s not found", merchantId));
 
         style.setRequestCount(style.getRequestCount() + 1);
 

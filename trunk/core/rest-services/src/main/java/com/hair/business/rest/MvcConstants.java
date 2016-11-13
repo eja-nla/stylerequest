@@ -15,6 +15,8 @@ public class MvcConstants {
 
     public static final String MERCHANT_URI="/merchant";
 
+    public static final String STYLE_URI="/style";
+
     public static final String INFO="/info";
 
     public static final String CREATE="/create";
