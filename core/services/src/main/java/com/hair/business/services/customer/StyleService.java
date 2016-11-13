@@ -12,6 +12,8 @@ import java.util.Collection;
  */
 public interface StyleService {
 
+    Style getStyleInfo(Long styleId);
+
     Style createStyle(String styleName, Long publisherId, Collection<Image> styleImages);
 
     void updateStyle(Long styleId, Collection<Image> styleImages);

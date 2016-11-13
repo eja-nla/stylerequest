@@ -18,4 +18,5 @@ public class Assert {
             throw new EntityNotFoundException(message);
         }
     }
+
 }

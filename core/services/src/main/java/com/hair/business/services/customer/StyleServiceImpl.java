@@ -28,6 +28,11 @@ public class StyleServiceImpl implements StyleService {
     }
 
     @Override
+    public Style getStyleInfo(Long styleId) {
+        return repository.findOne(styleId, Style.class);
+    }
+
+    @Override
     public Style createStyle(String styleName, Long publisherId, Collection<Image> styleImages) {
         Merchant merchant = repository.findOne(publisherId, Merchant.class);
 
