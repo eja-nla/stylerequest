@@ -39,7 +39,7 @@ public class EntityTestUtils {
 
 
     /**
-     * validator to ensure json test files directly mirror their corresponding classes
+     * validator to ensure test json files fields directly mirror their corresponding classes
      * */
     public <T> void validateFieldsAreEqual(T obj1, T obj2) throws JsonProcessingException {
 

@@ -1,5 +1,7 @@
 package com.x.business.tasks;
 
+import static com.google.appengine.repackaged.com.google.common.collect.Lists.partition;
+
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
@@ -8,7 +10,9 @@ import com.x.business.notif.Notification;
 import com.x.business.notif.mail.handler.EmailHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -40,8 +44,13 @@ public class SendgridEmailHandler implements EmailHandler {
         }
     }
 
+    /**
+     * Lets partition the giant collection into smaller collections
+     * */
     @Override
     public void sendBulk(Collection<Notification> notifications) {
-
+        partition(notifications instanceof List ? (List) notifications : new ArrayList<>(notifications), 1000).forEach(
+                listOfNotifications -> ((List) listOfNotifications).forEach(notification -> send((Notification) notification))
+        );
     }
 }

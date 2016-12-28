@@ -21,4 +21,8 @@ public class EmailTaskQueueImpl extends AbstractTaskQueue {
         this.queue = QueueFactory.getQueue(queueName);
     }
 
+    @Override
+    protected Queue getQueue() {
+        return queue;
+    }
 }
