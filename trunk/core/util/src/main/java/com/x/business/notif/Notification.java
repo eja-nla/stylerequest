@@ -11,7 +11,7 @@ import com.sendgrid.Attachments;
 import com.sendgrid.Email;
 import com.sendgrid.Personalization;
 import com.x.business.notif.mail.handler.EmailHandler;
-import com.x.business.tasks.SendgridEmailHandler;
+import com.x.business.tasks.SendgridEmailSender;
 
 import java.util.Optional;
 
@@ -42,7 +42,7 @@ public class Notification extends AbstractActorEntity implements DeferredTask {
 
     private static final String adminEmail = System.getProperty("SENDGRID_FROM_EMAIL");
 
-    private static final EmailHandler emailHandler = new SendgridEmailHandler();
+    private static final EmailHandler emailHandler = new SendgridEmailSender();
 
     public Notification(Long id, String message, Email from, Email to, Attachments attachments, Personalization[] personalizations, NotificationType type) {
         this.id = id;
