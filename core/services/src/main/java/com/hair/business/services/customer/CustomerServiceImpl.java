@@ -12,7 +12,6 @@ import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
-import com.hair.business.services.pushNotification.SendPushNotificationToApnsTask;
 import com.x.business.notif.Notification;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.ApnsTaskQueue;
@@ -26,8 +25,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
-
-import apns.PushNotification;
 
 /**
  * Customer Service Impl.
@@ -105,12 +102,13 @@ public class CustomerServiceImpl implements CustomerService {
 
         emailTaskQueue.add(new Notification(styleRequest, NotificationType.PUSH_EMAIL));
 
-        PushNotification pushNotification = new PushNotification()
-                .setAlert("New Style Request")
-                .setBadge(9)
-                .setSound("styleRequestSound.aiff")
-                .setDeviceTokens(customer.getDevice().getDeviceId()); // Nullable?
-        apnsQueue.add(new SendPushNotificationToApnsTask(pushNotification));
+//        Use feature toggle to turn this off or on instead of commenting
+//        PushNotification pushNotification = new PushNotification()
+//                .setAlert("New Style Request")
+//                .setBadge(9)
+//                .setSound("styleRequestSound.aiff")
+//                .setDeviceTokens(customer.getDevice().getDeviceId()); // Nullable?
+//        apnsQueue.add(new SendPushNotificationToApnsTask(pushNotification));
 
         return styleRequest;
     }
