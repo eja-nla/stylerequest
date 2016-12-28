@@ -7,7 +7,7 @@ import com.x.business.scheduler.stereotype.EmailTaskQueue;
 import com.x.business.scheduler.stereotype.EmailTaskQueueImpl;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.ApnsTaskQueue;
-import com.x.business.tasks.SendgridEmailHandler;
+import com.x.business.tasks.SendgridEmailSender;
 
 import javax.inject.Singleton;
 
@@ -20,7 +20,7 @@ public class UtilModule extends AbstractModule {
     @Override
     protected void configure() {
 
-        bind(SendgridEmailHandler.class).in(Singleton.class);
+        bind(SendgridEmailSender.class).in(Singleton.class);
 
         bind(TaskQueue.class).annotatedWith(ApnsTaskQueue.class).to(ApnsTaskQueueImpl.class).in(Singleton.class);
         bind(TaskQueue.class).annotatedWith(EmailTaskQueue.class).to(EmailTaskQueueImpl.class).in(Singleton.class);
