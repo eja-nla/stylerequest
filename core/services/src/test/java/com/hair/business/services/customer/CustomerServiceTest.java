@@ -20,7 +20,6 @@ import com.x.business.notif.Notification;
 import com.x.business.scheduler.TaskQueue;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -37,13 +36,13 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
     CustomerService cs;
     Repository repository;
     TaskQueue queue1 = Mockito.mock(TaskQueue.class);
-    TaskQueue queue2 = Mockito.mock(TaskQueue.class);
+    TaskQueue apnsQueue = Mockito.mock(TaskQueue.class);
 
 
     @Before
     public void setUp(){
         repository = injector.getInstance(Repository.class);
-        cs = new CustomerServiceImpl(repository, queue1, queue2);
+        cs = new CustomerServiceImpl(repository, queue1, apnsQueue);
 
         try {
             System.setProperty("SENDGRID_NEW_STYLE_EMAIL_TEMPLATE_FILE", new File("src/test/resources/newStyleTemplate.json").getCanonicalPath());
@@ -78,7 +77,7 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
 
         cs.placeStyleRequest(style.getId(), customer.getId(), m.getId(), DateTime.now());
 
-        verify(queue2, times(1)).add(any(SendPushNotificationToApnsTask.class));
+        verify(apnsQueue, times(1)).add(any(SendPushNotificationToApnsTask.class));
 
     }
 
@@ -89,9 +88,4 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
         assertThat(customer.isActive(), is(false));
     }
 
-    @Test
-    public void testDate(){
-        DateTime dt = new DateTime(1472499011389L, DateTimeZone.UTC);
-        System.out.println(DateTime.now());
-    }
 }
