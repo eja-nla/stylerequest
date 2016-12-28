@@ -19,20 +19,22 @@ import apns.keystore.WrapperKeyStoreProvider;
  * Created by Olukorede Aguda on 16/08/2016.
  *
  * Instantiates the DefaultApnsConnectionFactory
+ *
+ * TODO See https://github.com/notnoop/java-apns as viable alternative when matured
  */
 public class ApnsConnectionFactoryImpl implements ApnsConnectionFactory {
 
     private static volatile ApnsConnectionFactory sApnsConnectionFactory;
 
-    public ApnsConnectionFactoryImpl() {
+    ApnsConnectionFactoryImpl() {
         this.sApnsConnectionFactory = getApnsConnection();
     }
 
-    public ApnsConnectionFactoryImpl(ApnsConnectionFactory sApnsConnectionFactory) {
+    ApnsConnectionFactoryImpl(ApnsConnectionFactory sApnsConnectionFactory) {
         this.sApnsConnectionFactory = sApnsConnectionFactory;
     }
 
-    protected ApnsConnectionFactory getApnsConnection(){
+    ApnsConnectionFactory getApnsConnection(){
         DefaultApnsConnectionFactory.Builder builder = DefaultApnsConnectionFactory.Builder.get();
         KeyStoreProvider ksp;
         try {
@@ -44,17 +46,8 @@ public class ApnsConnectionFactoryImpl implements ApnsConnectionFactory {
 
             sApnsConnectionFactory = builder.build();
 
-        } catch (KeyStoreException e) {
+        } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | ApnsException | IOException e) {
             throw new ApnsRuntimeException("Could not get Keystore instance while initializing APNS connection factory", e);
-        } catch (CertificateException e) {
-            throw new ApnsRuntimeException("Could not get Keystore instance while initializing APNS connection factory", e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new ApnsRuntimeException("Could not get Keystore instance while initializing APNS connection factory", e);
-        } catch (IOException e) {
-            throw new ApnsRuntimeException("Could not get Keystore instance while initializing APNS connection factory", e);
-        }
-        catch (ApnsException e) {
-            throw new ApnsRuntimeException("Could not create APNS connection factory", e);
         }
 
         return sApnsConnectionFactory;
