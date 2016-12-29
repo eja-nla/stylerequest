@@ -1,0 +1,24 @@
+{
+  "personalizations":
+  [{
+    "to":[{
+      "email":"%s"
+    }],
+    "subject":"You've placed a new Style Request"
+  }],
+  "sub": {
+    "$firstname": [
+      "%s"
+    ],
+    "$style": [
+      "%s"
+    ],
+    "styleDate": [
+      "%s"
+    ],
+    "$merchantName": [
+      "%s"
+    ]
+  },
+  "template_id": "50e7b433-21db-4c46-96e4-9a62dc74bb69"
+}

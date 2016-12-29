@@ -1,0 +1,29 @@
+{
+  "personalizations": [
+    {
+      "to": [
+        {
+          "email": "%s"
+        }
+      ],
+      "subject": "You've placed a new Style Request",
+      "substitutions": {
+        "-firstname-": "%s",
+        "-style-": "%s",
+        "-styleDate-": "%s",
+        "-merchantName-": "%s"
+      }
+    }
+  ],
+  "from": {
+    "email": "%s",
+    "name": "Style Request"
+  },
+  "content": [
+    {
+      "type":"text/html",
+      "value": ""
+    }
+  ],
+  "template_id": "50e7b433-21db-4c46-96e4-9a62dc74bb69"
+}
