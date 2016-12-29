@@ -42,6 +42,7 @@ public class SendgridEmailSender implements EmailHandler {
 
             logger.info("SendGrid email response " + response.statusCode + " Response body " + response.body + " Response header " + response.headers);
         } catch (IOException ex) {
+
             logger.severe(ex.getMessage());
         } finally {
             request.body = StringUtils.EMPTY;
