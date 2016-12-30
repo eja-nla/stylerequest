@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.logging.Logger;
 
 /**
  * Notification object
@@ -48,10 +49,16 @@ public class Notification extends AbstractActorEntity implements DeferredTask {
 
     private static final EmailHandler emailHandler = new SendgridEmailSender();
 
+    private static final Logger LOGGER = Logger.getLogger(Notification.class.getName());
+
     static {
+
+        String templateFile = System.getProperty("SENDGRID_NEW_STYLE_EMAIL_TEMPLATE_FILE");
+
         try {
-            emailBody = new String(Files.readAllBytes(Paths.get(System.getProperty("SENDGRID_NEW_STYLE_EMAIL_TEMPLATE_FILE"))), StandardCharsets.ISO_8859_1);
+            emailBody = new String(Files.readAllBytes(Paths.get(templateFile)), StandardCharsets.ISO_8859_1);
         } catch (IOException e){
+            LOGGER.severe(String.format("Unable to load email template file '%s'. Reason: %s", templateFile, e.getMessage()));
         }
 
     }
@@ -72,7 +79,7 @@ public class Notification extends AbstractActorEntity implements DeferredTask {
                 styleRequest.getMerchant().getEmail(),
                 styleRequest.getCustomer().getName().split(StringUtils.SPACE)[0],
                 styleRequest.getStyle().getName(),
-                styleRequest.getAppointmentDateTime(),
+                styleRequest.getAppointmentDateTime().toDate(),
                 styleRequest.getMerchant().getName(),
                 adminEmail
         );
