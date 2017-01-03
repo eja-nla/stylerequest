@@ -35,17 +35,17 @@ public interface Repository {
     /**
      * returns entities matching given condition
      * */
-    <T> Collection<T> findByQuery(Class<T> clazz, String condition, Object value);
+    <T> List<T> findByQuery(Class<T> clazz, String condition, Object value);
 
     /**
      * returns entities matching given condition for given Id
      * */
-    <T> Collection<T> findByQuery(Class<T> clazz, String keyCondition, Object keyValue, String condition, Object conditionValue);
+    <T> List<T> findByQuery(Class<T> clazz, String keyCondition, Object keyValue, String condition, Object conditionValue);
 
     /**
      * returns entities matching given conditions
      * */
-    <T> Collection<T> findByQuery(Class clazz, List<String> conditions, List<Object> values);
+    <T> List<T> findByQuery(Class clazz, List<String> conditions, List<Object> values);
 
     /**
      * saves a single customer information

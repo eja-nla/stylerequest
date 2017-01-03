@@ -37,11 +37,11 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
     }
 
     @Override
-    public <T> Collection<T> findByQuery(Class<T> clazz, String condition, Object value) {
+    public <T> List<T> findByQuery(Class<T> clazz, String condition, Object value) {
         return ofy().load().type(clazz).filter(condition, value).list();
     }
 
-    public <T> Collection<T> findByQuery(Class<T> clazz, String keyCondition, Object keyValue, String condition, Object conditionValue) {
+    public <T> List<T> findByQuery(Class<T> clazz, String keyCondition, Object keyValue, String condition, Object conditionValue) {
         return ofy().load().type(clazz)
                 .filterKey(keyCondition, keyValue)
                 .filter(condition, conditionValue)
@@ -49,7 +49,7 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
     }
 
     @Override
-    public <T> Collection<T> findByQuery(Class clazz, List<String> conditions, List<Object> values) {
+    public <T> List<T> findByQuery(Class clazz, List<String> conditions, List<Object> values) {
         if (conditions.size() != values.size() && (conditions.size() != 0 && values.size() != 0)){
             throw new IllegalArgumentException("Conditions and supplied values sizes must match and must not be empty.");
         }

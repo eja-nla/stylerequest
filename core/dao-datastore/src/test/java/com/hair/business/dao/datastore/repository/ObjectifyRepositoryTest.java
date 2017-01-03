@@ -66,16 +66,20 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
     @Test
     public void testFindByKeyQuery() throws Exception {
         List<StyleRequest> s = new ArrayList<>();
+        StyleRequest sr = null;
         for (int i = 0; i < 3; i++) {
-            s.add(createStyleRequest());
+            sr = createStyleRequest();
+            s.add(sr);
         }
 
-        s.get(2).setState(StyleRequestState.IN_PROGRESS);
+        Long testId = sr.getId();
+        sr.setState(StyleRequestState.CANCELLED);
         repository.saveMany(s);
 
-        // did we find the stylerequest whose ID corresponds to the second stylerequest and state in_progress?
-        assertThat(repository.findByQuery(StyleRequest.class, "==", Key.create(StyleRequest.class, s.get(1).getId()), "state", StyleRequestState.CANCELLED).size(), is(1));
-//fixme, doesn't work but i'm too tired to figure it out now - it's 12:44 and there's an early day today!
+        List<StyleRequest> x = repository.findByQuery(StyleRequest.class, "==", Key.create(StyleRequest.class, testId), "state", StyleRequestState.CANCELLED);
+
+        // did we find the stylerequest whose ID corresponds to testId and state is cancelled?
+        assertThat(x.size(), is(1));
 
         delete(s);
     }
@@ -106,7 +110,7 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
         List<String> conditions = new ArrayList<>(Arrays.asList("customerPermanentId", "state"));
         List<Object> values = new ArrayList<>(Arrays.asList(styleRequests.get(0).getCustomerPermanentId(), StyleRequestState.IN_PROGRESS));
 
-        // did we find the customer with this ID who has a styleRequest in-progress state?
+        // did we find the customer with this known ID who has a styleRequest in-progress state?
         assertThat(repository.findByQuery(StyleRequest.class, conditions, values).size(), is(1));
         delete(styleRequests);
     }
