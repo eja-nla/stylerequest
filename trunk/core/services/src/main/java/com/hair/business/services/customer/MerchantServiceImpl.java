@@ -1,5 +1,6 @@
 package com.hair.business.services.customer;
 
+import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Device;
 import com.hair.business.beans.entity.Location;
@@ -110,13 +111,14 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public boolean cancelStyleRequest(Customer customer, StyleRequest request) {
-        return false;
+    public void cancelStyleRequest(Customer customer, StyleRequest request) {
+        request.setState(StyleRequestState.CANCELLED);
+        // send notification to customer
     }
 
     @Override
-    public boolean pay(Customer customer, Merchant merchant) {
-        return false;
+    public void pay(Customer customer, Merchant merchant) {
+
     }
 
 

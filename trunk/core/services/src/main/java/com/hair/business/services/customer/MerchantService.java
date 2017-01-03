@@ -53,8 +53,8 @@ public interface MerchantService {
      */
     void publishStyle(Style style, Merchant merchant);
 
-    boolean cancelStyleRequest(Customer customer, StyleRequest request);
+    void cancelStyleRequest(Customer customer, StyleRequest request);
 
-    boolean pay(Customer customer, Merchant merchant);
+    void pay(Customer customer, Merchant merchant);
 
 }
