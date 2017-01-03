@@ -41,9 +41,9 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
         return ofy().load().type(clazz).filter(condition, value).list();
     }
 
-    public <T> List<T> findByQuery(Class<T> clazz, String keyCondition, Object keyValue, String condition, Object conditionValue) {
+    public <T> List<T> findByQuery(Class<T> clazz, String keyCondition, Long keyValue, String condition, Object conditionValue) {
         return ofy().load().type(clazz)
-                .filterKey(keyCondition, keyValue)
+                .filterKey(keyCondition, Key.create(clazz, keyValue))
                 .filter(condition, conditionValue)
                 .list();
     }

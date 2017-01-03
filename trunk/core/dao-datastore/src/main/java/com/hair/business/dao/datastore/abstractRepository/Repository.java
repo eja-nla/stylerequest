@@ -40,7 +40,7 @@ public interface Repository {
     /**
      * returns entities matching given condition for given Id
      * */
-    <T> List<T> findByQuery(Class<T> clazz, String keyCondition, Object keyValue, String condition, Object conditionValue);
+    <T> List<T> findByQuery(Class<T> clazz, String keyCondition, Long keyValue, String condition, Object conditionValue);
 
     /**
      * returns entities matching given conditions
