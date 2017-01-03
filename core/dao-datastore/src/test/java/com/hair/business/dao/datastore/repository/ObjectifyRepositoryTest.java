@@ -76,7 +76,7 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
         sr.setState(StyleRequestState.CANCELLED);
         repository.saveMany(s);
 
-        List<StyleRequest> x = repository.findByQuery(StyleRequest.class, "==", Key.create(StyleRequest.class, testId), "state", StyleRequestState.CANCELLED);
+        List<StyleRequest> x = repository.findByQuery(StyleRequest.class, "==", testId, "state", StyleRequestState.CANCELLED);
 
         // did we find the stylerequest whose ID corresponds to testId and state is cancelled?
         assertThat(x.size(), is(1));
