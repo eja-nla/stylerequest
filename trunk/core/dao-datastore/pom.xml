@@ -43,11 +43,16 @@
         </dependency>
         <dependency>
             <groupId>com.hair.business</groupId>
+            <artifactId>hair-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hair.business</groupId>
             <artifactId>hair-test</artifactId>
             <version>1.0-SNAPSHOT</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+
 
     </dependencies>
     

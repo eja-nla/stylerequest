@@ -35,6 +35,11 @@ public interface MerchantService {
     Collection<Style> findStylesByDescription(String description);
 
     /**
+     * All Style requests in ACCEPTED state for this merchant
+     */
+    Collection<StyleRequest> findUpcomingAppointments(String merchantId);
+
+    /**
      * Creates a new Merchant
      * */
     void createMerchant(String name, String email, String phone, Device device, Location location);

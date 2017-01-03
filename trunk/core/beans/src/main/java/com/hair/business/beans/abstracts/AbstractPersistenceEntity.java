@@ -11,13 +11,13 @@ import org.joda.time.DateTime;
  */
 public abstract class AbstractPersistenceEntity extends AbstractBean {
 
-    private Long permanentId; // stores the very first id every assigned to this entity. If we ever move/reindex/reimport the entity, this ensures a unique identifier that never changes
+    private Long permanentId; // An idempotent field that stores the very first id every assigned to this entity. If we ever move/reindex/reimport the entity, this ensures a unique identifier that never changes
 
     private Long version;
 
     private DateTime createdDate;
 
-    public AbstractPersistenceEntity(){
+    AbstractPersistenceEntity(){
         this.version = 1L;
         this.createdDate = DateTime.now();
     }
@@ -46,8 +46,14 @@ public abstract class AbstractPersistenceEntity extends AbstractBean {
         return permanentId;
     }
 
+    /**
+     * Enforce idempotency on permanentId
+     * */
     public void setPermanentId(Long permanentId) {
-        this.permanentId = permanentId;
+        if (this.permanentId == null) {
+            this.permanentId = permanentId;
+        }
+
     }
 
     public Long getVersion() {

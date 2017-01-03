@@ -26,16 +26,15 @@ public class StyleRequest extends AbstractActorEnablerEntity {
     private Long id;
 
     private @Load Ref<Style> style;
-
-    private @Load Ref<Merchant> merchant; // with @Load, Ofy efficiently fetches for large dataset
-
+    private @Load Ref<Merchant> merchant;
     private @Load Ref<Customer> customer;
-
     private @Load Ref<Location> location;
 
     private @Index StyleRequestState state;
-
-    private DateTime appointmentDateTime;
+    private @Index DateTime appointmentDateTime;
+    private @Index Long customerPermanentId;
+    private @Index Long merchantPermanentId;
+    private @Index Long locationPermanentId;
 
     public StyleRequest(){
     }
@@ -48,6 +47,10 @@ public class StyleRequest extends AbstractActorEnablerEntity {
         this.location = Ref.create(location);
         this.state = state;
         this.appointmentDateTime = appointmentDateTime;
+
+        this.customerPermanentId = customer.getPermanentId();
+        this.merchantPermanentId = merchant.getPermanentId();
+        this.locationPermanentId = location.getPermanentId();
     }
 
     public Long getId() {
@@ -106,4 +109,17 @@ public class StyleRequest extends AbstractActorEnablerEntity {
     public void setAppointmentDateTime(DateTime appointmentDateTime) {
         this.appointmentDateTime = appointmentDateTime;
     }
+
+    public Long getCustomerPermanentId() {
+        return customerPermanentId;
+    }
+
+    public Long getMerchantPermanentId() {
+        return merchantPermanentId;
+    }
+
+    public Long getLocationPermanentId() {
+        return locationPermanentId;
+    }
+
 }
