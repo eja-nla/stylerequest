@@ -33,9 +33,19 @@ public interface Repository {
     <T> Map findMany(List<Long> ids, Class clazz);
 
     /**
-     * returns entities matching given condition from the list of ids
+     * returns entities matching given condition
      * */
-    <T> Collection<T> findByQuery(List<Long> ids, Class clazz, String condition, Object object);
+    <T> Collection<T> findByQuery(Class<T> clazz, String condition, Object value);
+
+    /**
+     * returns entities matching given condition for given Id
+     * */
+    <T> Collection<T> findByQuery(Class<T> clazz, String keyCondition, Object keyValue, String condition, Object conditionValue);
+
+    /**
+     * returns entities matching given conditions
+     * */
+    <T> Collection<T> findByQuery(Class clazz, List<String> conditions, List<Object> values);
 
     /**
      * saves a single customer information

@@ -5,7 +5,9 @@ import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
 
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Result;
+import com.googlecode.objectify.cmd.Query;
 import com.hair.business.dao.datastore.abstractRepository.ObjectifyRepository;
+import com.x.business.utilities.Assert;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,22 +37,48 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
     }
 
     @Override
-    public <T> Collection<T> findByQuery(List<Long> ids, Class clazz, String condition, Object object) {
-        return ofy().load().type(clazz).filter(condition, object).list();
+    public <T> Collection<T> findByQuery(Class<T> clazz, String condition, Object value) {
+        return ofy().load().type(clazz).filter(condition, value).list();
+    }
+
+    public <T> Collection<T> findByQuery(Class<T> clazz, String keyCondition, Object keyValue, String condition, Object conditionValue) {
+        return ofy().load().type(clazz)
+                .filterKey(keyCondition, keyValue)
+                .filter(condition, conditionValue)
+                .list();
+    }
+
+    @Override
+    public <T> Collection<T> findByQuery(Class clazz, List<String> conditions, List<Object> values) {
+        if (conditions.size() != values.size() && (conditions.size() != 0 && values.size() != 0)){
+            throw new IllegalArgumentException("Conditions and supplied values sizes must match and must not be empty.");
+        }
+
+        Query<T> results = ofy().load().type(clazz);
+        for (int i = 0; i < conditions.size(); i++) {
+            results = results.filter(conditions.get(i), values.get(i));
+        }
+
+        return results.list();
     }
 
     @Override
     public <E> Key<E> saveOne(E entity) {
+        Assert.hasPermanentId(entity);
         return ofy().save().entity(entity).now();
     }
 
     @Override
     public <E> Result<Map<Key<E>, E>> saveMany(Collection<E> entities) {
+        entities.forEach(Assert::hasPermanentId);
         return ofy().save().entities(entities);
     }
 
     @Override
     public <E> Result<Map<Key<E>, E>> saveFew(E... entities) {
+        for (int i = 0; i < entities.length; i++) {
+            Assert.hasPermanentId(entities[i]);
+        }
         return ofy().save().entities(entities);
     }
 

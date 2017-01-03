@@ -1,7 +1,6 @@
 package com.hair.business.services.customer;
 
 import static java.util.logging.Logger.getLogger;
-import static org.joda.time.DateTime.now;
 
 import com.hair.business.beans.constants.NotificationType;
 import com.hair.business.beans.constants.StyleRequestState;
@@ -20,6 +19,7 @@ import com.x.business.utilities.Assert;
 
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
@@ -68,9 +68,15 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Collection<StyleRequest> findStyleRequests(List<Long> customerId, StyleRequestState styleRequestState) {
+    public Collection<StyleRequest> findStyleRequests(Long permanentId, StyleRequestState styleRequestState) {
+        List<String> conditions = new ArrayList<>();
+        List<Object> values = new ArrayList<>();
 
-        return repository.findByQuery(customerId, StyleRequest.class, "state ==", styleRequestState);
+        conditions.add("customerPermanentId");
+        conditions.add("state");
+        values.add(permanentId);
+        values.add(styleRequestState);
+        return repository.findByQuery(StyleRequest.class, conditions, values);
     }
 
     @Override
@@ -93,10 +99,11 @@ public class CustomerServiceImpl implements CustomerService {
 
         style.setRequestCount(style.getRequestCount() + 1);
 
-        StyleRequest styleRequest = new StyleRequest(style, merchant, customer, merchant.getLocation(), StyleRequestState.PENDING, now());
+        StyleRequest styleRequest = new StyleRequest(style, merchant, customer, merchant.getLocation(), StyleRequestState.PENDING, appointmentTime);
         Long id = repository.allocateId(StyleRequest.class);
         styleRequest.setId(id);
         styleRequest.setPermanentId(id);
+
 
         repository.saveFew(styleRequest, style);
 

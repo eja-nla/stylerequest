@@ -4,7 +4,9 @@ package com.hair.business.dao.datastore.repository;
 import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
 import static com.x.y.EntityTestConstants.createAddress;
 import static com.x.y.EntityTestConstants.createCustomer;
+import static com.x.y.EntityTestConstants.createLocation;
 import static com.x.y.EntityTestConstants.createMerchant;
+import static com.x.y.EntityTestConstants.createStyle;
 import static com.x.y.EntityTestConstants.createStyleRequest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -16,19 +18,24 @@ import com.googlecode.objectify.Result;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
+import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
+import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.dao.datastore.testbase.AbstractDatastoreTestBase;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by Olukorede Aguda on 08/06/2016.
@@ -57,16 +64,51 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
     }
 
     @Test
-    public void testFindByQuery() throws Exception {
+    public void testFindByKeyQuery() throws Exception {
         List<StyleRequest> s = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 3; i++) {
             s.add(createStyleRequest());
         }
+
+        s.get(2).setState(StyleRequestState.IN_PROGRESS);
         repository.saveMany(s);
 
-        List<Long> lIds = s.stream().map(StyleRequest::getId).collect(Collectors.toList());
-        assertThat(repository.findByQuery(lIds, StyleRequest.class, "state ==", StyleRequestState.ACCEPTED).size(), is(5));
+        // did we find the stylerequest whose ID corresponds to the second stylerequest and state in_progress?
+        assertThat(repository.findByQuery(StyleRequest.class, "==", Key.create(StyleRequest.class, s.get(1).getId()), "state", StyleRequestState.CANCELLED).size(), is(1));
+//fixme, doesn't work but i'm too tired to figure it out now - it's 12:44 and there's an early day today!
+
         delete(s);
+    }
+
+    @Test
+    public void testFindByQuery() throws Exception {
+        List<StyleRequest> s = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            s.add(createStyleRequest());
+        }
+
+        s.get(0).setState(StyleRequestState.IN_PROGRESS);
+        repository.saveMany(s);
+
+        // they all got created in state ACCEPTED except one which is IN_PROGRESS. Did we find that loner?
+        assertThat(repository.findByQuery(StyleRequest.class, "state", StyleRequestState.IN_PROGRESS).size(), is(1));
+
+        delete(s);
+    }
+
+    @Test
+    public void testFindByMultiQuery() throws Exception {
+
+        List<StyleRequest> styleRequests = createStyleRequests();
+        styleRequests.get(0).setState(StyleRequestState.IN_PROGRESS);
+        repository.saveMany(styleRequests);
+
+        List<String> conditions = new ArrayList<>(Arrays.asList("customerPermanentId", "state"));
+        List<Object> values = new ArrayList<>(Arrays.asList(styleRequests.get(0).getCustomerPermanentId(), StyleRequestState.IN_PROGRESS));
+
+        // did we find the customer with this ID who has a styleRequest in-progress state?
+        assertThat(repository.findByQuery(StyleRequest.class, conditions, values).size(), is(1));
+        delete(styleRequests);
     }
 
 
@@ -112,6 +154,23 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
             cus.add(createCustomer());
         }
         return cus;
+    }
+
+    private List<StyleRequest> createStyleRequests(){
+        List<StyleRequest> styleRequests = new ArrayList<>();
+        IntStream.range(0, 5).forEach(itr -> {
+            Style st = createStyle();
+            Merchant m = createMerchant();
+            Customer c = createCustomer();
+            Location l = createLocation();
+            repository.saveFew(st, m, c, l);
+            StyleRequest sr = new StyleRequest(st, m, c, l, StyleRequestState.ACCEPTED, DateTime.now());
+            sr.setId(repository.allocateId(StyleRequest.class));
+            sr.setPermanentId(sr.getId());
+            styleRequests.add(sr);
+        });
+
+        return styleRequests;
     }
 
     private void delete(Collection e){
