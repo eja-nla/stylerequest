@@ -1,7 +1,6 @@
 package com.hair.business.dao.datastore.repository;
 
 
-import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
 import static com.x.y.EntityTestConstants.createAddress;
 import static com.x.y.EntityTestConstants.createCustomer;
 import static com.x.y.EntityTestConstants.createLocation;
@@ -178,6 +177,6 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
     }
 
     private void delete(Collection e){
-        ofy().delete().entities(e).now();
+        repository.delete(e.toArray());
     }
 }
