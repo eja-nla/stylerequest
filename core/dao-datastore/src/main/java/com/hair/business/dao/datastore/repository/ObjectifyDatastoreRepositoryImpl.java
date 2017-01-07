@@ -83,8 +83,8 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
     }
 
     @Override
-    public <T> void delete(T entity) {
-        ofy().delete().entity(entity);
+    public <T> void delete(T... entities) {
+        ofy().delete().entities(entities);
     }
 
 }

@@ -65,5 +65,5 @@ public interface Repository {
     /**
      * Deletes the given entity
      * */
-    <T> void delete(T entity);
+    <T> void delete(T... entities);
 }
