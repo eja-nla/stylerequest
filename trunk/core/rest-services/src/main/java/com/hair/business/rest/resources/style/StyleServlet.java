@@ -6,7 +6,7 @@ import static com.hair.business.rest.MvcConstants.STYLE_URI;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import com.hair.business.beans.entity.Style;
-import com.hair.business.services.customer.StyleService;
+import com.hair.business.services.StyleService;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +37,7 @@ public class StyleServlet {
     @Path(INFO)
     @Produces(APPLICATION_JSON)
     public Response getStyleInfo(@Context HttpServletRequest request, @QueryParam(ID) Long styleId) {
-        Style style = styleService.getStyleInfo(styleId);
+        Style style = styleService.findStyle(styleId);
 
         if (style == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Style not found").build();

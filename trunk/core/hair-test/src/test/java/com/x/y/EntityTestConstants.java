@@ -1,5 +1,7 @@
 package com.x.y;
 
+import static java.util.Collections.singletonList;
+
 import com.hair.business.beans.constants.DeviceType;
 import com.hair.business.beans.constants.Gender;
 import com.hair.business.beans.constants.MerchantType;
@@ -20,7 +22,6 @@ import org.joda.time.DateTime;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -57,8 +58,8 @@ public class EntityTestConstants {
 
     public static Image createImage(){
         Image i = new Image("http//"+ new BigInteger(130, new SecureRandom()).toString(32) + ".com", "test owner name", 20);
-        i.setPermanentId(new Random().nextLong());
         i.setId(new Random().nextLong());
+        i.setPermanentId(i.getId());
         return i;
     }
 
@@ -66,15 +67,16 @@ public class EntityTestConstants {
         GeoPointExt g = new GeoPointExt(51.5034070, -0.1275920);
         g.setId(new Random().nextLong());
         Location l = new Location("London", "Alabama", "UK", g);
-        l.setPermanentId(new Random().nextLong());
         l.setId(new Random().nextLong());
+        l.setPermanentId(l.getId());
+
         return l;
     }
 
     public static Merchant createMerchant(){
         Merchant m = new Merchant("Test Merchant Name", new Random().nextInt(), "merchant@email.com", "+1134555643654", createDevice(), createLocation());
         m.setId(new Random().nextLong());
-        m.setPermanentId(new Random().nextLong());
+        m.setPermanentId(m.getId());
         m.setPhotoUrl("http://some.photo.url");
         m.setGender(Gender.F);
         return m;
@@ -83,26 +85,26 @@ public class EntityTestConstants {
     public static Payment createPayment(){
         Payment p = new Payment(new Random().nextLong(), createCustomer(), createMerchant(), true, MerchantType.PAYPAL);
         p.setId(new Random().nextLong());
-        p.setPermanentId(new Random().nextLong());
+        p.setPermanentId(p.getId());
         return p;
     }
 
     public static Review createReview(){
         Review r = new Review("author's name here", "owner's name here", new Random().nextLong(), new Random().nextLong(), new Random().nextInt(), "Perfect review");
         r.setId(new Random().nextLong());
-        r.setPermanentId(new Random().nextLong());
+        r.setPermanentId(r.getId());
         return r;
     }
 
     public static StyleRequest createStyleRequest(){
         StyleRequest s = new StyleRequest(createStyle(), createMerchant(), createCustomer(), createLocation(), StyleRequestState.ACCEPTED, DateTime.now());
         s.setId(new Random().nextLong());
-        s.setPermanentId(new Random().nextLong());
+        s.setPermanentId(s.getId());
         return s;
     }
 
     public static Style createStyle(){
-        Style s = new Style("didi", createMerchant(), Arrays.asList(createImage()));
+        Style s = new Style("didi", createMerchant(), singletonList(createImage()));
         s.setId(new Random().nextLong());
         s.setPermanentId(new Random().nextLong());
         return s;

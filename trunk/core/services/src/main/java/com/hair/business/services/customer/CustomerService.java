@@ -9,8 +9,6 @@ import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 
-import org.joda.time.DateTime;
-
 import java.util.Collection;
 
 /**
@@ -43,22 +41,6 @@ public interface CustomerService {
      * Deactivates customer account
      */
     void deactivateCustomer(Customer customer);
-
-    /**
-     * Place a new style request for this customer
-     * @param styleId the ID of the style to be made
-     * @param customerId customer id
-     * @param merchantId merchant id
-     * @param appointmentTime when the customer will be styled
-     *
-     * Sets the location to the location of the merchant
-     */
-    StyleRequest placeStyleRequest(Long styleId, Long customerId, Long merchantId, DateTime appointmentTime);
-
-    /**
-     * Cancels a placed request by this customer
-     */
-    void cancelStyleRequest(Customer customer, Merchant merchant, StyleRequest request);
 
     /**
      *  Issues a payment request from a customer to a merchant

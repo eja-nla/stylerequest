@@ -12,6 +12,7 @@ import com.google.identitytoolkit.GitkitUser;
 
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.StyleRequest;
+import com.hair.business.services.StyleRequestService;
 import com.hair.business.services.customer.CustomerService;
 
 import org.joda.time.DateTime;
@@ -38,12 +39,14 @@ import javax.ws.rs.core.Response;
 public class CustomerRequestServlet {
 
     private final CustomerService customerService;
+    private final StyleRequestService styleRequestService;
 
     private static final Logger log = Logger.getLogger(CustomerRequestServlet.class.getName());
 
     @Inject
-    public CustomerRequestServlet(CustomerService customerService) {
+    public CustomerRequestServlet(CustomerService customerService, StyleRequestService styleRequestService) {
         this.customerService = customerService;
+        this.styleRequestService = styleRequestService;
     }
 
     @POST
@@ -77,7 +80,7 @@ public class CustomerRequestServlet {
     @Produces(APPLICATION_JSON)
     public StyleRequest placeStyleRequest(@QueryParam("styleId") Long styleId, @QueryParam("customerId") Long customerId, @QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String when) {
         DateTime dateOfRequest = new DateTime(when);
-        StyleRequest styleRequest = customerService.placeStyleRequest(styleId, customerId, merchantId, dateOfRequest);
+        StyleRequest styleRequest = styleRequestService.placeStyleRequest(styleId, customerId, merchantId, dateOfRequest);
         return styleRequest;
     }
 }

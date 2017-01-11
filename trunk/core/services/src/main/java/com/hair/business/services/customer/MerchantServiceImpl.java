@@ -5,7 +5,6 @@ import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Device;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
-import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 
@@ -50,10 +49,6 @@ public class MerchantServiceImpl implements MerchantService {
         return null;
     }
 
-    public Customer findCustomer(Customer customer) {
-        return null;
-    }
-
     @Override
     public Collection<Customer> findCustomers(Collection<Long> ids) {
         return null;
@@ -61,27 +56,6 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public Collection<Customer> findCustomersByDescription(String description) {
-        return null;
-    }
-
-    @Override
-    public Style findStyle(long id) {
-        return null;
-    }
-
-    @Override
-    public Collection<Style> findStyles(Collection<Long> ids) {
-        return null;
-    }
-
-    @Override
-    public Collection<Style> findStylesByDescription(String description) {
-        return null;
-    }
-
-    @Override
-    public Collection<StyleRequest> findUpcomingAppointments(String merchantId) {
-        //return repository.findByMultipleQuery(StyleRequest.class, "state ==", StyleRequestState.ACCEPTED);
         return null;
     }
 
@@ -102,12 +76,6 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public void updateRequest(StyleRequest styleRequest) {
         repository.saveOne(styleRequest);
-
-    }
-
-    @Override
-    public void publishStyle(Style style, Merchant merchant) {
-
     }
 
     @Override

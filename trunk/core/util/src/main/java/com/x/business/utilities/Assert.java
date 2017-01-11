@@ -3,12 +3,14 @@ package com.x.business.utilities;
 import com.hair.business.beans.abstracts.AbstractPersistenceEntity;
 import com.x.business.exception.EntityNotFoundException;
 
+import org.apache.commons.lang3.Validate;
+
 /**
  * Created by Olukorede Aguda on 22/06/2016.
  */
-public class Assert {
+public class Assert extends Validate {
 
-    private static void notNull(Object o, String m){
+    public static void notNull(Object o, String m){
         if(null == o){
             throw new IllegalArgumentException(m);
         }
