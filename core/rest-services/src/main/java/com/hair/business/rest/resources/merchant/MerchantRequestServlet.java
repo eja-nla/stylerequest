@@ -12,10 +12,10 @@ import com.google.identitytoolkit.GitkitUser;
 import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
+import com.hair.business.services.StyleService;
 import com.hair.business.services.customer.MerchantService;
-import com.hair.business.services.customer.StyleService;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +71,7 @@ public class MerchantRequestServlet {
     @Path(CREATE_STYLE_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Style createStyle(Collection<Image> styleImages, @QueryParam("styleName") String styleName, @QueryParam("merchantId") Long merchantId) {
+    public Style createStyle(List<Image> styleImages, @QueryParam("styleName") String styleName, @QueryParam("merchantId") Long merchantId) {
         return styleService.createStyle(styleName, merchantId, styleImages);
     }
 

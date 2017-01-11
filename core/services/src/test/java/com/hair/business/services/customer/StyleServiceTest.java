@@ -2,6 +2,7 @@ package com.hair.business.services.customer;
 
 import static com.x.y.EntityTestConstants.createImage;
 import static com.x.y.EntityTestConstants.createMerchant;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -9,12 +10,19 @@ import static org.junit.Assert.assertThat;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.hair.business.services.StyleService;
+import com.hair.business.services.StyleServiceImpl;
 import com.x.y.EntityTestConstants;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Olukorede Aguda on 29/08/2016.
@@ -23,8 +31,8 @@ import java.util.Arrays;
  */
 public class StyleServiceTest extends AbstractServicesTestBase {
 
-    StyleService styleService;
-    Repository repository;
+    private StyleService styleService;
+    private Repository repository;
 
 
     @Before
@@ -38,7 +46,7 @@ public class StyleServiceTest extends AbstractServicesTestBase {
         Merchant merchant = createMerchant();
         repository.saveOne(merchant);
 
-        Style style = styleService.createStyle("Test style", merchant.getId(), Arrays.asList(createImage()));
+        Style style = styleService.createStyle("Test style", merchant.getId(), singletonList(createImage()));
 
         assertThat(style, is(notNullValue()));
 
@@ -49,10 +57,31 @@ public class StyleServiceTest extends AbstractServicesTestBase {
         Style style = EntityTestConstants.createStyle();
         repository.saveOne(style);
 
-        styleService.updateStyle(style.getId(), Arrays.asList(createImage()));
+        styleService.updateStyle(style.getId(), singletonList(createImage()));
 
         assertThat(style.getStyleImages().size(), is(2));
 
+    }
+
+    @Test
+    public void findStyles() throws Exception {
+        Collection<Style> styles = createStyles();
+        repository.saveMany(styles).now();
+
+        List<Long> x = styles.stream().map(Style::getId).collect(Collectors.toList());
+        MatcherAssert.assertThat(styleService.findStyles(x).size(), Is.is(5));
+
+        repository.delete(styles.toArray());
+
+    }
+
+
+    private List<Style> createStyles() throws Exception {
+        List<Style> styles = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            styles.add(EntityTestConstants.createStyle());
+        }
+        return styles;
     }
 
 }

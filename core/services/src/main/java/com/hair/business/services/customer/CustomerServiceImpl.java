@@ -2,7 +2,6 @@ package com.hair.business.services.customer;
 
 import static java.util.logging.Logger.getLogger;
 
-import com.hair.business.beans.constants.NotificationType;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Device;
@@ -11,13 +10,9 @@ import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
-import com.x.business.notif.Notification;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 import com.x.business.scheduler.stereotype.EmailTaskQueue;
-import com.x.business.utilities.Assert;
-
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,49 +79,6 @@ public class CustomerServiceImpl implements CustomerService {
 
         customer.setActive(false);
         repository.saveOne(customer);
-
-    }
-
-    @Override
-    public StyleRequest placeStyleRequest(Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
-
-        Style style = repository.findOne(styleId, Style.class);
-        Assert.isFound(style, String.format("Style with id %s not found", styleId));
-        Customer customer = repository.findOne(customerId, Customer.class);
-        Assert.isFound(style, String.format("Customer with id %s not found", customerId));
-        Merchant merchant = repository.findOne(merchantId, Merchant.class);
-        Assert.isFound(style, String.format("Merchant with id %s not found", merchantId));
-
-        style.setRequestCount(style.getRequestCount() + 1);
-
-        StyleRequest styleRequest = new StyleRequest(style, merchant, customer, merchant.getLocation(), StyleRequestState.PENDING, appointmentTime);
-        Long id = repository.allocateId(StyleRequest.class);
-        styleRequest.setId(id);
-        styleRequest.setPermanentId(id);
-
-
-        repository.saveFew(styleRequest, style);
-
-        emailTaskQueue.add(new Notification(styleRequest, NotificationType.PUSH_EMAIL));
-
-//        Use feature toggle to turn this off or on instead of commenting
-//        PushNotification pushNotification = new PushNotification()
-//                .setAlert("New Style Request")
-//                .setBadge(9)
-//                .setSound("styleRequestSound.aiff")
-//                .setDeviceTokens(customer.getDevice().getDeviceId()); // Nullable?
-//        apnsQueue.add(new SendPushNotificationToApnsTask(pushNotification));
-
-        return styleRequest;
-    }
-
-    @Override
-    public void cancelStyleRequest(Customer customer, Merchant merchant, StyleRequest styleRequest) {
-        styleRequest.setState(StyleRequestState.CANCELLED);
-        repository.saveOne(styleRequest);
-
-        //TODO notify merchant
-        emailTaskQueue.add(new Notification(styleRequest, NotificationType.PUSH_EMAIL));
 
     }
 

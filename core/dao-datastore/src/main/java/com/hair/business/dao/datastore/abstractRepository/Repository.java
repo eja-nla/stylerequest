@@ -20,17 +20,17 @@ public interface Repository {
     /**
      * Allocates an id
      * */
-    Long allocateId(Class clazz);
+    <T> Long allocateId(Class<T>  clazz);
 
     /**
      * finds entity with given id
      */
-    <T> T findOne(Long id, Class clazz);
+    <T> T findOne(Long id, Class<T> clazz);
 
     /**
      * finds entities with given id
      */
-    <T> Map findMany(List<Long> ids, Class clazz);
+    <T> Map<Long, T> findMany(List<Long> ids, Class<T> clazz);
 
     /**
      * returns entities matching given condition
@@ -38,14 +38,9 @@ public interface Repository {
     <T> List<T> findByQuery(Class<T> clazz, String condition, Object value);
 
     /**
-     * returns entities matching given condition for given Id
-     * */
-    <T> List<T> findByQuery(Class<T> clazz, String keyCondition, Long keyValue, String condition, Object conditionValue);
-
-    /**
      * returns entities matching given conditions
      * */
-    <T> List<T> findByQuery(Class clazz, List<String> conditions, List<Object> values);
+    <T> List<T> findByQuery(Class<T> clazz, List<String> conditions, List<Object> values);
 
     /**
      * saves a single customer information

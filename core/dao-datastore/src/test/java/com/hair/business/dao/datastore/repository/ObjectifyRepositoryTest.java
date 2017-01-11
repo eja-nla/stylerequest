@@ -63,28 +63,7 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
     }
 
     @Test
-    public void testFindByKeyQuery() throws Exception {
-        List<StyleRequest> s = new ArrayList<>();
-        StyleRequest sr = null;
-        for (int i = 0; i < 3; i++) {
-            sr = createStyleRequest();
-            s.add(sr);
-        }
-
-        Long testId = sr.getId();
-        sr.setState(StyleRequestState.CANCELLED);
-        repository.saveMany(s);
-
-        List<StyleRequest> x = repository.findByQuery(StyleRequest.class, "==", testId, "state", StyleRequestState.CANCELLED);
-
-        // did we find the stylerequest whose ID corresponds to testId and state is cancelled?
-        assertThat(x.size(), is(1));
-
-        delete(s);
-    }
-
-    @Test
-    public void testFindByQuery() throws Exception {
+    public void testFindBySingleQuery() throws Exception {
         List<StyleRequest> s = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             s.add(createStyleRequest());
@@ -106,14 +85,13 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
         styleRequests.get(0).setState(StyleRequestState.IN_PROGRESS);
         repository.saveMany(styleRequests);
 
-        List<String> conditions = new ArrayList<>(Arrays.asList("customerPermanentId", "state"));
-        List<Object> values = new ArrayList<>(Arrays.asList(styleRequests.get(0).getCustomerPermanentId(), StyleRequestState.IN_PROGRESS));
+        List<String> conditions = new ArrayList<>(Arrays.asList("customerPermanentId", "state", "appointmentDateTime >"));
+        List<Object> values = new ArrayList<>(Arrays.asList(styleRequests.get(0).getCustomerPermanentId(), StyleRequestState.IN_PROGRESS, new DateTime().minusDays(1)));
 
-        // did we find the customer with this known ID who has a styleRequest in-progress state?
+        // did we find the styleRequest whose customer has this known ID, is in-progress state, and created within the last 1 day?
         assertThat(repository.findByQuery(StyleRequest.class, conditions, values).size(), is(1));
         delete(styleRequests);
     }
-
 
     @Test
     public void testSaveOne() throws Exception {
@@ -167,7 +145,7 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
             Customer c = createCustomer();
             Location l = createLocation();
             repository.saveFew(st, m, c, l);
-            StyleRequest sr = new StyleRequest(st, m, c, l, StyleRequestState.ACCEPTED, DateTime.now());
+            StyleRequest sr = new StyleRequest(st, m, c, l, StyleRequestState.PENDING, DateTime.now());
             sr.setId(repository.allocateId(StyleRequest.class));
             sr.setPermanentId(sr.getId());
             styleRequests.add(sr);

@@ -1,4 +1,4 @@
-package com.hair.business.services.customer;
+package com.hair.business.services;
 
 import static java.lang.String.format;
 
@@ -10,6 +10,7 @@ import com.x.business.utilities.Assert;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -28,12 +29,12 @@ public class StyleServiceImpl implements StyleService {
     }
 
     @Override
-    public Style getStyleInfo(Long styleId) {
+    public Style findStyle(Long styleId) {
         return repository.findOne(styleId, Style.class);
     }
 
     @Override
-    public Style createStyle(String styleName, Long publisherId, Collection<Image> styleImages) {
+    public Style createStyle(String styleName, Long publisherId, List<Image> styleImages) {
         Merchant merchant = repository.findOne(publisherId, Merchant.class);
 
         Assert.isFound(merchant, format("Could not find Merchant with id %s", publisherId));
@@ -49,7 +50,7 @@ public class StyleServiceImpl implements StyleService {
     }
 
     @Override
-    public void updateStyle(Long styleId, Collection<Image> styleImages) {
+    public void updateStyle(Long styleId, List<Image> styleImages) {
         Style style = repository.findOne(styleId, Style.class);
 
         Assert.isFound(style, format("Could not find Style with id %s", styleId));
@@ -61,6 +62,21 @@ public class StyleServiceImpl implements StyleService {
 
         style.setStyleImages(images);
         repository.saveOne(style);
+
+    }
+
+    @Override
+    public List<Style> findStyles(List<Long> ids) {
+        return new ArrayList<>(repository.findMany(ids, Style.class).values());
+    }
+
+    @Override
+    public List<Style> findStylesByDescription(String description) {
+        return null;
+    }
+
+    @Override
+    public void publishStyle(Style style, Merchant merchant) {
 
     }
 }

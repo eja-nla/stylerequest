@@ -11,8 +11,8 @@ import org.junit.Before;
  */
 public class MerchantServiceTest extends AbstractServicesTestBase {
 
-    MerchantService merchantService;
-    Repository repository;
+    private MerchantService merchantService;
+    private Repository repository;
 
 
     @Before
@@ -20,6 +20,5 @@ public class MerchantServiceTest extends AbstractServicesTestBase {
         repository = injector.getInstance(Repository.class);
         merchantService = new MerchantServiceImpl(repository);
     }
-
 
 }
