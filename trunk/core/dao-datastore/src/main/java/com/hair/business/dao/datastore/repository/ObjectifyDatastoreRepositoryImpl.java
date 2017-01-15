@@ -6,9 +6,11 @@ import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Result;
 import com.googlecode.objectify.cmd.Query;
+import com.googlecode.objectify.cmd.QueryKeys;
 import com.hair.business.dao.datastore.abstractRepository.ObjectifyRepository;
 import com.x.business.utilities.Assert;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -38,12 +40,19 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
 
     @Override
     public <T> List<T> findByQuery(Class<T> clazz, String condition, Object value) {
-        return ofy().load().type(clazz).filter(condition, value).list();
+        final QueryKeys<T> keys = ofy().load().type(clazz).filter(condition, value).keys();
+        final List<Long> resultKeys = new ArrayList<>();
+        keys.forEach(key -> resultKeys.add(key.getId()));
+        return new ArrayList<>(findMany(resultKeys, clazz).values());
+
     }
 
     @Override
     public <T> List<T> findByQuery(Class<T> clazz, List<String> conditions, List<Object> values) {
-        return buildQuery(clazz, conditions, values).list();
+        final QueryKeys<T> keys = buildQuery(clazz, conditions, values).keys();
+        final List<Long> resultKeys = new ArrayList<>();
+        keys.forEach(key -> resultKeys.add(key.getId()));
+        return new ArrayList<>(findMany(resultKeys, clazz).values());
     }
 
     @Override
@@ -60,6 +69,7 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
 
     @Override
     public <E> Result<Map<Key<E>, E>> saveFew(E... entities) {
+        Assert.notNull(entities, "entitites must not be null");
         for (E entity : entities) {
             Assert.hasPermanentId(entity);
         }
