@@ -18,6 +18,7 @@ import org.joda.time.DateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -32,6 +33,8 @@ public class StyleRequestServiceImpl implements StyleRequestService {
     private final TaskQueue emailTaskQueue;
 
     private final List<String> APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("merchantPermanentId ==", "state ==", "appointmentDateTime >");
+
+    private static final Logger logger = Logger.getLogger(StyleRequestServiceImpl.class.getName());
 
     @Inject
     public StyleRequestServiceImpl(Repository repository, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue) {
@@ -101,6 +104,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 //                .setDeviceTokens(customer.getDevice().getDeviceId()); // Nullable?
 //        apnsQueue.add(new SendPushNotificationToApnsTask(pushNotification));
 
+        logger.info("Successfully placed Style Request. ID: " + styleRequest.getId());
         return styleRequest;
     }
 

@@ -35,7 +35,7 @@ public class LoginServlet extends HttpServlet {
             }
 
             response.getWriter().print(new Scanner(this.getServletContext().getResourceAsStream("/index.html"), "UTF-8")
-                    .useDelimiter("\\A").next().replaceAll("WELCOME_MESSAGE", userInfo != null ? userInfo : "You are not logged in").toString());
+                    .useDelimiter("\\A").next().replaceAll("WELCOME_MESSAGE", userInfo != null ? userInfo : "You are not logged in"));
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (FileNotFoundException | JSONException e) {
             e.printStackTrace();

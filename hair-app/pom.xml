@@ -34,6 +34,10 @@
             <groupId>com.hair.business</groupId>
             <artifactId>security</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-labs</artifactId>
+        </dependency>
 
     </dependencies>
 
