@@ -1,6 +1,8 @@
 package com.hair.business.services.customer;
 
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.hair.business.services.merchant.MerchantService;
+import com.hair.business.services.merchant.MerchantServiceImpl;
 
 import org.junit.Before;
 

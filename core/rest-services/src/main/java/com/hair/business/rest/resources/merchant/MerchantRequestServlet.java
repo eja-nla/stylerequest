@@ -13,7 +13,7 @@ import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.services.StyleService;
-import com.hair.business.services.customer.MerchantService;
+import com.hair.business.services.merchant.MerchantService;
 
 import java.util.List;
 

@@ -49,6 +49,7 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
         repository.saveOne(m1);
         Merchant r = repository.findOne(m1.getId(), m1.getClass());
         assertThat(r, is(m1));
+
         delete(Collections.singletonList(m1));
     }
 

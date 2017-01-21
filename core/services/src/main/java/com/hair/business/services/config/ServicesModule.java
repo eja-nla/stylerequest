@@ -6,8 +6,8 @@ import com.hair.business.services.StyleRequestService;
 import com.hair.business.services.StyleRequestServiceImpl;
 import com.hair.business.services.customer.CustomerService;
 import com.hair.business.services.customer.CustomerServiceImpl;
-import com.hair.business.services.customer.MerchantService;
-import com.hair.business.services.customer.MerchantServiceImpl;
+import com.hair.business.services.merchant.MerchantService;
+import com.hair.business.services.merchant.MerchantServiceImpl;
 import com.hair.business.services.StyleService;
 import com.hair.business.services.StyleServiceImpl;
 

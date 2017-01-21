@@ -5,9 +5,11 @@ import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
 
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Result;
+import com.googlecode.objectify.TxnType;
 import com.googlecode.objectify.cmd.Query;
 import com.googlecode.objectify.cmd.QueryKeys;
 import com.hair.business.dao.datastore.abstractRepository.ObjectifyRepository;
+import com.hair.business.dao.datastore.stereotype.Transact;
 import com.x.business.utilities.Assert;
 
 import java.util.ArrayList;
@@ -56,6 +58,7 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
     }
 
     @Override
+    @Transact(TxnType.REQUIRED)
     public <E> Key<E> saveOne(E entity) {
         Assert.hasPermanentId(entity);
         return ofy().save().entity(entity).now();

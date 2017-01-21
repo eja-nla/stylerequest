@@ -77,6 +77,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 
     @Override
     public StyleRequest placeStyleRequest(Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
+        // TODO is the merchant free at this time?
         Style style = repository.findOne(styleId, Style.class);
         Assert.isFound(style, String.format("Style with id %s not found", styleId));
         Customer customer = repository.findOne(customerId, Customer.class);
