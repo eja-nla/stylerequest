@@ -1,10 +1,11 @@
-package com.hair.business.services.customer;
+package com.hair.business.services.merchant;
 
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Device;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
-import com.hair.business.beans.entity.StyleRequest;
+
+import org.joda.time.DateTime;
 
 import java.util.Collection;
 
@@ -34,10 +35,8 @@ public interface MerchantService {
 
     void updateMerchant(Merchant merchant);
 
-    void updateRequest(StyleRequest styleRequest);
-
-    void cancelStyleRequest(Customer customer, StyleRequest request);
-
     void pay(Customer customer, Merchant merchant);
+
+    boolean isBooked(Merchant merchant, DateTime period);
 
 }

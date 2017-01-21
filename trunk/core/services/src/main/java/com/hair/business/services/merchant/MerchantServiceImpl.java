@@ -1,6 +1,5 @@
-package com.hair.business.services.customer;
+package com.hair.business.services.merchant;
 
-import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Device;
 import com.hair.business.beans.entity.Location;
@@ -8,7 +7,11 @@ import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 
+import org.joda.time.DateTime;
+
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -23,6 +26,8 @@ public class MerchantServiceImpl implements MerchantService {
     static final Logger logger = Logger.getLogger(MerchantServiceImpl.class.getName());
 
     private final Repository repository;
+
+    private final List<String> isBookedFilter = Arrays.asList("appointmentDateTime >=", "appointmentDateTime <=");
 
     @Inject
     public MerchantServiceImpl(Repository repository) {
@@ -74,19 +79,16 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public void updateRequest(StyleRequest styleRequest) {
-        repository.saveOne(styleRequest);
-    }
-
-    @Override
-    public void cancelStyleRequest(Customer customer, StyleRequest request) {
-        request.setState(StyleRequestState.CANCELLED);
-        // send notification to customer
-    }
-
-    @Override
     public void pay(Customer customer, Merchant merchant) {
 
+    }
+
+    @Override
+    public boolean isBooked(Merchant merchant, DateTime period) {
+        List<Object> isBookedValue = Arrays.asList(period, period.plusHours(1)); //Should we add end time to stylerequest? Using 1hr default
+        List<StyleRequest> styleRequest = repository.findByQuery(StyleRequest.class, isBookedFilter, isBookedValue);
+
+        return styleRequest.size() > 0;
     }
 
 
