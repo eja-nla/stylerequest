@@ -18,7 +18,7 @@ import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.customer.AbstractServicesTestBase;
 import com.hair.business.services.pushNotification.SendPushNotificationToApnsTask;
-import com.x.business.notif.Notification;
+import com.x.business.notif.AbstractNotification;
 import com.x.business.scheduler.TaskQueue;
 
 import org.joda.time.DateTime;
@@ -61,7 +61,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     public void testPlaceStyleRequest() throws Exception {
         StyleRequest styleRequest = placeStyleRequest();
 
-        verify(emailQueue, times(1)).add(any(Notification.class));
+        verify(emailQueue, times(1)).add(any(AbstractNotification.class));
 
         assertThat(styleRequest, is(notNullValue()));
         assertThat(styleRequest.getStyle().getRequestCount(), is(1L));

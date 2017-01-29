@@ -11,10 +11,10 @@ import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 /**
- * Notification object
+ * AbstractNotification object
  * Created by Olukorede Aguda on 21/06/2016.
  */
-public class CancelledStyleRequestNotification extends Notification {
+public class CancelledStyleRequestNotification extends AbstractNotification {
 
     private String body;
 

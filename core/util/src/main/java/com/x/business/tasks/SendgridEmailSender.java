@@ -6,7 +6,7 @@ import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
-import com.x.business.notif.Notification;
+import com.x.business.notif.AbstractNotification;
 import com.x.business.notif.mail.handler.EmailHandler;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +35,7 @@ public class SendgridEmailSender implements EmailHandler {
     }
 
     @Override
-    public synchronized void send(Notification notification) {
+    public synchronized void send(AbstractNotification notification) {
         try {
             request.body = notification.getBody();
             response = sg.api(request);
@@ -54,9 +54,9 @@ public class SendgridEmailSender implements EmailHandler {
      * Lets partition the giant collection into smaller collections
      * */
     @Override
-    public void sendBulk(Collection<Notification> notifications) {
+    public void sendBulk(Collection<AbstractNotification> notifications) {
         partition(notifications instanceof List ? (List) notifications : new ArrayList<>(notifications), 1000).forEach(
-                listOfNotifications -> ((List) listOfNotifications).forEach(notification -> send((Notification) notification))
+                listOfNotifications -> ((List) listOfNotifications).forEach(notification -> send((AbstractNotification) notification))
         );
     }
 }

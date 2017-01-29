@@ -7,10 +7,10 @@ import com.x.business.notif.mail.handler.EmailHandler;
 import com.x.business.tasks.SendgridEmailSender;
 
 /**
- * Notification object
+ * Abstract AbstractNotification
  * Created by Olukorede Aguda on 21/06/2016.
  */
-public abstract class Notification extends AbstractActorEntity implements DeferredTask {
+public abstract class AbstractNotification extends AbstractActorEntity implements DeferredTask {
 
     private static final EmailHandler emailHandler = new SendgridEmailSender();
 
