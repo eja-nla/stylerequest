@@ -47,7 +47,10 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
         srs = new StyleRequestServiceImpl(repository, emailQueue, apnsQueue);
 
         try {
-            System.setProperty("SENDGRID_NEW_STYLE_EMAIL_TEMPLATE_FILE", new File("src/test/resources/newStyleTemplate.json").getCanonicalPath());
+            System.setProperty("SENDGRID_PLACED_STYLE_EMAIL_TEMPLATE_FILE", new File("src/test/resources/styleTemplate_pending.json").getCanonicalPath());
+            System.setProperty("SENDGRID_CANCELLED_STYLE_EMAIL_TEMPLATE_FILE", new File("src/test/resources/styleTemplate_pending.json").getCanonicalPath());
+            System.setProperty("SENDGRID_ACCEPTED_STYLE_EMAIL_TEMPLATE_FILE", new File("src/test/resources/styleTemplate_pending.json").getCanonicalPath());
+            System.setProperty("SENDGRID_COMPLETED_STYLE_EMAIL_TEMPLATE_FILE", new File("src/test/resources/styleTemplate_pending.json").getCanonicalPath());
         } catch (IOException e) {
             e.printStackTrace();
         }

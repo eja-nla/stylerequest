@@ -1,13 +1,13 @@
 package com.hair.business.services;
 
-import com.hair.business.beans.constants.NotificationType;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
-import com.x.business.notif.Notification;
+import com.x.business.notif.CancelledStyleRequestNotification;
+import com.x.business.notif.PlacedStyleRequestNotification;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 import com.x.business.scheduler.stereotype.EmailTaskQueue;
@@ -31,6 +31,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 
     private final Repository repository;
     private final TaskQueue emailTaskQueue;
+    private final TaskQueue apnsQueue;
 
     private final List<String> APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("merchantPermanentId ==", "state ==", "appointmentDateTime >");
 
@@ -40,6 +41,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
     public StyleRequestServiceImpl(Repository repository, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue) {
         this.repository = repository;
         this.emailTaskQueue = emailTaskQueue;
+        this.apnsQueue = apnsQueue;
     }
 
     @Override
@@ -95,7 +97,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 
         repository.saveFew(styleRequest, style);
 
-        emailTaskQueue.add(new Notification(styleRequest, NotificationType.PUSH_EMAIL));
+        emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest));
 
 //        Use feature toggle to turn this off or on instead of commenting
 //        PushNotification pushNotification = new PushNotification()
@@ -105,7 +107,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 //                .setDeviceTokens(customer.getDevice().getDeviceId()); // Nullable?
 //        apnsQueue.add(new SendPushNotificationToApnsTask(pushNotification));
 
-        logger.info("Successfully placed Style Request. ID: " + styleRequest.getId());
+        logger.info("Placed Style Request. ID: " + styleRequest.getId());
         return styleRequest;
     }
 
@@ -120,7 +122,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
         updateStyleRequest(styleRequest);
 
         //TODO notify merchant
-        emailTaskQueue.add(new Notification(styleRequest, NotificationType.PUSH_EMAIL));
+        emailTaskQueue.add(new CancelledStyleRequestNotification(styleRequest));
 
     }
 
