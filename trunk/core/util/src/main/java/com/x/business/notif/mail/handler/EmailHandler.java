@@ -1,6 +1,6 @@
 package com.x.business.notif.mail.handler;
 
-import com.x.business.notif.Notification;
+import com.x.business.notif.AbstractNotification;
 
 import java.util.Collection;
 
@@ -9,6 +9,6 @@ import java.util.Collection;
  */
 public interface EmailHandler {
 
-    void send(Notification notification);
-    void sendBulk(Collection<Notification> notifications);
+    void send(AbstractNotification notification);
+    void sendBulk(Collection<AbstractNotification> notifications);
 }
