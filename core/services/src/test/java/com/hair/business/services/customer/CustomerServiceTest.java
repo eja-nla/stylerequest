@@ -32,7 +32,7 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
         cs = new CustomerServiceImpl(repository, emailQueue, apnsQueue);
 
         try {
-            System.setProperty("SENDGRID_NEW_STYLE_EMAIL_TEMPLATE_FILE", new File("src/test/resources/newStyleTemplate.json").getCanonicalPath());
+            System.setProperty("SENDGRID_NEW_STYLE_EMAIL_TEMPLATE_FILE", new File("src/test/resources/styleTemplate_pending.json").getCanonicalPath());
         } catch (IOException e) {
             e.printStackTrace();
         }

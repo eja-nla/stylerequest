@@ -37,6 +37,12 @@ public interface MerchantService {
 
     void pay(Customer customer, Merchant merchant);
 
+    /**
+     * Is the merchant booked during this period?
+     *
+     * */
     boolean isBooked(Merchant merchant, DateTime period);
+
+    void acceptStyleRequest(Long merchantId, Long styleRequestId);
 
 }
