@@ -42,20 +42,22 @@ public class StyleServiceTest extends AbstractServicesTestBase {
     }
 
     @Test
-    public void createStyle() throws Exception {
+    public void testPublishStyle() throws Exception {
         Merchant merchant = createMerchant();
         repository.saveOne(merchant);
 
-        Style style = styleService.createStyle("Test style", merchant.getId(), singletonList(createImage()));
+        Style style = styleService.publishStyle("Test style", 2, merchant.getId(), singletonList(createImage()));
 
         assertThat(style, is(notNullValue()));
 
     }
 
     @Test
-    public void updateStyle() throws Exception {
+    public void testUpdateStyle() throws Exception {
         Style style = EntityTestConstants.createStyle();
         repository.saveOne(style);
+
+        assertThat(style.getStyleImages().size(), is(1));
 
         styleService.updateStyle(style.getId(), singletonList(createImage()));
 
@@ -64,7 +66,7 @@ public class StyleServiceTest extends AbstractServicesTestBase {
     }
 
     @Test
-    public void findStyles() throws Exception {
+    public void testFindStyles() throws Exception {
         Collection<Style> styles = createStyles();
         repository.saveMany(styles).now();
 

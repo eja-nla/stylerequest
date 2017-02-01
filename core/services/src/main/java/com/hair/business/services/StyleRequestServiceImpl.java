@@ -33,7 +33,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;
 
-    private final List<String> APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("merchantPermanentId ==", "state ==", "appointmentDateTime >");
+    private final List<String> APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("merchantPermanentId ==", "state ==", "appointmentStartTime >");
 
     private static final Logger logger = Logger.getLogger(StyleRequestServiceImpl.class.getName());
 
@@ -89,7 +89,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 
         style.setRequestCount(style.getRequestCount() + 1);
 
-        StyleRequest styleRequest = new StyleRequest(style, merchant, customer, merchant.getLocation(), StyleRequestState.PENDING, appointmentTime);
+        StyleRequest styleRequest = new StyleRequest(style, merchant, customer, merchant.getLocation(), StyleRequestState.PENDING, appointmentTime, new DateTime().plusMinutes(style.getDurationEstimate()));
         Long id = repository.allocateId(StyleRequest.class);
         styleRequest.setId(id);
         styleRequest.setPermanentId(id);

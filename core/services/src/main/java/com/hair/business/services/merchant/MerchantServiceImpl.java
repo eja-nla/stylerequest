@@ -112,7 +112,7 @@ public class MerchantServiceImpl implements MerchantService {
         StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
         Assert.isFound(styleRequest, String.format("StyleRequest with id %s not found", styleRequest));
 
-        Assert.isTrue(!isBooked(merchant, styleRequest.getAppointmentDateTime()), "%s has an active booking during this period.", merchant.getName());
+        Assert.isTrue(!isBooked(merchant, styleRequest.getAppointmentStartTime()), "%s has an active booking during this period.", merchant.getName());
 
         styleRequest.setState(StyleRequestState.ACCEPTED);
         styleRequestService.updateStyleRequest(styleRequest);

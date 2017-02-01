@@ -35,8 +35,9 @@ public class StyleRequestTest extends AbstractDatastoreTestBase {
 
     private static final Logger LOGGER = Logger.getLogger(StyleRequestTest.class.getName());
 
-    ObjectifyRepository repo = new ObjectifyDatastoreRepositoryImpl();
+    private ObjectifyRepository repo = new ObjectifyDatastoreRepositoryImpl();
 
+    @Override
     @Before
     public void setUp() {
         super.setUp();
@@ -60,7 +61,7 @@ public class StyleRequestTest extends AbstractDatastoreTestBase {
         Location location = createLocation();
         repo.saveFew(style, merchant, customer, location);
 
-        StyleRequest s = new StyleRequest(style, merchant, customer, location, StyleRequestState.ACCEPTED, DateTime.now());
+        StyleRequest s = new StyleRequest(style, merchant, customer, location, StyleRequestState.ACCEPTED, DateTime.now(), DateTime.now().plusMinutes(style.getDurationEstimate()));
         s.setId(new Random().nextLong());
         s.setPermanentId(new Random().nextLong());
         return s;

@@ -31,7 +31,8 @@ public class StyleRequest extends AbstractActorEnablerEntity {
     private @Load Ref<Location> location;
 
     private @Index StyleRequestState state;
-    private @Index DateTime appointmentDateTime;
+    private @Index DateTime appointmentStartTime;
+    private @Index DateTime appointmentEndTime;
     private @Index Long customerPermanentId;
     private @Index Long merchantPermanentId;
     private @Index Long locationPermanentId;
@@ -39,14 +40,15 @@ public class StyleRequest extends AbstractActorEnablerEntity {
     public StyleRequest(){
     }
 
-    public StyleRequest(Style style, Merchant merchant, Customer customer, Location location, StyleRequestState state, DateTime appointmentDateTime) {
+    public StyleRequest(Style style, Merchant merchant, Customer customer, Location location, StyleRequestState state, DateTime appointmentStartTime, DateTime appointmentEndTime) {
         this();
         this.style = Ref.create(style);
         this.merchant = Ref.create(merchant);
         this.customer = Ref.create(customer);
         this.location = Ref.create(location);
         this.state = state;
-        this.appointmentDateTime = appointmentDateTime;
+        this.appointmentStartTime = appointmentStartTime;
+        this.appointmentEndTime = appointmentEndTime;
 
         this.customerPermanentId = customer.getPermanentId();
         this.merchantPermanentId = merchant.getPermanentId();
@@ -102,14 +104,6 @@ public class StyleRequest extends AbstractActorEnablerEntity {
         this.state = state;
     }
 
-    public DateTime getAppointmentDateTime() {
-        return appointmentDateTime;
-    }
-
-    public void setAppointmentDateTime(DateTime appointmentDateTime) {
-        this.appointmentDateTime = appointmentDateTime;
-    }
-
     public Long getCustomerPermanentId() {
         return customerPermanentId;
     }
@@ -122,4 +116,19 @@ public class StyleRequest extends AbstractActorEnablerEntity {
         return locationPermanentId;
     }
 
+    public DateTime getAppointmentStartTime() {
+        return appointmentStartTime;
+    }
+
+    public void setAppointmentStartTime(DateTime appointmentStartTime) {
+        this.appointmentStartTime = appointmentStartTime;
+    }
+
+    public DateTime getAppointmentEndTime() {
+        return appointmentEndTime;
+    }
+
+    public void setAppointmentEndTime(DateTime appointmentEndTime) {
+        this.appointmentEndTime = appointmentEndTime;
+    }
 }

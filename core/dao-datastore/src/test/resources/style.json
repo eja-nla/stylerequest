@@ -7,43 +7,7 @@
   "requestCount" : 0,
   "trending" : true,
   "active" : true,
-  "publisher" : {
-    "permanentId" : 5369939313105444296,
-    "version" : 1,
-    "createdDate" : "2016-08-29T20:22:44.556Z",
-    "lastUpdated" : "2016-08-29T20:22:44.556Z",
-    "name" : "Test Merchant Name",
-    "rating" : 1497884743,
-    "email" : "merchant@email.com",
-    "phone" : "+1134555643654",
-    "device" : {
-      "permanentId" : 310701790109053820,
-      "version" : 1,
-      "createdDate" : "2016-08-29T20:22:44.461Z",
-      "id" : 2653376445214453979,
-      "deviceId" : "p236o6dhgmr2i38j9tmr1ba42l",
-      "os" : "ios9",
-      "deviceType" : "IOS"
-    },
-    "photoUrl" : "http://some.photo.url",
-    "gender" : "F",
-    "active" : true,
-    "id" : -1733350221602184676,
-    "location" : {
-      "permanentId" : -4766811198420564245,
-      "version" : 1,
-      "createdDate" : "2016-08-29T20:22:44.556Z",
-      "id" : -5712228046471495956,
-      "city" : "London",
-      "state" : "Alabama",
-      "country" : "UK",
-      "geoPoint" : {
-        "id" : -2914024913972574844,
-        "latitude" : 51.503407,
-        "longitude" : -0.127592
-      }
-    }
-  },
+  "publisherId" : -1733350221602184676,
   "location" : {
     "permanentId" : -4766811198420564245,
     "version" : 1,
@@ -66,5 +30,6 @@
     "url" : "http//187v58eaa902ostno5f9rm30l7.com",
     "owner" : "test owner name",
     "views" : 20
-  } ]
+  } ],
+  "durationEstimate" : 5
 }

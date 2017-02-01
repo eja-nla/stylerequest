@@ -29,21 +29,24 @@ public class Style extends AbstractActorEnablerEntity {
 
     private boolean active;
 
-    private Merchant publisher;
+    private Long publisherId;
 
     private Location location;
 
-    private Collection<Image> styleImages; // a style will have multiple images e.g. showing the sides, the back, the front etc.
+    private Collection<Image> styleImages;
+
+    private int durationEstimate; // how long to make this style, in minutes
 
     public Style(){}
 
-    public Style(String name, Merchant publisher, Collection<Image> styleImages) {
+    public Style(String name, int durationEstimate, Long publisherId, Location location, Collection<Image> styleImages) {
         this();
         this.name = name;
-        this.publisher = publisher;
+        this.durationEstimate = durationEstimate;
+        this.publisherId = publisherId;
         this.trending = true;
         this.active = true;
-        this.location = publisher.getLocation();
+        this.location = location;
         this.styleImages = styleImages;
     }
 
@@ -61,14 +64,6 @@ public class Style extends AbstractActorEnablerEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Merchant getPublisher() {
-        return publisher;
-    }
-
-    public void setPublisher(Merchant publisher) {
-        this.publisher = publisher;
     }
 
     public long getRequestCount() {
@@ -111,4 +106,19 @@ public class Style extends AbstractActorEnablerEntity {
         this.styleImages = styleImages;
     }
 
+    public int getDurationEstimate() {
+        return durationEstimate;
+    }
+
+    public void setDurationEstimate(int durationEstimate) {
+        this.durationEstimate = durationEstimate;
+    }
+
+    public Long getPublisherId() {
+        return publisherId;
+    }
+
+    public void setPublisherId(Long publisherId) {
+        this.publisherId = publisherId;
+    }
 }

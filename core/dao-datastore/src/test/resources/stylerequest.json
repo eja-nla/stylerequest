@@ -9,46 +9,11 @@
     "createdDate" : "2016-08-29T20:23:31.904Z",
     "id" : 7637867251999742074,
     "name" : "didi",
+    "durationEstimate" : 4,
     "requestCount" : 0,
     "trending" : true,
     "active" : true,
-    "publisher" : {
-      "permanentId" : -8671151828390656714,
-      "version" : 1,
-      "createdDate" : "2016-08-29T20:23:31.903Z",
-      "lastUpdated" : "2016-08-29T20:23:31.903Z",
-      "name" : "Test Merchant Name",
-      "rating" : -296322313,
-      "email" : "merchant@email.com",
-      "phone" : "+1134555643654",
-      "device" : {
-        "permanentId" : 593198085456431714,
-        "version" : 1,
-        "createdDate" : "2016-08-29T20:23:31.693Z",
-        "id" : -2468310238415275337,
-        "deviceId" : "olfvos431ldve9unluj0vq804v",
-        "os" : "ios9",
-        "deviceType" : "IOS"
-      },
-      "photoUrl" : "http://some.photo.url",
-      "gender" : "F",
-      "active" : true,
-      "id" : -6411171513228417947,
-      "location" : {
-        "permanentId" : 5390107876284084702,
-        "version" : 1,
-        "createdDate" : "2016-08-29T20:23:31.903Z",
-        "id" : -575463445409962285,
-        "city" : "London",
-        "state" : "Alabama",
-        "country" : "UK",
-        "geoPoint" : {
-          "id" : -7904877200652725625,
-          "latitude" : 51.503407,
-          "longitude" : -0.127592
-        }
-      }
-    },
+    "publisherId" : -6411171513228417947,
     "location" : {
       "permanentId" : 5390107876284084702,
       "version" : 1,
@@ -162,7 +127,8 @@
     }
   },
   "state" : "ACCEPTED",
-  "appointmentDateTime" : "2016-08-29T20:23:32.617Z",
+  "appointmentStartTime" : "2016-08-29T20:23:32.617Z",
+  "appointmentEndTime" : "2016-08-29T20:53:32.617Z",
   "customerPermanentId" : "1117821921828817150",
   "merchantPermanentId" : "-3306812695753391028",
   "locationPermanentId" : "-3193905381353190639"

@@ -97,14 +97,15 @@ public class EntityTestConstants {
     }
 
     public static StyleRequest createStyleRequest(){
-        StyleRequest s = new StyleRequest(createStyle(), createMerchant(), createCustomer(), createLocation(), StyleRequestState.ACCEPTED, DateTime.now());
+        StyleRequest s = new StyleRequest(createStyle(), createMerchant(), createCustomer(), createLocation(), StyleRequestState.ACCEPTED, DateTime.now(), DateTime.now().plusMinutes(6));
         s.setId(new Random().nextLong());
         s.setPermanentId(s.getId());
         return s;
     }
 
     public static Style createStyle(){
-        Style s = new Style("didi", createMerchant(), singletonList(createImage()));
+        Merchant m = createMerchant();
+        Style s = new Style("didi", 20, m.getId(), m.getLocation(), singletonList(createImage()));
         s.setId(new Random().nextLong());
         s.setPermanentId(new Random().nextLong());
         return s;
