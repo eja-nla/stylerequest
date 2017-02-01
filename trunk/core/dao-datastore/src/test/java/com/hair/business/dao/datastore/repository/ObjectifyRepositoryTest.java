@@ -38,6 +38,8 @@ import java.util.stream.IntStream;
 
 /**
  * Created by Olukorede Aguda on 08/06/2016.
+ *
+ * Ofy repo test
  */
 public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
 
@@ -86,7 +88,7 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
         styleRequests.get(0).setState(StyleRequestState.IN_PROGRESS);
         repository.saveMany(styleRequests);
 
-        List<String> conditions = new ArrayList<>(Arrays.asList("customerPermanentId", "state", "appointmentDateTime >"));
+        List<String> conditions = new ArrayList<>(Arrays.asList("customerPermanentId", "state", "appointmentStartTime >"));
         List<Object> values = new ArrayList<>(Arrays.asList(styleRequests.get(0).getCustomerPermanentId(), StyleRequestState.IN_PROGRESS, new DateTime().minusDays(1)));
 
         // did we find the styleRequest whose customer has this known ID, is in-progress state, and created within the last 1 day?
@@ -146,7 +148,7 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
             Customer c = createCustomer();
             Location l = createLocation();
             repository.saveFew(st, m, c, l);
-            StyleRequest sr = new StyleRequest(st, m, c, l, StyleRequestState.PENDING, DateTime.now());
+            StyleRequest sr = new StyleRequest(st, m, c, l, StyleRequestState.PENDING, DateTime.now(), DateTime.now().plusMinutes(st.getDurationEstimate()));
             sr.setId(repository.allocateId(StyleRequest.class));
             sr.setPermanentId(sr.getId());
             styleRequests.add(sr);

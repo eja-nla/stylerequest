@@ -34,13 +34,13 @@ public class StyleServiceImpl implements StyleService {
     }
 
     @Override
-    public Style createStyle(String styleName, Long publisherId, List<Image> styleImages) {
+    public Style publishStyle(String styleName, int duration, Long publisherId, List<Image> styleImages) {
         Merchant merchant = repository.findOne(publisherId, Merchant.class);
 
         Assert.isFound(merchant, format("Could not find Merchant with id %s", publisherId));
 
         Long stylePermId = repository.allocateId(Style.class);
-        Style style = new Style(styleName, merchant, styleImages);
+        Style style = new Style(styleName, duration, merchant.getId(), merchant.getLocation(), styleImages);
 
         style.setId(stylePermId);
         style.setPermanentId(stylePermId);

@@ -41,7 +41,7 @@ public class AcceptedStyleRequestNotification extends AbstractNotification {
                 styleRequest.getMerchant().getEmail(),
                 styleRequest.getCustomer().getName().split(StringUtils.SPACE)[0],
                 styleRequest.getStyle().getName(),
-                styleRequest.getAppointmentDateTime().toDate(),
+                styleRequest.getAppointmentStartTime().toDate(),
                 styleRequest.getMerchant().getName(),
                 adminEmail
         );

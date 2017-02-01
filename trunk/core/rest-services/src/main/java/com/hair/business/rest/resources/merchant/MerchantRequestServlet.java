@@ -71,8 +71,8 @@ public class MerchantRequestServlet {
     @Path(CREATE_STYLE_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Style createStyle(List<Image> styleImages, @QueryParam("styleName") String styleName, @QueryParam("merchantId") Long merchantId) {
-        return styleService.createStyle(styleName, merchantId, styleImages);
+    public Style publishStyle(List<Image> styleImages, @QueryParam("styleName") String styleName, @QueryParam("duration") int estimatedDuration, @QueryParam("merchantId") Long merchantId) {
+        return styleService.publishStyle(styleName, estimatedDuration, merchantId, styleImages);
     }
 
 }
