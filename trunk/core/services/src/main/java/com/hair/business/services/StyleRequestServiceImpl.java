@@ -6,6 +6,7 @@ import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.hair.business.services.stereotype.ExecutionTimer;
 import com.x.business.notif.CancelledStyleRequestNotification;
 import com.x.business.notif.PlacedStyleRequestNotification;
 import com.x.business.scheduler.TaskQueue;
@@ -77,6 +78,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
         return repository.findByQuery(StyleRequest.class, APPOINTMENTS_QUERY_CONDITIONS, values);
     }
 
+    @ExecutionTimer
     @Override
     public StyleRequest placeStyleRequest(Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
         // TODO is the merchant free at this time?
