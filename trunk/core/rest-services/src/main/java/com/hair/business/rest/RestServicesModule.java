@@ -50,6 +50,7 @@ public class RestServicesModule extends ServletModule {
         filter(API_ENDPOINT).through(ObjectifyFilter.class);
 
         bind(ObjectifyFilter.class).in(Singleton.class);
+
         bind(RestEndpointServletFilter.class).toInstance(new RestEndpointServletFilter(servletContext));
 
         // Jackson

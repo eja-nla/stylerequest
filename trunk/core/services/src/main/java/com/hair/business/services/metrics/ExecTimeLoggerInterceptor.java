@@ -10,9 +10,9 @@ import java.util.logging.Logger;
  *
  * Logging interceptor
  */
-public class LoggingInterceptor implements MethodInterceptor {
+public class ExecTimeLoggerInterceptor implements MethodInterceptor {
 
-    private static final Logger log = Logger.getLogger(LoggingInterceptor.class.getName());
+    private static final Logger log = Logger.getLogger(ExecTimeLoggerInterceptor.class.getName());
 
     @Override
     public Object invoke(final MethodInvocation invocation) throws Throwable {
