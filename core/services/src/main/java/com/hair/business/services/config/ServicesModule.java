@@ -14,7 +14,7 @@ import com.hair.business.services.customer.CustomerServiceImpl;
 import com.hair.business.services.merchant.MerchantService;
 import com.hair.business.services.merchant.MerchantServiceImpl;
 import com.hair.business.services.metrics.ExecTimeLoggerInterceptor;
-import com.hair.business.services.stereotype.Timer;
+import com.hair.business.services.stereotype.Timed;
 
 /**
  * Created by Olukorede Aguda on 24/05/2016.
@@ -31,6 +31,6 @@ public class ServicesModule extends AbstractModule {
         bind(StyleService.class).to(StyleServiceImpl.class);
         bind(StyleRequestService.class).to(StyleRequestServiceImpl.class);
 
-        bindInterceptor(any(), annotatedWith(Timer.class), new ExecTimeLoggerInterceptor());
+        bindInterceptor(any(), annotatedWith(Timed.class), new ExecTimeLoggerInterceptor());
     }
 }
