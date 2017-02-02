@@ -13,11 +13,13 @@ import com.hair.business.services.customer.CustomerService;
 import com.hair.business.services.customer.CustomerServiceImpl;
 import com.hair.business.services.merchant.MerchantService;
 import com.hair.business.services.merchant.MerchantServiceImpl;
-import com.hair.business.services.metrics.LoggingInterceptor;
-import com.hair.business.services.stereotype.ExecutionTimer;
+import com.hair.business.services.metrics.ExecTimeLoggerInterceptor;
+import com.hair.business.services.stereotype.Timer;
 
 /**
  * Created by Olukorede Aguda on 24/05/2016.
+ *
+ * Services module
  */
 public class ServicesModule extends AbstractModule {
 
@@ -29,6 +31,6 @@ public class ServicesModule extends AbstractModule {
         bind(StyleService.class).to(StyleServiceImpl.class);
         bind(StyleRequestService.class).to(StyleRequestServiceImpl.class);
 
-        bindInterceptor(any(), annotatedWith(ExecutionTimer.class), new LoggingInterceptor());
+        bindInterceptor(any(), annotatedWith(Timer.class), new ExecTimeLoggerInterceptor());
     }
 }
