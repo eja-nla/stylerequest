@@ -57,7 +57,7 @@ public class MerchantRequestServlet {
     @Path(CREATE_MERCHANT_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response createNewMerchant(@Context HttpServletRequest request, Merchant merchant) {
+    public Response createMerchant(@Context HttpServletRequest request, Merchant merchant) {
         GitkitUser user = (GitkitUser) request.getAttribute("user");
 
         merchant.setEmail(user.getEmail());
