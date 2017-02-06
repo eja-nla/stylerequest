@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "Request Style Collection",
-		"_postman_id": "63e43713-ebbd-ec8f-96e2-d10347888140",
+		"_postman_id": "8b74a268-efb5-1e67-3a4e-be11c2de4390",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -16,9 +16,9 @@
 						"type": "text/javascript",
 						"exec": [
 							"postman.setEnvironmentVariable(\"serviceUrl\", \"http://localhost:4567/api/v1\");",
-							"postman.setEnvironmentVariable(\"customerId\", \"-5484188765326480532\");",
+							"postman.setEnvironmentVariable(\"customerId\", \"-5064501332121306936\");",
 							"",
-							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+							"tests[\"Customer created\"] = responseCode.code === 200;"
 						]
 					}
 				}
@@ -35,7 +35,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"permanentId\" : -1393398114680710636,\n  \"version\" : 1,\n  \"createdDate\" : \"2016-08-29T20:17:00.922Z\",\n  \"lastUpdated\" : \"2016-08-29T20:17:00.922Z\",\n  \"name\" : \"Test Customer Name\",\n  \"rating\" : 1035848696,\n  \"email\" : \"customer@email.com\",\n  \"phone\" : \"+4453635436237\",\n  \"device\" : {\n    \"permanentId\" : -9143794474059925629,\n    \"version\" : 1,\n    \"createdDate\" : \"2016-08-29T20:17:00.653Z\",\n    \"id\" : 5982897850378205858,\n    \"deviceId\" : \"477d2ac490a17bb1d4c8a6ec7c50d4b1b9a36499acd45bf5fcac103cde038eff\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"M\",\n  \"active\" : true,\n  \"id\" : -5484188765326480532,\n  \"location\" : {\n    \"permanentId\" : -1681254723646171463,\n    \"version\" : 1,\n    \"createdDate\" : \"2016-08-29T20:17:00.922Z\",\n    \"id\" : 2277054385317339854,\n    \"city\" : \"London\",\n    \"state\" : \"Alabama\",\n    \"country\" : \"UK\",\n    \"geoPoint\" : {\n      \"id\" : -389789291234472118,\n      \"latitude\" : 51.503407,\n      \"longitude\" : -0.127592\n    }\n  }\n}"
+					"raw": "{\n  \"permanentId\" : 8320888948098894711,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-06T07:53:27.331Z\",\n  \"lastUpdated\" : \"2017-02-06T07:53:27.331Z\",\n  \"name\" : \"Test Customer Name\",\n  \"email\" : \"customer@email.com\",\n  \"phone\" : \"+4453635436237\",\n  \"device\" : {\n    \"permanentId\" : -3137618711185941452,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-06T07:53:27.179Z\",\n    \"id\" : -3904858749068853609,\n    \"deviceId\" : \"e4slbgh5q9bg9almdmrc58la30\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"M\",\n  \"active\" : true,\n  \"id\" : -5064501332121306936,\n  \"location\" : {\n    \"permanentId\" : 4918757416721647838,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-06T07:53:27.331Z\",\n    \"id\" : 4918757416721647838,\n    \"city\" : \"London\",\n    \"state\" : \"Alabama\",\n    \"country\" : \"UK\",\n    \"geoPoint\" : {\n      \"id\" : -7978722085642133050,\n      \"latitude\" : 51.503407,\n      \"longitude\" : -0.127592\n    }\n  },\n  \"ratings\" : {\n    \"0\" : 0,\n    \"1\" : 0,\n    \"2\" : 0,\n    \"3\" : 0,\n    \"4\" : 3,\n    \"5\" : 2\n  },\n  \"score\" : 4.5\n}"
 				},
 				"description": "Create new customer"
 			},
@@ -59,7 +59,10 @@
 				"url": "{{serviceUrl}}/customer/info/?id={{customerId}}",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "Find newly created customer"
 			},
 			"response": []
@@ -72,9 +75,9 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Merchant created\"] = responseCode.code === 200;",
 							"",
-							"postman.setEnvironmentVariable(\"merchantId\", \"4515613696492967909\");"
+							"postman.setEnvironmentVariable(\"merchantId\", \"-4689811460267167170\");"
 						]
 					}
 				}
@@ -96,7 +99,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"permanentId\" : -1311116125908288744,\n  \"version\" : 1,\n  \"createdDate\" : \"2016-08-29T20:19:54.474Z\",\n  \"lastUpdated\" : \"2016-08-29T20:19:54.474Z\",\n  \"name\" : \"Test Merchant Name\",\n  \"rating\" : -181196245,\n  \"email\" : \"merchant@email.com\",\n  \"phone\" : \"+1134555643654\",\n  \"device\" : {\n    \"permanentId\" : -4750537387206098697,\n    \"version\" : 1,\n    \"createdDate\" : \"2016-08-29T20:19:54.322Z\",\n    \"id\" : 4631413849697095033,\n    \"deviceId\" : \"577d2ac490a17bb1d4c8a6ec7c50d4b1b9a36499acd45bf5fcac103cde038eff\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"F\",\n  \"active\" : true,\n  \"id\" : 4515613696492967909,\n  \"location\" : {\n    \"permanentId\" : -7986385252235475011,\n    \"version\" : 1,\n    \"createdDate\" : \"2016-08-29T20:19:54.474Z\",\n    \"id\" : 4372101210244482822,\n    \"city\" : \"London\",\n    \"state\" : \"Alabama\",\n    \"country\" : \"UK\",\n    \"geoPoint\" : {\n      \"id\" : 2991347697981155182,\n      \"latitude\" : 51.503407,\n      \"longitude\" : -0.127592\n    }\n  }\n}\n"
+					"raw": "{\n  \"permanentId\" : -4689811460267167170,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-06T07:54:39.548Z\",\n  \"lastUpdated\" : \"2017-02-06T07:54:39.548Z\",\n  \"name\" : \"Test Merchant Name\",\n  \"email\" : \"merchant@email.com\",\n  \"phone\" : \"+1134555643654\",\n  \"device\" : {\n    \"permanentId\" : -5804814280700189014,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-06T07:54:39.410Z\",\n    \"id\" : 1191626847201020297,\n    \"deviceId\" : \"j9bf5g7mnbf56jbd4j2loi1rv3\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"F\",\n  \"active\" : true,\n  \"id\" : -4689811460267167170,\n  \"location\" : {\n    \"permanentId\" : -4132900056413104581,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-06T07:54:39.548Z\",\n    \"id\" : -4132900056413104581,\n    \"city\" : \"London\",\n    \"state\" : \"Alabama\",\n    \"country\" : \"UK\",\n    \"geoPoint\" : {\n      \"id\" : 2585139948139706069,\n      \"latitude\" : 51.503407,\n      \"longitude\" : -0.127592\n    }\n  },\n  \"ratings\" : {\n    \"0\" : 0,\n    \"1\" : 0,\n    \"2\" : 0,\n    \"3\" : 0,\n    \"4\" : 3,\n    \"5\" : 2\n  },\n  \"score\" : 4.5\n}"
 				},
 				"description": "Create new merchant"
 			},
@@ -119,7 +122,10 @@
 				"url": "{{serviceUrl}}/merchant/info/?id={{merchantId}}",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": "Find newly created merchant"
 			},
 			"response": []
@@ -132,7 +138,7 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Syle created\"] = responseCode.code === 200;",
 							"",
 							"var jsonData = JSON.parse(responseBody);",
 							"postman.setEnvironmentVariable(\"styleId\", jsonData.id);"
@@ -141,7 +147,7 @@
 				}
 			],
 			"request": {
-				"url": "{{serviceUrl}}/merchant/create/style?styleName=patewo&merchantId={{merchantId}}",
+				"url": "{{serviceUrl}}/merchant/create/style?styleName=didi&merchantId={{merchantId}}&duration=45",
 				"method": "POST",
 				"header": [
 					{
@@ -152,7 +158,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[{\n  \"permanentId\" : 3549878539167814701,\n  \"version\" : 1,\n  \"id\" : -5224463303045973708,\n  \"url\" : \"http//lsoigej4bl8li4mmg6va4ullra.com\",\n  \"owner\" : \"test owner name\",\n  \"views\" : 20\n}]"
+					"raw": "[{\n  \"permanentId\" : 3549878539167814701,\n  \"version\" : 1,\n  \"id\" : -5224463303045973708,\n  \"url\" : \"http//lsoigej4bl8li4mmg6va4ullra.com\",\n  \"owner\" : \"test owner name\",\n  \"views\" : 20,\n  \"durationEstimate\" : 5\n  \n}]"
 				},
 				"description": "Create new Style"
 			},
@@ -175,7 +181,10 @@
 				"url": "{{serviceUrl}}/style/info/?id={{styleId}}",
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"description": ""
 			},
 			"response": []
@@ -188,7 +197,9 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+							"tests[\"Style request placed\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);"
 						]
 					}
 				}

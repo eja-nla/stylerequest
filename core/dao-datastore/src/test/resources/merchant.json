@@ -1,37 +1,45 @@
 {
-  "permanentId" : -1311116125908288744,
+  "permanentId" : -4689811460267167170,
   "version" : 1,
-  "createdDate" : "2016-08-29T20:19:54.474Z",
-  "lastUpdated" : "2016-08-29T20:19:54.474Z",
+  "createdDate" : "2017-02-06T07:54:39.548Z",
+  "lastUpdated" : "2017-02-06T07:54:39.548Z",
   "name" : "Test Merchant Name",
-  "rating" : -181196245,
   "email" : "merchant@email.com",
   "phone" : "+1134555643654",
   "device" : {
-    "permanentId" : -4750537387206098697,
+    "permanentId" : -5804814280700189014,
     "version" : 1,
-    "createdDate" : "2016-08-29T20:19:54.322Z",
-    "id" : 4631413849697095033,
-    "deviceId" : "577d2ac490a17bb1d4c8a6ec7c50d4b1b9a36499acd45bf5fcac103cde038eff",
+    "createdDate" : "2017-02-06T07:54:39.410Z",
+    "id" : 1191626847201020297,
+    "deviceId" : "j9bf5g7mnbf56jbd4j2loi1rv3",
     "os" : "ios9",
     "deviceType" : "IOS"
   },
   "photoUrl" : "http://some.photo.url",
   "gender" : "F",
   "active" : true,
-  "id" : 4515613696492967909,
+  "id" : -4689811460267167170,
   "location" : {
-    "permanentId" : -7986385252235475011,
+    "permanentId" : -4132900056413104581,
     "version" : 1,
-    "createdDate" : "2016-08-29T20:19:54.474Z",
-    "id" : 4372101210244482822,
+    "createdDate" : "2017-02-06T07:54:39.548Z",
+    "id" : -4132900056413104581,
     "city" : "London",
     "state" : "Alabama",
     "country" : "UK",
     "geoPoint" : {
-      "id" : 2991347697981155182,
+      "id" : 2585139948139706069,
       "latitude" : 51.503407,
       "longitude" : -0.127592
     }
-  }
+  },
+  "ratings" : {
+    "0" : 0,
+    "1" : 0,
+    "2" : 0,
+    "3" : 0,
+    "4" : 3,
+    "5" : 2
+  },
+  "score" : 4.5
 }

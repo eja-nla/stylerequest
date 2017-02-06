@@ -14,9 +14,13 @@ import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Olukorede Aguda on 23/06/2016.
+ *
+ *
  */
 public class CustomerServiceTest extends AbstractServicesTestBase {
 
@@ -45,6 +49,30 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
         Customer customer = createCustomer();
         cs.deactivateCustomer(customer);
         assertThat(customer.isActive(), is(false));
+    }
+
+    @Test
+    public void testRatings() {
+        Customer customer = createCustomer();
+        Map<Integer, Integer> testRatings = new HashMap<>();
+        testRatings.put(0, 0); testRatings.put(1, 0);testRatings.put(2, 0);testRatings.put(3, 0);testRatings.put(4, 3);testRatings.put(5, 2);
+
+        customer.setRatings(testRatings);
+
+        cs.saveCustomer(customer);
+        cs.updateRating(customer.getId(), 5);
+        assertThat(customer.getScore(), is(4.5));
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testRatingsFail() {
+        Customer customer = createCustomer();
+        Map<Integer, Integer> testRatings = new HashMap<>();
+        testRatings.put(0, 0); testRatings.put(1, 0);testRatings.put(2, 0);testRatings.put(3, 0);testRatings.put(4, 3);testRatings.put(5, 2);
+        customer.setRatings(testRatings);
+        cs.saveCustomer(customer);
+
+        cs.updateRating(customer.getId(), 0);
     }
 
 }

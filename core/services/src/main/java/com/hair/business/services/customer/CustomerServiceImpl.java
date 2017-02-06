@@ -1,5 +1,6 @@
 package com.hair.business.services.customer;
 
+import static com.x.business.utilities.RatingUtil.averagingWeighted;
 import static java.util.logging.Logger.getLogger;
 
 import com.hair.business.beans.constants.StyleRequestState;
@@ -13,10 +14,14 @@ import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 import com.x.business.scheduler.stereotype.EmailTaskQueue;
+import com.x.business.utilities.Assert;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -50,7 +55,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void createCustomer(String name, String email, String phone, Device device, Location location) {
         Long permId = repository.allocateId(Customer.class);
-        Customer customer = new Customer(name, 0, email, phone, device, location);
+        Customer customer = new Customer(name, email, phone, device, location);
         customer.setId(permId);
         customer.setPermanentId(permId);
         saveCustomer(customer);
@@ -96,6 +101,24 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void contactMerchant(Long merchantId, String message) {
 
+    }
+
+    @Override
+    public void updateRating(Long customerId, int score) {
+        if (score < 1 || score > 5) {
+            throw new IllegalArgumentException("Review score must be between 1 and 5");
+        }
+
+        Customer customer = repository.findOne(customerId, Customer.class);
+        Assert.isFound(customer, String.format("Customer with id %s not found", customerId));
+        final Map<Integer, Integer> weightedRatings = customer.getRatings();
+
+        weightedRatings.put(score, weightedRatings.get(score) + 1);
+
+        double weightedAverage = weightedRatings.entrySet().stream().collect(averagingWeighted(Map.Entry::getKey, Map.Entry::getValue));
+        customer.setScore(new BigDecimal(weightedAverage).setScale(1, RoundingMode.HALF_UP).doubleValue()); // Effective java item 48?
+
+        repository.saveOne(customer);
     }
 
 }

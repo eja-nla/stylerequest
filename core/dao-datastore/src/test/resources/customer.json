@@ -1,37 +1,45 @@
 {
-  "permanentId" : -1393398114680710636,
+  "permanentId" : 8320888948098894711,
   "version" : 1,
-  "createdDate" : "2016-08-29T20:17:00.922Z",
-  "lastUpdated" : "2016-08-29T20:17:00.922Z",
+  "createdDate" : "2017-02-06T07:53:27.331Z",
+  "lastUpdated" : "2017-02-06T07:53:27.331Z",
   "name" : "Test Customer Name",
-  "rating" : 1035848696,
   "email" : "customer@email.com",
   "phone" : "+4453635436237",
   "device" : {
-    "permanentId" : -9143794474059925629,
+    "permanentId" : -3137618711185941452,
     "version" : 1,
-    "createdDate" : "2016-08-29T20:17:00.653Z",
-    "id" : 5982897850378205858,
-    "deviceId" : "477d2ac490a17bb1d4c8a6ec7c50d4b1b9a36499acd45bf5fcac103cde038eff",
+    "createdDate" : "2017-02-06T07:53:27.179Z",
+    "id" : -3904858749068853609,
+    "deviceId" : "e4slbgh5q9bg9almdmrc58la30",
     "os" : "ios9",
     "deviceType" : "IOS"
   },
   "photoUrl" : "http://some.photo.url",
   "gender" : "M",
   "active" : true,
-  "id" : -5484188765326480532,
+  "id" : -5064501332121306936,
   "location" : {
-    "permanentId" : -1681254723646171463,
+    "permanentId" : 4918757416721647838,
     "version" : 1,
-    "createdDate" : "2016-08-29T20:17:00.922Z",
-    "id" : 2277054385317339854,
+    "createdDate" : "2017-02-06T07:53:27.331Z",
+    "id" : 4918757416721647838,
     "city" : "London",
     "state" : "Alabama",
     "country" : "UK",
     "geoPoint" : {
-      "id" : -389789291234472118,
+      "id" : -7978722085642133050,
       "latitude" : 51.503407,
       "longitude" : -0.127592
     }
-  }
+  },
+  "ratings" : {
+    "0" : 0,
+    "1" : 0,
+    "2" : 0,
+    "3" : 0,
+    "4" : 3,
+    "5" : 2
+  },
+  "score" : 4.5
 }
