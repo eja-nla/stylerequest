@@ -2,8 +2,6 @@ package com.x.business.notif;
 
 import com.hair.business.beans.entity.StyleRequest;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -39,10 +37,10 @@ public class CancelledStyleRequestNotification extends AbstractNotification {
 
         this.body = String.format(emailBody,
                 styleRequest.getMerchant().getEmail(),
-                styleRequest.getCustomer().getName().split(StringUtils.SPACE)[0],
+                styleRequest.getCustomer().getFirstName(),
                 styleRequest.getStyle().getName(),
                 styleRequest.getAppointmentStartTime().toDate(),
-                styleRequest.getMerchant().getName(),
+                styleRequest.getMerchant().getBusinessName(),
                 adminEmail
         );
     }

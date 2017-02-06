@@ -2,6 +2,8 @@ package com.x.business.exception;
 
 /**
  * Created by Olukorede Aguda on 20/09/2016.
+ *
+ * Entity not found exception
  */
 public class EntityNotFoundException extends RuntimeException {
 

@@ -78,9 +78,9 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public void createMerchant(String name, String email, String phone, Device device, Location location) {
+    public void createMerchant(String firstName, String lastName, String displayName, String email, String phone, Device device, Location location) {
         Long permId = repository.allocateId(Merchant.class);
-        Merchant merchant = new Merchant(name, email, phone, device, location);
+        Merchant merchant = new Merchant(firstName, lastName, displayName, email, phone, device, location);
         merchant.setId(permId);
         merchant.setPermanentId(permId);
         updateMerchant(merchant);
@@ -112,7 +112,7 @@ public class MerchantServiceImpl implements MerchantService {
         StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
         Assert.isFound(styleRequest, String.format("StyleRequest with id %s not found", styleRequest));
 
-        Assert.isTrue(!isBooked(merchant, styleRequest.getAppointmentStartTime()), "%s has an active booking during this period.", merchant.getName());
+        Assert.isTrue(!isBooked(merchant, styleRequest.getAppointmentStartTime()), "%s has an active booking during this period.", merchant.getFirstName());
 
         styleRequest.setState(StyleRequestState.ACCEPTED);
         styleRequestService.updateStyleRequest(styleRequest);

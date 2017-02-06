@@ -26,15 +26,19 @@ public class Merchant extends AbstractActorEntity {
 
     private Location location;
 
+    private String businessName;
+
     @Stringify(IntegerStringifyer.class) // Map of allowed scores and their weights(i.e. count)
     private Map<Integer, Integer> ratings;
     private double score;
 
     public Merchant(){}
 
-    public Merchant(String name, String email, String phone, Device device){
+    public Merchant(String firstname, String lastname, String businessName, String email, String phone, Device device){
         this();
-        this.setName(name);
+        this.setFirstName(firstname);
+        this.setLastName(lastname);
+        this.businessName = businessName;
         this.ratings = new HashMap<>();
         this.setEmail(email);
         this.setPhone(phone);
@@ -44,8 +48,8 @@ public class Merchant extends AbstractActorEntity {
 
     }
 
-    public Merchant(String name, String email, String phone, Device device, Location location) {
-        this(name, email, phone, device);
+    public Merchant(String firstName, String lastName, String businessName, String email, String phone, Device device, Location location) {
+        this(firstName, lastName, businessName, email, phone, device);
         this.location = location;
 
     }
@@ -80,5 +84,13 @@ public class Merchant extends AbstractActorEntity {
 
     public void setScore(double score) {
         this.score = score;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
     }
 }

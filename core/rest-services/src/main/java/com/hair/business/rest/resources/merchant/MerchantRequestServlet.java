@@ -61,7 +61,7 @@ public class MerchantRequestServlet {
         GitkitUser user = (GitkitUser) request.getAttribute("user");
 
         merchant.setEmail(user.getEmail());
-        merchant.setName(user.getName());
+        merchant.setFirstName(user.getName());
         merchant.setPhotoUrl(user.getPhotoUrl());
         merchantService.updateMerchant(merchant);
         return Response.ok().build();

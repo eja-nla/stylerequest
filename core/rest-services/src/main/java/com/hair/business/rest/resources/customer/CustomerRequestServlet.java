@@ -58,7 +58,7 @@ public class CustomerRequestServlet {
         GitkitUser user = (GitkitUser) request.getAttribute(REST_USER_ATTRIBUTE);
 
         customer.setEmail(user.getEmail());
-        customer.setName(user.getName());
+        customer.setFirstName(user.getName());
         customer.setPhotoUrl(user.getPhotoUrl());
 
         customerService.saveCustomer(customer);
@@ -80,7 +80,6 @@ public class CustomerRequestServlet {
     @Produces(APPLICATION_JSON)
     public StyleRequest placeStyleRequest(@QueryParam("styleId") Long styleId, @QueryParam("customerId") Long customerId, @QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String when) {
         DateTime dateOfRequest = new DateTime(when);
-        StyleRequest styleRequest = styleRequestService.placeStyleRequest(styleId, customerId, merchantId, dateOfRequest);
-        return styleRequest;
+        return styleRequestService.placeStyleRequest(styleId, customerId, merchantId, dateOfRequest);
     }
 }

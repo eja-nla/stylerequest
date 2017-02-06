@@ -11,6 +11,7 @@ import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.x.business.exception.DuplicateEntityException;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 import com.x.business.scheduler.stereotype.EmailTaskQueue;
@@ -51,14 +52,26 @@ public class CustomerServiceImpl implements CustomerService {
         return repository.findOne(id, Customer.class);
     }
 
+    @Override
+    public Customer findCustomer(String email) {
+        List<Customer> customers = repository.findByQuery(Customer.class, "email", email);
+        if (customers.size() > 1) {
+            throw new DuplicateEntityException("Expecting 1 entity but got " + customers.size());
+        }
+
+        return customers.get(0);
+    }
+
 
     @Override
-    public void createCustomer(String name, String email, String phone, Device device, Location location) {
+    public Customer createCustomer(String firstname, String lastname, String email, String phone, Device device, Location location) {
         Long permId = repository.allocateId(Customer.class);
-        Customer customer = new Customer(name, email, phone, device, location);
+        Customer customer = new Customer(firstname, lastname, email, phone, device, location);
         customer.setId(permId);
         customer.setPermanentId(permId);
         saveCustomer(customer);
+
+        return customer;
     }
 
 

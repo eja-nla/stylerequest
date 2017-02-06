@@ -31,7 +31,7 @@ public interface MerchantService {
     /**
      * Creates a new Merchant
      * */
-    void createMerchant(String name, String email, String phone, Device device, Location location);
+    void createMerchant(String firstName, String lastname, String displayName, String email, String phone, Device device, Location location);
 
     void updateMerchant(Merchant merchant);
 

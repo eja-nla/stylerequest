@@ -23,9 +23,14 @@ public interface CustomerService {
     Customer findCustomer(Long id);
 
     /**
+     * Finds customer with given email
+     * */
+    Customer findCustomer(String email);
+
+    /**
      * Creates a new customer
      * */
-    void createCustomer(String name, String email, String phone, Device device, Location location);
+    Customer createCustomer(String firstname, String lastname, String email, String phone, Device device, Location location);
 
     /**
      * Saves new customer
