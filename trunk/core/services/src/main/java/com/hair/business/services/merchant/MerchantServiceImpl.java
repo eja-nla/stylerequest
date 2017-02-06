@@ -80,7 +80,7 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public void createMerchant(String name, String email, String phone, Device device, Location location) {
         Long permId = repository.allocateId(Merchant.class);
-        Merchant merchant = new Merchant(name, 0, email, phone, device, location);
+        Merchant merchant = new Merchant(name, email, phone, device, location);
         merchant.setId(permId);
         merchant.setPermanentId(permId);
         updateMerchant(merchant);

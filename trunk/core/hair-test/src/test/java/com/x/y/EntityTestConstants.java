@@ -41,11 +41,13 @@ public class EntityTestConstants {
     }
 
     public static Customer createCustomer(){
-        Customer c = new Customer("Test Customer Name", new Random().nextInt(), "customer@email.com", "+4453635436237", createDevice(), createLocation());
+        Customer c = new Customer("Test Customer Name", "customer@email.com", "+4453635436237", createDevice(), createLocation());
         c.setId(new Random().nextLong());
         c.setPermanentId(new Random().nextLong());
         c.setPhotoUrl("http://some.photo.url");
         c.setGender(Gender.M);
+        c.setScore(4.5);
+        c.getRatings().put(0, 0); c.getRatings().put(1, 0);c.getRatings().put(2, 0);c.getRatings().put(3, 0);c.getRatings().put(4, 3);c.getRatings().put(5, 2);
         return c;
     }
 
@@ -74,11 +76,13 @@ public class EntityTestConstants {
     }
 
     public static Merchant createMerchant(){
-        Merchant m = new Merchant("Test Merchant Name", new Random().nextInt(), "merchant@email.com", "+1134555643654", createDevice(), createLocation());
+        Merchant m = new Merchant("Test Merchant Name", "merchant@email.com", "+1134555643654", createDevice(), createLocation());
         m.setId(new Random().nextLong());
         m.setPermanentId(m.getId());
         m.setPhotoUrl("http://some.photo.url");
         m.setGender(Gender.F);
+        m.getRatings().put(0, 0); m.getRatings().put(1, 0);m.getRatings().put(2, 0);m.getRatings().put(3, 0);m.getRatings().put(4, 3);m.getRatings().put(5, 2);
+        m.setScore(4.5);
         return m;
     }
 

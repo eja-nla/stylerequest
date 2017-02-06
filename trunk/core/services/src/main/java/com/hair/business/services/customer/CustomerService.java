@@ -57,4 +57,6 @@ public interface CustomerService {
      */
     void contactMerchant(Long merchantId, String message);
 
+    void updateRating(Long customerId, int score);
+
 }

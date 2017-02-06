@@ -9,13 +9,12 @@ import com.hair.business.beans.entity.Device;
  * Created by Olukorede Aguda on 25/04/2016.
  */
 public abstract class AbstractActorEntity extends AbstractTransactionEntity{
-    private int rating;
+
     private String email;
     private String phone;
     private Device device;
     private String photoUrl;
     private Gender gender;
-
     private boolean active;
 
 
@@ -33,14 +32,6 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
     }
 
     public Device getDevice() {

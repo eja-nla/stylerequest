@@ -44,7 +44,6 @@
     "createdDate" : "2016-08-29T20:23:31.905Z",
     "lastUpdated" : "2016-08-29T20:23:31.905Z",
     "name" : "Test Merchant Name",
-    "rating" : 1252318078,
     "email" : "merchant@email.com",
     "phone" : "+1134555643654",
     "device" : {
@@ -81,7 +80,6 @@
     "createdDate" : "2016-08-29T20:23:31.905Z",
     "lastUpdated" : "2016-08-29T20:23:31.905Z",
     "name" : "Test Customer Name",
-    "rating" : -1090890238,
     "email" : "customer@email.com",
     "phone" : "+4453635436237",
     "device" : {
