@@ -21,28 +21,28 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by Olukorede Aguda on 25/06/2016.
+ *
+ * Rest endpoint servlet filter
  */
 
 public final class RestEndpointServletFilter extends GuiceFilter {
 
     private static final Logger log = Logger.getLogger(RestEndpointServletFilter.class.getName());
-    static GitkitClient gitkitClient;
+    private static GitkitClient gitkitClient;
 
-    private ServletContext context;
-    private static final String loginUrl = "http://localhost:4567/"; // FIXME: 27/08/2016 use System properties
-    private static final String projectId = "amyrrh-test1";
-    private static final String gitkitUrl = "http://localhost:4567/gitkit";
-    private static final String clientId = "363084678705-mt0m4svcp4vg6i7j47kkng6e881loshu.apps.googleusercontent.com";
+    private static final String loginUrl = System.getProperty("login.url");
+    private static final String projectId = System.getProperty("project.id");
+    private static final String gitkitUrl = System.getProperty("gitkit.url");
+    private static final String clientId = System.getProperty("client.id");
 
-    public RestEndpointServletFilter(){
+    private RestEndpointServletFilter(){
 
     }
 
-    public RestEndpointServletFilter(ServletContext ctx) {
+    RestEndpointServletFilter(ServletContext ctx) {
         this();
-        this.context = ctx;
 
-        InputStream keyStream = context.getResourceAsStream("WEB-INF/amyrrh-test1-48c176ef2baa.p12");
+        InputStream keyStream = ctx.getResourceAsStream(System.getProperty("file.p12"));
 
         gitkitClient = new GitkitClient.Builder()
                 .setGoogleClientId(clientId)
@@ -50,9 +50,10 @@ public final class RestEndpointServletFilter extends GuiceFilter {
                 .setServiceAccountEmail(System.getProperty("service.account.email"))
                 .setKeyStream(keyStream)
                 .setWidgetUrl(gitkitUrl)
-                .setCookieName("gtoken").build();
+                .setCookieName(System.getProperty("web.cookie.name")).build();
     }
 
+    @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
         GitkitUser gitkitUser = null;

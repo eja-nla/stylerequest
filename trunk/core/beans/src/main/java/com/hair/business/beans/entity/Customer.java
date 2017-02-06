@@ -35,9 +35,10 @@ public class Customer extends AbstractActorEntity {
     public Customer() {
     }
 
-    protected Customer(String name, String email, String phone, Device device){
+    protected Customer(String firstname, String lastname, String email, String phone, Device device){
         this();
-        this.setName(name);
+        this.setFirstName(firstname);
+        this.setLastName(lastname);
         this.ratings = new HashMap<>();
         this.setEmail(email);
         this.setPhone(phone);
@@ -47,8 +48,8 @@ public class Customer extends AbstractActorEntity {
 
     }
 
-    public Customer(String name, String email, String phone, Device device, Location location) {
-        this(name, email, phone, device);
+    public Customer(String firstname, String lastname, String email, String phone, Device device, Location location) {
+        this(firstname, lastname, email, phone, device);
         this.location = location;
 
     }

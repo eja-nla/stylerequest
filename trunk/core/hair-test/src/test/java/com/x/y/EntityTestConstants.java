@@ -41,7 +41,7 @@ public class EntityTestConstants {
     }
 
     public static Customer createCustomer(){
-        Customer c = new Customer("Test Customer Name", "customer@email.com", "+4453635436237", createDevice(), createLocation());
+        Customer c = new Customer("Customer first Name", "lastname", "customer@email.com", "+4453635436237", createDevice(), createLocation());
         c.setId(new Random().nextLong());
         c.setPermanentId(new Random().nextLong());
         c.setPhotoUrl("http://some.photo.url");
@@ -76,7 +76,7 @@ public class EntityTestConstants {
     }
 
     public static Merchant createMerchant(){
-        Merchant m = new Merchant("Test Merchant Name", "merchant@email.com", "+1134555643654", createDevice(), createLocation());
+        Merchant m = new Merchant("Test Merchant FirstName", "lastname", "Midas hair place", "merchant@email.com", "+1134555643654", createDevice(), createLocation());
         m.setId(new Random().nextLong());
         m.setPermanentId(m.getId());
         m.setPhotoUrl("http://some.photo.url");

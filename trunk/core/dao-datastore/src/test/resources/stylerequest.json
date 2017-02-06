@@ -43,7 +43,9 @@
     "version" : 1,
     "createdDate" : "2016-08-29T20:23:31.905Z",
     "lastUpdated" : "2016-08-29T20:23:31.905Z",
-    "name" : "Test Merchant Name",
+    "firstName" : "Test Merchant FirstName",
+    "lastName" : "lastname",
+    "businessName" : "Midas hair place",
     "email" : "merchant@email.com",
     "phone" : "+1134555643654",
     "device" : {
@@ -79,7 +81,8 @@
     "version" : 1,
     "createdDate" : "2016-08-29T20:23:31.905Z",
     "lastUpdated" : "2016-08-29T20:23:31.905Z",
-    "name" : "Test Customer Name",
+    "firstName" : "Test customer FirstName",
+    "lastName" : "lastname",
     "email" : "customer@email.com",
     "phone" : "+4453635436237",
     "device" : {

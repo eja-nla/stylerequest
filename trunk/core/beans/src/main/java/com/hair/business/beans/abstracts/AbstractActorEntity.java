@@ -1,5 +1,6 @@
 package com.hair.business.beans.abstracts;
 
+import com.googlecode.objectify.annotation.Index;
 import com.hair.business.beans.constants.Gender;
 import com.hair.business.beans.entity.Device;
 
@@ -10,7 +11,7 @@ import com.hair.business.beans.entity.Device;
  */
 public abstract class AbstractActorEntity extends AbstractTransactionEntity{
 
-    private String email;
+    @Index private String email;
     private String phone;
     private Device device;
     private String photoUrl;
