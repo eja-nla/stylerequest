@@ -3,7 +3,7 @@ package com.hair.business.dao.datastore.repository;
 import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
 
 import com.googlecode.objectify.TxnType;
-import com.hair.business.dao.datastore.stereotype.Transact;
+import com.hair.business.dao.datastore.stereotype.DatastoreTransaction;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -15,7 +15,7 @@ import org.aopalliance.intercept.MethodInvocation;
  *
  * Lifted from https://github.com/objectify/objectify/wiki/Transactions
  */
-public class TransactInterceptor implements MethodInterceptor {
+public class DatastoreTransactInterceptor implements MethodInterceptor {
 
     /** Work around java's annoying checked exceptions */
     private static class ExceptionWrapper extends RuntimeException {
@@ -35,7 +35,7 @@ public class TransactInterceptor implements MethodInterceptor {
     /** The only trick here is that we need to wrap & unwrap checked exceptions that go through the Work interface */
     @Override
     public Object invoke(final MethodInvocation inv) throws Throwable {
-        Transact attr = inv.getStaticPart().getAnnotation(Transact.class);
+        DatastoreTransaction attr = inv.getStaticPart().getAnnotation(DatastoreTransaction.class);
         TxnType type = attr.value();
 
         try {

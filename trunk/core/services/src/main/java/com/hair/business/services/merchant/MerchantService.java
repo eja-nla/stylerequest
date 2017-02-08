@@ -38,10 +38,14 @@ public interface MerchantService {
     void pay(Customer customer, Merchant merchant);
 
     /**
-     * Is the merchant booked during this period?
+     * Is the merchant booked during this period? We provide a guess here.
      *
+     * Returns true if merchant has at least 1 appointment starting ~30 minutes before requested period
+     *
+     * Ideally, we'd want to check if that time lies between start and
+     * end time of the appointment but objectify has a unitary inequality search restriction on entity fields
      * */
-    boolean isBooked(Merchant merchant, DateTime period);
+    boolean isBooked(Long merchantId, DateTime period);
 
     void acceptStyleRequest(Long merchantId, Long styleRequestId);
 

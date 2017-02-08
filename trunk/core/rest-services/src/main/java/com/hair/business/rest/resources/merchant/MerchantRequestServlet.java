@@ -1,7 +1,7 @@
 package com.hair.business.rest.resources.merchant;
 
 import static com.hair.business.rest.MvcConstants.CREATE_MERCHANT_ENDPOINT;
-import static com.hair.business.rest.MvcConstants.CREATE_STYLE_ENDPOINT;
+import static com.hair.business.rest.MvcConstants.PUBLISH_STYLE_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.EMAIL;
 import static com.hair.business.rest.MvcConstants.INFO;
 import static com.hair.business.rest.MvcConstants.MERCHANT_URI;
@@ -68,7 +68,7 @@ public class MerchantRequestServlet {
     }
 
     @POST
-    @Path(CREATE_STYLE_ENDPOINT)
+    @Path(PUBLISH_STYLE_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     public Style publishStyle(List<Image> styleImages, @QueryParam("styleName") String styleName, @QueryParam("duration") int estimatedDuration, @QueryParam("merchantId") Long merchantId) {
