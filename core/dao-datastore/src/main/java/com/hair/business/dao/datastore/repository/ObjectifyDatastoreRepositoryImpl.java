@@ -3,13 +3,15 @@ package com.hair.business.dao.datastore.repository;
 
 import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
 
+import com.google.appengine.repackaged.com.google.common.base.Defaults;
+
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Result;
 import com.googlecode.objectify.TxnType;
 import com.googlecode.objectify.cmd.Query;
 import com.googlecode.objectify.cmd.QueryKeys;
 import com.hair.business.dao.datastore.abstractRepository.ObjectifyRepository;
-import com.hair.business.dao.datastore.stereotype.Transact;
+import com.hair.business.dao.datastore.stereotype.DatastoreTransaction;
 import com.x.business.utilities.Assert;
 
 import java.util.ArrayList;
@@ -51,14 +53,30 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
 
     @Override
     public <T> List<T> findByQuery(Class<T> clazz, List<String> conditions, List<Object> values) {
-        final QueryKeys<T> keys = buildQuery(clazz, conditions, values).keys();
-        final List<Long> resultKeys = new ArrayList<>();
-        keys.forEach(key -> resultKeys.add(key.getId()));
+        final List<Long> resultKeys = peekByQuery(clazz, conditions, values);
         return new ArrayList<>(findMany(resultKeys, clazz).values());
     }
 
+    public <T> Long peekOne(Long id, Class<T> clazz) {
+        Key<T> key = ofy().load().type(clazz).filterKey(Key.create(clazz, id)).keys().first().now();
+
+        if (key == null) {
+            return Defaults.defaultValue(Long.TYPE);
+        }
+        return key.getId();
+    }
+
+
     @Override
-    @Transact(TxnType.REQUIRED)
+    public <T> List<Long> peekByQuery(Class<T> clazz, List<String> conditions, List<Object> values) {
+        final QueryKeys<T> keys = buildQuery(clazz, conditions, values).keys();
+        final List<Long> resultKeys = new ArrayList<>();
+        keys.forEach(key -> resultKeys.add(key.getId()));
+        return resultKeys;
+    }
+
+    @Override
+    @DatastoreTransaction(TxnType.REQUIRED)
     public <E> Key<E> saveOne(E entity) {
         Assert.hasPermanentId(entity);
         return ofy().save().entity(entity).now();
@@ -72,7 +90,7 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
 
     @Override
     public <E> Result<Map<Key<E>, E>> saveFew(E... entities) {
-        Assert.notNull(entities, "entitites must not be null");
+        Assert.notNull(entities, "entities must not be null");
         for (E entity : entities) {
             Assert.hasPermanentId(entity);
         }

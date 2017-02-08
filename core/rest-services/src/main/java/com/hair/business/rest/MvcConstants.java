@@ -15,15 +15,16 @@ public class MvcConstants {
 
     public static final String MERCHANT_URI="/merchant";
 
-    public static final String STYLE_URI="/style";
-
     public static final String INFO="/info";
 
     public static final String CREATE="/create";
 
     public static final String CREATE_MERCHANT_ENDPOINT = CREATE + "/merchant";
     public static final String CREATE_CUSTOMER_ENDPOINT = CREATE + "/customer";
-    public static final String CREATE_STYLE_ENDPOINT = CREATE + "/style";
+    public static final String PUBLISH_STYLE_ENDPOINT = CREATE + "/style";
+
+    public static final String STYLE_URI="/style";
+    public static final String UPDATE_STYLE_ENDPOINT = STYLE_URI + "/update";
 
     public static final String STYLE_REQUEST_PATH = "/request/style";
 

@@ -10,6 +10,7 @@ import static com.x.y.EntityTestConstants.createStyleRequest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import com.google.appengine.repackaged.com.google.common.base.Defaults;
 import com.google.common.collect.Lists;
 
 import com.googlecode.objectify.Key;
@@ -44,6 +45,19 @@ import java.util.stream.IntStream;
 public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
 
     private final Repository repository = new ObjectifyDatastoreRepositoryImpl();
+
+    @Test
+    public void testPeekOne() throws Exception {
+        Merchant m1 = createMerchant();
+        repository.saveOne(m1);
+        Long id = repository.peekOne(m1.getId(), m1.getClass());
+        assertThat(id, is(m1.getId()));
+
+        Long doesntexist = repository.peekOne(-433453L, m1.getClass());
+        assertThat(doesntexist, is(Defaults.defaultValue(Long.TYPE)));
+
+        delete(Collections.singletonList(m1));
+    }
 
     @Test
     public void testFindOne() throws Exception {

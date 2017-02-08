@@ -59,7 +59,7 @@ public class StyleServiceTest extends AbstractServicesTestBase {
 
         assertThat(style.getStyleImages().size(), is(1));
 
-        styleService.updateStyle(style.getId(), singletonList(createImage()));
+        styleService.updateStyleImages(style.getId(), singletonList(createImage()));
 
         assertThat(style.getStyleImages().size(), is(2));
 

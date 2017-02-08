@@ -6,6 +6,7 @@ import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.x.business.exception.EntityNotFoundException;
 import com.x.business.utilities.Assert;
 
 import java.util.ArrayList;
@@ -50,7 +51,17 @@ public class StyleServiceImpl implements StyleService {
     }
 
     @Override
-    public void updateStyle(Long styleId, List<Image> styleImages) {
+    public void updateStyle(Style style) throws IllegalArgumentException, EntityNotFoundException {
+        Assert.notNull(style, "Style cannot be null");
+        Long id = repository.peekOne(style.getId(), Style.class);
+        Assert.keyExist(id, format("Could not find Style with id %s", id));
+
+        repository.saveOne(style);
+
+    }
+
+    @Override
+    public void updateStyleImages(Long styleId, List<Image> styleImages) {
         Style style = repository.findOne(styleId, Style.class);
 
         Assert.isFound(style, format("Could not find Style with id %s", styleId));

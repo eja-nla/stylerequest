@@ -37,7 +37,7 @@ public class MerchantServiceImpl implements MerchantService {
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;
 
-    private final List<String> isBookedFilter = Arrays.asList("appointmentDateTime >=", "appointmentDateTime <=");
+    private final List<String> isBookedFilter = Arrays.asList("merchantPermanentId", "state", "appointmentStartTime <=", "appointmentStartTime >=");
 
     @Inject
     public MerchantServiceImpl(Repository repository, StyleRequestService styleRequestService, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue) {
@@ -97,11 +97,11 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public boolean isBooked(Merchant merchant, DateTime period) {
-        List<Object> isBookedValue = Arrays.asList(period, period.plusHours(1)); //Should we add end time to stylerequest? Using 1hr default
-        List<StyleRequest> styleRequest = repository.findByQuery(StyleRequest.class, isBookedFilter, isBookedValue);
+    public boolean isBooked(Long merchantId, DateTime period) {
+        List<Object> isBookedValue = Arrays.asList(merchantId, StyleRequestState.ACCEPTED, period, period.minusMinutes(30));
+        List<Long> foundRequests = repository.peekByQuery(StyleRequest.class, isBookedFilter, isBookedValue);
 
-        return styleRequest.size() > 0;
+        return foundRequests.size() > 0;
     }
 
     @Override
@@ -112,7 +112,7 @@ public class MerchantServiceImpl implements MerchantService {
         StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
         Assert.isFound(styleRequest, String.format("StyleRequest with id %s not found", styleRequest));
 
-        Assert.isTrue(!isBooked(merchant, styleRequest.getAppointmentStartTime()), "%s has an active booking during this period.", merchant.getFirstName());
+        //Assert.isTrue(!isBooked(merchantId, styleRequest.getAppointmentStartTime()), "%s has an active booking during this period.", merchant.getFirstName());
 
         styleRequest.setState(StyleRequestState.ACCEPTED);
         styleRequestService.updateStyleRequest(styleRequest);

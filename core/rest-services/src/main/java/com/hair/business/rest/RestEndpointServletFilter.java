@@ -28,21 +28,24 @@ import javax.servlet.http.HttpServletResponse;
 public final class RestEndpointServletFilter extends GuiceFilter {
 
     private static final Logger log = Logger.getLogger(RestEndpointServletFilter.class.getName());
-    private static GitkitClient gitkitClient;
+    static GitkitClient gitkitClient;
+
+    private ServletContext context;
 
     private static final String loginUrl = System.getProperty("login.url");
     private static final String projectId = System.getProperty("project.id");
     private static final String gitkitUrl = System.getProperty("gitkit.url");
     private static final String clientId = System.getProperty("client.id");
 
-    private RestEndpointServletFilter(){
+    public RestEndpointServletFilter(){
 
     }
 
-    RestEndpointServletFilter(ServletContext ctx) {
+    public RestEndpointServletFilter(ServletContext ctx) {
         this();
+        this.context = ctx;
 
-        InputStream keyStream = ctx.getResourceAsStream(System.getProperty("file.p12"));
+        InputStream keyStream = context.getResourceAsStream("WEB-INF/amyrrh-test1-48c176ef2baa.p12");
 
         gitkitClient = new GitkitClient.Builder()
                 .setGoogleClientId(clientId)

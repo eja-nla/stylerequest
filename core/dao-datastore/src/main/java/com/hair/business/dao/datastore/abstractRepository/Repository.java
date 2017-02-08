@@ -43,6 +43,19 @@ public interface Repository {
     <T> List<T> findByQuery(Class<T> clazz, List<String> conditions, List<Object> values);
 
     /**
+     * peeks the entity with given id
+     *
+     * Returns the entity's ID if found, com.google.common.base.Defaults.defaultValue(Long.TYPE) otherwise
+     */
+    <T> Long peekOne(Long id, Class<T> clazz);
+
+    /**
+     *
+     * Peeks data store for IDs of entities matching given conditions
+     */
+    <T> List<Long> peekByQuery(Class<T> clazz, List<String> conditions, List<Object> values);
+
+    /**
      * saves a single customer information
      * */
     <E> Key<E> saveOne(E entity);
