@@ -190,6 +190,72 @@
 			"response": []
 		},
 		{
+			"name": "Update style",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Syle updated response code\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Syle updated - good\"] = jsonData.name === \"style updated after didi\";"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{serviceUrl}}/style/update",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"permanentId\" : -4424178728855319845,\n  \"version\" : 1,\n  \"createdDate\" : \"2016-08-29T20:22:44.557Z\",\n  \"id\" : 4003,\n  \"name\" : \"style updated after didi\",\n  \"requestCount\" : 0,\n  \"trending\" : true,\n  \"active\" : true,\n  \"publisherId\" : -1733350221602184676,\n  \"location\" : {\n    \"permanentId\" : -4766811198420564245,\n    \"version\" : 1,\n    \"createdDate\" : \"2016-08-29T20:22:44.556Z\",\n    \"id\" : -5712228046471495956,\n    \"city\" : \"London\",\n    \"state\" : \"Alabama\",\n    \"country\" : \"UK\",\n    \"geoPoint\" : {\n      \"id\" : -2914024913972574844,\n      \"latitude\" : 51.503407,\n      \"longitude\" : -0.127592\n    }\n  },\n  \"styleImages\" : [ {\n    \"permanentId\" : 1627324436263907989,\n    \"version\" : 1,\n    \"createdDate\" : \"2016-08-29T20:22:44.556Z\",\n    \"id\" : 6055824299439456969,\n    \"url\" : \"http//187v58eaa902ostno5f9rm30l7.com\",\n    \"owner\" : \"test owner name\",\n    \"views\" : 20\n  } ],\n  \"durationEstimate\" : 5\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "update style bad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Syle updated response code\"] = responseCode.code === 400;",
+							"tests[\"Error Body matches string\"] = responseBody.has(\"Could not find Style\");"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{serviceUrl}}/style/update",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\" : 4003546435\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "Place style request",
 			"event": [
 				{
