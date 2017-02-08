@@ -7,6 +7,8 @@ import com.x.business.exception.EntityNotFoundException;
 
 import org.apache.commons.lang3.Validate;
 
+import java.util.Objects;
+
 /**
  * Created by Olukorede Aguda on 22/06/2016.
  *
@@ -27,7 +29,7 @@ public class Assert extends Validate {
     }
 
     public static void keyExist(Long key, String message){
-        if(key == Defaults.defaultValue(Long.TYPE)){
+        if(Objects.equals(key, Defaults.defaultValue(Long.TYPE))){
             throw new EntityNotFoundException(message);
         }
     }

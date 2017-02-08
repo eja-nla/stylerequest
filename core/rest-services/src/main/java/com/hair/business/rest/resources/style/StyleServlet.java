@@ -9,6 +9,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.services.StyleService;
 import com.x.business.exception.EntityNotFoundException;
+import com.x.business.utilities.Assert;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,8 @@ import javax.ws.rs.core.Response;
 public class StyleServlet {
 
     private final StyleService styleService;
+    private final String NULL_MESSAGE = "Incoming object cannot be null";
+    private final String NOT_FOUND_MESSAGE = "Style with ID %s not found";
 
     @Inject
     public StyleServlet(StyleService styleService) {
@@ -41,13 +44,18 @@ public class StyleServlet {
     @Path(INFO)
     @Produces(APPLICATION_JSON)
     public Response getStyleInfo(@Context HttpServletRequest request, @QueryParam(ID) Long styleId) {
-        Style style = styleService.findStyle(styleId);
+        try {
+            Assert.keyExist(styleId, String.format(NOT_FOUND_MESSAGE, styleId));
+            Style style = styleService.findStyle(styleId);
+            if (style == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity(NULL_MESSAGE).build();
+            }
 
-        if (style == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Style not found").build();
+            return Response.ok(style, MediaType.APPLICATION_JSON).build();
+
+        } catch (EntityNotFoundException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
-
-        return Response.ok(style, MediaType.APPLICATION_JSON).build();
     }
 
 
@@ -58,6 +66,9 @@ public class StyleServlet {
     public Response updateStyle(Style style) {
 
         try {
+            Assert.notNull(style, NULL_MESSAGE);
+            Assert.keyExist(style.getId(), String.format(NOT_FOUND_MESSAGE, style.getId()));
+
             styleService.updateStyle(style);
 
             return Response.ok(style, MediaType.APPLICATION_JSON).build();
