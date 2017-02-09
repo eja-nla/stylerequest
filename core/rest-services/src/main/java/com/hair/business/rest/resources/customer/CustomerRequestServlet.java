@@ -5,15 +5,18 @@ import static com.hair.business.rest.MvcConstants.CUSTOMER_URI;
 import static com.hair.business.rest.MvcConstants.ID;
 import static com.hair.business.rest.MvcConstants.INFO;
 import static com.hair.business.rest.MvcConstants.STYLE_REQUEST_PATH;
+import static com.hair.business.rest.MvcConstants.UPDATE_PAYMENT_PATH;
 import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import com.google.identitytoolkit.GitkitUser;
 
 import com.hair.business.beans.entity.Customer;
+import com.hair.business.beans.entity.Payment;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.services.StyleRequestService;
 import com.hair.business.services.customer.CustomerService;
+import com.x.business.utilities.Assert;
 
 import org.joda.time.DateTime;
 
@@ -81,5 +84,21 @@ public class CustomerRequestServlet {
     public StyleRequest placeStyleRequest(@QueryParam("styleId") Long styleId, @QueryParam("customerId") Long customerId, @QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String when) {
         DateTime dateOfRequest = new DateTime(when);
         return styleRequestService.placeStyleRequest(styleId, customerId, merchantId, dateOfRequest);
+    }
+
+    @POST
+    @Path(UPDATE_PAYMENT_PATH)
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    public Response updatePayment(@QueryParam("customerId") Long customerId, Payment payment) {
+        try {
+            Assert.validId(customerId);
+            Assert.notNull(payment, "Payment cannot be null");
+            return Response.ok().entity(customerService.updatePaymentInfo(customerId, payment)).build();
+
+        } catch (IllegalArgumentException e) {
+
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 }

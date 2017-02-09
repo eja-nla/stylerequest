@@ -3,12 +3,11 @@ package com.hair.business.rest.resources.style;
 import static com.hair.business.rest.MvcConstants.ID;
 import static com.hair.business.rest.MvcConstants.INFO;
 import static com.hair.business.rest.MvcConstants.STYLE_URI;
-import static com.hair.business.rest.MvcConstants.UPDATE_STYLE_ENDPOINT;
+import static com.hair.business.rest.MvcConstants.UPDATE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import com.hair.business.beans.entity.Style;
 import com.hair.business.services.StyleService;
-import com.x.business.exception.EntityNotFoundException;
 import com.x.business.utilities.Assert;
 
 import javax.inject.Inject;
@@ -45,7 +44,7 @@ public class StyleServlet {
     @Produces(APPLICATION_JSON)
     public Response getStyleInfo(@Context HttpServletRequest request, @QueryParam(ID) Long styleId) {
         try {
-            Assert.keyExist(styleId, String.format(NOT_FOUND_MESSAGE, styleId));
+            Assert.validId(styleId);
             Style style = styleService.findStyle(styleId);
             if (style == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity(NULL_MESSAGE).build();
@@ -53,30 +52,29 @@ public class StyleServlet {
 
             return Response.ok(style, MediaType.APPLICATION_JSON).build();
 
-        } catch (EntityNotFoundException e) {
+        } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
 
 
     @POST
-    @Path(UPDATE_STYLE_ENDPOINT)
+    @Path(UPDATE)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     public Response updateStyle(Style style) {
 
         try {
-            Assert.notNull(style, NULL_MESSAGE);
-            Assert.keyExist(style.getId(), String.format(NOT_FOUND_MESSAGE, style.getId()));
-
+            Assert.notNull(style, "Style cannot be null.");
+            Assert.validId(style.getId());
             styleService.updateStyle(style);
 
-            return Response.ok(style, MediaType.APPLICATION_JSON).build();
-        } catch (IllegalArgumentException | EntityNotFoundException e){
+        } catch (IllegalArgumentException e){
 
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
 
+        return Response.ok(style, MediaType.APPLICATION_JSON).build();
     }
 
 }

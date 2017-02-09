@@ -2,15 +2,17 @@ package com.hair.business.beans.constants;
 
 /**
  * Created by Olukorede Aguda on 25/04/2016.
+ *
+ * Payment type
  */
-public enum MerchantType {
+public enum PaymentType {
     PAYPAL ("Paypal"),
     CARD ("Credit/Debit card"),
-    APPLEPAY ("Apple Pay");
+    CASH ("Cash");
 
     public final String name;
 
-    MerchantType(String s) {
+    PaymentType(String s) {
         name = s;
     }
 

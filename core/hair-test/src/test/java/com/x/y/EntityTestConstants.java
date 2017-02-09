@@ -4,7 +4,7 @@ import static java.util.Collections.singletonList;
 
 import com.hair.business.beans.constants.DeviceType;
 import com.hair.business.beans.constants.Gender;
-import com.hair.business.beans.constants.MerchantType;
+import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
@@ -47,6 +47,7 @@ public class EntityTestConstants {
         c.setPhotoUrl("http://some.photo.url");
         c.setGender(Gender.M);
         c.setScore(4.5);
+        c.setPayment(createPayment());
         c.getRatings().put(0, 0); c.getRatings().put(1, 0);c.getRatings().put(2, 0);c.getRatings().put(3, 0);c.getRatings().put(4, 3);c.getRatings().put(5, 2);
         return c;
     }
@@ -83,11 +84,12 @@ public class EntityTestConstants {
         m.setGender(Gender.F);
         m.getRatings().put(0, 0); m.getRatings().put(1, 0);m.getRatings().put(2, 0);m.getRatings().put(3, 0);m.getRatings().put(4, 3);m.getRatings().put(5, 2);
         m.setScore(4.5);
+        m.setPayment(createPayment());
         return m;
     }
 
     public static Payment createPayment(){
-        Payment p = new Payment(new Random().nextLong(), createCustomer(), createMerchant(), true, MerchantType.PAYPAL);
+        Payment p = new Payment(3255.43D, 35345432L, 3241342L, true, PaymentType.PAYPAL);
         p.setId(new Random().nextLong());
         p.setPermanentId(p.getId());
         return p;
