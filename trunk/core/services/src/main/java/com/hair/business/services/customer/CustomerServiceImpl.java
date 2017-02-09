@@ -8,10 +8,12 @@ import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Device;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
+import com.hair.business.beans.entity.Payment;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.x.business.exception.DuplicateEntityException;
+import com.x.business.exception.EntityNotFoundException;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 import com.x.business.scheduler.stereotype.EmailTaskQueue;
@@ -64,7 +66,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public Customer createCustomer(String firstname, String lastname, String email, String phone, Device device, Location location) {
+    public Customer createCustomer(String firstname, String lastname, String email, String phone, Device device, Location location) throws EntityNotFoundException, IllegalArgumentException {
+        Assert.notNull(firstname, lastname, email, phone, device, location);
+
         Long permId = repository.allocateId(Customer.class);
         Customer customer = new Customer(firstname, lastname, email, phone, device, location);
         customer.setId(permId);
@@ -74,6 +78,18 @@ public class CustomerServiceImpl implements CustomerService {
         return customer;
     }
 
+    @Override
+    public Payment updatePaymentInfo(Long customerId, Payment payment) throws EntityNotFoundException, IllegalArgumentException {
+        Assert.notNull(customerId, payment);
+
+        Customer customer = repository.findOne(customerId, Customer.class);
+        Assert.notNull(customer);
+
+        customer.setPayment(payment);
+        repository.saveFew(payment, customer);
+
+        return payment;
+    }
 
     @Override
     public void saveCustomer(Customer customer) {

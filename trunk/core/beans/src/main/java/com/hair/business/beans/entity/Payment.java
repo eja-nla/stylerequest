@@ -1,14 +1,10 @@
 package com.hair.business.beans.entity;
 
 
-import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Load;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
-import com.hair.business.beans.constants.MerchantType;
-
-import org.joda.time.DateTime;
+import com.hair.business.beans.constants.PaymentType;
 
 /**
  * Represents a payment between two entities.
@@ -22,20 +18,19 @@ public class Payment extends AbstractActorEnablerEntity {
     @Id
     private Long id;
 
-    private long amount;
-    private @Load Ref<Customer> customer;
-    private @Load Ref<Merchant> merchant;
+    private Double amount;
+    private Long customerId;
+    private Long merchantId;
     private boolean settled;
-    private MerchantType type;
-    private long date;
+    private PaymentType type;
 
     public Payment(){}
 
-    public Payment(long amount, Customer customer, Merchant merchant, boolean settled, MerchantType type) {
+    public Payment(Double amount, Long customerId, Long merchantId, boolean settled, PaymentType type) {
         this();
         this.amount = amount;
-        this.customer = Ref.create(customer);
-        this.merchant = Ref.create(merchant);
+        this.customerId = customerId;
+        this.merchantId = merchantId;
         this.settled = settled;
         this.type = type;
     }
@@ -48,28 +43,28 @@ public class Payment extends AbstractActorEnablerEntity {
         this.id = id;
     }
 
-    public long getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(long amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
-    public Customer getCustomer() {
-        return customer.get();
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = Ref.create(customer);
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
-    public Merchant getMerchant() {
-        return merchant.get();
+    public Long getMerchantId() {
+        return merchantId;
     }
 
-    public void setMerchant(Merchant merchant) {
-        this.merchant = Ref.create(merchant);
+    public void setMerchantId(Long merchantId) {
+        this.merchantId = merchantId;
     }
 
     public boolean isSettled() {
@@ -80,19 +75,12 @@ public class Payment extends AbstractActorEnablerEntity {
         this.settled = settled;
     }
 
-    public MerchantType getType() {
+    public PaymentType getType() {
         return type;
     }
 
-    public void setType(MerchantType type) {
+    public void setType(PaymentType type) {
         this.type = type;
     }
 
-    public long getDate() {
-        return date;
-    }
-
-    public void setDate(DateTime date) {
-        this.date = date.getMillis();
-    }
 }

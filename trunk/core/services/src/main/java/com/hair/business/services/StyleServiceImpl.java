@@ -53,8 +53,7 @@ public class StyleServiceImpl implements StyleService {
     @Override
     public void updateStyle(Style style) throws IllegalArgumentException, EntityNotFoundException {
         Assert.notNull(style, "Style cannot be null");
-        Long id = repository.peekOne(style.getId(), Style.class);
-        Assert.keyExist(id, format("Could not find Style with id %s", id));
+        Assert.validId(repository.peekOne(style.getId(), Style.class));
 
         repository.saveOne(style);
 

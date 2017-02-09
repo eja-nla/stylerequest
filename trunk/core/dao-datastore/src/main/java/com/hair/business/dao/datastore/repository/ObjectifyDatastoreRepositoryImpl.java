@@ -90,7 +90,7 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
 
     @Override
     public <E> Result<Map<Key<E>, E>> saveFew(E... entities) {
-        Assert.notNull(entities, "entities must not be null");
+        Assert.notNull(entities);
         for (E entity : entities) {
             Assert.hasPermanentId(entity);
         }

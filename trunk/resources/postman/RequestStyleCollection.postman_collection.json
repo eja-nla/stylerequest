@@ -35,7 +35,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"permanentId\" : 8320888948098894711,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-06T07:53:27.331Z\",\n  \"lastUpdated\" : \"2017-02-06T07:53:27.331Z\",\n  \"name\" : \"Test Customer Name\",\n  \"email\" : \"customer@email.com\",\n  \"phone\" : \"+4453635436237\",\n  \"device\" : {\n    \"permanentId\" : -3137618711185941452,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-06T07:53:27.179Z\",\n    \"id\" : -3904858749068853609,\n    \"deviceId\" : \"e4slbgh5q9bg9almdmrc58la30\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"M\",\n  \"active\" : true,\n  \"id\" : -5064501332121306936,\n  \"location\" : {\n    \"permanentId\" : 4918757416721647838,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-06T07:53:27.331Z\",\n    \"id\" : 4918757416721647838,\n    \"city\" : \"London\",\n    \"state\" : \"Alabama\",\n    \"country\" : \"UK\",\n    \"geoPoint\" : {\n      \"id\" : -7978722085642133050,\n      \"latitude\" : 51.503407,\n      \"longitude\" : -0.127592\n    }\n  },\n  \"ratings\" : {\n    \"0\" : 0,\n    \"1\" : 0,\n    \"2\" : 0,\n    \"3\" : 0,\n    \"4\" : 3,\n    \"5\" : 2\n  },\n  \"score\" : 4.5\n}"
+					"raw": "{\n  \"permanentId\" : -5064501332121306936,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-09T00:13:22.121Z\",\n  \"lastUpdated\" : \"2017-02-09T00:13:22.121Z\",\n  \"firstName\" : \"Customer first Name\",\n  \"lastName\" : \"lastname\",\n  \"email\" : \"customer@email.com\",\n  \"phone\" : \"+4453635436237\",\n  \"device\" : {\n    \"permanentId\" : -9098851377016438314,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-09T00:13:21.444Z\",\n    \"id\" : 4960725887859519817,\n    \"deviceId\" : \"dg8c23j98auiapi7ku1rk40hvs\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"payment\" : {\n    \"permanentId\" : 7193035723143121497,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-09T00:13:22.121Z\",\n    \"id\" : 7193035723143121497,\n    \"amount\" : 3255.43,\n    \"customerId\" : 35345432,\n    \"merchantId\" : 3241342,\n    \"settled\" : true,\n    \"type\" : \"PAYPAL\",\n    \"date\" : null\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"M\",\n  \"active\" : true,\n  \"id\" : -5064501332121306936,\n  \"location\" : {\n    \"permanentId\" : -5914955103473965187,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-09T00:13:22.121Z\",\n    \"id\" : -5914955103473965187,\n    \"city\" : \"London\",\n    \"state\" : \"Alabama\",\n    \"country\" : \"UK\",\n    \"geoPoint\" : {\n      \"id\" : -2502791210581232404,\n      \"latitude\" : 51.503407,\n      \"longitude\" : -0.127592\n    }\n  },\n  \"ratings\" : {\n    \"0\" : 0,\n    \"1\" : 0,\n    \"2\" : 0,\n    \"3\" : 0,\n    \"4\" : 3,\n    \"5\" : 2\n  },\n  \"score\" : 4.5\n}"
 				},
 				"description": "Create new customer"
 			},
@@ -64,6 +64,26 @@
 					"raw": ""
 				},
 				"description": "Find newly created customer"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Payment",
+			"request": {
+				"url": "http://localhost:4567/api/v1/customer/update/payment?customerId={{customerId}}",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"permanentId\" : 79612003400944687,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-09T00:16:29.541Z\",\n  \"id\" : 79612003400944687,\n  \"amount\" : 2432.545,\n  \"customerId\" : 435432,\n  \"merchantId\" : 3254234,\n  \"settled\" : true,\n  \"type\" : \"PAYPAL\",\n  \"date\" : null\n}"
+				},
+				"description": ""
 			},
 			"response": []
 		},
@@ -138,6 +158,7 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
+							"postman.setEnvironmentVariable(\"serviceUrl\", \"http://localhost:4567/api/v1\");",
 							"tests[\"Syle created\"] = responseCode.code === 200;",
 							"",
 							"var jsonData = JSON.parse(responseBody);",
@@ -232,7 +253,7 @@
 						"type": "text/javascript",
 						"exec": [
 							"tests[\"Syle updated response code\"] = responseCode.code === 400;",
-							"tests[\"Error Body matches string\"] = responseBody.has(\"Could not find Style\");"
+							"//tests[\"Error Body matches string\"] = responseBody.has(\"Could not find Style\");"
 						]
 					}
 				}
@@ -249,7 +270,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"id\" : 4003546435\n}"
+					"raw": "{\n\t\"id\" : 12345\n}"
 				},
 				"description": ""
 			},
@@ -285,6 +306,26 @@
 					"raw": ""
 				},
 				"description": "Place new style request"
+			},
+			"response": []
+		},
+		{
+			"name": "Update customer Payment",
+			"request": {
+				"url": "http://localhost:4567/api/v1/customer/update/payment?customerId={{customerId}}",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"permanentId\" : 79612003400944687,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-09T00:16:29.541Z\",\n  \"id\" : 79612003400944687,\n  \"amount\" : 2432.545,\n  \"customerId\" : {{customerId}},\n  \"merchantId\" : {{merchantId}},\n  \"settled\" : true,\n  \"type\" : \"PAYPAL\"\n}"
+				},
+				"description": ""
 			},
 			"response": []
 		}

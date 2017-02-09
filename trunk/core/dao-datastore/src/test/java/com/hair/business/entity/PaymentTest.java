@@ -4,7 +4,7 @@ import static com.com.hair.business.beans.utils.EntityTestUtils.TEST_UTILS;
 import static com.x.y.EntityTestConstants.createCustomer;
 import static com.x.y.EntityTestConstants.createMerchant;
 
-import com.hair.business.beans.constants.MerchantType;
+import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Payment;
@@ -53,7 +53,7 @@ public class PaymentTest extends AbstractDatastoreTestBase {
         Customer customer = createCustomer();
         repo.saveFew(merchant, customer);
 
-        Payment p = new Payment(new Random().nextLong(), customer, merchant, true, MerchantType.PAYPAL);
+        Payment p = new Payment(2432.545D, 435432L, 3254234L, true, PaymentType.PAYPAL);
 
         p.setId(new Random().nextLong());
         p.setPermanentId(new Random().nextLong());

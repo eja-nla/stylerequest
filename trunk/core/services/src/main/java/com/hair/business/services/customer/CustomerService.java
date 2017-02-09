@@ -6,6 +6,7 @@ import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Device;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
+import com.hair.business.beans.entity.Payment;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 
@@ -31,6 +32,11 @@ public interface CustomerService {
      * Creates a new customer
      * */
     Customer createCustomer(String firstname, String lastname, String email, String phone, Device device, Location location);
+
+    /**
+     * Updates customer payment information
+     * */
+    Payment updatePaymentInfo(Long customerId, Payment payment);
 
     /**
      * Saves new customer

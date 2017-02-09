@@ -3,6 +3,7 @@ package com.hair.business.beans.abstracts;
 import com.googlecode.objectify.annotation.Index;
 import com.hair.business.beans.constants.Gender;
 import com.hair.business.beans.entity.Device;
+import com.hair.business.beans.entity.Payment;
 
 /**
  * Abstract actor entity e.g. Customer, Merchant etc.
@@ -14,6 +15,7 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
     @Index private String email;
     private String phone;
     private Device device;
+    private Payment payment;
     private String photoUrl;
     private Gender gender;
     private boolean active;
@@ -41,6 +43,14 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
 
     public void setDevice(Device device) {
         this.device = device;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 
     public boolean isActive() {
