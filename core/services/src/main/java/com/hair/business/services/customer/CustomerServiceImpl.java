@@ -1,6 +1,7 @@
 package com.hair.business.services.customer;
 
 import static com.x.business.utilities.RatingUtil.averagingWeighted;
+import static java.util.Optional.ofNullable;
 import static java.util.logging.Logger.getLogger;
 
 import com.hair.business.beans.constants.StyleRequestState;
@@ -12,6 +13,7 @@ import com.hair.business.beans.entity.Payment;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.paypal.base.rest.APIContext;
 import com.x.business.exception.DuplicateEntityException;
 import com.x.business.exception.EntityNotFoundException;
 import com.x.business.scheduler.TaskQueue;
@@ -40,13 +42,14 @@ public class CustomerServiceImpl implements CustomerService {
     private final Repository repository;
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;
+    private final APIContext paypalApiContext;
 
     @Inject
-    public CustomerServiceImpl(Repository repository, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue) {
+    public CustomerServiceImpl(Repository repository, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue, APIContext paypalApiContext) {
         this.repository = repository;
         this.emailTaskQueue = emailTaskQueue;
         this.apnsQueue = apnsQueue;
-
+        this.paypalApiContext = paypalApiContext;
     }
 
     @Override
@@ -79,7 +82,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Payment updatePaymentInfo(Long customerId, Payment payment) throws EntityNotFoundException, IllegalArgumentException {
+    public Payment updatePaymentInfo(Long customerId, Payment payment) throws IllegalArgumentException {
         Assert.notNull(customerId, payment);
 
         Customer customer = repository.findOne(customerId, Customer.class);
@@ -97,7 +100,9 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Collection<StyleRequest> findStyleRequests(Long permanentId, StyleRequestState styleRequestState) {
+    public Collection<StyleRequest> findStyleRequests(Long permanentId, StyleRequestState styleRequestState) throws IllegalArgumentException {
+        Assert.validId(permanentId);
+        Assert.notNull(styleRequestState, "Style request state cannot be null");
         List<String> conditions = new ArrayList<>();
         List<Object> values = new ArrayList<>();
 
@@ -110,10 +115,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void deactivateCustomer(Customer customer) {
-
-        customer.setActive(false);
-        repository.saveOne(customer);
-
+        ofNullable(customer).ifPresent(c -> {
+            customer.setActive(false);
+            repository.saveOne(customer);
+        });
     }
 
     @Override
@@ -138,6 +143,7 @@ public class CustomerServiceImpl implements CustomerService {
             throw new IllegalArgumentException("Review score must be between 1 and 5");
         }
 
+        Assert.validId(customerId);
         Customer customer = repository.findOne(customerId, Customer.class);
         Assert.isFound(customer, String.format("Customer with id %s not found", customerId));
         final Map<Integer, Integer> weightedRatings = customer.getRatings();
