@@ -8,6 +8,7 @@ import static org.hamcrest.core.Is.is;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Payment;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.paypal.base.rest.APIContext;
 import com.x.business.scheduler.TaskQueue;
 
 import org.junit.Before;
@@ -30,13 +31,14 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
     private Repository repository;
     private TaskQueue emailQueue = Mockito.mock(TaskQueue.class);
     private TaskQueue apnsQueue = Mockito.mock(TaskQueue.class);
+    private APIContext paypalApiContext = Mockito.mock(APIContext.class);
 
     private Customer customer;
 
     @Before
     public void setUp(){
         repository = injector.getInstance(Repository.class);
-        cs = new CustomerServiceImpl(repository, emailQueue, apnsQueue);
+        cs = new CustomerServiceImpl(repository, emailQueue, apnsQueue, paypalApiContext);
 
         customer = createCustomer();
         repository.saveOne(customer);
