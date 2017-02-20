@@ -69,6 +69,18 @@
 		},
 		{
 			"name": "Update Payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Payment updated\"] = responseCode.code === 200;",
+							""
+						]
+					}
+				}
+			],
 			"request": {
 				"url": "http://localhost:4567/api/v1/customer/update/payment?customerId={{customerId}}",
 				"method": "POST",
@@ -97,7 +109,7 @@
 						"exec": [
 							"tests[\"Merchant created\"] = responseCode.code === 200;",
 							"",
-							"postman.setEnvironmentVariable(\"merchantId\", \"-4689811460267167170\");"
+							"postman.setEnvironmentVariable(\"merchantId\", \"4465955492626167338\");"
 						]
 					}
 				}
@@ -119,7 +131,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"permanentId\" : -4689811460267167170,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-06T07:54:39.548Z\",\n  \"lastUpdated\" : \"2017-02-06T07:54:39.548Z\",\n  \"name\" : \"Test Merchant Name\",\n  \"email\" : \"merchant@email.com\",\n  \"phone\" : \"+1134555643654\",\n  \"device\" : {\n    \"permanentId\" : -5804814280700189014,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-06T07:54:39.410Z\",\n    \"id\" : 1191626847201020297,\n    \"deviceId\" : \"j9bf5g7mnbf56jbd4j2loi1rv3\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"F\",\n  \"active\" : true,\n  \"id\" : -4689811460267167170,\n  \"location\" : {\n    \"permanentId\" : -4132900056413104581,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-06T07:54:39.548Z\",\n    \"id\" : -4132900056413104581,\n    \"city\" : \"London\",\n    \"state\" : \"Alabama\",\n    \"country\" : \"UK\",\n    \"geoPoint\" : {\n      \"id\" : 2585139948139706069,\n      \"latitude\" : 51.503407,\n      \"longitude\" : -0.127592\n    }\n  },\n  \"ratings\" : {\n    \"0\" : 0,\n    \"1\" : 0,\n    \"2\" : 0,\n    \"3\" : 0,\n    \"4\" : 3,\n    \"5\" : 2\n  },\n  \"score\" : 4.5\n}"
+					"raw": "{\n  \"permanentId\" : 4465955492626167338,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-06T21:56:24.617Z\",\n  \"lastUpdated\" : \"2017-02-06T21:56:24.617Z\",\n  \"firstName\" : \"Test Merchant FirstName\",\n  \"lastName\" : \"lastname\",\n  \"email\" : \"merchant@email.com\",\n  \"phone\" : \"+1134555643654\",\n  \"device\" : {\n    \"permanentId\" : 236991800061305557,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-06T21:56:24.617Z\",\n    \"id\" : 242923285250164205,\n    \"deviceId\" : \"ugfbcu4k07amfs32ea5bp5ioms\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"F\",\n  \"active\" : true,\n  \"id\" : 4465955492626167338,\n  \"location\" : {\n    \"permanentId\" : -7789403340680265354,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-06T21:56:24.617Z\",\n    \"id\" : -7789403340680265354,\n    \"city\" : \"London\",\n    \"state\" : \"Alabama\",\n    \"country\" : \"UK\",\n    \"geoPoint\" : {\n      \"id\" : 6184841824413077491,\n      \"latitude\" : 51.503407,\n      \"longitude\" : -0.127592\n    }\n  },\n  \"businessName\" : \"Midas hair place\",\n  \"ratings\" : {\n    \"0\" : 0,\n    \"1\" : 0,\n    \"2\" : 0,\n    \"3\" : 0,\n    \"4\" : 3,\n    \"5\" : 2\n  },\n  \"score\" : 4.5,\n  \"preferences\" : {\n    \"placedNotification\" : true,\n    \"acceptedNotification\" : true,\n    \"cancelledNotification\" : true,\n    \"completedNotification\" : true\n  }\n}"
 				},
 				"description": "Create new merchant"
 			},
@@ -221,7 +233,11 @@
 							"tests[\"Syle updated response code\"] = responseCode.code === 200;",
 							"",
 							"var jsonData = JSON.parse(responseBody);",
-							"tests[\"Syle updated - good\"] = jsonData.name === \"style updated after didi\";"
+							"tests[\"Syle updated - good\"] = jsonData.name === \"style updated after didi\";",
+							"",
+							"if(!tests[\"Syle updated - good\"]) {",
+							" console.log(\"Failed response: \" + responseBody);",
+							"}"
 						]
 					}
 				}
@@ -238,7 +254,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"permanentId\" : -4424178728855319845,\n  \"version\" : 1,\n  \"createdDate\" : \"2016-08-29T20:22:44.557Z\",\n  \"id\" : 4003,\n  \"name\" : \"style updated after didi\",\n  \"requestCount\" : 0,\n  \"trending\" : true,\n  \"active\" : true,\n  \"publisherId\" : -1733350221602184676,\n  \"location\" : {\n    \"permanentId\" : -4766811198420564245,\n    \"version\" : 1,\n    \"createdDate\" : \"2016-08-29T20:22:44.556Z\",\n    \"id\" : -5712228046471495956,\n    \"city\" : \"London\",\n    \"state\" : \"Alabama\",\n    \"country\" : \"UK\",\n    \"geoPoint\" : {\n      \"id\" : -2914024913972574844,\n      \"latitude\" : 51.503407,\n      \"longitude\" : -0.127592\n    }\n  },\n  \"styleImages\" : [ {\n    \"permanentId\" : 1627324436263907989,\n    \"version\" : 1,\n    \"createdDate\" : \"2016-08-29T20:22:44.556Z\",\n    \"id\" : 6055824299439456969,\n    \"url\" : \"http//187v58eaa902ostno5f9rm30l7.com\",\n    \"owner\" : \"test owner name\",\n    \"views\" : 20\n  } ],\n  \"durationEstimate\" : 5\n}"
+					"raw": "{\n  \"permanentId\" : -4424178728855319845,\n  \"version\" : 1,\n  \"createdDate\" : \"2016-08-29T20:22:44.557Z\",\n  \"id\" : {{styleId}},\n  \"name\" : \"style updated after didi\",\n  \"requestCount\" : 0,\n  \"trending\" : true,\n  \"active\" : true,\n  \"publisherId\" : -1733350221602184676,\n  \"location\" : {\n    \"permanentId\" : -4766811198420564245,\n    \"version\" : 1,\n    \"createdDate\" : \"2016-08-29T20:22:44.556Z\",\n    \"id\" : -5712228046471495956,\n    \"city\" : \"London\",\n    \"state\" : \"Alabama\",\n    \"country\" : \"UK\",\n    \"geoPoint\" : {\n      \"id\" : -2914024913972574844,\n      \"latitude\" : 51.503407,\n      \"longitude\" : -0.127592\n    }\n  },\n  \"styleImages\" : [ {\n    \"permanentId\" : 1627324436263907989,\n    \"version\" : 1,\n    \"createdDate\" : \"2016-08-29T20:22:44.556Z\",\n    \"id\" : 6055824299439456969,\n    \"url\" : \"http//187v58eaa902ostno5f9rm30l7.com\",\n    \"owner\" : \"test owner name\",\n    \"views\" : 20\n  } ],\n  \"durationEstimate\" : 5\n}"
 				},
 				"description": ""
 			},
@@ -253,7 +269,9 @@
 						"type": "text/javascript",
 						"exec": [
 							"tests[\"Syle updated response code\"] = responseCode.code === 400;",
-							"//tests[\"Error Body matches string\"] = responseBody.has(\"Could not find Style\");"
+							"if(!tests[\"Syle updated response code\"]) {",
+							" console.log(\"Failed response: \" + responseBody);",
+							"}"
 						]
 					}
 				}
@@ -270,7 +288,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"id\" : 12345\n}"
+					"raw": "{\n\t\"id\" : -12345\n}"
 				},
 				"description": ""
 			},
@@ -292,7 +310,7 @@
 				}
 			],
 			"request": {
-				"url": "{{serviceUrl}}/customer/request/style?customerId={{customerId}}&styleId={{styleId}}&merchantId={{merchantId}}&dateTime=2016-08-29T20:17:00.653Z",
+				"url": "{{serviceUrl}}/customer/request/style?customerId={{customerId}}&styleId={{styleId}}&merchantId={{merchantId}}&dateTime=2017-02-20T09:00:01.635Z",
 				"method": "POST",
 				"header": [
 					{
@@ -324,6 +342,26 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n  \"permanentId\" : 79612003400944687,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-09T00:16:29.541Z\",\n  \"id\" : 79612003400944687,\n  \"amount\" : 2432.545,\n  \"customerId\" : {{customerId}},\n  \"merchantId\" : {{merchantId}},\n  \"settled\" : true,\n  \"type\" : \"PAYPAL\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Paypal payment",
+			"request": {
+				"url": "{{serviceUrl}}/payment/paypal",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
 				},
 				"description": ""
 			},

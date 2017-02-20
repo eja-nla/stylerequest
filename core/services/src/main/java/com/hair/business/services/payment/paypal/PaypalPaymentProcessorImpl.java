@@ -27,14 +27,14 @@ import javax.inject.Inject;
 /**
  * Created by olukoredeaguda on 09/02/2017.
  *
- * fixme revisit (Needs TLS 1.2.) - prefferably when appengine support java 8
+ * fixme revisit (Needs TLS 1.2.) - preferably when appengine support java 8
  */
 public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
 
     private static final Logger logger = Logger.getLogger(PaypalPaymentProcessorImpl.class.getName());
     private final APIContext paypalApiContext;
     private final Repository repository;
-    Map<String, String> map = new HashMap<>();
+    private Map<String, String> map = new HashMap<>();
 
     @Inject
     public PaypalPaymentProcessorImpl(APIContext paypalApiContext, Repository repository) {
@@ -52,7 +52,7 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
 
     }
 
-    public Payment createPayment(Long payerId, Long recipientId) {
+    private Payment createPayment(Long payerId, Long recipientId) {
         Payment createdPayment = null;
 
         // ### Api Context
@@ -166,6 +166,7 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
 
     @Override
     public com.hair.business.beans.entity.Payment pay(Long senderId, Long recipientId, double amount) {
+        Payment x = createPayment(1L, 2L);
         return null;
     }
 

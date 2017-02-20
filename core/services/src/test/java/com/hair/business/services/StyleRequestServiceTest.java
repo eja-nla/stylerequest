@@ -48,16 +48,28 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
         repository = injector.getInstance(Repository.class);
         srs = new StyleRequestServiceImpl(repository, emailQueue, apnsQueue);
 
+        // See sendgrid section in appengine-web.xml
         try {
-            System.setProperty("SENDGRID_PLACED_STYLE_EMAIL_TEMPLATE_FILE", new File("src/test/resources/styleTemplate_pending.json").getCanonicalPath());
-            System.setProperty("SENDGRID_CANCELLED_STYLE_EMAIL_TEMPLATE_FILE", new File("src/test/resources/styleTemplate_pending.json").getCanonicalPath());
-            System.setProperty("SENDGRID_ACCEPTED_STYLE_EMAIL_TEMPLATE_FILE", new File("src/test/resources/styleTemplate_pending.json").getCanonicalPath());
-            System.setProperty("SENDGRID_COMPLETED_STYLE_EMAIL_TEMPLATE_FILE", new File("src/test/resources/styleTemplate_pending.json").getCanonicalPath());
+            System.setProperty("sendgrid.placed.merchant.stylerequest.email.template", new File("src/test/resources/styleTemplate.customer.placed.json").getCanonicalPath());
+            System.setProperty("sendgrid.cancelled.merchant.stylerequest.email.template", new File("src/test/resources/styleTemplate.customer.placed.json").getCanonicalPath());
+            System.setProperty("sendgrid.accepted.merchant.stylerequest.email.template", new File("src/test/resources/styleTemplate.customer.placed.json").getCanonicalPath());
+            System.setProperty("sendgrid.completed.merchant.stylerequest.email.template", new File("src/test/resources/styleTemplate.customer.placed.json").getCanonicalPath());
+            System.setProperty("sendgrid.placed.customer.stylerequest.email.template", new File("src/test/resources/styleTemplate.customer.placed.json").getCanonicalPath());
+            System.setProperty("sendgrid.cancelled.customer.stylerequest.email.template", new File("src/test/resources/styleTemplate.customer.placed.json").getCanonicalPath());
+            System.setProperty("sendgrid.accepted.customer.stylerequest.email.template", new File("src/test/resources/styleTemplate.customer.placed.json").getCanonicalPath());
+            System.setProperty("sendgrid.completed.customer.stylerequest.email.template", new File("src/test/resources/styleTemplate.customer.placed.json").getCanonicalPath());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    @Test
+    public void testFindStyleRequest() throws Exception {
+        StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
+
+        assertThat(srs.findStyleRequest(sr.getId()), is(notNullValue()));
+    }
 
     @Test
     public void testPlaceStyleRequest() throws Exception {
@@ -79,34 +91,62 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     }
 
     @Test
-    public void testFindUpcomingAppointments() throws Exception {
+    public void testFindMerchantUpcomingAppointments() throws Exception {
         StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
 
-        assertThat(srs.findUpcomingAppointments(sr.getMerchantPermanentId(), new DateTime().minusDays(1)).size(), is(1));
-
+        assertThat(srs.findMerchantAcceptedAppointments(sr.getMerchantPermanentId(), new DateTime().plusHours(5)).size(), is(1));
     }
 
     @Test
-    public void testFindCancelledAppointments() throws Exception {
+    public void testFindMerchantCancelledAppointments() throws Exception {
         StyleRequest sr = initStyleRequest(StyleRequestState.CANCELLED);
 
-        assertThat(srs.findCancelledAppointments(sr.getMerchantPermanentId(), new DateTime().minusDays(1)).size(), is(1));
+        assertThat(srs.findMerchantCancelledAppointments(sr.getMerchantPermanentId(), new DateTime().plusHours(5)).size(), is(1));
 
     }
 
     @Test
-    public void testFindPendingAppointments() throws Exception {
+    public void testFindMerchantPendingAppointments() throws Exception {
         StyleRequest sr = initStyleRequest(StyleRequestState.PENDING);
 
-        assertThat(srs.findPendingAppointments(sr.getMerchantPermanentId(), new DateTime().minusDays(1)).size(), is(1));
+        assertThat(srs.findMerchantPendingAppointments(sr.getMerchantPermanentId(), new DateTime().plusHours(5)).size(), is(1));
 
     }
 
     @Test
-    public void testFindCompletedAppointments() throws Exception {
+    public void testFindMerchantCompletedAppointments() throws Exception {
         StyleRequest sr = initStyleRequest(StyleRequestState.COMPLETED);
 
-        assertThat(srs.findCompletedAppointments(sr.getMerchantPermanentId(), new DateTime().minusDays(1)).size(), is(1));
+        assertThat(srs.findMerchantCompletedAppointments(sr.getMerchantPermanentId(), new DateTime().plusHours(5)).size(), is(1));
+
+    }
+
+    @Test
+    public void testFindCustomerCompletedAppointments() throws Exception {
+        StyleRequest sr = initStyleRequest(StyleRequestState.COMPLETED);
+
+        assertThat(srs.findCustomerCompletedAppointments(sr.getCustomerPermanentId(), new DateTime().plusHours(5)).size(), is(1));
+
+    }
+    @Test
+    public void testFindCustomerPendingAppointments() throws Exception {
+        StyleRequest sr = initStyleRequest(StyleRequestState.PENDING);
+
+        assertThat(srs.findCustomerPendingAppointments(sr.getCustomerPermanentId(), new DateTime().plusHours(5)).size(), is(1));
+
+    }
+    @Test
+    public void testFindCustomerCancelledAppointments() throws Exception {
+        StyleRequest sr = initStyleRequest(StyleRequestState.CANCELLED);
+
+        assertThat(srs.findCustomerCancelledAppointments(sr.getCustomerPermanentId(), new DateTime().plusHours(5)).size(), is(1));
+
+    }
+    @Test
+    public void testFindCustomerUpcomingAppointments() throws Exception {
+        StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
+
+        assertThat(srs.findCustomerAcceptedAppointments(sr.getCustomerPermanentId(), new DateTime().plusHours(5)).size(), is(1));
 
     }
 
@@ -134,6 +174,6 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
         Merchant m = createMerchant();
         repository.saveFew(style, customer, m);
 
-        return srs.placeStyleRequest(style.getId(), customer.getId(), m.getId(), DateTime.now());
+        return srs.placeStyleRequest(style.getId(), customer.getId(), m.getId(), DateTime.now().plusHours(3));
     }
 }

@@ -5,6 +5,7 @@ import com.google.appengine.repackaged.com.google.common.base.Defaults;
 import com.hair.business.beans.abstracts.AbstractPersistenceEntity;
 
 import org.apache.commons.lang3.Validate;
+import org.joda.time.DateTime;
 
 import java.util.Objects;
 
@@ -45,7 +46,7 @@ public class Assert extends Validate {
 
     public static void validId(Long key){
         if(Objects.equals(key, Defaults.defaultValue(Long.TYPE))){
-            throw new IllegalArgumentException("Invalid ID value");
+            throw new IllegalArgumentException(String.format("Invalid ID value %s", key));
         }
     }
 
@@ -57,4 +58,18 @@ public class Assert extends Validate {
         }
     }
 
+    public static void dateInFuture(DateTime dateTime) {
+        if (dateTime == null) {
+            throw new IllegalArgumentException("Null date not allowed.");
+        }
+        if (dateTime.isBeforeNow()) {
+            throw new IllegalArgumentException(String.format("Date %s must be in the future.", dateTime.toString()));
+        }
+    }
+
+    public static void validIds(Long... ids) {
+        for (Long id : ids) {
+            validId(id);
+        }
+    }
 }

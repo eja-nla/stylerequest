@@ -49,11 +49,9 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
         }
     }
 
-
-
     @Test
     public void testDeactivateCustomer() {
-        cs.deactivateCustomer(customer);
+        cs.deactivateCustomer(customer.getId());
         assertThat(customer.isActive(), is(false));
     }
 

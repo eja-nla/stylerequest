@@ -1,53 +1,72 @@
 package com.x.business.notif;
 
+import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.entity.StyleRequest;
+import com.x.business.utilities.Assert;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.logging.Logger;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
- * AbstractNotification object
+ * Placed Style Request Notification
+ *
+ * Creates notification contents available for sending based on recipient's preferences
+ *
  * Created by Olukorede Aguda on 21/06/2016.
  */
-public class PlacedStyleRequestNotification extends AbstractNotification {
+public class PlacedStyleRequestNotification extends AbstractStyleRequestNotification {
 
-    private String body;
+    private String tokenizedCustomerEmailBody;
+    private String tokenizedMerchantEmailBody;
+    private Preferences merchantPreferences;
 
-    private static String emailBody = null;
-    private static final String senderEmail = System.getProperty("SENDGRID_FROM_EMAIL");
+    private static final Pair<String, String> merchant_customer_template_pair = getTemplatePair(
+            System.getProperty("sendgrid.placed.customer.stylerequest.email.template"),
+            System.getProperty("sendgrid.placed.merchant.stylerequest.email.template")
+    );
 
-    private static final Logger LOGGER = Logger.getLogger(PlacedStyleRequestNotification.class.getName());
+    public PlacedStyleRequestNotification(StyleRequest styleRequest, Preferences merchantPreferences) {
 
-    static {
-
-        String new_stylerequest_templateFile = System.getProperty("SENDGRID_PLACED_STYLE_EMAIL_TEMPLATE_FILE");
-
-        try {
-            emailBody = new String(Files.readAllBytes(Paths.get(new_stylerequest_templateFile)), StandardCharsets.ISO_8859_1);
-        } catch (IOException e){
-            LOGGER.severe(String.format("Unable to load email template file '%s'. Reason: %s", new_stylerequest_templateFile, e.getMessage()));
-        }
-
+        Assert.notNull(merchantPreferences, "Merchant email Preference is required.");
+        this.merchantPreferences = merchantPreferences;
+        this.tokenizedCustomerEmailBody = tokenizeCustomer(styleRequest);
+        this.tokenizedMerchantEmailBody = merchantPreferences.isPlacedNotificationEnabled() ? tokenizeMerchant(styleRequest) : null;
     }
 
-    public PlacedStyleRequestNotification(StyleRequest styleRequest) {
 
-        this.body = String.format(emailBody,
+    @Override
+    public String getCustomerEmailBody() {
+        return tokenizedCustomerEmailBody;
+    }
+
+    @Override
+    public String getMerchantEmailBody() {
+        return tokenizedMerchantEmailBody;
+    }
+
+    @Override
+    protected boolean shouldSendToMerchant() {
+        return merchantPreferences.isPlacedNotificationEnabled();
+    }
+
+    private String tokenizeCustomer(StyleRequest styleRequest){
+        return String.format(merchant_customer_template_pair.getLeft(),
                 styleRequest.getMerchant().getEmail(),
                 styleRequest.getCustomer().getFirstName(),
                 styleRequest.getStyle().getName(),
                 styleRequest.getAppointmentStartTime().toDate(),
                 styleRequest.getMerchant().getBusinessName(),
-                senderEmail
+                getFromEmail()
         );
     }
 
-
-    @Override
-    public String getBody() {
-        return body;
+    private String tokenizeMerchant(StyleRequest styleRequest){
+        return String.format(merchant_customer_template_pair.getRight(),
+                styleRequest.getMerchant().getEmail(),
+                styleRequest.getCustomer().getFirstName(),
+                styleRequest.getStyle().getName(),
+                styleRequest.getAppointmentStartTime().toDate(),
+                styleRequest.getMerchant().getBusinessName(),
+                getFromEmail()
+        );
     }
 }

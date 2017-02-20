@@ -1,10 +1,10 @@
 package com.hair.business.rest.resources.merchant;
 
 import static com.hair.business.rest.MvcConstants.CREATE_MERCHANT_ENDPOINT;
-import static com.hair.business.rest.MvcConstants.PUBLISH_STYLE_ENDPOINT;
-import static com.hair.business.rest.MvcConstants.EMAIL;
+import static com.hair.business.rest.MvcConstants.ID;
 import static com.hair.business.rest.MvcConstants.INFO;
 import static com.hair.business.rest.MvcConstants.MERCHANT_URI;
+import static com.hair.business.rest.MvcConstants.PUBLISH_STYLE_ENDPOINT;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import com.google.identitytoolkit.GitkitUser;
@@ -12,8 +12,10 @@ import com.google.identitytoolkit.GitkitUser;
 import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
+import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.StyleService;
 import com.hair.business.services.merchant.MerchantService;
+import com.x.business.utilities.Assert;
 
 import java.util.List;
 
@@ -34,7 +36,7 @@ import javax.ws.rs.core.Response;
  * Created by Olukorede Aguda on 30/04/2016.
  */
 @Path(MERCHANT_URI)
-public class MerchantRequestServlet {
+public class MerchantRequestServlet extends AbstractRequestServlet {
 
     private final MerchantService merchantService;
     private final StyleService styleService;
@@ -48,9 +50,13 @@ public class MerchantRequestServlet {
     @GET
     @Path(INFO)
     @Produces(APPLICATION_JSON)
-    public String getMerchantInfo(@Context HttpServletRequest request, @QueryParam(EMAIL) Long customerEmail) {
-        GitkitUser user = (GitkitUser) request.getAttribute("user");
-        return "hey " + customerEmail + request.getHeader("gtoken");
+    public Response getMerchantInfo(@QueryParam(ID) Long merchantId) {
+        Assert.validId(merchantId);
+        try {
+            return Response.ok(merchantService.findMerchant(merchantId)).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        }
     }
 
     @POST

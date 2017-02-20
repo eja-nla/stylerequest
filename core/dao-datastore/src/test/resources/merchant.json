@@ -43,5 +43,11 @@
     "4" : 3,
     "5" : 2
   },
-  "score" : 4.5
+  "score" : 4.5,
+  "preferences" : {
+    "placedNotificationEnabled" : true,
+    "acceptedNotificationEnabled" : true,
+    "cancelledNotificationEnabled" : true,
+    "completedNotificationEnabled" : true
+  }
 }

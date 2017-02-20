@@ -1,7 +1,6 @@
 package com.hair.business.services.customer;
 
 import static com.x.business.utilities.RatingUtil.averagingWeighted;
-import static java.util.Optional.ofNullable;
 import static java.util.logging.Logger.getLogger;
 
 import com.hair.business.beans.constants.StyleRequestState;
@@ -43,6 +42,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;
     private final APIContext paypalApiContext;
+    private static final String CUSTOMER_NOT_FOUND_MESSAGE = "Customer with Id %s not found";
 
     @Inject
     public CustomerServiceImpl(Repository repository, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue, APIContext paypalApiContext) {
@@ -83,19 +83,23 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Payment updatePaymentInfo(Long customerId, Payment payment) throws IllegalArgumentException {
-        Assert.notNull(customerId, payment);
+        Assert.notNull(payment, "Payment cannot be null");
+        Assert.validId(customerId);
 
         Customer customer = repository.findOne(customerId, Customer.class);
-        Assert.notNull(customer);
+        Assert.notNull(customer, String.format(CUSTOMER_NOT_FOUND_MESSAGE, customer.getId()));
 
         customer.setPayment(payment);
         repository.saveFew(payment, customer);
 
-        return payment;
+        return customer.getPayment();
     }
 
     @Override
     public void saveCustomer(Customer customer) {
+        Assert.notNull(customer);
+        Assert.validId(customer.getId());
+
         repository.saveOne(customer);
     }
 
@@ -114,11 +118,14 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void deactivateCustomer(Customer customer) {
-        ofNullable(customer).ifPresent(c -> {
-            customer.setActive(false);
-            repository.saveOne(customer);
-        });
+    public void deactivateCustomer(Long customerId) {
+        Assert.validId(customerId);
+
+        Customer customer = repository.findOne(customerId, Customer.class);
+        Assert.notNull(customer, String.format(CUSTOMER_NOT_FOUND_MESSAGE, customer));
+        customer.setActive(false);
+
+        repository.saveOne(customer);
     }
 
     @Override

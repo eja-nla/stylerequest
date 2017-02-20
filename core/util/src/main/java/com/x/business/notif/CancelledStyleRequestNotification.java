@@ -1,53 +1,66 @@
 package com.x.business.notif;
 
+import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.entity.StyleRequest;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.logging.Logger;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * AbstractNotification object
  * Created by Olukorede Aguda on 21/06/2016.
  */
-public class CancelledStyleRequestNotification extends AbstractNotification {
+public class CancelledStyleRequestNotification extends AbstractStyleRequestNotification {
 
-    private String body;
+    private String tokenizedCustomerEmailBody;
+    private String tokenizedMerchantEmailBody;
+    private Preferences merchantPreferences;
 
-    private static String emailBody = null;
-    private static final String adminEmail = System.getProperty("SENDGRID_FROM_EMAIL");
+    private static final Pair<String, String> merchant_customer_template_pair = getTemplatePair(
+            System.getProperty("sendgrid.cancelled.customer.stylerequest.email.template"),
+            System.getProperty("sendgrid.cancelled.merchant.stylerequest.email.template")
+    );
 
-    private static final Logger LOGGER = Logger.getLogger(CancelledStyleRequestNotification.class.getName());
+    public CancelledStyleRequestNotification(StyleRequest styleRequest, Preferences preferences) {
 
-    static {
-
-        String cancelled_stylerequest_templateFile = System.getProperty("SENDGRID_CANCELLED_STYLE_EMAIL_TEMPLATE_FILE");
-
-        try {
-            emailBody = new String(Files.readAllBytes(Paths.get(cancelled_stylerequest_templateFile)), StandardCharsets.ISO_8859_1);
-        } catch (IOException e){
-            LOGGER.severe(String.format("Unable to load email template file '%s'. Reason: %s", cancelled_stylerequest_templateFile, e.getMessage()));
-        }
-
+        this.merchantPreferences = preferences;
+        this.tokenizedCustomerEmailBody = tokenizeCustomer(styleRequest);
+        this.tokenizedMerchantEmailBody = merchantPreferences.isCancelledNotificationEnabled() ? tokenizeMerchant(styleRequest) : null;
     }
 
-    public CancelledStyleRequestNotification(StyleRequest styleRequest) {
+    @Override
+    public String getCustomerEmailBody() {
+        return tokenizedCustomerEmailBody;
+    }
 
-        this.body = String.format(emailBody,
+    @Override
+    public String getMerchantEmailBody() {
+        return tokenizedMerchantEmailBody;
+    }
+
+    @Override
+    protected boolean shouldSendToMerchant() {
+        return merchantPreferences.isCancelledNotificationEnabled();
+    }
+
+    private String tokenizeCustomer(StyleRequest styleRequest){
+        return String.format(merchant_customer_template_pair.getLeft(),
                 styleRequest.getMerchant().getEmail(),
                 styleRequest.getCustomer().getFirstName(),
                 styleRequest.getStyle().getName(),
                 styleRequest.getAppointmentStartTime().toDate(),
                 styleRequest.getMerchant().getBusinessName(),
-                adminEmail
+                getFromEmail()
         );
     }
 
-    @Override
-    public String getBody() {
-        return body;
+    private String tokenizeMerchant(StyleRequest styleRequest){
+        return String.format(merchant_customer_template_pair.getRight(),
+                styleRequest.getMerchant().getEmail(),
+                styleRequest.getCustomer().getFirstName(),
+                styleRequest.getStyle().getName(),
+                styleRequest.getAppointmentStartTime().toDate(),
+                styleRequest.getMerchant().getBusinessName(),
+                getFromEmail()
+        );
     }
-
 }
