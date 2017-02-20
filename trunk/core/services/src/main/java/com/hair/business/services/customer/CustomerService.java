@@ -51,7 +51,7 @@ public interface CustomerService {
     /**
      * Deactivates customer account
      */
-    void deactivateCustomer(Customer customer);
+    void deactivateCustomer(Long customerId);
 
     /**
      *  Issues a payment request from a customer to a merchant

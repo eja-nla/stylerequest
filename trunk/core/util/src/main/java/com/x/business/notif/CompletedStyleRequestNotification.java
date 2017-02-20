@@ -6,27 +6,25 @@ import com.hair.business.beans.entity.StyleRequest;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
- * Accepted Style Request Notification
- *
- * Creates notification contents available for sending based on recipient's preferences
+ * AbstractNotification object
  * Created by Olukorede Aguda on 21/06/2016.
  */
-public class AcceptedStyleRequestNotification extends AbstractStyleRequestNotification {
+public class CompletedStyleRequestNotification extends AbstractStyleRequestNotification {
 
-    private final String tokenizedCustomerEmailBody;
-    private final String tokenizedMerchantEmailBody;
+    private String tokenizedCustomerEmailBody;
+    private String tokenizedMerchantEmailBody;
     private Preferences merchantPreferences;
 
     private static final Pair<String, String> merchant_customer_template_pair = getTemplatePair(
-            System.getProperty("sendgrid.accepted.customer.stylerequest.email.template"),
-            System.getProperty("sendgrid.accepted.merchant.stylerequest.email.template")
+            System.getProperty("sendgrid.completed.customer.stylerequest.email.template"),
+            System.getProperty("sendgrid.completed.merchant.stylerequest.email.template")
     );
 
-    public AcceptedStyleRequestNotification(StyleRequest styleRequest, Preferences preferences) {
+    public CompletedStyleRequestNotification(StyleRequest styleRequest, Preferences preferences) {
 
         this.merchantPreferences = preferences;
         this.tokenizedCustomerEmailBody = tokenizeCustomer(styleRequest);
-        this.tokenizedMerchantEmailBody = merchantPreferences.isAcceptedNotificationEnabled() ? tokenizeMerchant(styleRequest) : null;
+        this.tokenizedMerchantEmailBody = merchantPreferences.isCompletedNotificationEnabled() ? tokenizeMerchant(styleRequest) : null;
     }
 
 
@@ -42,7 +40,7 @@ public class AcceptedStyleRequestNotification extends AbstractStyleRequestNotifi
 
     @Override
     protected boolean shouldSendToMerchant() {
-        return merchantPreferences.isAcceptedNotificationEnabled();
+        return merchantPreferences.isCompletedNotificationEnabled();
     }
 
     private String tokenizeCustomer(StyleRequest styleRequest){

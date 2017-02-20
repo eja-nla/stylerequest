@@ -7,6 +7,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Stringify;
 import com.hair.business.beans.abstracts.AbstractActorEntity;
+import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.helper.IntegerStringifyer;
 
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public class Merchant extends AbstractActorEntity {
     @Stringify(IntegerStringifyer.class) // Map of allowed scores and their weights(i.e. count)
     private Map<Integer, Integer> ratings;
     private double score;
+    private Preferences preferences;
 
     public Merchant(){}
 
@@ -92,5 +94,13 @@ public class Merchant extends AbstractActorEntity {
 
     public void setBusinessName(String businessName) {
         this.businessName = businessName;
+    }
+
+    public Preferences getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(Preferences preferences) {
+        this.preferences = preferences;
     }
 }

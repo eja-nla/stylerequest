@@ -117,7 +117,7 @@ public class MerchantServiceImpl implements MerchantService {
         styleRequest.setState(StyleRequestState.ACCEPTED);
         styleRequestService.updateStyleRequest(styleRequest);
 
-        emailTaskQueue.add(new AcceptedStyleRequestNotification(styleRequest));
+        emailTaskQueue.add(new AcceptedStyleRequestNotification(styleRequest, merchant.getPreferences()));
 
     }
 

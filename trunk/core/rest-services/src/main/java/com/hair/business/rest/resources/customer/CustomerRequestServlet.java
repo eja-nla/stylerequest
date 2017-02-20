@@ -13,10 +13,9 @@ import com.google.identitytoolkit.GitkitUser;
 
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Payment;
-import com.hair.business.beans.entity.StyleRequest;
+import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.StyleRequestService;
 import com.hair.business.services.customer.CustomerService;
-import com.x.business.utilities.Assert;
 
 import org.joda.time.DateTime;
 
@@ -39,7 +38,7 @@ import javax.ws.rs.core.Response;
  * Created by Olukorede Aguda on 30/04/2016.
  */
 @Path(CUSTOMER_URI)
-public class CustomerRequestServlet {
+public class CustomerRequestServlet extends AbstractRequestServlet {
 
     private final CustomerService customerService;
     private final StyleRequestService styleRequestService;
@@ -81,9 +80,15 @@ public class CustomerRequestServlet {
     @Path(STYLE_REQUEST_PATH)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public StyleRequest placeStyleRequest(@QueryParam("styleId") Long styleId, @QueryParam("customerId") Long customerId, @QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String when) {
-        DateTime dateOfRequest = new DateTime(when);
-        return styleRequestService.placeStyleRequest(styleId, customerId, merchantId, dateOfRequest);
+    public Response placeStyleRequest(@QueryParam("styleId") Long styleId, @QueryParam("customerId") Long customerId, @QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String when) {
+        try {
+            DateTime dateOfRequest = new DateTime(when);
+            return Response.ok(styleRequestService.placeStyleRequest(styleId, customerId, merchantId, dateOfRequest)).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
+        }
     }
 
     @POST
@@ -92,13 +97,11 @@ public class CustomerRequestServlet {
     @Produces(APPLICATION_JSON)
     public Response updatePayment(@QueryParam("customerId") Long customerId, Payment payment) {
         try {
-            Assert.validId(customerId);
-            Assert.notNull(payment, "Payment cannot be null");
             return Response.ok().entity(customerService.updatePaymentInfo(customerId, payment)).build();
-
         } catch (IllegalArgumentException e) {
-
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }
     }
 }

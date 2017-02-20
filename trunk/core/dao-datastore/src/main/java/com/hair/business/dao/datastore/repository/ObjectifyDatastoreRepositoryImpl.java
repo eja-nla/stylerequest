@@ -57,6 +57,7 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
         return new ArrayList<>(findMany(resultKeys, clazz).values());
     }
 
+    @Override
     public <T> Long peekOne(Long id, Class<T> clazz) {
         Key<T> key = ofy().load().type(clazz).filterKey(Key.create(clazz, id)).keys().first().now();
 
@@ -88,8 +89,9 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
         return ofy().save().entities(entities);
     }
 
+    @SafeVarargs
     @Override
-    public <E> Result<Map<Key<E>, E>> saveFew(E... entities) {
+    public final <E> Result<Map<Key<E>, E>> saveFew(E... entities) {
         Assert.notNull(entities);
         for (E entity : entities) {
             Assert.hasPermanentId(entity);
@@ -97,8 +99,9 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
         return ofy().save().entities(entities);
     }
 
+    @SafeVarargs
     @Override
-    public <T> void delete(T... entities) {
+    public final <T> void delete(T... entities) {
         ofy().delete().entities(entities);
     }
 
