@@ -62,7 +62,7 @@ public interface StyleRequestService {
 
     /**
      * Place a new style request for this customer
-     * @param styleId the ID of the style to be made
+     * @param styleId the ID of the style to be requested
      * @param customerId customer id
      * @param merchantId merchant id
      * @param appointmentTime when the customer will be styled

@@ -88,6 +88,7 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public void updateMerchant(Merchant merchant) {
+        Assert.notNull(merchant, "Merchant cannot be null.");
         repository.saveOne(merchant);
     }
 

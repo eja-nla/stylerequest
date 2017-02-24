@@ -6,7 +6,7 @@
           "email": "%s"
         }
       ],
-      "subject": "Your New Style Appointment has been cancelled",
+      "subject": "Your New Style Appointment has been accepted",
       "substitutions": {
         "-firstname-": "%s",
         "-style-": "%s",

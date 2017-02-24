@@ -36,6 +36,9 @@ public class StyleServiceImpl implements StyleService {
 
     @Override
     public Style publishStyle(String styleName, int duration, Long publisherId, List<Image> styleImages) {
+        Assert.notNull(styleImages, styleName, duration, publisherId);
+        Assert.isTrue(styleImages.size() >= 5, "Style must have at least 5 images showing different views");
+
         Merchant merchant = repository.findOne(publisherId, Merchant.class);
 
         Assert.isFound(merchant, format("Could not find Merchant with id %s", publisherId));
@@ -45,6 +48,7 @@ public class StyleServiceImpl implements StyleService {
 
         style.setId(stylePermId);
         style.setPermanentId(stylePermId);
+        style.setActive(true);
         repository.saveOne(style);
 
         return style;
@@ -86,7 +90,14 @@ public class StyleServiceImpl implements StyleService {
     }
 
     @Override
-    public void publishStyle(Style style, Merchant merchant) {
+    public void removeStyle(Long styleId) {
+        Assert.validId(styleId);
+        Style style = repository.findOne(styleId, Style.class);
 
+        Assert.notNull(style, String.format("Cannot remove style with id %s. Style not found", styleId));
+
+        style.setActive(false);
+
+        repository.saveOne(style);
     }
 }

@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,10 +47,10 @@ public class StyleServiceTest extends AbstractServicesTestBase {
         Merchant merchant = createMerchant();
         repository.saveOne(merchant);
 
-        Style style = styleService.publishStyle("Test style", 2, merchant.getId(), singletonList(createImage()));
+        Style style = styleService.publishStyle("Test style", 2, merchant.getId(), Arrays.asList(createImage(), createImage(), createImage(), createImage(), createImage()));
 
         assertThat(style, is(notNullValue()));
-
+        assertThat(style.isActive(), is(true));
     }
 
     @Test

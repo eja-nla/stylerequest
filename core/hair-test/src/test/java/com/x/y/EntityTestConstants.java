@@ -1,7 +1,5 @@
 package com.x.y;
 
-import static java.util.Collections.singletonList;
-
 import com.hair.business.beans.constants.DeviceType;
 import com.hair.business.beans.constants.Gender;
 import com.hair.business.beans.constants.PaymentType;
@@ -23,6 +21,7 @@ import org.joda.time.DateTime;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -114,7 +113,7 @@ public class EntityTestConstants {
 
     public static Style createStyle(){
         Merchant m = createMerchant();
-        Style s = new Style("didi", 20, m.getId(), m.getLocation(), singletonList(createImage()));
+        Style s = new Style("didi", 20, m.getId(), m.getLocation(), Arrays.asList(createImage(), createImage(), createImage(), createImage(), createImage()));
         s.setId(new Random().nextLong());
         s.setPermanentId(new Random().nextLong());
         return s;
