@@ -33,6 +33,13 @@ public class MvcConstants {
     private static final String ACCEPTED_URI = "/accepted";
     private static final String CANCELLED_URI = "/cancelled";
     private static final String COMPLETED_URI = "/completed";
+
+
+    ///accept/stylerequest
+    public static final String ACCEPT_REQUEST_ENDPOINT = "/accept" + STYLE_REQUEST_URI;
+    public static final String CANCEL_REQUEST_ENDPOINT = "/cancel" + STYLE_REQUEST_URI;
+    public static final String COMPLETE_REQUEST_ENDPOINT = "/complete" + STYLE_REQUEST_URI;
+
     public static final String FIND_MERCHANT_PENDING_STYLEREQUEST_ENDPOINT = FIND_URI + MERCHANT_URI + PENDING_URI;
     public static final String FIND_MERCHANT_ACCEPTED_STYLEREQUEST_ENDPOINT = FIND_URI + MERCHANT_URI + ACCEPTED_URI;
     public static final String FIND_MERCHANT_CANCELLED_STYLEREQUEST_ENDPOINT = FIND_URI + MERCHANT_URI + CANCELLED_URI;

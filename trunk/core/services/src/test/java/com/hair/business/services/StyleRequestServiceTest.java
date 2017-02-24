@@ -10,6 +10,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
@@ -148,6 +149,31 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
 
         assertThat(srs.findCustomerAcceptedAppointments(sr.getCustomerPermanentId(), new DateTime().plusHours(5)).size(), is(1));
 
+    }
+
+    @Test
+    public void testAcceptStyleRequest() throws Exception {
+        StyleRequest sr = initStyleRequest(StyleRequestState.PENDING);
+        srs.acceptStyleRequest(sr.getId(), new Preferences());
+        assertThat(sr.getState(), is(StyleRequestState.ACCEPTED));
+    }
+
+    @Test
+    public void testCancelStyleRequest() throws Exception {
+        StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
+        srs.cancelStyleRequest(sr.getId(), new Preferences());
+
+        StyleRequest updatedSr = srs.findStyleRequest(sr.getId());
+
+        assertThat(updatedSr.getState(), is(StyleRequestState.CANCELLED));
+    }
+
+    @Test
+    public void testCompleteStyleRequest() throws Exception {
+        StyleRequest sr = initStyleRequest(StyleRequestState.PENDING);
+        srs.completeStyleRequest(sr.getId(), new Preferences());
+        StyleRequest updatedSr = srs.findStyleRequest(sr.getId());
+        assertThat(updatedSr.getState(), is(StyleRequestState.COMPLETED));
     }
 
     @Test

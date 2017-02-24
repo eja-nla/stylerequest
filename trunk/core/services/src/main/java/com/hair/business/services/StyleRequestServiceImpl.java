@@ -145,6 +145,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 
     @Override
     public void acceptStyleRequest(Long styleRequestId, Preferences preferences) {
+        Assert.validId(styleRequestId);
         StyleRequest styleRequest = transitionStyleRequest(styleRequestId, StyleRequestState.ACCEPTED);
 
         emailTaskQueue.add(new AcceptedStyleRequestNotification(styleRequest, preferences));
