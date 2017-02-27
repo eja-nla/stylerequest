@@ -12,7 +12,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import com.google.identitytoolkit.GitkitUser;
 
 import com.hair.business.beans.entity.Customer;
-import com.hair.business.beans.entity.Payment;
+import com.hair.business.beans.entity.StyleRequestPayment;
 import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.StyleRequestService;
 import com.hair.business.services.customer.CustomerService;
@@ -95,9 +95,9 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
     @Path(UPDATE_PAYMENT_PATH)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response updatePayment(@QueryParam("customerId") Long customerId, Payment payment) {
+    public Response updatePayment(@QueryParam("customerId") Long customerId, StyleRequestPayment styleRequestPayment) {
         try {
-            return Response.ok().entity(customerService.updatePaymentInfo(customerId, payment)).build();
+            return Response.ok().entity(customerService.updatePaymentInfo(customerId, styleRequestPayment)).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {

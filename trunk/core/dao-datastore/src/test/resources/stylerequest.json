@@ -21,7 +21,7 @@
       "id" : -575463445409962285,
       "city" : "London",
       "state" : "Alabama",
-      "country" : "UK",
+      "countryCode" : "GB",
       "geoPoint" : {
         "id" : -7904877200652725625,
         "latitude" : 51.503407,
@@ -61,18 +61,26 @@
     "gender" : "F",
     "active" : true,
     "id" : -3306812695753391028,
-    "location" : {
-      "permanentId" : -2904039266274930951,
+    "address" : {
+      "permanentId" : 8386694704757603465,
       "version" : 1,
-      "createdDate" : "2016-08-29T20:23:31.905Z",
-      "id" : -6012858321443646561,
-      "city" : "London",
-      "state" : "Alabama",
-      "country" : "UK",
-      "geoPoint" : {
-        "id" : -4252563276375265472,
-        "latitude" : 51.503407,
-        "longitude" : -0.127592
+      "createdDate" : "2017-02-27T03:00:00.436Z",
+      "id" : 7083066285675174389,
+      "addressLine" : "flat x",
+      "postCode" : "SE5 tgg",
+      "location" : {
+        "permanentId" : 2138116990435268255,
+        "version" : 1,
+        "createdDate" : "2017-02-27T03:00:00.436Z",
+        "id" : 2138116990435268255,
+        "city" : "London",
+        "state" : "Alabama",
+        "countryCode" : "UK",
+        "geoPoint" : {
+          "id" : 8868894011258282251,
+          "latitude" : 51.503407,
+          "longitude" : -0.127592
+        }
       }
     }
   },
@@ -97,21 +105,29 @@
     "photoUrl" : "http://some.photo.url",
     "gender" : "M",
     "active" : true,
-    "id" : 1117821921828817150,
-    "location" : {
-      "permanentId" : -6679878200532528581,
+    "address" : {
+      "permanentId" : 8386694704757603465,
       "version" : 1,
-      "createdDate" : "2016-08-29T20:23:31.905Z",
-      "id" : 6539432761511486985,
-      "city" : "London",
-      "state" : "Alabama",
-      "country" : "UK",
-      "geoPoint" : {
-        "id" : -2526410655520214862,
-        "latitude" : 51.503407,
-        "longitude" : -0.127592
+      "createdDate" : "2017-02-27T03:00:00.436Z",
+      "id" : 7083066285675174389,
+      "addressLine" : "flat x",
+      "postCode" : "SE5 tgg",
+      "location" : {
+        "permanentId" : 2138116990435268255,
+        "version" : 1,
+        "createdDate" : "2017-02-27T03:00:00.436Z",
+        "id" : 2138116990435268255,
+        "city" : "London",
+        "state" : "Alabama",
+        "countryCode" : "GB",
+        "geoPoint" : {
+          "id" : 8868894011258282251,
+          "latitude" : 51.503407,
+          "longitude" : -0.127592
+        }
       }
-    }
+    },
+    "id" : 1117821921828817150
   },
   "location" : {
     "permanentId" : -5733005322565193490,
@@ -120,7 +136,7 @@
     "id" : -3193905381353190639,
     "city" : "London",
     "state" : "Alabama",
-    "country" : "UK",
+    "countryCode" : "US",
     "geoPoint" : {
       "id" : 704945858973872703,
       "latitude" : 51.503407,

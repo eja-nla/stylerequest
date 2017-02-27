@@ -4,6 +4,8 @@ package com.hair.business.beans.entity;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Load;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 
 /**
@@ -20,7 +22,7 @@ public class Address extends AbstractActorEnablerEntity {
 
     private String addressLine;
     private String postCode;
-    private Location location;
+    private @Index @Load Location location;
 
     public Address() {
     }

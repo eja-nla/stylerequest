@@ -6,7 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import com.hair.business.beans.entity.Customer;
-import com.hair.business.beans.entity.Payment;
+import com.hair.business.beans.entity.StyleRequestPayment;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.paypal.base.rest.APIContext;
 import com.x.business.scheduler.TaskQueue;
@@ -79,10 +79,10 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
 
     @Test
     public void testUpdatePaymentInfo() {
-        Payment payment = createPayment();
-        cs.updatePaymentInfo(customer.getId(), payment);
+        StyleRequestPayment styleRequestPayment = createPayment();
+        cs.updatePaymentInfo(customer.getId(), styleRequestPayment);
 
-        assertThat(customer.getPayment(), is(payment));
+        assertThat(customer.getStyleRequestPayment(), is(styleRequestPayment));
     }
 
 }

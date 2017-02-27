@@ -18,6 +18,7 @@ import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.customer.AbstractServicesTestBase;
+import com.hair.business.services.payment.paypal.PaypalPaymentProcessor;
 import com.hair.business.services.pushNotification.SendPushNotificationToApnsTask;
 import com.x.business.notif.AbstractNotification;
 import com.x.business.scheduler.TaskQueue;
@@ -42,12 +43,13 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     private StyleRequestService srs;
     private TaskQueue emailQueue = Mockito.mock(TaskQueue.class);
     private TaskQueue apnsQueue = Mockito.mock(TaskQueue.class);
+    private PaypalPaymentProcessor paypalPaymentProcessor = Mockito.mock(PaypalPaymentProcessor.class);
 
 
     @Before
     public void setUp(){
         repository = injector.getInstance(Repository.class);
-        srs = new StyleRequestServiceImpl(repository, emailQueue, apnsQueue);
+        srs = new StyleRequestServiceImpl(repository, emailQueue, apnsQueue, paypalPaymentProcessor);
 
         // See sendgrid section in appengine-web.xml
         try {

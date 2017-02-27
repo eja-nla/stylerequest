@@ -37,6 +37,8 @@ public class Style extends AbstractActorEnablerEntity {
 
     private int durationEstimate; // how long to make this style, in minutes
 
+    private double price;
+
     public Style(){}
 
     public Style(String name, int durationEstimate, Long publisherId, Location location, Collection<Image> styleImages) {
@@ -120,5 +122,9 @@ public class Style extends AbstractActorEnablerEntity {
 
     public void setPublisherId(Long publisherId) {
         this.publisherId = publisherId;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

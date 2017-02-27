@@ -19,7 +19,7 @@ public class Location extends AbstractActorEnablerEntity {
     private Long id;
     private String city;
     private String state;
-    private String country;
+    private String countryCode; // e.g. US, GB
     private GeoPointExt geoPoint; // has the long and lat
 
 //    private String current;
@@ -28,10 +28,10 @@ public class Location extends AbstractActorEnablerEntity {
     public Location(){
     }
 
-    public Location(String city, String state, String country, GeoPointExt geoPoint) {
+    public Location(String city, String state, String countryCode, GeoPointExt geoPoint) {
         this.city = city;
         this.state = state;
-        this.country = country;
+        this.countryCode = countryCode;
         this.geoPoint = geoPoint;
     }
 
@@ -59,12 +59,12 @@ public class Location extends AbstractActorEnablerEntity {
         this.state = state;
     }
 
-    public String getCountry() {
-        return country;
+    public String getCountryCode() {
+        return countryCode;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     public GeoPointExt getGeoPoint() {

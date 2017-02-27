@@ -5,8 +5,6 @@ import static org.joda.time.DateTime.now;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Index;
-import com.googlecode.objectify.annotation.Load;
 import com.googlecode.objectify.annotation.Stringify;
 import com.hair.business.beans.abstracts.AbstractActorEntity;
 import com.hair.business.beans.helper.IntegerStringifyer;
@@ -25,8 +23,6 @@ public class Customer extends AbstractActorEntity {
 
     @Id
     private Long id;
-
-    private @Index @Load Location location;
 
     @Stringify(IntegerStringifyer.class) // Map of allowed scores and their weights(i.e. count)
     private Map<Integer, Integer> ratings;
@@ -48,9 +44,9 @@ public class Customer extends AbstractActorEntity {
 
     }
 
-    public Customer(String firstname, String lastname, String email, String phone, Device device, Location location) {
+    public Customer(String firstname, String lastname, String email, String phone, Device device, Address address) {
         this(firstname, lastname, email, phone, device);
-        this.location = location;
+        this.setAddress(address);
 
     }
 
@@ -60,14 +56,6 @@ public class Customer extends AbstractActorEntity {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
     }
 
     public Map<Integer, Integer> getRatings() {

@@ -12,10 +12,10 @@ import com.hair.business.beans.entity.GeoPointExt;
 import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
-import com.hair.business.beans.entity.Payment;
 import com.hair.business.beans.entity.Review;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
+import com.hair.business.beans.entity.StyleRequestPayment;
 
 import org.joda.time.DateTime;
 
@@ -36,18 +36,19 @@ public class EntityTestConstants {
         Address address =  new Address("flat x", "SE5 tgg", createLocation());
         address.setId(new Random().nextLong());
         address.setPermanentId(new Random().nextLong());
+        address.setLocation(createLocation());
         return address;
 
     }
 
     public static Customer createCustomer(){
-        Customer c = new Customer("Customer first Name", "lastname", "customer@email.com", "+4453635436237", createDevice(), createLocation());
+        Customer c = new Customer("Customer first Name", "lastname", "customer@email.com", "+4453635436237", createDevice(), createAddress());
         c.setId(new Random().nextLong());
         c.setPermanentId(new Random().nextLong());
         c.setPhotoUrl("http://some.photo.url");
         c.setGender(Gender.M);
         c.setScore(4.5);
-        c.setPayment(createPayment());
+        c.setStyleRequestPayment(createPayment());
         c.getRatings().put(0, 0); c.getRatings().put(1, 0);c.getRatings().put(2, 0);c.getRatings().put(3, 0);c.getRatings().put(4, 3);c.getRatings().put(5, 2);
         return c;
     }
@@ -69,7 +70,7 @@ public class EntityTestConstants {
     public static Location createLocation(){
         GeoPointExt g = new GeoPointExt(51.5034070, -0.1275920);
         g.setId(new Random().nextLong());
-        Location l = new Location("London", "Alabama", "UK", g);
+        Location l = new Location("London", "Alabama", "GB", g);
         l.setId(new Random().nextLong());
         l.setPermanentId(l.getId());
 
@@ -85,13 +86,13 @@ public class EntityTestConstants {
         m.setGender(Gender.F);
         m.getRatings().put(0, 0); m.getRatings().put(1, 0);m.getRatings().put(2, 0);m.getRatings().put(3, 0);m.getRatings().put(4, 3);m.getRatings().put(5, 2);
         m.setScore(4.5);
-        m.setPayment(createPayment());
+        m.setStyleRequestPayment(createPayment());
         m.setPreferences(new Preferences(true, true, true, true));
         return m;
     }
 
-    public static Payment createPayment(){
-        Payment p = new Payment(3255.43D, 35345432L, 3241342L, true, PaymentType.PAYPAL);
+    public static StyleRequestPayment createPayment(){
+        StyleRequestPayment p = new StyleRequestPayment(3255.43D, 35345432L, 3241342L, true, PaymentType.PAYPAL);
         p.setId(new Random().nextLong());
         p.setPermanentId(p.getId());
         return p;

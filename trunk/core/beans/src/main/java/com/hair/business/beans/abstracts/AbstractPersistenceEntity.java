@@ -28,6 +28,10 @@ public abstract class AbstractPersistenceEntity extends AbstractBean {
             return false;
         }
 
+        if (!this.getClass().equals(obj.getClass())) {
+            return false;
+        }
+
         if(this == obj){
             return true;
         }

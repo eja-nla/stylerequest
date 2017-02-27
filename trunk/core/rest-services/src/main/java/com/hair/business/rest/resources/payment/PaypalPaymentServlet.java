@@ -1,46 +1,63 @@
 package com.hair.business.rest.resources.payment;
 
 import static com.hair.business.rest.MvcConstants.PAYMENT_URI;
-import static com.hair.business.rest.MvcConstants.PAYPAL_URI_BASE;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import com.hair.business.services.payment.PaymentProcessor;
-
-import java.util.Properties;
+import com.hair.business.rest.resources.AbstractRequestServlet;
+import com.hair.business.services.payment.paypal.PaypalPaymentProcessor;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
 
 /**
  * Created by olukoredeaguda on 10/02/2017.
  *
- * Paypal payment servelet
+ * Paypal payment servlet
  */
 
 @Path(PAYMENT_URI)
-public class PaypalPaymentServlet {
+public class PaypalPaymentServlet extends AbstractRequestServlet {
 
-    private final PaymentProcessor paymentProcessor;
+    private final PaypalPaymentProcessor PaypalPaymentProcessor;
 
     @Inject
-    public PaypalPaymentServlet(PaymentProcessor paymentProcessor) {
-        this.paymentProcessor = paymentProcessor;
+    public PaypalPaymentServlet(PaypalPaymentProcessor PaypalPaymentProcessor) {
+        this.PaypalPaymentProcessor = PaypalPaymentProcessor;
     }
 
-    @POST
-    @Path(PAYPAL_URI_BASE)
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
-    public Response pay() {
-
-        Properties props = System.getProperties();
-        props.list(System.out);
-
-        paymentProcessor.pay(1L, 43L, 54.34);
-        return null;
-    }
+//    @POST
+//    @Path(PAYPAL_URI_ENDPOINT)
+//    @Consumes(APPLICATION_JSON)
+//    @Produces(APPLICATION_JSON)
+//    public Response authorisePayment(@Context HttpServletRequest httpServletRequest, @Context HttpServletResponse httpServletResponse) {
+//
+//        // fixme get rid of this servlet, we won't be triggering payments from client
+//        try {
+//            StyleRequestPayment payment = PaypalPaymentProcessor
+//            httpServletRequest.getRequestDispatcher("response.jsp").forward(httpServletRequest, httpServletResponse);
+//            return Response.ok(payment).build();
+//        } catch (ServletException e) {
+//            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+//        } catch (IOException e) {
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
+//        }
+//
+//    }
+//
+//    @POST
+//    @Path(PAYPAL_URI_ENDPOINT)
+//    @Consumes(APPLICATION_JSON)
+//    @Produces(APPLICATION_JSON)
+//    public Response captureAuthorisedPayment(@Context HttpServletRequest httpServletRequest, @Context HttpServletResponse httpServletResponse) {
+//
+//        try {
+//            StyleRequestPayment payment = PaypalPaymentProcessor.(httpServletRequest);
+//            httpServletRequest.getRequestDispatcher("response.jsp").forward(httpServletRequest, httpServletResponse);
+//            return Response.ok(payment).build();
+//        } catch (ServletException e) {
+//            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+//        } catch (IOException e) {
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
+//        }
+//
+//    }
 }

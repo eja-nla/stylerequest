@@ -13,7 +13,7 @@ import com.hair.business.beans.constants.PaymentType;
  *
  */
 @Entity
-public class Payment extends AbstractActorEnablerEntity {
+public class StyleRequestPayment extends AbstractActorEnablerEntity {
 
     @Id
     private Long id;
@@ -23,10 +23,13 @@ public class Payment extends AbstractActorEnablerEntity {
     private Long merchantId;
     private boolean settled;
     private PaymentType type;
+//    private com.paypal.api.payments.Payment payment;
+//    private Authorization authorization;
+//    private Capture capture;
 
-    public Payment(){}
+    public StyleRequestPayment(){}
 
-    public Payment(Double amount, Long customerId, Long merchantId, boolean settled, PaymentType type) {
+    public StyleRequestPayment(Double amount, Long customerId, Long merchantId, boolean settled, PaymentType type) {
         this();
         this.amount = amount;
         this.customerId = customerId;
@@ -83,4 +86,27 @@ public class Payment extends AbstractActorEnablerEntity {
         this.type = type;
     }
 
+//    public com.paypal.api.payments.Payment getPayment() {
+//        return payment;
+//    }
+//
+//    public void setPayment(com.paypal.api.payments.Payment payment) {
+//        this.payment = payment;
+//    }
+//
+//    public Authorization getAuthorization() {
+//        return authorization;
+//    }
+//
+//    public void setAuthorization(Authorization authorization) {
+//        this.authorization = authorization;
+//    }
+//
+//    public Capture getCapture() {
+//        return capture;
+//    }
+//
+//    public void setCapture(Capture capture) {
+//        this.capture = capture;
+//    }
 }
