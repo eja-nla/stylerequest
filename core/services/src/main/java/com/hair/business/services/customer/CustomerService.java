@@ -2,13 +2,14 @@ package com.hair.business.services.customer;
 
 
 import com.hair.business.beans.constants.StyleRequestState;
+import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Device;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
-import com.hair.business.beans.entity.Payment;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
+import com.hair.business.beans.entity.StyleRequestPayment;
 
 import java.util.Collection;
 
@@ -31,12 +32,12 @@ public interface CustomerService {
     /**
      * Creates a new customer
      * */
-    Customer createCustomer(String firstname, String lastname, String email, String phone, Device device, Location location);
+    Customer createCustomer(String firstname, String lastname, String email, String phone, Device device, Address address);
 
     /**
-     * Updates customer payment information
+     * Updates customer styleRequestPayment information
      * */
-    Payment updatePaymentInfo(Long customerId, Payment payment);
+    StyleRequestPayment updatePaymentInfo(Long customerId, StyleRequestPayment styleRequestPayment);
 
     /**
      * Saves new customer

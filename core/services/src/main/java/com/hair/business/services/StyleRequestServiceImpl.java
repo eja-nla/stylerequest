@@ -7,6 +7,7 @@ import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.hair.business.services.payment.paypal.PaypalPaymentProcessor;
 import com.hair.business.services.stereotype.Timed;
 import com.x.business.notif.AcceptedStyleRequestNotification;
 import com.x.business.notif.CancelledStyleRequestNotification;
@@ -36,6 +37,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
     private final Repository repository;
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;
+    private final PaypalPaymentProcessor paypalPaymentProcessor;
 
     private final List<String> MERCHANT_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("merchantPermanentId ==", "state ==", "appointmentStartTime <=");
     private final List<String> CUSTOMER_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("customerPermanentId ==", "state ==", "appointmentStartTime <=");
@@ -43,10 +45,14 @@ public class StyleRequestServiceImpl implements StyleRequestService {
     private static final Logger logger = Logger.getLogger(StyleRequestServiceImpl.class.getName());
 
     @Inject
-    public StyleRequestServiceImpl(Repository repository, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue) {
+    StyleRequestServiceImpl(Repository repository,
+                            @EmailTaskQueue TaskQueue emailTaskQueue,
+                            @ApnsTaskQueue TaskQueue apnsQueue,
+                            PaypalPaymentProcessor paypalPaymentProcessor) {
         this.repository = repository;
         this.emailTaskQueue = emailTaskQueue;
         this.apnsQueue = apnsQueue;
+        this.paypalPaymentProcessor = paypalPaymentProcessor;
     }
 
     @Override
@@ -106,13 +112,18 @@ public class StyleRequestServiceImpl implements StyleRequestService {
     public StyleRequest placeStyleRequest(Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
         Assert.validIds(styleId, customerId, merchantId);
         Assert.dateInFuture(appointmentTime);
-        // TODO is the merchant free at this time?
+
         Style style = repository.findOne(styleId, Style.class);
         Assert.isFound(style, String.format("Style with id %s not found", styleId));
         Customer customer = repository.findOne(customerId, Customer.class);
         Assert.isFound(style, String.format("Customer with id %s not found", customerId));
         Merchant merchant = repository.findOne(merchantId, Merchant.class);
         Assert.isFound(style, String.format("Merchant with id %s not found", merchantId));
+
+        // TODO : further validations
+        // is the merchant free at this time?
+        // is the customer and merchant's country and city the same?
+        // do we have this customer's sufficient payment info to make an authorization?
 
         style.setRequestCount(style.getRequestCount() + 1);
 
@@ -123,6 +134,9 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 
 
         repository.saveFew(styleRequest, style);
+
+        // add paypal payment authorization request to a new payments queue
+
 
         emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
 

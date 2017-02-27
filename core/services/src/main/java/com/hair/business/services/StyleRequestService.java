@@ -68,11 +68,22 @@ public interface StyleRequestService {
      * @param appointmentTime when the customer will be styled
      *
      * Sets the location to the location of the merchant
+     *
+     * Do paypal authorization here.
+     * Note to self: because paypal guarantees capture for only the first 3 days of authorization period,
+     *               if the style is placed > 3 days in advance, we might have to reauthorize within
+     *               a 3 day period of the request date to guarantee payment capture on the fulfillment date
      */
     StyleRequest placeStyleRequest(Long styleId, Long customerId, Long merchantId, DateTime appointmentTime);
 
     void updateStyleRequest(StyleRequest styleRequest);
     void acceptStyleRequest(Long styleRequestId, Preferences preferences);
+
+    /**
+     * Completes the request cycle.
+     *
+     * Must ensure payment is settled. For paypal payments, we do the authorization capture here.
+     * */
     void completeStyleRequest(Long styleRequestId, Preferences preferences);
     /**
      * Cancels a placed style request

@@ -58,11 +58,11 @@ public class StyleServiceTest extends AbstractServicesTestBase {
         Style style = EntityTestConstants.createStyle();
         repository.saveOne(style);
 
-        assertThat(style.getStyleImages().size(), is(1));
+        assertThat(style.getStyleImages().size(), is(5));
 
         styleService.updateStyleImages(style.getId(), singletonList(createImage()));
 
-        assertThat(style.getStyleImages().size(), is(2));
+        assertThat(style.getStyleImages().size(), is(6));
 
     }
 

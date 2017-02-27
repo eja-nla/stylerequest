@@ -3,7 +3,7 @@ package com.hair.business.beans.constants;
 /**
  * Created by Olukorede Aguda on 25/04/2016.
  *
- * Payment type
+ * StyleRequestPayment type
  */
 public enum PaymentType {
     PAYPAL ("Paypal"),

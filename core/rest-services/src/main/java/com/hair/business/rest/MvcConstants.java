@@ -52,7 +52,8 @@ public class MvcConstants {
 
 
 
-    public static final String PAYPAL_URI_BASE = "/paypal";
+    private static final String PAYPAL_URI_BASE = "/paypal";
+    public static final String PAYPAL_URI_ENDPOINT = PAYPAL_URI_BASE + "/create";
 
     public static final String STYLE_REQUEST_PATH = "/request" + STYLE_URI;
 

@@ -4,13 +4,14 @@ import static com.x.business.utilities.RatingUtil.averagingWeighted;
 import static java.util.logging.Logger.getLogger;
 
 import com.hair.business.beans.constants.StyleRequestState;
+import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Device;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
-import com.hair.business.beans.entity.Payment;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
+import com.hair.business.beans.entity.StyleRequestPayment;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.paypal.base.rest.APIContext;
 import com.x.business.exception.DuplicateEntityException;
@@ -45,7 +46,7 @@ public class CustomerServiceImpl implements CustomerService {
     private static final String CUSTOMER_NOT_FOUND_MESSAGE = "Customer with Id %s not found";
 
     @Inject
-    public CustomerServiceImpl(Repository repository, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue, APIContext paypalApiContext) {
+    CustomerServiceImpl(Repository repository, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue, APIContext paypalApiContext) {
         this.repository = repository;
         this.emailTaskQueue = emailTaskQueue;
         this.apnsQueue = apnsQueue;
@@ -69,11 +70,11 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public Customer createCustomer(String firstname, String lastname, String email, String phone, Device device, Location location) throws EntityNotFoundException, IllegalArgumentException {
-        Assert.notNull(firstname, lastname, email, phone, device, location);
+    public Customer createCustomer(String firstname, String lastname, String email, String phone, Device device, Address address) throws EntityNotFoundException, IllegalArgumentException {
+        Assert.notNull(firstname, lastname, email, phone, device, address);
 
         Long permId = repository.allocateId(Customer.class);
-        Customer customer = new Customer(firstname, lastname, email, phone, device, location);
+        Customer customer = new Customer(firstname, lastname, email, phone, device, address);
         customer.setId(permId);
         customer.setPermanentId(permId);
         saveCustomer(customer);
@@ -82,17 +83,17 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Payment updatePaymentInfo(Long customerId, Payment payment) throws IllegalArgumentException {
-        Assert.notNull(payment, "Payment cannot be null");
+    public StyleRequestPayment updatePaymentInfo(Long customerId, StyleRequestPayment styleRequestPayment) throws IllegalArgumentException {
+        Assert.notNull(styleRequestPayment, "StyleRequestPayment cannot be null");
         Assert.validId(customerId);
 
         Customer customer = repository.findOne(customerId, Customer.class);
         Assert.notNull(customer, String.format(CUSTOMER_NOT_FOUND_MESSAGE, customer.getId()));
 
-        customer.setPayment(payment);
-        repository.saveFew(payment, customer);
+        customer.setStyleRequestPayment(styleRequestPayment);
+        repository.saveFew(styleRequestPayment, customer);
 
-        return customer.getPayment();
+        return customer.getStyleRequestPayment();
     }
 
     @Override

@@ -11,10 +11,10 @@ import com.hair.business.beans.entity.GeoPointExt;
 import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
-import com.hair.business.beans.entity.Payment;
 import com.hair.business.beans.entity.Review;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
+import com.hair.business.beans.entity.StyleRequestPayment;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -42,7 +42,7 @@ public class OfyFactory extends ObjectifyFactory{
         this.register(Merchant.class);
         this.register(Style.class);
         this.register(StyleRequest.class);
-        this.register(Payment.class);
+        this.register(StyleRequestPayment.class);
         this.register(Address.class);
         this.register(Device.class);
         this.register(GeoPointExt.class);

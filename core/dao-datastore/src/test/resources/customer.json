@@ -19,21 +19,29 @@
   "photoUrl" : "http://some.photo.url",
   "gender" : "M",
   "active" : true,
-  "id" : -1926853767843327050,
-  "location" : {
-    "permanentId" : -6710383258927273557,
+  "address" : {
+    "permanentId" : 8386694704757603465,
     "version" : 1,
-    "createdDate" : "2017-02-06T21:56:24.274Z",
-    "id" : -6710383258927273557,
-    "city" : "London",
-    "state" : "Alabama",
-    "country" : "UK",
-    "geoPoint" : {
-      "id" : 1534310764455929360,
-      "latitude" : 51.503407,
-      "longitude" : -0.127592
+    "createdDate" : "2017-02-27T03:00:00.436Z",
+    "id" : 7083066285675174389,
+    "addressLine" : "flat x",
+    "postCode" : "SE5 tgg",
+    "location" : {
+      "permanentId" : 2138116990435268255,
+      "version" : 1,
+      "createdDate" : "2017-02-27T03:00:00.436Z",
+      "id" : 2138116990435268255,
+      "city" : "London",
+      "state" : "Alabama",
+      "countryCode" : "UK",
+      "geoPoint" : {
+        "id" : 8868894011258282251,
+        "latitude" : 51.503407,
+        "longitude" : -0.127592
+      }
     }
   },
+  "id" : -1926853767843327050,
   "ratings" : {
     "0" : 0,
     "1" : 0,

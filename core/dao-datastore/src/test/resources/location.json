@@ -4,7 +4,7 @@
   "version" : 1,
   "city" : "London",
   "state" : "Alabama",
-  "country" : "UK",
+  "countryCode" : "GB",
   "geoPoint" : {
     "latitude" : 51.503407,
     "longitude" : -0.127592

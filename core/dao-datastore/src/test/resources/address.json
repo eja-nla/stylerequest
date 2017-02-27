@@ -12,7 +12,7 @@
     "id" : -3020739616724638972,
     "city" : "London",
     "state" : "Alabama",
-    "country" : "UK",
+    "countryCode" : "GB",
     "geoPoint" : {
       "id" : -4554476634944894827,
       "latitude" : 51.503407,
