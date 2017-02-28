@@ -17,13 +17,6 @@ public class Preferences extends AbstractBean {
 
     public Preferences(){}
 
-    public Preferences(boolean placedNotificationEnabled, boolean acceptedNotificationEnabled, boolean cancelledNotificationEnabled, boolean completedNotificationEnabled) {
-        this.placedNotificationEnabled = placedNotificationEnabled;
-        this.acceptedNotificationEnabled = acceptedNotificationEnabled;
-        this.cancelledNotificationEnabled = cancelledNotificationEnabled;
-        this.completedNotificationEnabled = completedNotificationEnabled;
-    }
-
     public boolean isPlacedNotificationEnabled() {
         return placedNotificationEnabled;
     }
