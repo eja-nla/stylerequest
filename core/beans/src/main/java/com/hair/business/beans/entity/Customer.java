@@ -7,6 +7,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Stringify;
 import com.hair.business.beans.abstracts.AbstractActorEntity;
+import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.helper.IntegerStringifyer;
 
 import java.util.HashMap;
@@ -36,6 +37,7 @@ public class Customer extends AbstractActorEntity {
         this.setFirstName(firstname);
         this.setLastName(lastname);
         this.ratings = new HashMap<>();
+        this.setPreferences(new Preferences());
         this.setEmail(email);
         this.setPhone(phone);
         this.setDevice(device);

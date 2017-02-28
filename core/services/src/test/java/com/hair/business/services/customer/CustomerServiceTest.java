@@ -4,7 +4,9 @@ import static com.x.y.EntityTestConstants.createCustomer;
 import static com.x.y.EntityTestConstants.createPayment;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
 
+import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.StyleRequestPayment;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
@@ -83,6 +85,17 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
         cs.updatePaymentInfo(customer.getId(), styleRequestPayment);
 
         assertThat(customer.getStyleRequestPayment(), is(styleRequestPayment));
+    }
+
+    @Test
+    public void testUpdatePreferences() {
+        Preferences preferences = new Preferences();
+        preferences.setCancelledNotificationEnabled(false);
+        assertThat(customer.getPreferences(), is(not(preferences)));
+
+        cs.updatePreferences(customer.getId(), preferences);
+
+        assertThat(customer.getPreferences(), is(preferences));
     }
 
 }

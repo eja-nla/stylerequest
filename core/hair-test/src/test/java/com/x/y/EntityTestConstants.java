@@ -3,7 +3,6 @@ package com.x.y;
 import com.hair.business.beans.constants.DeviceType;
 import com.hair.business.beans.constants.Gender;
 import com.hair.business.beans.constants.PaymentType;
-import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
@@ -87,7 +86,6 @@ public class EntityTestConstants {
         m.getRatings().put(0, 0); m.getRatings().put(1, 0);m.getRatings().put(2, 0);m.getRatings().put(3, 0);m.getRatings().put(4, 3);m.getRatings().put(5, 2);
         m.setScore(4.5);
         m.setStyleRequestPayment(createPayment());
-        m.setPreferences(new Preferences(true, true, true, true));
         return m;
     }
 

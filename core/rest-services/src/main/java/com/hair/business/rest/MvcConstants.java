@@ -28,6 +28,7 @@ public class MvcConstants {
     public static final String CREATE_CUSTOMER_ENDPOINT = CREATE + CUSTOMER_URI;
     public static final String PUBLISH_STYLE_ENDPOINT = CREATE + STYLE_URI;
     public static final String UPDATE_PAYMENT_PATH = UPDATE + PAYMENT_URI;
+    public static final String UPDATE_PREFERENCES_PATH = UPDATE + "/preferences";
 
     private static final String PENDING_URI = "/pending";
     private static final String ACCEPTED_URI = "/accepted";
