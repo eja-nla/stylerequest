@@ -32,7 +32,6 @@ public class Merchant extends AbstractActorEntity {
     @Stringify(IntegerStringifyer.class) // Map of allowed scores and their weights(i.e. count)
     private Map<Integer, Integer> ratings;
     private double score;
-    private Preferences preferences;
 
     public Merchant(){}
 
@@ -42,6 +41,7 @@ public class Merchant extends AbstractActorEntity {
         this.setLastName(lastname);
         this.businessName = businessName;
         this.ratings = new HashMap<>();
+        this.setPreferences(new Preferences());
         this.setEmail(email);
         this.setPhone(phone);
         this.setDevice(device);
@@ -96,11 +96,4 @@ public class Merchant extends AbstractActorEntity {
         this.businessName = businessName;
     }
 
-    public Preferences getPreferences() {
-        return preferences;
-    }
-
-    public void setPreferences(Preferences preferences) {
-        this.preferences = preferences;
-    }
 }

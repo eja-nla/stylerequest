@@ -1,6 +1,7 @@
 package com.hair.business.services.customer;
 
 
+import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
@@ -71,4 +72,5 @@ public interface CustomerService {
 
     void updateRating(Long customerId, int score);
 
+    Preferences updatePreferences(Long customerId, Preferences preferences);
 }

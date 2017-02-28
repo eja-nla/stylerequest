@@ -48,6 +48,7 @@
     "placedNotificationEnabled" : true,
     "acceptedNotificationEnabled" : true,
     "cancelledNotificationEnabled" : true,
-    "completedNotificationEnabled" : true
+    "completedNotificationEnabled" : true,
+    "preferredPaymentType" : "PAYPAL"
   }
 }

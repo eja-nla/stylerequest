@@ -6,11 +6,13 @@ import static com.hair.business.rest.MvcConstants.ID;
 import static com.hair.business.rest.MvcConstants.INFO;
 import static com.hair.business.rest.MvcConstants.STYLE_REQUEST_PATH;
 import static com.hair.business.rest.MvcConstants.UPDATE_PAYMENT_PATH;
+import static com.hair.business.rest.MvcConstants.UPDATE_PREFERENCES_PATH;
 import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import com.google.identitytoolkit.GitkitUser;
 
+import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.StyleRequestPayment;
 import com.hair.business.rest.resources.AbstractRequestServlet;
@@ -98,6 +100,20 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
     public Response updatePayment(@QueryParam("customerId") Long customerId, StyleRequestPayment styleRequestPayment) {
         try {
             return Response.ok().entity(customerService.updatePaymentInfo(customerId, styleRequestPayment)).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
+        }
+    }
+
+    @POST
+    @Path(UPDATE_PREFERENCES_PATH)
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    public Response updatePreferences(@QueryParam("customerId") Long customerId, Preferences preferences) {
+        try {
+            return Response.ok().entity(customerService.updatePreferences(customerId, preferences)).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {

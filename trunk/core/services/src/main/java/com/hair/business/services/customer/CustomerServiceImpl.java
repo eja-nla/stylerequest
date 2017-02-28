@@ -3,6 +3,7 @@ package com.hair.business.services.customer;
 import static com.x.business.utilities.RatingUtil.averagingWeighted;
 import static java.util.logging.Logger.getLogger;
 
+import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
@@ -162,6 +163,19 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setScore(new BigDecimal(weightedAverage).setScale(1, RoundingMode.HALF_UP).doubleValue()); // Effective java item 48?
 
         repository.saveOne(customer);
+    }
+
+    @Override
+    public Preferences updatePreferences(Long customerId, Preferences preferences) {
+        Assert.notNull(preferences,"Preferences cannot be null");
+        Assert.validId(customerId);
+
+        Customer customer = repository.findOne(customerId, Customer.class);
+        customer.setPreferences(preferences);
+
+        repository.saveOne(customer);
+
+        return preferences;
     }
 
 }

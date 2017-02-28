@@ -9,10 +9,11 @@ import com.hair.business.beans.abstracts.AbstractBean;
  */
 public class Preferences extends AbstractBean {
 
-    private boolean placedNotificationEnabled;
-    private boolean acceptedNotificationEnabled;
-    private boolean cancelledNotificationEnabled;
-    private boolean completedNotificationEnabled;
+    private boolean placedNotificationEnabled = true;
+    private boolean acceptedNotificationEnabled = true;
+    private boolean cancelledNotificationEnabled = true;
+    private boolean completedNotificationEnabled = true;
+    private PaymentType preferredPaymentType = PaymentType.PAYPAL;
 
     public Preferences(){}
 
@@ -53,5 +54,13 @@ public class Preferences extends AbstractBean {
 
     public void setCompletedNotificationEnabled(boolean completedNotificationEnabled) {
         this.completedNotificationEnabled = completedNotificationEnabled;
+    }
+
+    public PaymentType getPreferredPaymentType() {
+        return preferredPaymentType;
+    }
+
+    public void setPreferredPaymentType(PaymentType preferredPaymentType) {
+        this.preferredPaymentType = preferredPaymentType;
     }
 }
