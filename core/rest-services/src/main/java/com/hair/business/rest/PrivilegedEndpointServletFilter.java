@@ -29,7 +29,10 @@ public final class PrivilegedEndpointServletFilter extends GuiceFilter {
         GitkitUser user = (GitkitUser) servletRequest.getAttribute(REST_USER_ATTRIBUTE);
 
         if (user == null) {
-            response.sendError(401, "Access denied. Please login.");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("Access denied. Please login.");
             return;
         }
 
@@ -40,8 +43,11 @@ public final class PrivilegedEndpointServletFilter extends GuiceFilter {
                 found = true;
             }
         }
-        if (found) {
-            response.sendError(401, "Access denied, contact admin. \n" + user);
+        if (!found) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("Access denied, contact admin. \n" + user);
             return;
         }
 
