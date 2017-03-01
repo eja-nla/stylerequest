@@ -60,15 +60,18 @@ public final class RestEndpointServletFilter extends GuiceFilter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
         GitkitUser gitkitUser = null;
-        HttpServletResponse res = ((HttpServletResponse) servletResponse);
+        HttpServletResponse response = ((HttpServletResponse) servletResponse);
         try {
             gitkitUser = gitkitClient.validateTokenInRequest((HttpServletRequest) servletRequest);
             if (gitkitUser == null && !servletResponse.isCommitted()){
-                res.sendRedirect(loginUrl);
+                response.sendRedirect(loginUrl);
                 return;
             }
         } catch (GitkitClientException e) {
-            res.sendError(401, e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(e.getMessage());
             log.severe(e.getMessage());
         }
         servletRequest.setAttribute(REST_USER_ATTRIBUTE, gitkitUser);

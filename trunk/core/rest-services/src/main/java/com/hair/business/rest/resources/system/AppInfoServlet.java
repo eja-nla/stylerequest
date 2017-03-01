@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- *
+ * Exposes basic app info data
  *
  * Created by Olukorede Aguda on 12/02/2017.
  */
@@ -42,6 +42,13 @@ public class AppInfoServlet extends AbstractRequestServlet {
     public Response listEndpoints(@Context HttpServletRequest servletRequest) {
         logger.info(String.format("dumping endpoints for user %s", servletRequest.getAttribute(REST_USER_ATTRIBUTE)));
         return Response.ok(endpoints, MediaType.APPLICATION_JSON).build();
+    }
+
+    @GET
+    @Path("/version/info")
+    @Produces(APPLICATION_JSON)
+    public Response listVersionInfo(@Context HttpServletRequest servletRequest) {
+        return Response.ok("0.0.1-SNAPSHOT", MediaType.APPLICATION_JSON).build();
     }
 
 
