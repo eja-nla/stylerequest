@@ -35,7 +35,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"permanentId\" : -5064501332121306936,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-09T00:13:22.121Z\",\n  \"lastUpdated\" : \"2017-02-09T00:13:22.121Z\",\n  \"firstName\" : \"Customer first Name\",\n  \"lastName\" : \"lastname\",\n  \"email\" : \"customer@email.com\",\n  \"phone\" : \"+4453635436237\",\n  \"device\" : {\n    \"permanentId\" : -9098851377016438314,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-09T00:13:21.444Z\",\n    \"id\" : 4960725887859519817,\n    \"deviceId\" : \"dg8c23j98auiapi7ku1rk40hvs\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"payment\" : {\n    \"permanentId\" : 7193035723143121497,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-09T00:13:22.121Z\",\n    \"id\" : 7193035723143121497,\n    \"amount\" : 3255.43,\n    \"customerId\" : 35345432,\n    \"merchantId\" : 3241342,\n    \"settled\" : true,\n    \"type\" : \"PAYPAL\",\n    \"date\" : null\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"M\",\n  \"active\" : true,\n  \"id\" : -5064501332121306936,\n  \"location\" : {\n    \"permanentId\" : -5914955103473965187,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-09T00:13:22.121Z\",\n    \"id\" : -5914955103473965187,\n    \"city\" : \"London\",\n    \"state\" : \"Alabama\",\n    \"country\" : \"UK\",\n    \"geoPoint\" : {\n      \"id\" : -2502791210581232404,\n      \"latitude\" : 51.503407,\n      \"longitude\" : -0.127592\n    }\n  },\n  \"ratings\" : {\n    \"0\" : 0,\n    \"1\" : 0,\n    \"2\" : 0,\n    \"3\" : 0,\n    \"4\" : 3,\n    \"5\" : 2\n  },\n  \"score\" : 4.5\n}"
+					"raw": "{\n  \"permanentId\" : -4528939108101019240,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-06T21:56:24.274Z\",\n  \"lastUpdated\" : \"2017-02-06T21:56:24.274Z\",\n  \"firstName\" : \"Customer first Name\",\n  \"lastName\" : \"lastname\",\n  \"email\" : \"customer@email.com\",\n  \"phone\" : \"+4453635436237\",\n  \"device\" : {\n    \"permanentId\" : -2907136812157778054,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-06T21:56:24.274Z\",\n    \"id\" : -5159650623228815323,\n    \"deviceId\" : \"br3q06dk5tcfs0202l3k2a15tg\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"M\",\n  \"active\" : true,\n  \"address\" : {\n    \"permanentId\" : 8386694704757603465,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-27T03:00:00.436Z\",\n    \"id\" : 7083066285675174389,\n    \"addressLine\" : \"flat x\",\n    \"postCode\" : \"SE5 tgg\",\n    \"location\" : {\n      \"permanentId\" : 2138116990435268255,\n      \"version\" : 1,\n      \"createdDate\" : \"2017-02-27T03:00:00.436Z\",\n      \"id\" : 2138116990435268255,\n      \"city\" : \"London\",\n      \"state\" : \"Alabama\",\n      \"countryCode\" : \"UK\",\n      \"geoPoint\" : {\n        \"id\" : 8868894011258282251,\n        \"latitude\" : 51.503407,\n        \"longitude\" : -0.127592\n      }\n    }\n  },\n  \"id\" : -1926853767843327050,\n  \"ratings\" : {\n    \"0\" : 0,\n    \"1\" : 0,\n    \"2\" : 0,\n    \"3\" : 0,\n    \"4\" : 3,\n    \"5\" : 2\n  },\n  \"score\" : 4.5,\n  \"preferences\" : {\n    \"placedNotificationEnabled\" : true,\n    \"acceptedNotificationEnabled\" : true,\n    \"cancelledNotificationEnabled\" : true,\n    \"completedNotificationEnabled\" : true,\n    \"preferredPaymentType\" : \"PAYPAL\"\n  }\n}"
 				},
 				"description": "Create new customer"
 			},
@@ -191,7 +191,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[{\n  \"permanentId\" : 3549878539167814701,\n  \"version\" : 1,\n  \"id\" : -5224463303045973708,\n  \"url\" : \"http//lsoigej4bl8li4mmg6va4ullra.com\",\n  \"owner\" : \"test owner name\",\n  \"views\" : 20,\n  \"durationEstimate\" : 5\n  \n}]"
+					"raw": "[{\n  \"permanentId\" : 3549878539167814701,\n  \"version\" : 1,\n  \"id\" : -5224463303045973708,\n  \"url\" : \"http//lsoigej4bl8li4mmg6va4ullras.com\",\n  \"owner\" : \"test owner name\",\n  \"views\" : 4,\n  \"durationEstimate\" : 5\n  \n},{\n  \"permanentId\" : 3549878539167814702,\n  \"version\" : 1,\n  \"id\" : -5224463303045973708,\n  \"url\" : \"http//lsoigej4bl8li4mmg6va4ullrab.com\",\n  \"owner\" : \"test owner name\",\n  \"views\" : 7,\n  \"durationEstimate\" : 50\n  \n},{\n  \"permanentId\" : 3549878539167814703,\n  \"version\" : 1,\n  \"id\" : -5224463303045973708,\n  \"url\" : \"http//lsoigej4bl8li4mmg6va4ullrag.com\",\n  \"owner\" : \"test owner name\",\n  \"views\" : 12,\n  \"durationEstimate\" : 8\n  \n},{\n  \"permanentId\" : 3549878539167814704,\n  \"version\" : 1,\n  \"id\" : -5224463303045973708,\n  \"url\" : \"http//lsoigej4bl8li4mmg6va4ullraw.com\",\n  \"owner\" : \"test owner name\",\n  \"views\" : 9,\n  \"durationEstimate\" : 45\n  \n},{\n  \"permanentId\" : 3549878539167814705,\n  \"version\" : 1,\n  \"id\" : -5224463303045973708,\n  \"url\" : \"http//lsoigej4bl8li4mmg6va4ullraf.com\",\n  \"owner\" : \"test owner name\",\n  \"views\" : 94,\n  \"durationEstimate\" : 38\n  \n}]"
 				},
 				"description": "Create new Style"
 			},
@@ -310,7 +310,7 @@
 				}
 			],
 			"request": {
-				"url": "{{serviceUrl}}/customer/request/style?customerId={{customerId}}&styleId={{styleId}}&merchantId={{merchantId}}&dateTime=2017-02-20T09:00:01.635Z",
+				"url": "{{serviceUrl}}/customer/request/style?customerId={{customerId}}&styleId={{styleId}}&merchantId={{merchantId}}&dateTime=2017-06-20T09:00:01.635Z",
 				"method": "POST",
 				"header": [
 					{
@@ -329,6 +329,18 @@
 		},
 		{
 			"name": "Update customer Payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"update customer payment\"] = responseCode.code === 200;",
+							""
+						]
+					}
+				}
+			],
 			"request": {
 				"url": "http://localhost:4567/api/v1/customer/update/payment?customerId={{customerId}}",
 				"method": "POST",
@@ -342,26 +354,6 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n  \"permanentId\" : 79612003400944687,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-09T00:16:29.541Z\",\n  \"id\" : 79612003400944687,\n  \"amount\" : 2432.545,\n  \"customerId\" : {{customerId}},\n  \"merchantId\" : {{merchantId}},\n  \"settled\" : true,\n  \"type\" : \"PAYPAL\"\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "Paypal payment",
-			"request": {
-				"url": "{{serviceUrl}}/payment/paypal",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{}"
 				},
 				"description": ""
 			},
