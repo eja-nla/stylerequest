@@ -23,12 +23,14 @@ public class MvcConstants {
     private static final String FIND_URI="/find";
     public static final String STYLE_REQUEST_URI="/stylerequest";
     public static final String PAYMENT_URI = "/payment";
+    public static final String SYSTEM_URI = "/app";
 
     public static final String CREATE_MERCHANT_ENDPOINT = CREATE + MERCHANT_URI;
     public static final String CREATE_CUSTOMER_ENDPOINT = CREATE + CUSTOMER_URI;
     public static final String PUBLISH_STYLE_ENDPOINT = CREATE + STYLE_URI;
     public static final String UPDATE_PAYMENT_PATH = UPDATE + PAYMENT_URI;
     public static final String UPDATE_PREFERENCES_PATH = UPDATE + "/preferences";
+    public static final String GET_APP_INFO_PATH = "/info/endpoints";
 
     private static final String PENDING_URI = "/pending";
     private static final String ACCEPTED_URI = "/accepted";
