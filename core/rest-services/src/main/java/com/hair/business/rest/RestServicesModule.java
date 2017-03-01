@@ -1,5 +1,6 @@
 package com.hair.business.rest;
 
+import com.google.inject.Provides;
 import com.google.inject.servlet.ServletModule;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,7 +10,10 @@ import com.hair.business.rest.provider.JacksonJsonProvidersProvider;
 import com.hair.business.rest.provider.ObjectMapperProvider;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
+import com.sun.jersey.api.model.AbstractResource;
+import com.sun.jersey.api.model.AbstractSubResourceMethod;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import com.sun.jersey.server.impl.modelapi.annotation.IntrospectionModeller;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,10 +34,11 @@ import javax.ws.rs.ext.MessageBodyWriter;
  */
 public class RestServicesModule extends ServletModule {
 
-    private final String API_ENDPOINT = "/api/v1/*";
-    private final String RESOURCE_PACKAGES = "com.hair.business.rest.resources";
+    private static final String API_ENDPOINT = "/api/v1/*";
+    private static final String RESOURCE_PACKAGES = "com.hair.business.rest.resources";
 
     private ServletContext servletContext;
+    private final Map<String, String> endpoints = new HashMap<>();
 
     public RestServicesModule() {
         this.servletContext = this.getServletContext();
@@ -43,8 +48,10 @@ public class RestServicesModule extends ServletModule {
     protected void configureServlets() {
 
         ResourceConfig rc = new PackagesResourceConfig(RESOURCE_PACKAGES);
-        // Register jersey resources
-        rc.getClasses().forEach(this::bind);
+        for (Class clazz : rc.getClasses()) {
+            this.bind(clazz); // Register jersey resources
+            exposeServletEndpoints(clazz);
+        }
 
         serve(API_ENDPOINT).with(GuiceContainer.class);
         filter(API_ENDPOINT).through(ObjectifyFilter.class);
@@ -55,16 +62,32 @@ public class RestServicesModule extends ServletModule {
 
         // Jackson
         bind(ObjectMapper.class).toProvider(ObjectMapperProvider.class).in(Singleton.class);
-        bind(MessageBodyReader.class).to(JacksonJsonProvider.class);
-        bind(MessageBodyWriter.class).to(JacksonJsonProvider.class);
+        bind(MessageBodyReader.class).to(JacksonJsonProvider.class).in(Singleton.class);
+        bind(MessageBodyWriter.class).to(JacksonJsonProvider.class).in(Singleton.class);
         Map<String, String> initParams = new HashMap<>();
         initParams.put("com.sun.jersey.config.feature.Trace", "true");
         initParams.put("com.sun.jersey.api.json.POJOMappingFeature", "true");
         bind(JacksonJsonProvider.class).toProvider(JacksonJsonProvidersProvider.class).in(Singleton.class);
+
     }
 
     // exposed for testing purposes
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
+    }
+
+    @Singleton
+    @Provides
+    Map<String, String> provideMap() {
+        return endpoints;
+    }
+
+    private void exposeServletEndpoints(Class resourceClass) {
+        AbstractResource resource = IntrospectionModeller.createResource(resourceClass);
+        String uriPrefix = resource.getPath().getValue();
+        for (AbstractSubResourceMethod srm :resource.getSubResourceMethods()) {
+            String uri = uriPrefix + srm.getPath().getValue();
+            endpoints.put(uri, srm.getHttpMethod());
+        }
     }
 }
