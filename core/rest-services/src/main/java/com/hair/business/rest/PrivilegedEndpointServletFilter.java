@@ -40,8 +40,8 @@ public final class PrivilegedEndpointServletFilter extends GuiceFilter {
                 found = true;
             }
         }
-        if (!found) {
-            response.sendError(401, "Access denied for non-whitelisted user " + user);
+        if (found) {
+            response.sendError(401, "Access denied, contact admin. \n" + user);
             return;
         }
 
