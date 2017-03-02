@@ -166,6 +166,22 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
         return responsePayment.getTransactions().get(0).getRelatedResources().get(0).getAuthorization();
     }
 
+    /**
+     * Fires an authorization request to Paypal
+     */
+    @Override
+    public StyleRequestPayment holdPayment(StyleRequest styleRequest, Customer customer, double tax, double total) {
+        return authorizePayment(styleRequest, customer, tax, total);
+    }
+
+    /**
+     * Captures a pre-authorized Paypal payment
+     */
+    @Override
+    public StyleRequestPayment releasePayment(String authorizationId, double totalAmount, boolean isFinalCapture) {
+        return capturePreauthorizedPayment(authorizationId, totalAmount, isFinalCapture);
+    }
+
     private Transaction createTransaction(Amount amount, String description) {
         // ###Transaction
         // A transaction defines the contract of a
@@ -266,21 +282,6 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
         return payment;
     }
 
-    /**
-     * Fires an authorization request to Paypal
-     */
-    @Override
-    public StyleRequestPayment holdPayment(StyleRequest styleRequest, Customer customer, double tax, double total) {
-        return authorizePayment(styleRequest, customer, tax, total);
-    }
-
-    /**
-     * Captures a pre-authorized Paypal payment
-     */
-    @Override
-    public StyleRequestPayment releasePayment(String authorizationId, double totalAmount, boolean isFinalCapture) {
-        return capturePreauthorizedPayment(authorizationId, totalAmount, isFinalCapture);
-    }
 }
 
 
