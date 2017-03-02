@@ -137,6 +137,8 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 
         // add paypal payment authorization request to a new payments queue
 
+        paypalPaymentProcessor.authorizePayment(styleRequest, customer, 2.5, 15.5);
+
 
         emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
 
