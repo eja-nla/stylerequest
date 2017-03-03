@@ -1,7 +1,7 @@
 package com.hair.business.rest.resources.system;
 
+import static com.hair.business.rest.MvcConstants.ADMIN_URI;
 import static com.hair.business.rest.MvcConstants.GET_APP_INFO_PATH;
-import static com.hair.business.rest.MvcConstants.SYSTEM_URI;
 import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -25,7 +25,7 @@ import javax.ws.rs.core.Response;
  *
  * Created by Olukorede Aguda on 12/02/2017.
  */
-@Path(SYSTEM_URI)
+@Path(ADMIN_URI)
 public class AppInfoServlet extends AbstractRequestServlet {
 
     private Map<String, String> endpoints;

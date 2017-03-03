@@ -135,7 +135,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
         repository.saveFew(styleRequest, style);
 
         // add paypal payment authorization request to a new payments queue
-        paymentProcessor.holdPayment(styleRequest, customer, paymentProcessor.computeTax(merchant.getAddress().getLocation().getCountryCode(), styleRequest.getStyle().getPrice()), styleRequest.getStyle().getPrice());
+        paymentProcessor.holdPayment(styleRequest, customer);
 
         emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
 
@@ -147,7 +147,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 //                .setDeviceTokens(customer.getDevice().getDeviceId()); // Nullable?
 //        apnsQueue.add(new SendPushNotificationToApnsTask(pushNotification));
 
-        logger.info("Placed Style Request. ID: " + styleRequest.getId());
+        logger.fine("Placed Style Request. ID: " + styleRequest.getId());
         return styleRequest;
     }
 

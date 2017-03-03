@@ -81,7 +81,7 @@ public class StyleServiceImpl implements StyleService {
 
     @Override
     public List<Style> findStyles(List<Long> ids) {
-        return (List<Style>) repository.findMany(ids, Style.class).values();
+        return new ArrayList<>(repository.findMany(ids, Style.class).values());
     }
 
     @Override
