@@ -31,5 +31,6 @@
     "owner" : "test owner name",
     "views" : 20
   } ],
-  "durationEstimate" : 5
+  "durationEstimate" : 5,
+  "price" : 13.45
 }

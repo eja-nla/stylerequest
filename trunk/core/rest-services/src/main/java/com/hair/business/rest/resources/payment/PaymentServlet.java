@@ -66,7 +66,7 @@
 //    public Response captureAuthorisedPayment(@Context HttpServletRequest httpServletRequest, @Context HttpServletResponse httpServletResponse) {
 //
 //        try {
-//            StyleRequestPayment payment = PaypalPaymentProcessor.releasePayment(null, 2, false);
+//            StyleRequestPayment payment = PaypalPaymentProcessor.deductPayment(null, 2, false);
 //            httpServletRequest.getRequestDispatcher("response.jsp").forward(httpServletRequest, httpServletResponse);
 //            return Response.ok(payment).build();
 //        } catch (ServletException e) {

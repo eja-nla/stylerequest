@@ -1,9 +1,9 @@
 package com.hair.business.services.merchant;
 
 import com.hair.business.beans.constants.StyleRequestState;
+import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Device;
-import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
@@ -78,9 +78,9 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public void createMerchant(String firstName, String lastName, String displayName, String email, String phone, Device device, Location location) {
+    public void createMerchant(String firstName, String lastName, String displayName, String email, String phone, Device device, Address address) {
         Long permId = repository.allocateId(Merchant.class);
-        Merchant merchant = new Merchant(firstName, lastName, displayName, email, phone, device, location);
+        Merchant merchant = new Merchant(firstName, lastName, displayName, email, phone, device, address);
         merchant.setId(permId);
         merchant.setPermanentId(permId);
         updateMerchant(merchant);

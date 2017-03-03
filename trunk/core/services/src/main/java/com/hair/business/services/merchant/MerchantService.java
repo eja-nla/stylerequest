@@ -1,8 +1,8 @@
 package com.hair.business.services.merchant;
 
+import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Device;
-import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
 
 import org.joda.time.DateTime;
@@ -31,7 +31,7 @@ public interface MerchantService {
     /**
      * Creates a new Merchant
      * */
-    void createMerchant(String firstName, String lastname, String displayName, String email, String phone, Device device, Location location);
+    void createMerchant(String firstName, String lastname, String displayName, String email, String phone, Device device, Address address);
 
     void updateMerchant(Merchant merchant);
 

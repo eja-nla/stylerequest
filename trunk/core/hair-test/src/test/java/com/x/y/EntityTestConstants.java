@@ -77,7 +77,7 @@ public class EntityTestConstants {
     }
 
     public static Merchant createMerchant(){
-        Merchant m = new Merchant("Test Merchant FirstName", "lastname", "Midas hair place", "merchant@email.com", "+1134555643654", createDevice(), createLocation());
+        Merchant m = new Merchant("Test Merchant FirstName", "lastname", "Midas hair place", "merchant@email.com", "+1134555643654", createDevice(), createAddress());
         m.setId(new Random().nextLong());
         m.setPermanentId(m.getId());
         m.setBusinessName("Midas Touch");
@@ -112,7 +112,7 @@ public class EntityTestConstants {
 
     public static Style createStyle(){
         Merchant m = createMerchant();
-        Style s = new Style("didi", 20, m.getId(), m.getLocation(), Arrays.asList(createImage(), createImage(), createImage(), createImage(), createImage()));
+        Style s = new Style("didi", 20, m.getId(), m.getAddress().getLocation(), Arrays.asList(createImage(), createImage(), createImage(), createImage(), createImage()));
         s.setId(new Random().nextLong());
         s.setPermanentId(new Random().nextLong());
         return s;

@@ -1,7 +1,6 @@
 package com.hair.business.services.payment.paypal;
 
 import static java.util.logging.Logger.getLogger;
-import static org.apache.http.conn.ssl.BrowserCompatHostnameVerifier.INSTANCE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paypal.api.payments.Authorization;
@@ -14,11 +13,12 @@ import com.paypal.base.rest.PayPalResource;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
@@ -81,10 +81,11 @@ public class PaypalPaymentRequestHandlerImpl implements PaymentRequestHandler {
 
         HttpPost request = new HttpPost(urlString);
         request.addHeader("Content-Type", "application/json");
-        request.addHeader("Authorization", fetchAccessToken().getAccess_token());
+        request.addHeader("Authorization", "Bearer " + fetchAccessToken().getAccess_token());
         request.setEntity(new StringEntity(paypalPayload.toJSON()));
 
         HttpResponse response = client.execute(request);
+        logger.info("Paypal response " + response);
 
         if (response.getStatusLine().getStatusCode() == 200) {
             return objectMapper.readValue(response.getEntity().getContent(), clazz);
@@ -129,7 +130,9 @@ public class PaypalPaymentRequestHandlerImpl implements PaymentRequestHandler {
 
     private static SSLConnectionSocketFactory getSSLContext(){
         try {
-            return new SSLConnectionSocketFactory(SSLContexts.custom().useTLS().build(), new String[]{"TLSv1", "TLSv1.1", "TLSv1.2"}, null, INSTANCE);
+            return new SSLConnectionSocketFactory(SSLContextBuilder.create().useProtocol("TLSv1.2").build(),
+                    new String[]{"TLSv1", "TLSv1.1", "TLSv1.2"},
+                    null, new DefaultHostnameVerifier());
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             e.printStackTrace();
         }

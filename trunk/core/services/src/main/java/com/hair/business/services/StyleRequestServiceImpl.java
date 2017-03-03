@@ -7,6 +7,7 @@ import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.hair.business.services.payment.PaymentProcessor;
 import com.hair.business.services.payment.paypal.PaypalPaymentProcessor;
 import com.hair.business.services.stereotype.Timed;
 import com.x.business.notif.AcceptedStyleRequestNotification;
@@ -37,7 +38,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
     private final Repository repository;
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;
-    private final PaypalPaymentProcessor paypalPaymentProcessor;
+    private final PaymentProcessor paymentProcessor;
 
     private final List<String> MERCHANT_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("merchantPermanentId ==", "state ==", "appointmentStartTime <=");
     private final List<String> CUSTOMER_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("customerPermanentId ==", "state ==", "appointmentStartTime <=");
@@ -48,11 +49,11 @@ public class StyleRequestServiceImpl implements StyleRequestService {
     StyleRequestServiceImpl(Repository repository,
                             @EmailTaskQueue TaskQueue emailTaskQueue,
                             @ApnsTaskQueue TaskQueue apnsQueue,
-                            PaypalPaymentProcessor paypalPaymentProcessor) {
+                            PaypalPaymentProcessor paymentProcessor) {
         this.repository = repository;
         this.emailTaskQueue = emailTaskQueue;
         this.apnsQueue = apnsQueue;
-        this.paypalPaymentProcessor = paypalPaymentProcessor;
+        this.paymentProcessor = paymentProcessor;
     }
 
     @Override
@@ -127,18 +128,14 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 
         style.setRequestCount(style.getRequestCount() + 1);
 
-        final StyleRequest styleRequest = new StyleRequest(style, merchant, customer, merchant.getLocation(), StyleRequestState.PENDING, appointmentTime, new DateTime().plusMinutes(style.getDurationEstimate()));
+        final StyleRequest styleRequest = new StyleRequest(style, merchant, customer, merchant.getAddress().getLocation(), StyleRequestState.PENDING, appointmentTime, new DateTime().plusMinutes(style.getDurationEstimate()));
         Long id = repository.allocateId(StyleRequest.class);
         styleRequest.setId(id);
         styleRequest.setPermanentId(id);
-
-
         repository.saveFew(styleRequest, style);
 
         // add paypal payment authorization request to a new payments queue
-
-        paypalPaymentProcessor.authorizePayment(styleRequest, customer, 2.5, 15.5);
-
+        paymentProcessor.holdPayment(styleRequest, customer, paymentProcessor.computeTax(merchant.getAddress().getLocation().getCountryCode(), styleRequest.getStyle().getPrice()), styleRequest.getStyle().getPrice());
 
         emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
 

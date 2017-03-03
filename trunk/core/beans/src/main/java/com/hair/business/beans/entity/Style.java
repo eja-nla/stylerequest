@@ -127,4 +127,12 @@ public class Style extends AbstractActorEnablerEntity {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 }

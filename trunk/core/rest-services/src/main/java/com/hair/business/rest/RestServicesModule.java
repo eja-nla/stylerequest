@@ -48,6 +48,7 @@ public class RestServicesModule extends ServletModule {
     protected void configureServlets() {
 
         ResourceConfig rc = new PackagesResourceConfig(RESOURCE_PACKAGES);
+        endpoints.put("/health", "GET");
         for (Class clazz : rc.getClasses()) {
             this.bind(clazz); // Register jersey resources
             exposeServletEndpoints(clazz);
