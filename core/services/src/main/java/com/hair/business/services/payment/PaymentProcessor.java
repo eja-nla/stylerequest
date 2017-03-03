@@ -19,6 +19,12 @@ public interface PaymentProcessor {
     /**
      * Actually take the pre-authorized payment
      * */
-    StyleRequestPayment releasePayment(String paymentIdIssuedAfterItsHeld, double totalAmount, boolean isFinalCapture);
+    StyleRequestPayment deductPayment(String paymentIdIssuedAfterItsHeld, double totalAmount, boolean isFinalCapture);
+
+    /**
+     *
+     * Computes how much tax is deductible based on country
+     * */
+    double computeTax(String countryCode, double itemPrice);
 
 }

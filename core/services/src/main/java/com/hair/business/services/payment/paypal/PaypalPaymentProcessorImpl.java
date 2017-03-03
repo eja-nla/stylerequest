@@ -178,8 +178,13 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
      * Captures a pre-authorized Paypal payment
      */
     @Override
-    public StyleRequestPayment releasePayment(String authorizationId, double totalAmount, boolean isFinalCapture) {
+    public StyleRequestPayment deductPayment(String authorizationId, double totalAmount, boolean isFinalCapture) {
         return capturePreauthorizedPayment(authorizationId, totalAmount, isFinalCapture);
+    }
+
+    @Override
+    public double computeTax(String countryCode, double itemPrice) {
+        return 0;
     }
 
     private Transaction createTransaction(Amount amount, String description) {

@@ -16,7 +16,7 @@ import java.io.IOException;
 
 public interface PaymentRequestHandler {
 
-    Payment issuePaymentRequest(Payment payment, APIContext paypalApiContext);
+    Payment issuePaymentRequest(Payment payment, APIContext paypalApiContext) throws PayPalRESTException;
 
     Authorization issueAuthorizationRequest(APIContext paypalApiContext, String authorizationId) throws PayPalRESTException;
 

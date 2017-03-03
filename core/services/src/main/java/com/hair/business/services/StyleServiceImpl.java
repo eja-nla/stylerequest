@@ -44,7 +44,7 @@ public class StyleServiceImpl implements StyleService {
         Assert.isFound(merchant, format("Could not find Merchant with id %s", publisherId));
 
         Long stylePermId = repository.allocateId(Style.class);
-        Style style = new Style(styleName, duration, merchant.getId(), merchant.getLocation(), styleImages);
+        Style style = new Style(styleName, duration, merchant.getId(), merchant.getAddress().getLocation(), styleImages);
 
         style.setId(stylePermId);
         style.setPermanentId(stylePermId);
@@ -81,7 +81,7 @@ public class StyleServiceImpl implements StyleService {
 
     @Override
     public List<Style> findStyles(List<Long> ids) {
-        return new ArrayList<>(repository.findMany(ids, Style.class).values());
+        return (List<Style>) repository.findMany(ids, Style.class).values();
     }
 
     @Override

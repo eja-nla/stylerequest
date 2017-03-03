@@ -25,8 +25,6 @@ public class Merchant extends AbstractActorEntity {
     @Id
     private Long id;
 
-    private Location location;
-
     private String businessName;
 
     @Stringify(IntegerStringifyer.class) // Map of allowed scores and their weights(i.e. count)
@@ -50,18 +48,10 @@ public class Merchant extends AbstractActorEntity {
 
     }
 
-    public Merchant(String firstName, String lastName, String businessName, String email, String phone, Device device, Location location) {
+    public Merchant(String firstName, String lastName, String businessName, String email, String phone, Device device, Address address) {
         this(firstName, lastName, businessName, email, phone, device);
-        this.location = location;
+        this.setAddress(address);
 
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
     }
 
     public Long getId() {
