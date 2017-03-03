@@ -14,12 +14,12 @@ public interface PaymentProcessor {
     /**
      * Fires an authorization request to downstream
      * */
-    StyleRequestPayment holdPayment(StyleRequest styleRequest, Customer customer, double tax, double total);
+    StyleRequestPayment holdPayment(StyleRequest styleRequest, Customer customer);
 
     /**
      * Actually take the pre-authorized payment
      * */
-    StyleRequestPayment deductPayment(String paymentIdIssuedAfterItsHeld, double totalAmount, boolean isFinalCapture);
+    StyleRequestPayment deductPayment(String authorizationId, double totalAmount, boolean isFinalCapture);
 
     /**
      *

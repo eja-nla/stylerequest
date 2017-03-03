@@ -16,7 +16,7 @@ public interface PaypalPaymentProcessor extends PaymentProcessor {
     /**
      * Fires an authorization request to Paypal
      * */
-    StyleRequestPayment authorizePayment(StyleRequest styleRequest, Customer customer, double tax, double total) throws PaypalPaymentException;
+    StyleRequestPayment authorizePayment(StyleRequest styleRequest, Customer customer) throws PaypalPaymentException;
 
     /**
      * Captures a pre-authorized Paypal payment

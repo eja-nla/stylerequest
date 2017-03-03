@@ -22,8 +22,8 @@ public class MvcConstants {
     public static final String STYLE_URI="/style";
     private static final String FIND_URI="/find";
     public static final String STYLE_REQUEST_URI="/stylerequest";
-    public static final String PAYMENT_URI = "/payment";
-    public static final String SYSTEM_URI = "/app";
+    public static final String ADMIN_URI = "/admin";
+    public static final String PAYMENT_URI = ADMIN_URI + "/payment";
 
     public static final String CREATE_MERCHANT_ENDPOINT = CREATE + MERCHANT_URI;
     public static final String CREATE_CUSTOMER_ENDPOINT = CREATE + CUSTOMER_URI;
@@ -56,14 +56,13 @@ public class MvcConstants {
 
 
     private static final String PAYPAL_URI_BASE = "/paypal";
-    public static final String PAYPAL_URI_ENDPOINT = PAYPAL_URI_BASE + "/create";
+    public static final String PAYPAL_AUTHORIZE_URI_ENDPOINT = PAYPAL_URI_BASE + "/authorize";
+    public static final String PAYPAL_CAPTURE_URI_ENDPOINT = PAYPAL_URI_BASE + "/capture";
 
     public static final String STYLE_REQUEST_PATH = "/request" + STYLE_URI;
 
     public static final String ID ="id";
 
     public static final String EMAIL="email";
-
-    public static final String ADMIN_URI="admin";
 
 }

@@ -45,11 +45,11 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
 
 
     @Override
-    public StyleRequestPayment authorizePayment(StyleRequest styleRequest, Customer customer, double tax, double total) {
+    public StyleRequestPayment authorizePayment(StyleRequest styleRequest, Customer customer) {
 
         StyleRequestPayment styleRequestPayment = null;
         try {
-            Authorization authorization = getAuthorization(paypalApiContext, customer, tax, total);
+            Authorization authorization = getAuthorization(styleRequest, customer);
 
             styleRequestPayment = new StyleRequestPayment();
             //styleRequestPayment.setAuthorization(authorization);
@@ -104,9 +104,11 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
         return styleRequestPayment;
     }
 
-    private Authorization getAuthorization(APIContext apiContext, Customer customer, double tax, double total) throws PayPalRESTException {
+    private Authorization getAuthorization(StyleRequest styleRequest, Customer customer) throws PayPalRESTException {
 
-        Details details = createDetails(total, tax);
+        double total = styleRequest.getStyle().getPrice();
+        double tax = computeTax(styleRequest.getMerchant().getAddress().getLocation().getCountryCode(), total);
+        Details details = createDetails(tax, total);
 
 
         // ###Amount
@@ -170,8 +172,8 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
      * Fires an authorization request to Paypal
      */
     @Override
-    public StyleRequestPayment holdPayment(StyleRequest styleRequest, Customer customer, double tax, double total) {
-        return authorizePayment(styleRequest, customer, tax, total);
+    public StyleRequestPayment holdPayment(StyleRequest styleRequest, Customer customer) {
+        return authorizePayment(styleRequest, customer);
     }
 
     /**
