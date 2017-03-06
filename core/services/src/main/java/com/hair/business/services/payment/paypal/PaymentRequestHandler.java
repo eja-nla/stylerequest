@@ -18,10 +18,9 @@ public interface PaymentRequestHandler {
 
     Payment issuePaymentRequest(Payment payment, APIContext paypalApiContext) throws PayPalRESTException;
 
-    Authorization issueAuthorizationRequest(APIContext paypalApiContext, String authorizationId) throws PayPalRESTException;
-
-    Capture issueCaptureRequest(Authorization authorization, APIContext paypalApiContext, Capture capture) throws PayPalRESTException;
+    Authorization fetchAuthorization(APIContext paypalApiContext, String authorizationId) throws PayPalRESTException;
 
     AccessTokenResponse fetchAccessToken() throws IOException;
 
+    Capture issueCaptureRequest(String id, APIContext paypalApiContext, Capture capture) throws PayPalRESTException;
 }

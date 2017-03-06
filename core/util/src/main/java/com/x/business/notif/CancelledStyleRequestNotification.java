@@ -9,7 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
  * AbstractNotification object
  * Created by Olukorede Aguda on 21/06/2016.
  */
-public class CancelledStyleRequestNotification extends AbstractStyleRequestNotification {
+public class CancelledStyleRequestNotification extends AbstractStyleRequestNotificationTask {
 
     private String tokenizedCustomerEmailBody;
     private String tokenizedMerchantEmailBody;

@@ -13,7 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
  *
  * Created by Olukorede Aguda on 21/06/2016.
  */
-public class PlacedStyleRequestNotification extends AbstractStyleRequestNotification {
+public class PlacedStyleRequestNotification extends AbstractStyleRequestNotificationTask {
 
     private String tokenizedCustomerEmailBody;
     private String tokenizedMerchantEmailBody;

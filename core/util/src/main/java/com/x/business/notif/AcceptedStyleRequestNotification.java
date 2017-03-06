@@ -11,7 +11,7 @@ import org.apache.commons.lang3.tuple.Pair;
  * Creates notification contents available for sending based on recipient's preferences
  * Created by Olukorede Aguda on 21/06/2016.
  */
-public class AcceptedStyleRequestNotification extends AbstractStyleRequestNotification {
+public class AcceptedStyleRequestNotification extends AbstractStyleRequestNotificationTask {
 
     private final String tokenizedCustomerEmailBody;
     private final String tokenizedMerchantEmailBody;

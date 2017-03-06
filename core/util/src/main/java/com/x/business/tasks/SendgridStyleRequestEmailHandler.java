@@ -6,7 +6,7 @@ import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
-import com.x.business.notif.AbstractStyleRequestNotification;
+import com.x.business.notif.AbstractStyleRequestNotificationTask;
 import com.x.business.notif.mail.handler.EmailHandler;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +35,7 @@ public class SendgridStyleRequestEmailHandler implements EmailHandler {
     }
 
     @Override
-    public void send(AbstractStyleRequestNotification notification, boolean sendMerchantCopy) {
+    public void send(AbstractStyleRequestNotificationTask notification, boolean sendMerchantCopy) {
 
         send(notification.getCustomerEmailBody());
 
@@ -47,7 +47,7 @@ public class SendgridStyleRequestEmailHandler implements EmailHandler {
     @Override
     public void sendBulk(Collection notifications) {
         partition(notifications instanceof List ? (List) notifications : new ArrayList<>(notifications), 1000).forEach(
-                listOfNotifications -> ((List) listOfNotifications).forEach(notification -> send((AbstractStyleRequestNotification) notification, false))
+                listOfNotifications -> ((List) listOfNotifications).forEach(notification -> send((AbstractStyleRequestNotificationTask) notification, false))
         );
     }
 

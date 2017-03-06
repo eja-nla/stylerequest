@@ -33,8 +33,8 @@ public class PaypalPaymentProcessorTest extends AbstractServicesTestBase {
         repository = injector.getInstance(Repository.class);
 
         try {
-            when(paypalPaymentRequestHandler.issueAuthorizationRequest(any(APIContext.class), anyString())).thenReturn(new Authorization());
-            when(paypalPaymentRequestHandler.issueCaptureRequest(any(Authorization.class), any(APIContext.class), any(Capture.class))).thenReturn(new Capture());
+            when(paypalPaymentRequestHandler.fetchAuthorization(any(APIContext.class), anyString())).thenReturn(new Authorization());
+            when(paypalPaymentRequestHandler.issueCaptureRequest(anyString(), any(APIContext.class), any(Capture.class))).thenReturn(new Capture());
             when(paypalPaymentRequestHandler.issuePaymentRequest(any(Payment.class), any(APIContext.class))).thenReturn(new Payment());
         } catch (PayPalRESTException e) {
             e.printStackTrace();

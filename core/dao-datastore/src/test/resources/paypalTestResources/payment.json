@@ -1,0 +1,85 @@
+{
+  "id": "PAY-1BP41925BA069714SK6SKIAY",
+  "intent": "authorize",
+  "state": "created",
+  "payer": {
+    "paymentMethod": "paypal"
+  },
+  "transactions": [
+    {
+      "amount": {
+        "total": "30.11",
+        "currency": "USD",
+        "details": {
+          "subtotal": "30.00",
+          "tax": "0.07",
+          "shipping": "0.03",
+          "insurance": "0.01",
+          "handlingFee": "1.00",
+          "shippingDiscount": "-1.00"
+        }
+      },
+      "description": "This is the payment transaction description.",
+      "custom": "EBAY_EMS_90048630024435",
+      "invoiceNumber": "48787589673",
+      "softDescriptor": "ECHI5786786",
+      "paymentOptions": {
+        "allowedPaymentMethod": "INSTANT_FUNDING_SOURCE",
+        "recurringFlag": false,
+        "skipFmf": false
+      },
+      "itemList": {
+        "items": [
+          {
+            "name": "hat",
+            "sku": "1",
+            "description": "Brown color hat",
+            "price": "3.00",
+            "currency": "USD",
+            "tax": "0.01",
+            "quantity": 5
+          },
+          {
+            "name": "handbag",
+            "sku": "product34",
+            "description": "Black color hand bag",
+            "price": "15.00",
+            "currency": "USD",
+            "tax": "0.02",
+            "quantity": 1
+          }
+        ],
+        "shippingAddress": {
+          "recipientName": "Hello World",
+          "line1": "4thFloor",
+          "line2": "unit#34",
+          "city": "SAn Jose",
+          "state": "CA",
+          "postalCode": "95131",
+          "countryCode": "US",
+          "phone": "011862212345678"
+        }
+      },
+      "relatedResources": []
+    }
+  ],
+  "noteToPayer": "Contact us for any questions on your order.",
+  "createTime": "2016-08-05T14:34:42Z",
+  "links": [
+    {
+      "href": "https://msmaster.qa.paypal.com:11881/v1/payments/payment/PAY-1BP41925BA069714SK6SKIAY",
+      "rel": "self",
+      "method": "GET"
+    },
+    {
+      "href": "https://www.msmaster.qa.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=EC-511429312Y0182227",
+      "rel": "approval_url",
+      "method": "REDIRECT"
+    },
+    {
+      "href": "https://msmaster.qa.paypal.com:11881/v1/payments/payment/PAY-1BP41925BA069714SK6SKIAY/execute",
+      "rel": "execute",
+      "method": "POST"
+    }
+  ]
+}
