@@ -3,8 +3,14 @@ package com.hair.business.beans.entity;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Serialize;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 import com.hair.business.beans.constants.PaymentType;
+import com.hair.business.beans.helper.PaymentStatus;
+import com.paypal.api.payments.Authorization;
+import com.paypal.api.payments.Capture;
+import com.paypal.api.payments.Payment;
 
 /**
  * Represents a payment between two entities.
@@ -23,9 +29,10 @@ public class StyleRequestPayment extends AbstractActorEnablerEntity {
     private Long merchantId;
     private boolean settled;
     private PaymentType type;
-//    private com.paypal.api.payments.Payment payment;
-//    private Authorization authorization;
-//    private Capture capture;
+    private @Index PaymentStatus paymentStatus;
+    private @Serialize Payment payment;
+    private @Serialize Authorization authorization;
+    private @Serialize Capture capture;
 
     public StyleRequestPayment(){}
 
@@ -86,7 +93,66 @@ public class StyleRequestPayment extends AbstractActorEnablerEntity {
         this.type = type;
     }
 
-//    public com.paypal.api.payments.Payment getPayment() {
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
+    public Authorization getAuthorization() {
+        return authorization;
+    }
+
+    public void setAuthorization(Authorization authorization) {
+        this.authorization = authorization;
+    }
+
+    public Capture getCapture() {
+        return capture;
+    }
+
+    public void setCapture(Capture capture) {
+        this.capture = capture;
+    }
+//    public void setPaymentStatus(PaymentStatus paymentStatus) {
+//        this.paymentStatus = paymentStatus;
+//    }
+//
+//    public PaymentExt getPayment() {
+//        return payment;
+//    }
+//
+//    public void setPayment(PaymentExt payment) {
+//        this.payment = payment;
+//    }
+//
+//    public AuthorizationExt getAuthorization() {
+//        return authorization;
+//    }
+//
+//    public void setAuthorization(AuthorizationExt authorization) {
+//        this.authorization = authorization;
+//    }
+//
+//    public CaptureExt getCapture() {
+//        return capture;
+//    }
+//
+//    public void setCapture(CaptureExt capture) {
+//        this.capture = capture;
+//    }
+
+    //    public com.paypal.api.payments.Payment getPayment() {
 //        return payment;
 //    }
 //

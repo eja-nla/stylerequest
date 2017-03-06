@@ -1,6 +1,6 @@
 package com.x.business.notif.mail.handler;
 
-import com.x.business.notif.AbstractStyleRequestNotification;
+import com.x.business.notif.AbstractStyleRequestNotificationTask;
 
 import java.util.Collection;
 
@@ -11,6 +11,6 @@ import java.util.Collection;
  */
 public interface EmailHandler {
 
-    <R extends AbstractStyleRequestNotification> void send(R notification, boolean sendMerchantCopy);
-    <T extends AbstractStyleRequestNotification> void sendBulk(Collection<T> notifications);
+    <R extends AbstractStyleRequestNotificationTask> void send(R notification, boolean sendMerchantCopy);
+    <T extends AbstractStyleRequestNotificationTask> void sendBulk(Collection<T> notifications);
 }

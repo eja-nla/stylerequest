@@ -3,6 +3,9 @@ package com.hair.business.services.payment.paypal;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.beans.entity.StyleRequestPayment;
+import com.hair.business.beans.helper.PaymentStatus;
+import com.hair.business.beans.helper.paypal.AuthorizationExt;
+import com.hair.business.beans.helper.paypal.CaptureExt;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.paypal.api.payments.Address;
 import com.paypal.api.payments.Amount;
@@ -16,6 +19,7 @@ import com.paypal.api.payments.Payment;
 import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
+import com.x.business.utilities.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,15 +53,17 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
 
         StyleRequestPayment styleRequestPayment = null;
         try {
-            Authorization authorization = getAuthorization(styleRequest, customer);
+            Authorization authorization = acquireAuthorization(styleRequest, customer);
 
-            styleRequestPayment = new StyleRequestPayment();
-            //styleRequestPayment.setAuthorization(authorization);
+            Assert.notNull(authorization, "Failed to obtain paypal authorization for stylerequest " + styleRequest.getId());
 
+            styleRequestPayment = new StyleRequestPayment(); //todo set other fields
+            styleRequestPayment.setAuthorization((AuthorizationExt) authorization);
+            styleRequestPayment.setPaymentStatus(PaymentStatus.AUTHORIZED);
+            repository.saveOne(styleRequestPayment);
         } catch (PayPalRESTException e) {
             logger.info(String.format("Could not authorize payment for stylerequest %s, reason %s", styleRequest.getId(), e.getMessage()));
         }
-        repository.saveOne(styleRequestPayment);
 
         return styleRequestPayment;
     }
@@ -65,46 +71,33 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
     @Override
     public StyleRequestPayment capturePreauthorizedPayment(String authorizationId, double totalAmount, boolean isFinalCapture) {
 
-        Capture responseCapture;
+        Capture responseCapture = null;
 
         try {
 
-            // ### Api Context
-            // Pass in a `ApiContext` object to authenticate
-            // the call and to send a unique request id
-            // (that ensures idempotency). The SDK generates
-            // a request id if you do not pass one explicitly.
-            //APIContext paypalApiContext = new APIContext(clientID, clientSecret, mode);
-
-            // ###Authorization
-            // Retrieve a Authorization object
-            // by making a Payment with intent
-            // as 'authorize'
-            final Authorization authorization = paypalPaymentRequestHandler.issueAuthorizationRequest(paypalApiContext, authorizationId);
+            final Authorization authorization = paypalPaymentRequestHandler.fetchAuthorization(paypalApiContext, authorizationId);
+            Assert.notNull(authorization, "Unable to fetch paypal authorization ID: " + authorizationId);
 
             final Amount amount = createAmount(totalAmount, null);
 
             final Capture capture = createCapture(amount, isFinalCapture);
 
-            // Capture by POSTing to
-            // URI v1/payments/authorization/{authorization_id}/capture
-            responseCapture = paypalPaymentRequestHandler.issueCaptureRequest(authorization, paypalApiContext, capture);
+            responseCapture = paypalPaymentRequestHandler.issueCaptureRequest(authorization.getId(), paypalApiContext, capture);
 
             logger.info("Capture id = " + responseCapture.getId() + " and status = " + responseCapture.getState());
-            //ResultPrinter.addResult(req, resp, "Authorization Capture", Authorization.getLastRequest(), Authorization.getLastResponse(), null);
         } catch (PayPalRESTException e) {
-            //ResultPrinter.addResult(req, resp, "Authorization Capture", Authorization.getLastRequest(), null, e.getMessage());
+            logger.info(String.format("Could not capture payment for style request %s, reason %s", authorizationId, e.getMessage()));
         }
-        //req.getRequestDispatcher("response.jsp").forward(req, resp);
 
         final StyleRequestPayment styleRequestPayment = new StyleRequestPayment();
-        //styleRequestPayment.setCapture(responseCapture);
+        styleRequestPayment.setCapture((CaptureExt) responseCapture);
+        styleRequestPayment.setPaymentStatus(PaymentStatus.SETTLED);
         repository.saveOne(styleRequestPayment);
 
         return styleRequestPayment;
     }
 
-    private Authorization getAuthorization(StyleRequest styleRequest, Customer customer) throws PayPalRESTException {
+    private Authorization acquireAuthorization(StyleRequest styleRequest, Customer customer) throws PayPalRESTException {
 
         double total = styleRequest.getStyle().getPrice();
         double tax = computeTax(styleRequest.getMerchant().getAddress().getLocation().getCountryCode(), total);

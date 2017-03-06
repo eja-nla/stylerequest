@@ -16,7 +16,7 @@
 						"type": "text/javascript",
 						"exec": [
 							"postman.setEnvironmentVariable(\"serviceUrl\", \"http://localhost:4567/api/v1\");",
-							"postman.setEnvironmentVariable(\"customerId\", \"-5064501332121306936\");",
+							"postman.setEnvironmentVariable(\"customerId\", \"-1926853767843327050\");",
 							"",
 							"tests[\"Customer created\"] = responseCode.code === 200;"
 						]
@@ -68,38 +68,6 @@
 			"response": []
 		},
 		{
-			"name": "Update Payment",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"tests[\"Payment updated\"] = responseCode.code === 200;",
-							""
-						]
-					}
-				}
-			],
-			"request": {
-				"url": "http://localhost:4567/api/v1/customer/update/payment?customerId={{customerId}}",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"permanentId\" : 79612003400944687,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-09T00:16:29.541Z\",\n  \"id\" : 79612003400944687,\n  \"amount\" : 2432.545,\n  \"customerId\" : 435432,\n  \"merchantId\" : 3254234,\n  \"settled\" : true,\n  \"type\" : \"PAYPAL\",\n  \"date\" : null\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
 			"name": "Create new merchant",
 			"event": [
 				{
@@ -109,7 +77,7 @@
 						"exec": [
 							"tests[\"Merchant created\"] = responseCode.code === 200;",
 							"",
-							"postman.setEnvironmentVariable(\"merchantId\", \"4465955492626167338\");"
+							"postman.setEnvironmentVariable(\"merchantId\", \"6621510167243271896\");"
 						]
 					}
 				}
@@ -131,7 +99,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"permanentId\" : 4465955492626167338,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-06T21:56:24.617Z\",\n  \"lastUpdated\" : \"2017-02-06T21:56:24.617Z\",\n  \"firstName\" : \"Test Merchant FirstName\",\n  \"lastName\" : \"lastname\",\n  \"email\" : \"merchant@email.com\",\n  \"phone\" : \"+1134555643654\",\n  \"device\" : {\n    \"permanentId\" : 236991800061305557,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-06T21:56:24.617Z\",\n    \"id\" : 242923285250164205,\n    \"deviceId\" : \"ugfbcu4k07amfs32ea5bp5ioms\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"F\",\n  \"active\" : true,\n  \"id\" : 4465955492626167338,\n  \"location\" : {\n    \"permanentId\" : -7789403340680265354,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-06T21:56:24.617Z\",\n    \"id\" : -7789403340680265354,\n    \"city\" : \"London\",\n    \"state\" : \"Alabama\",\n    \"country\" : \"UK\",\n    \"geoPoint\" : {\n      \"id\" : 6184841824413077491,\n      \"latitude\" : 51.503407,\n      \"longitude\" : -0.127592\n    }\n  },\n  \"businessName\" : \"Midas hair place\",\n  \"ratings\" : {\n    \"0\" : 0,\n    \"1\" : 0,\n    \"2\" : 0,\n    \"3\" : 0,\n    \"4\" : 3,\n    \"5\" : 2\n  },\n  \"score\" : 4.5,\n  \"preferences\" : {\n    \"placedNotification\" : true,\n    \"acceptedNotification\" : true,\n    \"cancelledNotification\" : true,\n    \"completedNotification\" : true\n  }\n}"
+					"raw": "{\n  \"permanentId\" : 6621510167243271896,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-03-02T23:05:14.822Z\",\n  \"lastUpdated\" : \"2017-03-02T23:05:14.823Z\",\n  \"firstName\" : \"Test Merchant FirstName\",\n  \"lastName\" : \"lastname\",\n  \"email\" : \"merchant@email.com\",\n  \"phone\" : \"+1134555643654\",\n  \"device\" : {\n    \"permanentId\" : 5981815732749760502,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-03-02T23:05:14.544Z\",\n    \"id\" : -9033332049852286847,\n    \"deviceId\" : \"l7dmjvt67oafc81rs48udsd5em\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"styleRequestPayment\" : {\n    \"permanentId\" : 5447845332032134393,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-03-02T23:05:14.825Z\",\n    \"id\" : 5447845332032134393,\n    \"amount\" : 3255.43,\n    \"customerId\" : 35345432,\n    \"merchantId\" : 3241342,\n    \"settled\" : true,\n    \"type\" : \"PAYPAL\"\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"F\",\n  \"active\" : true,\n  \"address\" : {\n    \"permanentId\" : 6417910370860107413,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-03-02T23:05:14.822Z\",\n    \"id\" : -2007306903756970418,\n    \"addressLine\" : \"flat x\",\n    \"postCode\" : \"SE5 tgg\",\n    \"location\" : {\n      \"permanentId\" : 3063022651781677231,\n      \"version\" : 1,\n      \"createdDate\" : \"2017-03-02T23:05:14.822Z\",\n      \"id\" : 3063022651781677231,\n      \"city\" : \"London\",\n      \"state\" : \"Alabama\",\n      \"countryCode\" : \"GB\",\n      \"geoPoint\" : {\n        \"id\" : 2446360220652607486,\n        \"latitude\" : 51.503407,\n        \"longitude\" : -0.127592\n      }\n    }\n  },\n  \"preferences\" : {\n    \"placedNotificationEnabled\" : true,\n    \"acceptedNotificationEnabled\" : true,\n    \"cancelledNotificationEnabled\" : true,\n    \"completedNotificationEnabled\" : true,\n    \"preferredPaymentType\" : \"PAYPAL\"\n  },\n  \"id\" : 6621510167243271896,\n  \"businessName\" : \"Midas Touch\",\n  \"ratings\" : {\n    \"0\" : 0,\n    \"1\" : 0,\n    \"2\" : 0,\n    \"3\" : 0,\n    \"4\" : 3,\n    \"5\" : 2\n  },\n  \"score\" : 4.5\n}"
 				},
 				"description": "Create new merchant"
 			},
@@ -328,14 +296,14 @@
 			"response": []
 		},
 		{
-			"name": "Update customer Payment",
+			"name": "Update customer Payment info",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"tests[\"update customer payment\"] = responseCode.code === 200;",
+							"tests[\"Payment updated\"] = responseCode.code === 200;",
 							""
 						]
 					}
@@ -353,7 +321,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"permanentId\" : 79612003400944687,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-09T00:16:29.541Z\",\n  \"id\" : 79612003400944687,\n  \"amount\" : 2432.545,\n  \"customerId\" : {{customerId}},\n  \"merchantId\" : {{merchantId}},\n  \"settled\" : true,\n  \"type\" : \"PAYPAL\"\n}"
+					"raw": "{\n  \"permanentId\" : 79612003400944687,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-09T00:16:29.541Z\",\n  \"id\" : 79612003400944687,\n  \"amount\" : 2432.545,\n  \"customerId\" : 435432,\n  \"merchantId\" : 3254234,\n  \"settled\" : true,\n  \"type\" : \"PAYPAL\",\n  \"date\" : null\n}"
 				},
 				"description": ""
 			},

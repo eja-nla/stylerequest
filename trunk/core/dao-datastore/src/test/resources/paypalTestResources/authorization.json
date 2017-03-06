@@ -1,0 +1,95 @@
+{
+  "id": "PAY-0R831151JU007784NKGSU2SA",
+  "createTime": "2013-05-29T00:35:20Z",
+  "updateTime": "2013-05-29T00:35:24Z",
+  "state": "approved",
+  "intent": "authorize",
+  "payer":
+  {
+    "paymentMethod": "credit_card",
+    "fundingInstruments": [
+      {
+        "creditCard":
+        {
+          "type": "mastercard",
+          "number": "xxxxxxxxxxxx2972",
+          "expireMonth": "12",
+          "expireYear": "2018",
+          "firstName": "Betsy",
+          "lastName": "Buyer",
+          "billingAddress":
+          {
+            "line1": "111 First Street",
+            "city": "Saratoga",
+            "state": "CA",
+            "postalCode": "95070",
+            "countryCode": "US"
+          }
+        }
+      }]
+  },
+  "transactions": [
+    {
+      "amount":
+      {
+        "total": "7.47",
+        "currency": "USD",
+        "details":
+        {
+          "subtotal": "7.37",
+          "tax": "0.04",
+          "shipping": "0.06"
+        }
+      },
+      "relatedTesources": [
+        {
+          "authorization":
+          {
+            "id": "9T287484DP554682S",
+            "createTime": "2013-05-29T00:35:20Z",
+            "updateTime": "2013-05-29T00:35:24Z",
+            "state": "authorized",
+            "amount":
+            {
+              "total": "7.47",
+              "currency": "USD",
+              "details":
+              {
+                "subtotal": "7.37",
+                "tax": "0.04",
+                "shipping": "0.06"
+              }
+            },
+            "parentPayment": "PAY-0R831151JU007784NKGSU2SA",
+            "validUntil": "2013-06-27T00:35:20Z",
+            "links": [
+              {
+                "href": "https://api.sandbox.paypal.com/v1/payments/authorization/9T287484DP554682S",
+                "rel": "self",
+                "method": "GET"
+              },
+              {
+                "href": "https://api.sandbox.paypal.com/v1/payments/authorization/9T287484DP554682S/capture",
+                "rel": "capture",
+                "method": "POST"
+              },
+              {
+                "href": "https://api.sandbox.paypal.com/v1/payments/authorization/9T287484DP554682S/void",
+                "rel": "void",
+                "method": "POST"
+              },
+              {
+                "href": "https://api.sandbox.paypal.com/v1/payments/payment/PAY-0R831151JU007784NKGSU2SA",
+                "rel": "parent_payment",
+                "method": "GET"
+              }]
+          }
+        }]
+    }],
+  "links": [
+    {
+      "href": "https://api.sandbox.paypal.com/v1/payments/payment/PAY-0R831151JU007784NKGSU2SA",
+      "rel": "self",
+      "method": "GET"
+    }]
+}

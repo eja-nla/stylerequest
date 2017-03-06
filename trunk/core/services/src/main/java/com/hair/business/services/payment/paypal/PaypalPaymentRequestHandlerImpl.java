@@ -13,12 +13,8 @@ import com.paypal.base.rest.PayPalResource;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
@@ -27,6 +23,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * Paypal Payment Requests handler impl.
@@ -40,49 +37,64 @@ public class PaypalPaymentRequestHandlerImpl implements PaymentRequestHandler {
 
     private static final String paypal_api_base = "https://api.sandbox.paypal.com";
     private static final String ACCESS_TOKEN_ENDPOINT = paypal_api_base + "/v1/oauth2/token";
-    private static final String AUTHORIZE_PAYMENT_ENDPOINT = paypal_api_base + "/v1/payments/payment";
+    private static final String PAYMENT_ENDPOINT = paypal_api_base + "/v1/payments/payment";
+    private static final String AUTHORIZATION_ENDPOINT = paypal_api_base + "/v1/payments/authorization/%s";
+    private static final String CAPTURE_REQUEST_ENDPOINT = paypal_api_base + "/v1/payments/authorization/%s/capture";
 
-    private static final SSLConnectionSocketFactory sf = getSSLContext();
-    private static final CloseableHttpClient client = HttpClients.custom().setSSLSocketFactory(sf).build();
+    private final CloseableHttpClient client;
 
     private AccessTokenResponse accessTokenResponse;
     private ObjectMapper objectMapper;
     private DateTime tokenExpiry;
 
     @Inject
-    public PaypalPaymentRequestHandlerImpl(ObjectMapper objectMapper) {
+    public PaypalPaymentRequestHandlerImpl(ObjectMapper objectMapper, Provider<CloseableHttpClient> clientProvider) {
         this.objectMapper = objectMapper;
+        this.client = clientProvider.get();
     }
 
     @Override
     public Payment issuePaymentRequest(Payment payment, APIContext paypalApiContext) {
-        Payment newPayment = null;
         try {
-             newPayment = go(AUTHORIZE_PAYMENT_ENDPOINT, payment, Payment.class);
+            return go(PAYMENT_ENDPOINT, payment, Payment.class);
         } catch (NoSuchAlgorithmException | KeyManagementException | IOException | PayPalRESTException e) {
             logger.severe(e.getMessage());
         }
 
-        //return payment.create(paypalApiContext);
-        return newPayment;
+        return null;
     }
 
     @Override
-    public Authorization issueAuthorizationRequest(APIContext paypalApiContext, String authorizationId) throws PayPalRESTException {
-        return Authorization.get(paypalApiContext, authorizationId);
+    public Authorization fetchAuthorization(APIContext paypalApiContext, String authorizationId) throws PayPalRESTException {
+        try {
+            return go(String.format(AUTHORIZATION_ENDPOINT, authorizationId), null, Authorization.class);
+        } catch (NoSuchAlgorithmException | KeyManagementException | IOException | PayPalRESTException e) {
+            logger.severe(e.getMessage());
+        }
+
+        return null;
     }
 
     @Override
-    public Capture issueCaptureRequest(Authorization authorization, APIContext paypalApiContext, Capture capture) throws PayPalRESTException {
-        return authorization.capture(paypalApiContext, capture);
+    public Capture issueCaptureRequest(String authorizationId, APIContext paypalApiContext, Capture capture) throws PayPalRESTException {
+        try {
+            return go(String.format(CAPTURE_REQUEST_ENDPOINT, authorizationId), capture, Capture.class);
+        } catch (NoSuchAlgorithmException | KeyManagementException | IOException | PayPalRESTException e) {
+            logger.severe(e.getMessage());
+        }
+
+        return null;
     }
 
-    private  <T extends PayPalResource> T go(String urlString, T paypalPayload, Class<T> clazz) throws IOException, KeyManagementException, NoSuchAlgorithmException, PayPalRESTException {
+    private <T extends PayPalResource> T go(String urlString, T paypalPayload, Class<T> clazz) throws IOException, KeyManagementException, NoSuchAlgorithmException, PayPalRESTException {
 
         HttpPost request = new HttpPost(urlString);
         request.addHeader("Content-Type", "application/json");
         request.addHeader("Authorization", "Bearer " + fetchAccessToken().getAccess_token());
-        request.setEntity(new StringEntity(paypalPayload.toJSON()));
+
+        if (paypalPayload != null) {
+            request.setEntity(new StringEntity(paypalPayload.toJSON()));
+        }
 
         HttpResponse response = client.execute(request);
         logger.info("Paypal response " + response);
@@ -128,14 +140,5 @@ public class PaypalPaymentRequestHandlerImpl implements PaymentRequestHandler {
         return snapTime.isAfter(tokenExpiry);
     }
 
-    private static SSLConnectionSocketFactory getSSLContext(){
-        try {
-            return new SSLConnectionSocketFactory(SSLContextBuilder.create().useProtocol("TLSv1.2").build(),
-                    new String[]{"TLSv1", "TLSv1.1", "TLSv1.2"},
-                    null, new DefaultHostnameVerifier());
-        } catch (NoSuchAlgorithmException | KeyManagementException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+
 }

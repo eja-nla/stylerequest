@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  *
  * Created by Olukorede Aguda on 17/02/2017.
  */
-public abstract class AbstractStyleRequestNotification extends AbstractNotification {
+public abstract class AbstractStyleRequestNotificationTask extends AbstractNotification {
 
     private static final EmailHandler emailHandler = new SendgridStyleRequestEmailHandler();
     private static final Logger LOGGER = Logger.getLogger(PlacedStyleRequestNotification.class.getName());

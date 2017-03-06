@@ -28,7 +28,7 @@ public class MvcConstants {
     public static final String CREATE_MERCHANT_ENDPOINT = CREATE + MERCHANT_URI;
     public static final String CREATE_CUSTOMER_ENDPOINT = CREATE + CUSTOMER_URI;
     public static final String PUBLISH_STYLE_ENDPOINT = CREATE + STYLE_URI;
-    public static final String UPDATE_PAYMENT_PATH = UPDATE + PAYMENT_URI;
+    public static final String UPDATE_PAYMENT_PATH = CUSTOMER_URI + UPDATE + "/payment";
     public static final String UPDATE_PREFERENCES_PATH = UPDATE + "/preferences";
     public static final String GET_APP_INFO_PATH = "/info/endpoints";
 
