@@ -37,6 +37,8 @@ public class StyleRequest extends AbstractActorEnablerEntity {
     private @Index Long merchantPermanentId;
     private @Index Long locationPermanentId;
 
+    private StyleRequestPayment styleRequestPayment;
+
     public StyleRequest(){
     }
 
@@ -130,5 +132,13 @@ public class StyleRequest extends AbstractActorEnablerEntity {
 
     public void setAppointmentEndTime(DateTime appointmentEndTime) {
         this.appointmentEndTime = appointmentEndTime;
+    }
+
+    public StyleRequestPayment getStyleRequestPayment() {
+        return styleRequestPayment;
+    }
+
+    public void setStyleRequestPayment(StyleRequestPayment styleRequestPayment) {
+        this.styleRequestPayment = styleRequestPayment;
     }
 }

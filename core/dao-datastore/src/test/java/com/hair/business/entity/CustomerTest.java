@@ -23,6 +23,7 @@ public class CustomerTest extends AbstractDatastoreTestBase {
 
     private static final Logger LOGGER = Logger.getLogger(CustomerTest.class.getName());
 
+    @Override
     @Before
     public void setUp() {
         super.setUp();
@@ -39,7 +40,4 @@ public class CustomerTest extends AbstractDatastoreTestBase {
 
         TEST_UTILS.validateFieldsAreEqual(customer1, customer2);
     }
-
-
-
 }

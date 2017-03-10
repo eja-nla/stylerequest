@@ -12,12 +12,14 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import com.google.identitytoolkit.GitkitUser;
 
+import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.entity.Customer;
-import com.hair.business.beans.entity.StyleRequestPayment;
+import com.hair.business.beans.entity.PaymentMethod;
 import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.StyleRequestService;
 import com.hair.business.services.customer.CustomerService;
+import com.hair.business.services.payment.PaymentService;
 
 import org.joda.time.DateTime;
 
@@ -44,13 +46,15 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
 
     private final CustomerService customerService;
     private final StyleRequestService styleRequestService;
+    private final PaymentService paymentService;
 
     private static final Logger log = Logger.getLogger(CustomerRequestServlet.class.getName());
 
     @Inject
-    public CustomerRequestServlet(CustomerService customerService, StyleRequestService styleRequestService) {
+    public CustomerRequestServlet(CustomerService customerService, StyleRequestService styleRequestService, PaymentService paymentService) {
         this.customerService = customerService;
         this.styleRequestService = styleRequestService;
+        this.paymentService = paymentService;
     }
 
     @POST
@@ -68,6 +72,7 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
         customerService.saveCustomer(customer);
 
         return Response.ok().build();
+        //todo on signup, store their payment details with braintree
     }
 
     @GET
@@ -97,9 +102,10 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
     @Path(UPDATE_PAYMENT_PATH)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response updatePayment(@QueryParam("customerId") Long customerId, StyleRequestPayment styleRequestPayment) {
+    public Response updatePayment(@QueryParam("customerId") Long customerId, PaymentMethod paymentMethod, PaymentType paymentType, boolean isDefault) {
         try {
-            return Response.ok().entity(customerService.updatePaymentInfo(customerId, styleRequestPayment)).build();
+            paymentService.updatePayment(customerId, paymentMethod, paymentType, isDefault);
+            return Response.ok().build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {

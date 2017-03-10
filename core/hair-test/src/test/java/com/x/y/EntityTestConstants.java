@@ -11,6 +11,9 @@ import com.hair.business.beans.entity.GeoPointExt;
 import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
+import com.hair.business.beans.entity.PaymentInformation;
+import com.hair.business.beans.entity.PaymentItem;
+import com.hair.business.beans.entity.PaymentMethod;
 import com.hair.business.beans.entity.Review;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
@@ -21,6 +24,7 @@ import org.joda.time.DateTime;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -47,7 +51,7 @@ public class EntityTestConstants {
         c.setPhotoUrl("http://some.photo.url");
         c.setGender(Gender.M);
         c.setScore(4.5);
-        c.setStyleRequestPayment(createPayment());
+        c.setPayment(createPaymentInfo(c.getId()));
         c.getRatings().put(0, 0); c.getRatings().put(1, 0);c.getRatings().put(2, 0);c.getRatings().put(3, 0);c.getRatings().put(4, 3);c.getRatings().put(5, 2);
         return c;
     }
@@ -85,7 +89,7 @@ public class EntityTestConstants {
         m.setGender(Gender.F);
         m.getRatings().put(0, 0); m.getRatings().put(1, 0);m.getRatings().put(2, 0);m.getRatings().put(3, 0);m.getRatings().put(4, 3);m.getRatings().put(5, 2);
         m.setScore(4.5);
-        m.setStyleRequestPayment(createPayment());
+        m.setPayment(createPaymentInfo(m.getId()));
         return m;
     }
 
@@ -116,5 +120,17 @@ public class EntityTestConstants {
         s.setId(new Random().nextLong());
         s.setPermanentId(new Random().nextLong());
         return s;
+    }
+
+    public static PaymentInformation createPaymentInfo(Long custId){
+        PaymentInformation paymentInfo = new PaymentInformation();
+        PaymentMethod pm = new PaymentMethod("email", "agreementId", true, "custId");
+        PaymentItem paymentItem = new PaymentItem(PaymentType.CARD, pm, true);
+        paymentInfo.setPaymentMethods(Collections.singletonList(paymentItem));
+        paymentInfo.setDefaultPaymentMethod(paymentItem);
+        paymentInfo.setOwnerId(custId);
+        paymentInfo.setId(new Random().nextLong());
+        paymentInfo.setPermanentId(paymentInfo.getId());
+        return paymentInfo;
     }
 }

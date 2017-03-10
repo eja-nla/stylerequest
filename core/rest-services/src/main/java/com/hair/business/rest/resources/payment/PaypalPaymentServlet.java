@@ -9,8 +9,7 @@ import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.beans.entity.StyleRequestPayment;
 import com.hair.business.rest.resources.AbstractRequestServlet;
-import com.hair.business.services.payment.PaymentProcessor;
-import com.hair.business.services.payment.paypal.PaypalPaymentProcessor;
+import com.hair.business.services.payment.PaymentService;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -31,11 +30,11 @@ import javax.ws.rs.core.Response;
 @Path(PAYMENT_URI)
 public class PaypalPaymentServlet extends AbstractRequestServlet {
 
-    private final PaymentProcessor PaypalPaymentProcessor;
+    private final PaymentService paypalPaymentService;
 
     @Inject
-    public PaypalPaymentServlet(PaypalPaymentProcessor PaypalPaymentProcessor) {
-        this.PaypalPaymentProcessor = PaypalPaymentProcessor;
+    public PaypalPaymentServlet(PaymentService PaypalPaymentProcessor) {
+        this.paypalPaymentService = PaypalPaymentProcessor;
     }
 
     @POST
@@ -45,7 +44,7 @@ public class PaypalPaymentServlet extends AbstractRequestServlet {
     public Response authorisePayment(StyleRequest styleRequest, Customer customer) {
 
         try {
-            StyleRequestPayment payment = PaypalPaymentProcessor.holdPayment(styleRequest, customer);
+            StyleRequestPayment payment = paypalPaymentService.holdPayment(styleRequest, customer);
             return Response.ok(payment).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
@@ -60,7 +59,7 @@ public class PaypalPaymentServlet extends AbstractRequestServlet {
     public Response captureAuthorisedPayment(String authorizationId, double total, boolean isFinalCapture) {
 
         try {
-            StyleRequestPayment payment = PaypalPaymentProcessor.deductPayment(authorizationId, total, isFinalCapture);
+            StyleRequestPayment payment = paypalPaymentService.deductPayment(authorizationId, total, isFinalCapture);
             return Response.ok(payment).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();

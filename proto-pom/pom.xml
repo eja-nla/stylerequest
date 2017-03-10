@@ -24,6 +24,7 @@
         <jersey.jackson.core>2.7.4</jersey.jackson.core>
         <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
         <paypal.version>LATEST</paypal.version>
+        <braintree.version>2.71.0</braintree.version>
 
         <!--AppEngine stuff-->
         <appengine.app.version>1</appengine.app.version>
@@ -79,10 +80,6 @@
 
         <dependency>
             <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-api-labs</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
         </dependency>
         <dependency>
@@ -113,6 +110,10 @@
         <dependency>
             <groupId>com.paypal.sdk</groupId>
             <artifactId>rest-api-sdk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.braintreepayments.gateway</groupId>
+            <artifactId>braintree-java</artifactId>
         </dependency>
 
         <dependency>
@@ -302,12 +303,6 @@
                 <artifactId>gitkitclient</artifactId>
                 <version>LATEST</version>
             </dependency>
-            <dependency>
-                <groupId>com.google.appengine</groupId>
-                <artifactId>appengine-api-labs</artifactId>
-                <version>${appengine.target.version}</version>
-            </dependency>
-
 
 
             <!--Others-->
@@ -325,6 +320,11 @@
                 <groupId>com.paypal.sdk</groupId>
                 <artifactId>rest-api-sdk</artifactId>
                 <version>${paypal.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.braintreepayments.gateway</groupId>
+                <artifactId>braintree-java</artifactId>
+                <version>${braintree.version}</version>
             </dependency>
 
             <!--Tests-->

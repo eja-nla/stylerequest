@@ -10,7 +10,6 @@ import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
-import com.hair.business.beans.entity.StyleRequestPayment;
 
 import java.util.Collection;
 
@@ -34,11 +33,6 @@ public interface CustomerService {
      * Creates a new customer
      * */
     Customer createCustomer(String firstname, String lastname, String email, String phone, Device device, Address address);
-
-    /**
-     * Updates customer styleRequestPayment information
-     * */
-    StyleRequestPayment updatePaymentInfo(Long customerId, StyleRequestPayment styleRequestPayment);
 
     /**
      * Saves new customer

@@ -5,7 +5,7 @@ import com.hair.business.beans.constants.Gender;
 import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Device;
-import com.hair.business.beans.entity.StyleRequestPayment;
+import com.hair.business.beans.entity.PaymentInformation;
 
 /**
  * Abstract actor entity e.g. Customer, Merchant etc.
@@ -17,12 +17,12 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
     @Index private String email;
     private String phone;
     private Device device;
-    private StyleRequestPayment styleRequestPayment;
     private String photoUrl;
     private Gender gender;
     private boolean active;
     private Address address;
     private Preferences preferences;
+    private PaymentInformation payment;
 
     public String getEmail() {
         return email;
@@ -46,14 +46,6 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
 
     public void setDevice(Device device) {
         this.device = device;
-    }
-
-    public StyleRequestPayment getStyleRequestPayment() {
-        return styleRequestPayment;
-    }
-
-    public void setStyleRequestPayment(StyleRequestPayment styleRequestPayment) {
-        this.styleRequestPayment = styleRequestPayment;
     }
 
     public boolean isActive() {
@@ -94,5 +86,13 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
 
     public void setPreferences(Preferences preferences) {
         this.preferences = preferences;
+    }
+
+    public PaymentInformation getPayment() {
+        return payment;
+    }
+
+    public void setPayment(PaymentInformation payment) {
+        this.payment = payment;
     }
 }
