@@ -21,11 +21,11 @@ import org.junit.Test;
  *
  * Created by Olukorede Aguda on 25/02/2017.
  */
-public class PaypalPaymentProcessorTest extends AbstractServicesTestBase {
+public class PaypalPaymentServiceTest extends AbstractServicesTestBase {
 
     private Repository repository;
     private final APIContext paypalApiContext = mock(APIContext.class);
-    private PaypalPaymentProcessor paypalPaymentProcessor;
+    private PaypalPaymentService paypalPaymentProcessor;
     private final PaymentRequestHandler paypalPaymentRequestHandler = mock(PaymentRequestHandler.class);
 
     @Before
@@ -39,7 +39,7 @@ public class PaypalPaymentProcessorTest extends AbstractServicesTestBase {
         } catch (PayPalRESTException e) {
             e.printStackTrace();
         }
-        paypalPaymentProcessor = new PaypalPaymentProcessorImpl(paypalApiContext, repository, paypalPaymentRequestHandler);
+        paypalPaymentProcessor = new PaypalPaymentServiceImpl(paypalApiContext, repository, paypalPaymentRequestHandler);
     }
 
     @Test

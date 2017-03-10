@@ -1,11 +1,11 @@
 package com.hair.business.services.payment.paypal;
 
+import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.entity.Customer;
+import com.hair.business.beans.entity.PaymentMethod;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.beans.entity.StyleRequestPayment;
 import com.hair.business.beans.helper.PaymentStatus;
-import com.hair.business.beans.helper.paypal.AuthorizationExt;
-import com.hair.business.beans.helper.paypal.CaptureExt;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.paypal.api.payments.Address;
 import com.paypal.api.payments.Amount;
@@ -32,16 +32,16 @@ import javax.inject.Inject;
  *
  * Created by Olukorede Aguda on 24/02/2017.
  */
-public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
+public class PaypalPaymentServiceImpl implements PaypalPaymentService {
 
-    private static final Logger logger = Logger.getLogger(PaypalPaymentProcessorImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(PaypalPaymentServiceImpl.class.getName());
     private final APIContext paypalApiContext;
     private final Repository repository;
     private final PaymentRequestHandler paypalPaymentRequestHandler;
     private static final String CURRENCY = "USD";
 
     @Inject
-    PaypalPaymentProcessorImpl(APIContext paypalApiContext, Repository repository, PaymentRequestHandler paypalPaymentRequestHandler) {
+    PaypalPaymentServiceImpl(APIContext paypalApiContext, Repository repository, PaymentRequestHandler paypalPaymentRequestHandler) {
         this.paypalApiContext = paypalApiContext;
         this.repository = repository;
         this.paypalPaymentRequestHandler = paypalPaymentRequestHandler;
@@ -58,7 +58,7 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
             Assert.notNull(authorization, "Failed to obtain paypal authorization for stylerequest " + styleRequest.getId());
 
             styleRequestPayment = new StyleRequestPayment(); //todo set other fields
-            styleRequestPayment.setAuthorization((AuthorizationExt) authorization);
+//            styleRequestPayment.setAuthorization((AuthorizationExt) authorization);
             styleRequestPayment.setPaymentStatus(PaymentStatus.AUTHORIZED);
             repository.saveOne(styleRequestPayment);
         } catch (PayPalRESTException e) {
@@ -71,7 +71,7 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
     @Override
     public StyleRequestPayment capturePreauthorizedPayment(String authorizationId, double totalAmount, boolean isFinalCapture) {
 
-        Capture responseCapture = null;
+        Capture responseCapture;
 
         try {
 
@@ -90,7 +90,7 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
         }
 
         final StyleRequestPayment styleRequestPayment = new StyleRequestPayment();
-        styleRequestPayment.setCapture((CaptureExt) responseCapture);
+        //styleRequestPayment.setCapture((CaptureExt) responseCapture);
         styleRequestPayment.setPaymentStatus(PaymentStatus.SETTLED);
         repository.saveOne(styleRequestPayment);
 
@@ -129,11 +129,11 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
         // and the `CreditCardDetails`
         FundingInstrument fundingInstrument = new FundingInstrument();
 
-        // ###CreditCard
+        // ###PaymentMethod
         // A resource representing a credit card that can be
         // used to fund a payment.
 //        if (customer.getCreditCards() != null && customer.getCreditCards().size() > 0) {
-//            CreditCard creditCard = customer.getCreditCards().get(0);
+//            PaymentMethod creditCard = customer.getCreditCards().get(0);
 //            creditCard.setBillingAddress(billingAddress);
 //            fundingInstrument.setCreditCard(creditCard);
 //        }
@@ -164,7 +164,7 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
     /**
      * Fires an authorization request to Paypal
      */
-    @Override
+    //@Override
     public StyleRequestPayment holdPayment(StyleRequest styleRequest, Customer customer) {
         return authorizePayment(styleRequest, customer);
     }
@@ -172,14 +172,24 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
     /**
      * Captures a pre-authorized Paypal payment
      */
-    @Override
+    //@Override
     public StyleRequestPayment deductPayment(String authorizationId, double totalAmount, boolean isFinalCapture) {
         return capturePreauthorizedPayment(authorizationId, totalAmount, isFinalCapture);
     }
 
-    @Override
+    //@Override
     public double computeTax(String countryCode, double itemPrice) {
         return 0;
+    }
+
+    //@Override
+    public void updatePayment(Long customerId, PaymentMethod paymentMethod, PaymentType paymentType, boolean isDefault) {
+
+    }
+
+//    @Override
+    public StyleRequestPayment refund(StyleRequest styleRequest, Customer customer) {
+        return null;
     }
 
     private Transaction createTransaction(Amount amount, String description) {
@@ -244,7 +254,7 @@ public class PaypalPaymentProcessorImpl implements PaypalPaymentProcessor {
         return billingAddress;
     }
     private CreditCard getCreditCard (Address billingAddress){
-        // ###CreditCard
+        // ###PaymentMethod
         // A resource representing a credit card that can be
         // used to fund a payment.
         CreditCard creditCard = new CreditCard();

@@ -12,7 +12,6 @@ import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
-import com.hair.business.beans.entity.StyleRequestPayment;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.paypal.base.rest.APIContext;
 import com.x.business.exception.DuplicateEntityException;
@@ -81,20 +80,6 @@ public class CustomerServiceImpl implements CustomerService {
         saveCustomer(customer);
 
         return customer;
-    }
-
-    @Override
-    public StyleRequestPayment updatePaymentInfo(Long customerId, StyleRequestPayment styleRequestPayment) throws IllegalArgumentException {
-        Assert.notNull(styleRequestPayment, "StyleRequestPayment cannot be null");
-        Assert.validId(customerId);
-
-        Customer customer = repository.findOne(customerId, Customer.class);
-        Assert.notNull(customer, String.format(CUSTOMER_NOT_FOUND_MESSAGE, customer.getId()));
-
-        customer.setStyleRequestPayment(styleRequestPayment);
-        repository.saveFew(styleRequestPayment, customer);
-
-        return customer.getStyleRequestPayment();
     }
 
     @Override

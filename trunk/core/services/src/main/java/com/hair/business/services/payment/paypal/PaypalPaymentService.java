@@ -3,7 +3,6 @@ package com.hair.business.services.payment.paypal;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.beans.entity.StyleRequestPayment;
-import com.hair.business.services.payment.PaymentProcessor;
 import com.x.business.exception.PaypalPaymentException;
 
 /**
@@ -11,8 +10,8 @@ import com.x.business.exception.PaypalPaymentException;
  *
  * Paypal payment processor
  */
-public interface PaypalPaymentProcessor extends PaymentProcessor {
-
+//public interface PaypalPaymentService extends PaymentService {
+public interface PaypalPaymentService {
     /**
      * Fires an authorization request to Paypal
      * */

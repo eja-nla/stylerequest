@@ -1,14 +1,12 @@
 package com.hair.business.services.customer;
 
 import static com.x.y.EntityTestConstants.createCustomer;
-import static com.x.y.EntityTestConstants.createPayment;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 
 import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.entity.Customer;
-import com.hair.business.beans.entity.StyleRequestPayment;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.paypal.base.rest.APIContext;
 import com.x.business.scheduler.TaskQueue;
@@ -77,14 +75,6 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
         cs.saveCustomer(customer);
 
         cs.updateRating(customer.getId(), 0);
-    }
-
-    @Test
-    public void testUpdatePaymentInfo() {
-        StyleRequestPayment styleRequestPayment = createPayment();
-        cs.updatePaymentInfo(customer.getId(), styleRequestPayment);
-
-        assertThat(customer.getStyleRequestPayment(), is(styleRequestPayment));
     }
 
     @Test

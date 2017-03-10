@@ -1,0 +1,59 @@
+{
+  "permanentId" : 1996041782170603606,
+  "version" : 1,
+  "createdDate" : "2017-03-09T20:18:22.287Z",
+  "id" : 1996041782170603606,
+  "ownerId" : 4,
+  "paymentMethods" : [ {
+    "permanentId" : 7996041782170603636,
+    "version" : 1,
+    "createdDate" : "2017-03-09T20:18:22.441Z",
+    "type" : "CARD",
+    "paymentMethod" : {
+      "permanentId" : 1996041782170603643,
+      "version" : 1,
+      "createdDate" : "2017-03-09T20:18:22.441Z",
+      "type" : "NO NEED",
+      "number" : 7382958395647284,
+      "expireMonth" : 3,
+      "expireYear" : 1985,
+      "cvv2" : 345,
+      "firstName" : "NO NEED",
+      "lastName" : "NO NEED",
+      "email" : "email",
+      "billingAgreementId" : "agreementId",
+      "imageUrl" : "SOME URL",
+      "customerId" : "345435325544324",
+      "token" : "SAMPLE TOKEN",
+      "default" : true
+    },
+    "default" : true
+  } ],
+  "defaultPaymentMethod" : {
+    "permanentId" : null,
+    "version" : 1,
+    "createdDate" : "2017-03-09T20:18:22.441Z",
+    "type" : "CARD",
+    "paymentMethod" : {
+      "permanentId" : 1996041782170603643,
+      "version" : 1,
+      "createdDate" : "2017-03-09T20:18:22.441Z",
+      "type" : "NO NEED",
+      "number" : 7382958395647284,
+      "expireMonth" : 3,
+      "expireYear" : 1985,
+      "cvv2" : 345,
+      "firstName" : "NO NEED",
+      "lastName" : "NO NEED",
+      "email" : "email",
+      "billingAgreementId" : "agreementId",
+      "imageUrl" : "SOME URL",
+      "customerId" : "345435325544324",
+      "token" : "SAMPLE TOKEN",
+      "default" : true
+    },
+    "default" : true
+  }
+
+
+}
