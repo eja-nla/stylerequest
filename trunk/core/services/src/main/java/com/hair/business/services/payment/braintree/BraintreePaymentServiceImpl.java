@@ -10,6 +10,7 @@ import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.beans.entity.StyleRequestPayment;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.payment.PaymentService;
+import com.x.business.utilities.Assert;
 
 import java.util.logging.Logger;
 
@@ -38,13 +39,13 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
     @Override
     public StyleRequestPayment holdPayment(StyleRequest styleRequest, Customer customer) {
+        Assert.notNull(styleRequest, styleRequest.getStyle());
         String clientToken = braintreePaymentHandler.generateClientToken(customer.getId().toString());
         String nonce = braintreePaymentHandler.fetchNonce(clientToken);
-        Transaction result = braintreePaymentHandler.authorizeTransaction(customer.getId(), customer.getPayment().getDefaultPaymentMethod().getPaymentMethod().getToken(), styleRequest.getStyle().getPrice(), false);
+        double price = styleRequest.getStyle().getPrice();
+        Transaction result = braintreePaymentHandler.authorizeTransaction(customer.getId(), customer.getPayment().getDefaultPaymentMethod().getPaymentMethod().getToken(), price, false);
 
-        //result.getTransaction();
-
-        return null;
+        return new StyleRequestPayment(price, customer.getId(), styleRequest.getMerchant().getId(), false, result);
     }
 
     @Override

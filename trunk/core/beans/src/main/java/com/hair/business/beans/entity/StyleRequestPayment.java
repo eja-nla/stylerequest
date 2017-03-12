@@ -42,6 +42,16 @@ public class StyleRequestPayment extends AbstractActorEnablerEntity {
         this.type = type;
     }
 
+    public StyleRequestPayment(double amount, Long customerId, Long merchantId, boolean isSettled, Transaction transaction) {
+        super();
+
+        this.amount = amount;
+        this.customerId = customerId;
+        this.merchantId = merchantId;
+        this.settled = isSettled;
+        this.payment = transaction;
+    }
+
     public Long getId() {
         return id;
     }

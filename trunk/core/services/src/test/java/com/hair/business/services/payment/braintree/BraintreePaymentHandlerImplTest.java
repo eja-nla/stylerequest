@@ -40,7 +40,7 @@ public class BraintreePaymentHandlerImplTest extends AbstractServicesTestBase {
     @Ignore
     @Test
     public void generateClientToken() throws Exception {
-        String token = braintreePaymentHandler.generateClientToken("test");
+        String token = braintreePaymentHandler.generateClientToken("4533");
 
         assertThat(token, notNullValue());
     }

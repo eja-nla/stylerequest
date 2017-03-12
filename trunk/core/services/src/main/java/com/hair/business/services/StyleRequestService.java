@@ -20,7 +20,8 @@ public interface StyleRequestService {
     StyleRequest findStyleRequest(Long id);
 
     /**
-     * Returns merchant's accepted appointments between now and an upper datetime limit
+     * Returns merchant's accepted appointments (whose start time is) between now and an upper datetime limit
+     * // todo could this rather be 'between 2 given dates' ?
      */
     Collection<StyleRequest> findMerchantAcceptedAppointments(Long merchantId, DateTime limit);
 
