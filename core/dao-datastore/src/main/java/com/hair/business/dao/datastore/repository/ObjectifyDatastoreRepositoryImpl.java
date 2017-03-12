@@ -10,9 +10,12 @@ import com.googlecode.objectify.Result;
 import com.googlecode.objectify.TxnType;
 import com.googlecode.objectify.cmd.Query;
 import com.googlecode.objectify.cmd.QueryKeys;
+import com.hair.business.beans.abstracts.AbstractPersistenceEntity;
 import com.hair.business.dao.datastore.abstractRepository.ObjectifyRepository;
 import com.hair.business.dao.datastore.stereotype.DatastoreTransaction;
 import com.x.business.utilities.Assert;
+
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -80,12 +83,16 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
     @DatastoreTransaction(TxnType.REQUIRED)
     public <E> Key<E> saveOne(E entity) {
         Assert.hasPermanentId(entity);
+        ((AbstractPersistenceEntity) entity).setLastUpdated(DateTime.now());
         return ofy().save().entity(entity).now();
     }
 
     @Override
     public <E> Result<Map<Key<E>, E>> saveMany(Collection<E> entities) {
-        entities.forEach(Assert::hasPermanentId);
+        entities.forEach(e -> {
+            Assert.hasPermanentId(e);
+            ((AbstractPersistenceEntity) e).setLastUpdated(DateTime.now());
+        });
         return ofy().save().entities(entities);
     }
 
@@ -95,6 +102,7 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
         Assert.notNull(entities);
         for (E entity : entities) {
             Assert.hasPermanentId(entity);
+            ((AbstractPersistenceEntity) entity).setLastUpdated(DateTime.now());
         }
         return ofy().save().entities(entities);
     }

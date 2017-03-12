@@ -1,5 +1,7 @@
 package com.hair.business.services.merchant;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
@@ -15,11 +17,11 @@ import com.x.business.scheduler.stereotype.EmailTaskQueue;
 import com.x.business.utilities.Assert;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -30,7 +32,7 @@ import javax.inject.Inject;
  */
 public class MerchantServiceImpl implements MerchantService {
 
-    static final Logger logger = Logger.getLogger(MerchantServiceImpl.class.getName());
+    private final Logger logger = getLogger(this.getClass());
 
     private final Repository repository;
     private final StyleRequestService styleRequestService;
@@ -119,6 +121,7 @@ public class MerchantServiceImpl implements MerchantService {
         styleRequestService.updateStyleRequest(styleRequest);
 
         emailTaskQueue.add(new AcceptedStyleRequestNotification(styleRequest, merchant.getPreferences()));
+        logger.debug("Successfully accepted style request " + styleRequestId);
 
     }
 

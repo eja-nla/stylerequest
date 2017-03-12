@@ -1,9 +1,10 @@
 package com.hair.business.services.metrics;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 /**
  * Created by olukoredeaguda on 01/02/2017.
@@ -12,7 +13,7 @@ import java.util.logging.Logger;
  */
 public class ExecTimeLoggerInterceptor implements MethodInterceptor {
 
-    private static final Logger log = Logger.getLogger(ExecTimeLoggerInterceptor.class.getName());
+    private final Logger logger = getLogger(this.getClass());
 
     @Override
     public Object invoke(final MethodInvocation invocation) throws Throwable {
@@ -20,7 +21,7 @@ public class ExecTimeLoggerInterceptor implements MethodInterceptor {
         long start = System.nanoTime();
         final Object returnedObject = invocation.proceed();
         long estimatedTime = (System.nanoTime() - start) / 1000000000;
-        log.info("Method: " +
+        logger.info("Method: " +
                 invocation.getMethod().getName() +
                 " of class: " + invocation.getMethod().getDeclaringClass().getName() +
                 " took(s): " + estimatedTime

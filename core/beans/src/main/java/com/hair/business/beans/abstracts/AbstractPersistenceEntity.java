@@ -16,6 +16,7 @@ public abstract class AbstractPersistenceEntity extends AbstractBean {
     private Long version;
 
     private DateTime createdDate;
+    private DateTime lastUpdated;
 
     AbstractPersistenceEntity(){
         this.version = 1L;
@@ -74,5 +75,13 @@ public abstract class AbstractPersistenceEntity extends AbstractBean {
 
     public void setCreatedDate(DateTime createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public DateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(DateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }
