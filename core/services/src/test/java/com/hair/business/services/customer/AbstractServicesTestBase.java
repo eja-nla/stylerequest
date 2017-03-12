@@ -16,7 +16,7 @@ import org.junit.BeforeClass;
 /**
  * Created by Olukorede Aguda on 23/06/2016.
  */
-public class AbstractServicesTestBase {
+public abstract class AbstractServicesTestBase {
 
     private static final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
@@ -35,10 +35,7 @@ public class AbstractServicesTestBase {
     @AfterClass
     public static void tearDown() {
         AsyncCacheFilter.complete();
-
         session.close();
         helper.tearDown();
     }
-
-
 }

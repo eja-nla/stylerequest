@@ -39,8 +39,8 @@ public class StyleRequestServiceImpl implements StyleRequestService {
     private final TaskQueue apnsQueue;
     private final PaymentService paymentService;
 
-    private final List<String> MERCHANT_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("merchantPermanentId ==", "state ==", "appointmentStartTime <=");
-    private final List<String> CUSTOMER_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("customerPermanentId ==", "state ==", "appointmentStartTime <=");
+    private static final List<String> MERCHANT_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("merchantPermanentId ==", "state ==", "appointmentStartTime <=");
+    private static final List<String> CUSTOMER_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("customerPermanentId ==", "state ==", "appointmentStartTime <=");
 
     private static final Logger logger = Logger.getLogger(StyleRequestServiceImpl.class.getName());
 
