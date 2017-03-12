@@ -56,17 +56,17 @@ public interface Repository {
     <T> List<Long> peekByQuery(Class<T> clazz, List<String> conditions, List<Object> values);
 
     /**
-     * saves a single customer information
+     * saves a single entity, updating entity's lastUpdateTime
      * */
     <E> Key<E> saveOne(E entity);
 
     /**
-     * Saves multiple entities
+     * Saves multiple entities, updating entity's lastUpdateTime
      * */
     <E> Result<Map<Key<E>, E>> saveMany(Collection<E> entities);
 
     /**
-     * Array backed entity save suitable for fewer entities
+     * Array backed entity save suitable for fewer entities, updating entity's lastUpdateTime
      */
     <E> Result<Map<Key<E>, E>> saveFew(E... entities);
 

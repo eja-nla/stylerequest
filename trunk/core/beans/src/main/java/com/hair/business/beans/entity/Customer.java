@@ -1,7 +1,5 @@
 package com.hair.business.beans.entity;
 
-import static org.joda.time.DateTime.now;
-
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -30,20 +28,18 @@ public class Customer extends AbstractActorEntity {
     private double score;
 
     public Customer() {
+        this.ratings = new HashMap<>();
+        this.setPreferences(new Preferences());
+        this.setActive(true);
     }
 
     protected Customer(String firstname, String lastname, String email, String phone, Device device){
         this();
         this.setFirstName(firstname);
         this.setLastName(lastname);
-        this.ratings = new HashMap<>();
-        this.setPreferences(new Preferences());
         this.setEmail(email);
         this.setPhone(phone);
         this.setDevice(device);
-        this.setActive(true);
-        this.setLastUpdated(now());
-
     }
 
     public Customer(String firstname, String lastname, String email, String phone, Device device, Address address) {

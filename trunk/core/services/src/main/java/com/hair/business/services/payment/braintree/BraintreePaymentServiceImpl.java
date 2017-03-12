@@ -1,5 +1,7 @@
 package com.hair.business.services.payment.braintree;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Transaction;
 import com.hair.business.beans.constants.PaymentType;
@@ -12,7 +14,7 @@ import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.payment.PaymentService;
 import com.x.business.utilities.Assert;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -24,8 +26,7 @@ import javax.inject.Provider;
  */
 public class BraintreePaymentServiceImpl implements PaymentService {
 
-    private static final Logger logger = Logger.getLogger(BraintreePaymentServiceImpl.class.getName());
-
+    private final Logger logger = getLogger(this.getClass());
     private final BraintreeGateway gateway;
     private final BraintreePaymentHandler braintreePaymentHandler;
     private final Repository repository;
@@ -45,6 +46,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         double price = styleRequest.getStyle().getPrice();
         Transaction result = braintreePaymentHandler.authorizeTransaction(customer.getId(), customer.getPayment().getDefaultPaymentMethod().getPaymentMethod().getToken(), price, false);
 
+        logger.debug("Successfully authorized payment for stylerequest " + styleRequest.getId());
         return new StyleRequestPayment(price, customer.getId(), styleRequest.getMerchant().getId(), false, result);
     }
 

@@ -4,11 +4,13 @@ import static com.hair.business.rest.MvcConstants.ADMIN_URI;
 import static com.hair.business.rest.MvcConstants.GET_APP_INFO_PATH;
 import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import com.hair.business.rest.resources.AbstractRequestServlet;
 
+import org.slf4j.Logger;
+
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -29,7 +31,7 @@ import javax.ws.rs.core.Response;
 public class AppInfoServlet extends AbstractRequestServlet {
 
     private Map<String, String> endpoints;
-    private static final Logger logger = Logger.getLogger(AppInfoServlet.class.getName());
+    private final Logger logger = getLogger(this.getClass());
 
     @Inject
     public AppInfoServlet(Provider<Map<String, String>> endpoints) {

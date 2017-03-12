@@ -1,6 +1,7 @@
 package com.hair.business.services;
 
 import static java.lang.String.format;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Merchant;
@@ -8,6 +9,8 @@ import com.hair.business.beans.entity.Style;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.x.business.exception.EntityNotFoundException;
 import com.x.business.utilities.Assert;
+
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +26,7 @@ import javax.inject.Inject;
 public class StyleServiceImpl implements StyleService {
 
     private final Repository repository;
+    private final Logger logger = getLogger(this.getClass());
 
     @Inject
     public StyleServiceImpl(Repository repository) {

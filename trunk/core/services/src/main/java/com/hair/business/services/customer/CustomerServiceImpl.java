@@ -1,7 +1,7 @@
 package com.hair.business.services.customer;
 
 import static com.x.business.utilities.RatingUtil.averagingWeighted;
-import static java.util.logging.Logger.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.constants.StyleRequestState;
@@ -21,13 +21,14 @@ import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 import com.x.business.scheduler.stereotype.EmailTaskQueue;
 import com.x.business.utilities.Assert;
 
+import org.slf4j.Logger;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -38,7 +39,7 @@ import javax.inject.Inject;
  */
 public class CustomerServiceImpl implements CustomerService {
 
-    static final Logger logger = getLogger(CustomerServiceImpl.class.getName());
+    private final Logger logger = getLogger(this.getClass());
     private final Repository repository;
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;

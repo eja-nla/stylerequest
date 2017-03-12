@@ -1,5 +1,7 @@
 package com.hair.business.services;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
@@ -19,11 +21,11 @@ import com.x.business.scheduler.stereotype.EmailTaskQueue;
 import com.x.business.utilities.Assert;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -42,7 +44,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
     private static final List<String> MERCHANT_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("merchantPermanentId ==", "state ==", "appointmentStartTime <=");
     private static final List<String> CUSTOMER_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("customerPermanentId ==", "state ==", "appointmentStartTime <=");
 
-    private static final Logger logger = Logger.getLogger(StyleRequestServiceImpl.class.getName());
+    private final Logger logger = getLogger(this.getClass());
 
     @Inject
     StyleRequestServiceImpl(Repository repository,
@@ -146,7 +148,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 //                .setDeviceTokens(customer.getDevice().getDeviceId()); // Nullable?
 //        apnsQueue.add(new SendPushNotificationToApnsTask(pushNotification));
 
-        logger.fine("Placed Style Request. ID: " + styleRequest.getId());
+        logger.debug("Placed Style Request. ID: " + styleRequest.getId());
         return styleRequest;
     }
 

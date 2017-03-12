@@ -1,7 +1,5 @@
 package com.hair.business.beans.entity;
 
-import static org.joda.time.DateTime.now;
-
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -44,8 +42,6 @@ public class Merchant extends AbstractActorEntity {
         this.setPhone(phone);
         this.setDevice(device);
         this.setActive(true);
-        this.setLastUpdated(now());
-
     }
 
     public Merchant(String firstName, String lastName, String businessName, String email, String phone, Device device, Address address) {
