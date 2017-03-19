@@ -31,7 +31,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
     private Repository repository;
     private Provider provider = Mockito.mock(Provider.class);
     private final PaymentService braintreePaymentService = new BraintreePaymentServiceImpl(provider, handler, repository);
-    StyleRequest styleRequest; Customer customer; Style style;
+    private StyleRequest styleRequest; private Customer customer; private Style style;
 
     @Before
     public void setUp() {
@@ -44,24 +44,28 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
     }
 
     @Test
-    public void holdPayment() throws Exception {
+    public void testHoldPayment() throws Exception {
         assertThat(braintreePaymentService.holdPayment(styleRequest, customer), notNullValue());
     }
 
     @Test
-    public void deductPayment() throws Exception {
+    public void testDeductPreAuthPayment() throws Exception {
     }
 
     @Test
-    public void computeTax() throws Exception {
+    public void testDeductNonPreAuthPayment() throws Exception {
     }
 
     @Test
-    public void updatePayment() throws Exception {
+    public void testComputeTax() throws Exception {
     }
 
     @Test
-    public void refund() throws Exception {
+    public void testUpdatePayment() throws Exception {
+    }
+
+    @Test
+    public void testRefund() throws Exception {
     }
 
 }

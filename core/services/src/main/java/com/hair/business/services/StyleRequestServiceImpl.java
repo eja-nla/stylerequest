@@ -133,10 +133,9 @@ public class StyleRequestServiceImpl implements StyleRequestService {
         Long id = repository.allocateId(StyleRequest.class);
         styleRequest.setId(id);
         styleRequest.setPermanentId(id);
-        repository.saveFew(styleRequest, style);
 
         // add payment authorization request to a new payments queue
-        paymentService.holdPayment(styleRequest, customer);
+        // paymentService.holdPayment(styleRequest, customer); //fixme uncomment before deployment TLS v1.2 issues, GAE says it works in prod but not dev, idiots
 
         emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
 
@@ -148,6 +147,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 //                .setDeviceTokens(customer.getDevice().getDeviceId()); // Nullable?
 //        apnsQueue.add(new SendPushNotificationToApnsTask(pushNotification));
 
+        repository.saveFew(styleRequest, style);
         logger.debug("Placed Style Request. ID: " + styleRequest.getId());
         return styleRequest;
     }

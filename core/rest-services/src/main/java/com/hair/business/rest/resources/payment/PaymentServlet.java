@@ -1,13 +1,12 @@
 package com.hair.business.rest.resources.payment;
 
+import static com.hair.business.rest.MvcConstants.BRAINTREE_AUTHORIZE_URI_ENDPOINT;
+import static com.hair.business.rest.MvcConstants.BRAINTREE_CAPTURE_URI_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.PAYMENT_URI;
-import static com.hair.business.rest.MvcConstants.PAYPAL_AUTHORIZE_URI_ENDPOINT;
-import static com.hair.business.rest.MvcConstants.PAYPAL_CAPTURE_URI_ENDPOINT;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.StyleRequest;
-import com.hair.business.beans.entity.StyleRequestPayment;
 import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.payment.PaymentService;
 
@@ -28,23 +27,23 @@ import javax.ws.rs.core.Response;
  */
 
 @Path(PAYMENT_URI)
-public class PaypalPaymentServlet extends AbstractRequestServlet {
+public class PaymentServlet extends AbstractRequestServlet {
 
-    private final PaymentService paypalPaymentService;
+    private final PaymentService paymentService;
 
     @Inject
-    public PaypalPaymentServlet(PaymentService PaypalPaymentProcessor) {
-        this.paypalPaymentService = PaypalPaymentProcessor;
+    public PaymentServlet(PaymentService PaypalPaymentProcessor) {
+        this.paymentService = PaypalPaymentProcessor;
     }
 
     @POST
-    @Path(PAYPAL_AUTHORIZE_URI_ENDPOINT)
+    @Path(BRAINTREE_AUTHORIZE_URI_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     public Response authorisePayment(StyleRequest styleRequest, Customer customer) {
 
         try {
-            StyleRequestPayment payment = paypalPaymentService.holdPayment(styleRequest, customer);
+            StyleRequest payment = paymentService.holdPayment(styleRequest, customer);
             return Response.ok(payment).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
@@ -53,13 +52,13 @@ public class PaypalPaymentServlet extends AbstractRequestServlet {
     }
 
     @POST
-    @Path(PAYPAL_CAPTURE_URI_ENDPOINT)
+    @Path(BRAINTREE_CAPTURE_URI_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response captureAuthorisedPayment(String authorizationId, double total, boolean isFinalCapture) {
+    public Response captureAuthorisedPayment(Long stylerequestId, double total) {
 
         try {
-            StyleRequestPayment payment = paypalPaymentService.deductPayment(authorizationId, total, isFinalCapture);
+            StyleRequest payment = paymentService.deductPreAuthPayment(stylerequestId, total);
             return Response.ok(payment).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();

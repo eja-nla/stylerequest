@@ -12,6 +12,9 @@ import com.hair.business.beans.constants.StyleRequestState;
 
 import org.joda.time.DateTime;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Represents a placed style request from client to a merchant
  *
@@ -37,9 +40,13 @@ public class StyleRequest extends AbstractActorEnablerEntity {
     private @Index Long merchantPermanentId;
     private @Index Long locationPermanentId;
 
-    private StyleRequestPayment styleRequestPayment;
+    private StyleRequestPayment authorizedPayment;
+    private StyleRequestPayment settledPayment;
+    private List<AddOn> addOns;
+
 
     public StyleRequest(){
+        addOns = Collections.emptyList();
     }
 
     public StyleRequest(Style style, Merchant merchant, Customer customer, Location location, StyleRequestState state, DateTime appointmentStartTime, DateTime appointmentEndTime) {
@@ -134,11 +141,27 @@ public class StyleRequest extends AbstractActorEnablerEntity {
         this.appointmentEndTime = appointmentEndTime;
     }
 
-    public StyleRequestPayment getStyleRequestPayment() {
-        return styleRequestPayment;
+    public StyleRequestPayment getAuthorizedPayment() {
+        return authorizedPayment;
     }
 
-    public void setStyleRequestPayment(StyleRequestPayment styleRequestPayment) {
-        this.styleRequestPayment = styleRequestPayment;
+    public void setAuthorizedPayment(StyleRequestPayment authorizedPayment) {
+        this.authorizedPayment = authorizedPayment;
+    }
+
+    public StyleRequestPayment getSettledPayment() {
+        return settledPayment;
+    }
+
+    public void setSettledPayment(StyleRequestPayment settledPayment) {
+        this.settledPayment = settledPayment;
+    }
+
+    public List<AddOn> getAddOns() {
+        return addOns;
+    }
+
+    public void setAddOns(List<AddOn> addOns) {
+        this.addOns = addOns;
     }
 }
