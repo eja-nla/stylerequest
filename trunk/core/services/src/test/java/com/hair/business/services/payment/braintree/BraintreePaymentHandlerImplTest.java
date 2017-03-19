@@ -1,14 +1,13 @@
 package com.hair.business.services.payment.braintree;
 
+import static com.x.y.EntityTestConstants.createCustomer;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.braintreegateway.BraintreeGateway;
-import com.braintreegateway.Customer;
 import com.braintreegateway.Environment;
 import com.braintreegateway.Transaction;
 import com.hair.business.services.customer.AbstractServicesTestBase;
-import com.x.y.EntityTestConstants;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -48,9 +47,9 @@ public class BraintreePaymentHandlerImplTest extends AbstractServicesTestBase {
     @Ignore
     @Test
     public void addPaymentMethod() throws Exception {
-        com.hair.business.beans.entity.Customer c = EntityTestConstants.createCustomer();
+        com.hair.business.beans.entity.Customer c = createCustomer();
         c.setId(4533L);
-        Customer customer = braintreePaymentHandler.addPaymentMethod(c.getId(), c.getPayment().getPaymentMethods().get(0).getPaymentMethod(), false);
+        com.hair.business.beans.entity.Customer customer = braintreePaymentHandler.addPaymentMethod(c.getId(), c.getPayment().getPaymentItems().get(0).getPaymentMethod(), false);
 
         assertThat(customer, notNullValue());
     }
@@ -61,6 +60,13 @@ public class BraintreePaymentHandlerImplTest extends AbstractServicesTestBase {
         String token = braintreePaymentHandler.fetchNonce("test");
 
         assertThat(token, notNullValue());
+    }
+
+    @Ignore
+    @Test
+    public void testCreateCustomer() throws Exception {
+        braintreePaymentHandler.createCustomer(createCustomer());
+
     }
 
 }

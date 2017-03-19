@@ -18,7 +18,7 @@ public class PaymentInformation extends AbstractActorEnablerEntity {
 
     private Long ownerId;
 
-    private List<PaymentItem> paymentMethods;
+    private List<PaymentItem> paymentItems;
 
     private PaymentItem defaultPaymentMethod;
 
@@ -38,20 +38,24 @@ public class PaymentInformation extends AbstractActorEnablerEntity {
         this.ownerId = ownerId;
     }
 
-    public List<PaymentItem> getPaymentMethods() {
-        return paymentMethods;
+    public List<PaymentItem> getPaymentItems() {
+        return paymentItems;
     }
 
-    public void setPaymentMethods(List<PaymentItem> paymentMethods) {
-        this.paymentMethods = paymentMethods;
+    public void setPaymentItems(List<PaymentItem> paymentItems) {
+        this.paymentItems = paymentItems;
     }
 
-    public PaymentItem getDefaultPaymentMethod() {
-        return defaultPaymentMethod;
+    public PaymentMethod getDefaultPaymentMethod() {
+        if (this.defaultPaymentMethod == null){
+            return null;
+        }
+
+        return defaultPaymentMethod.getPaymentMethod();
     }
 
     public void setDefaultPaymentMethod(PaymentItem defaultPaymentMethod) {
-        for (PaymentItem item : this.paymentMethods) {
+        for (PaymentItem item : this.paymentItems) {
             item.setDefault(false);
         }
         defaultPaymentMethod.setDefault(true);

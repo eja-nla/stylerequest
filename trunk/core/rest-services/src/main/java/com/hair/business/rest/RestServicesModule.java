@@ -15,6 +15,8 @@ import com.sun.jersey.api.model.AbstractSubResourceMethod;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.sun.jersey.server.impl.modelapi.annotation.IntrospectionModeller;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +40,7 @@ public class RestServicesModule extends ServletModule {
     private static final String RESOURCE_PACKAGES = "com.hair.business.rest.resources";
 
     private ServletContext servletContext;
-    private final Map<String, String> endpoints = new HashMap<>();
+    private final Map<Integer, Pair<String, String>> endpoints = new HashMap<>();
 
     public RestServicesModule() {
         this.servletContext = this.getServletContext();
@@ -48,7 +50,7 @@ public class RestServicesModule extends ServletModule {
     protected void configureServlets() {
 
         ResourceConfig rc = new PackagesResourceConfig(RESOURCE_PACKAGES);
-        endpoints.put("/health", "GET");
+        endpoints.put(0, Pair.of("/health", "GET"));
         for (Class clazz : rc.getClasses()) {
             this.bind(clazz); // Register jersey resources
             exposeServletEndpoints(clazz);
@@ -79,16 +81,18 @@ public class RestServicesModule extends ServletModule {
 
     @Singleton
     @Provides
-    Map<String, String> provideMap() {
+    Map<Integer, Pair<String, String>> provideMap() {
         return endpoints;
     }
 
     private void exposeServletEndpoints(Class resourceClass) {
         AbstractResource resource = IntrospectionModeller.createResource(resourceClass);
         String uriPrefix = resource.getPath().getValue();
+        int count = 1;
         for (AbstractSubResourceMethod srm :resource.getSubResourceMethods()) {
             String uri = uriPrefix + srm.getPath().getValue();
-            endpoints.put(uri, srm.getHttpMethod());
+            endpoints.put(count, Pair.of(srm.getHttpMethod(), uri));
+            count = count + 1;
         }
     }
 }

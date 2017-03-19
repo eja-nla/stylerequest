@@ -77,7 +77,19 @@ public interface StyleRequestService {
      */
     StyleRequest placeStyleRequest(Long styleId, Long customerId, Long merchantId, DateTime appointmentTime);
 
+    /**
+     * Update style request
+     *
+     * @param styleRequest the style request to be updated
+     */
     void updateStyleRequest(StyleRequest styleRequest);
+
+
+    /**
+     * Accept a style request
+     * @param styleRequestId stylerequest Id to be accepted
+     * @param preferences user preferences, used for notifications etc
+     */
     void acceptStyleRequest(Long styleRequestId, Preferences preferences);
 
     /**
@@ -86,6 +98,7 @@ public interface StyleRequestService {
      * Must ensure payment is settled. For paypal payments, we do the authorization capture here.
      * */
     void completeStyleRequest(Long styleRequestId, Preferences preferences);
+
     /**
      * Cancels a placed style request
      */

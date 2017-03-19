@@ -8,6 +8,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import com.hair.business.rest.resources.AbstractRequestServlet;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
 import java.util.Map;
@@ -30,11 +31,11 @@ import javax.ws.rs.core.Response;
 @Path(ADMIN_URI)
 public class AppInfoServlet extends AbstractRequestServlet {
 
-    private Map<String, String> endpoints;
+    private Map<Integer, Pair<String, String>> endpoints;
     private final Logger logger = getLogger(this.getClass());
 
     @Inject
-    public AppInfoServlet(Provider<Map<String, String>> endpoints) {
+    public AppInfoServlet(Provider<Map<Integer, Pair<String, String>>> endpoints) {
         this.endpoints = endpoints.get();
     }
 

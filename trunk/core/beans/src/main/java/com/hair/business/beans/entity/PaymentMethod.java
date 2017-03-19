@@ -16,6 +16,12 @@ import java.io.Serializable;
  *
  * Since there could be a myrad combination of payment methods,
  * we use this class to store useful bits in whatever got returned.
+ *
+ * Note: Storing Creditcard info requires PCI compliance, and we don't want to get involved in that business
+ * So what we do is
+ * 1. Client submits payment method
+ * 2. returns us a nonce
+ * 3. We use returned nonce to create customer in braintree's vault
  */
 @Serialize
 public class PaymentMethod extends AbstractActorEnablerEntity implements Serializable{
@@ -24,10 +30,6 @@ public class PaymentMethod extends AbstractActorEnablerEntity implements Seriali
 
     // For credit cards
     private String type;
-    private Long number;
-    private int expireMonth;
-    private int expireYear;
-    private int cvv2;
     private String firstName;
     private String lastName;
 
@@ -48,27 +50,6 @@ public class PaymentMethod extends AbstractActorEnablerEntity implements Seriali
 
     private String token;
 
-    // for credit cards
-    public PaymentMethod(String type, Long number, int expireMonth, int expireYear, int cvv2, String firstName, String lastName) {
-        this.type = type;
-        this.number = number;
-        this.expireMonth = expireMonth;
-        this.expireYear = expireYear;
-        this.cvv2 = cvv2;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    //for paypal accounts
-
-
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
 
     public String getType() {
         return type;
@@ -76,38 +57,6 @@ public class PaymentMethod extends AbstractActorEnablerEntity implements Seriali
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public Long getNumber() {
-        return number;
-    }
-
-    public void setNumber(Long number) {
-        this.number = number;
-    }
-
-    public int getExpireMonth() {
-        return expireMonth;
-    }
-
-    public void setExpireMonth(int expireMonth) {
-        this.expireMonth = expireMonth;
-    }
-
-    public int getExpireYear() {
-        return expireYear;
-    }
-
-    public void setExpireYear(int expireYear) {
-        this.expireYear = expireYear;
-    }
-
-    public int getCvv2() {
-        return cvv2;
-    }
-
-    public void setCvv2(int cvv2) {
-        this.cvv2 = cvv2;
     }
 
     public String getFirstName() {

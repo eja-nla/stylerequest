@@ -1,8 +1,11 @@
 package com.hair.business.services.payment.braintree;
 
 import com.braintreegateway.Transaction;
+import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.PaymentMethod;
+
+import java.util.List;
 
 /**
  * Braintree payment handler
@@ -20,14 +23,41 @@ public interface BraintreePaymentHandler {
      * */
     Transaction authorizeTransaction(Long customerId, String paymentMethodToken, double amount, boolean isSettled);
 
-    Transaction settleTransaction(String transactionId);
+    /**
+     * Settles a pre-authorized transaction
+     * */
+    Transaction settleTransaction(String transactionId, double amount);
 
-    com.braintreegateway.Customer addPaymentMethod(Long customerId, PaymentMethod payment, boolean isDefault);
+    /**
+     * Authorizes and settles a one time non-preauthorized transaction
+     *
+     *
+     * */
+    Transaction settleTransaction(String paymentMethodToken, List<AddOn> addOns);
 
+    Customer addPaymentMethod(Long customerId, PaymentMethod payment, boolean isDefault);
+
+    /**
+     * Get a nonce for this payment method.
+     * Client will send payment method directly to braintree in exchange for a nonce.
+     * */
     String fetchNonce(String paymentMethodToken);
 
+    /**
+     *
+     * Including a customerId when generating the client token lets returning customers
+     * select from previously used payment method options, improving user experience
+     *
+     * */
     String generateClientToken(String customerId);
 
-    com.braintreegateway.Customer createCustomer(Customer customer);
+    /**
+     * Stores a new customer's info in Braintree's vault.
+     *
+     * */
+
+    void createCustomer(Customer customer);
+
+    void refund(String transactionId);
 
 }
