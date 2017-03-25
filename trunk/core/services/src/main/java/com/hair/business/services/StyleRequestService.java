@@ -20,46 +20,44 @@ public interface StyleRequestService {
     StyleRequest findStyleRequest(Long id);
 
     /**
-     * Returns merchant's accepted appointments (whose start time is) between now and an upper datetime limit
-     * // todo could this rather be 'between 2 given dates' ?
+     * Returns merchant's accepted appointments (whose start time is) between two given dateTime bounds
      */
-    Collection<StyleRequest> findMerchantAcceptedAppointments(Long merchantId, DateTime limit);
+    Collection<StyleRequest> findMerchantAcceptedAppointments(Long merchantId, DateTime lower, DateTime upper);
 
     /**
-     * Returns merchant's cancelled appointments between now and an upper datetime limit
+     * Returns merchant's cancelled appointments between two given dateTime bounds
      */
-    Collection<StyleRequest> findMerchantCancelledAppointments(Long merchantId, DateTime limit);
+    Collection<StyleRequest> findMerchantCancelledAppointments(Long merchantId, DateTime lower, DateTime upper);
 
     /**
-     * Returns merchant's pending appointments between now and an upper datetime limit
+     * Returns merchant's pending appointments between two given dateTime bounds
      */
-    Collection<StyleRequest> findMerchantPendingAppointments(Long merchantId, DateTime limit);
+    Collection<StyleRequest> findMerchantPendingAppointments(Long merchantId, DateTime lower, DateTime upper);
 
     /**
-     * Returns merchant's completed appointments between now and an upper datetime limit
+     * Returns merchant's completed appointments between two given dateTime bounds
      */
-    Collection<StyleRequest> findMerchantCompletedAppointments(Long merchantId, DateTime limit);
-
-
-    /**
-     * Returns customer's upcoming appointments between now and an upper datetime limit
-     */
-    Collection<StyleRequest> findCustomerAcceptedAppointments(Long customerId, DateTime limit);
+    Collection<StyleRequest> findMerchantCompletedAppointments(Long merchantId, DateTime lower, DateTime upper);
 
     /**
-     * Returns customer's cancelled appointments between now and an upper datetime limit
+     * Returns customer's upcoming appointments between two given dateTime bounds
      */
-    Collection<StyleRequest> findCustomerCancelledAppointments(Long customerId, DateTime limit);
+    Collection<StyleRequest> findCustomerAcceptedAppointments(Long customerId, DateTime lower, DateTime upper);
 
     /**
-     * Returns customer's pending appointments between now and an upper datetime limit
+     * Returns customer's cancelled appointments between two given dateTime bounds
      */
-    Collection<StyleRequest> findCustomerPendingAppointments(Long customerId, DateTime limit);
+    Collection<StyleRequest> findCustomerCancelledAppointments(Long customerId, DateTime lower, DateTime upper);
 
     /**
-     * Returns customer's completed appointments between now and an upper datetime limit
+     * Returns customer's pending appointments between two given dateTime bounds
      */
-    Collection<StyleRequest> findCustomerCompletedAppointments(Long customerId, DateTime limit);
+    Collection<StyleRequest> findCustomerPendingAppointments(Long customerId, DateTime lower, DateTime upper);
+
+    /**
+     * Returns customer's completed appointments between two given dateTime bounds
+     */
+    Collection<StyleRequest> findCustomerCompletedAppointments(Long customerId, DateTime lower, DateTime upper);
 
     /**
      * Place a new style request for this customer
