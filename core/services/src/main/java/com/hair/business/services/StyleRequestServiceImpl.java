@@ -41,8 +41,8 @@ public class StyleRequestServiceImpl implements StyleRequestService {
     private final TaskQueue apnsQueue;
     private final PaymentService paymentService;
 
-    private static final List<String> MERCHANT_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("merchantPermanentId ==", "state ==", "appointmentStartTime <=");
-    private static final List<String> CUSTOMER_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("customerPermanentId ==", "state ==", "appointmentStartTime <=");
+    private static final List<String> MERCHANT_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("merchantPermanentId ==", "state ==", "appointmentStartTime >=", "appointmentStartTime <=");
+    private static final List<String> CUSTOMER_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("customerPermanentId ==", "state ==", "appointmentStartTime >=", "appointmentStartTime <=");
 
     private final Logger logger = getLogger(this.getClass());
 
@@ -65,48 +65,43 @@ public class StyleRequestServiceImpl implements StyleRequestService {
     }
 
     @Override
-    public Collection<StyleRequest> findMerchantAcceptedAppointments(Long merchantId, DateTime untilWhen) {
-        Assert.validId(merchantId);
-        Assert.dateInFuture(untilWhen);
-
-        List<Object> values = Arrays.asList(merchantId, StyleRequestState.ACCEPTED, untilWhen);
-
-        return repository.findByQuery(StyleRequest.class, MERCHANT_APPOINTMENTS_QUERY_CONDITIONS, values);
+    public List<StyleRequest> findMerchantAcceptedAppointments(Long merchantId, DateTime lower, DateTime upper) {
+        return findMerchantStyleRequests(merchantId, lower, upper, StyleRequestState.ACCEPTED);
     }
 
     @Override
-    public Collection<StyleRequest> findMerchantCancelledAppointments(Long merchantId, DateTime timeAgo) {
-        return findMerchantStyleRequests(merchantId, timeAgo, StyleRequestState.CANCELLED);
+    public List<StyleRequest> findMerchantCancelledAppointments(Long merchantId, DateTime lower, DateTime upper) {
+        return findMerchantStyleRequests(merchantId, lower, upper, StyleRequestState.CANCELLED);
     }
 
     @Override
-    public Collection<StyleRequest> findMerchantPendingAppointments(Long merchantId, DateTime timeAgo) {
-        return findMerchantStyleRequests(merchantId, timeAgo, StyleRequestState.PENDING);
+    public List<StyleRequest> findMerchantPendingAppointments(Long merchantId, DateTime lower, DateTime upper) {
+        return findMerchantStyleRequests(merchantId, lower, upper, StyleRequestState.PENDING);
     }
 
     @Override
-    public Collection<StyleRequest> findMerchantCompletedAppointments(Long merchantId, DateTime timeAgo) {
-        return findMerchantStyleRequests(merchantId, timeAgo, StyleRequestState.COMPLETED);
+    public List<StyleRequest> findMerchantCompletedAppointments(Long merchantId, DateTime lower, DateTime upper) {
+        return findMerchantStyleRequests(merchantId, lower, upper, StyleRequestState.COMPLETED);
     }
 
     @Override
-    public Collection<StyleRequest> findCustomerAcceptedAppointments(Long customerId, DateTime upperDatelimit) {
-        return findCustomerStyleRequests(customerId, upperDatelimit, StyleRequestState.ACCEPTED);
+    public Collection<StyleRequest> findCustomerAcceptedAppointments(Long customerId, DateTime lower, DateTime upper) {
+        return findCustomerStyleRequests(customerId, lower, upper, StyleRequestState.ACCEPTED);
     }
 
     @Override
-    public Collection<StyleRequest> findCustomerCancelledAppointments(Long customerId, DateTime upperDatelimit) {
-        return findCustomerStyleRequests(customerId, upperDatelimit, StyleRequestState.CANCELLED);
+    public List<StyleRequest> findCustomerCancelledAppointments(Long customerId, DateTime lower, DateTime upper) {
+        return findCustomerStyleRequests(customerId, lower, upper, StyleRequestState.CANCELLED);
     }
 
     @Override
-    public Collection<StyleRequest> findCustomerPendingAppointments(Long customerId, DateTime upperDatelimit) {
-        return findCustomerStyleRequests(customerId, upperDatelimit, StyleRequestState.PENDING);
+    public List<StyleRequest> findCustomerPendingAppointments(Long customerId, DateTime lower, DateTime upper) {
+        return findCustomerStyleRequests(customerId, lower, upper, StyleRequestState.PENDING);
     }
 
     @Override
-    public Collection<StyleRequest> findCustomerCompletedAppointments(Long customerId, DateTime upperDatelimit) {
-        return findCustomerStyleRequests(customerId, upperDatelimit, StyleRequestState.COMPLETED);
+    public List<StyleRequest> findCustomerCompletedAppointments(Long customerId, DateTime lower, DateTime upper) {
+        return findCustomerStyleRequests(customerId, lower, upper, StyleRequestState.COMPLETED);
     }
 
     @Timed
@@ -181,22 +176,22 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 
     }
 
-    private Collection<StyleRequest> findMerchantStyleRequests(Long id, DateTime untilWhen, StyleRequestState state) {
-        List<Object> values = validate(id, untilWhen, state);
+    private List<StyleRequest> findMerchantStyleRequests(Long id, DateTime start, DateTime stop, StyleRequestState state) {
+        List<Object> values = validate(id, state, start, stop);
 
         return repository.findByQuery(StyleRequest.class, MERCHANT_APPOINTMENTS_QUERY_CONDITIONS, values);
     }
-    private Collection<StyleRequest> findCustomerStyleRequests(Long id, DateTime untilWhen, StyleRequestState state) {
-        List<Object> values = validate(id, untilWhen, state);
+
+    private List<StyleRequest> findCustomerStyleRequests(Long id, DateTime start, DateTime stop, StyleRequestState state) {
+        List<Object> values = validate(id, state, start, stop);
 
         return repository.findByQuery(StyleRequest.class, CUSTOMER_APPOINTMENTS_QUERY_CONDITIONS, values);
     }
 
-    private List<Object> validate(Long id, DateTime untilWhen, StyleRequestState state) {
+    private List<Object> validate(Long id, StyleRequestState state, DateTime start, DateTime stop) {
         Assert.validId(id);
-        Assert.dateInFuture(untilWhen);
 
-        return Arrays.asList(id, state, untilWhen);
+        return Arrays.asList(id, state, start, stop);
     }
 
     private StyleRequest transitionStyleRequest(Long id, StyleRequestState state) {

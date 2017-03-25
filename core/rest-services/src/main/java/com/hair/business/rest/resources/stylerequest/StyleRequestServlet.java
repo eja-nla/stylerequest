@@ -47,11 +47,12 @@ public class StyleRequestServlet extends AbstractRequestServlet {
     @Path(FIND_MERCHANT_ACCEPTED_STYLEREQUEST_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response findMerchantAcceptedAppointments(@QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String limitString) {
+    public Response findMerchantAcceptedAppointments(@QueryParam("merchantId") Long merchantId, @QueryParam("lower") String lower, @QueryParam("upper") String upper) {
         final Collection<StyleRequest> styleRequests;
         try {
-            DateTime limit = new DateTime(limitString);
-            styleRequests = styleRequestService.findMerchantAcceptedAppointments(merchantId, limit);
+            final DateTime lowerLimit = new DateTime(lower);
+            final DateTime upperLimit = new DateTime(upper);
+            styleRequests = styleRequestService.findMerchantAcceptedAppointments(merchantId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         }
@@ -62,11 +63,12 @@ public class StyleRequestServlet extends AbstractRequestServlet {
     @Path(FIND_MERCHANT_CANCELLED_STYLEREQUEST_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response findMerchantCancelledAppointments(@QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String limitString) {
+    public Response findMerchantCancelledAppointments(@QueryParam("merchantId") Long merchantId, @QueryParam("lower") String lower, @QueryParam("upper") String upper) {
         final Collection<StyleRequest> styleRequests;
         try {
-            DateTime limit = new DateTime(limitString);
-            styleRequests = styleRequestService.findMerchantCancelledAppointments(merchantId, limit);
+            final DateTime lowerLimit = new DateTime(lower);
+            final DateTime upperLimit = new DateTime(upper);
+            styleRequests = styleRequestService.findMerchantCancelledAppointments(merchantId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         }
@@ -77,11 +79,12 @@ public class StyleRequestServlet extends AbstractRequestServlet {
     @Path(FIND_MERCHANT_PENDING_STYLEREQUEST_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response findMerchantPendingAppointments(@QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String limitString) {
+    public Response findMerchantPendingAppointments(@QueryParam("merchantId") Long merchantId, @QueryParam("lower") String lower, @QueryParam("upper") String upper) {
         final Collection<StyleRequest> styleRequests;
         try {
-            DateTime limit = new DateTime(limitString);
-            styleRequests = styleRequestService.findMerchantPendingAppointments(merchantId, limit);
+            final DateTime lowerLimit = new DateTime(lower);
+            final DateTime upperLimit = new DateTime(upper);
+            styleRequests = styleRequestService.findMerchantPendingAppointments(merchantId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         }
@@ -92,11 +95,12 @@ public class StyleRequestServlet extends AbstractRequestServlet {
     @Path(FIND_MERCHANT_COMPLETED_STYLEREQUEST_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response findMerchantCompletedAppointments(@QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String limitString) {
+    public Response findMerchantCompletedAppointments(@QueryParam("merchantId") Long merchantId, @QueryParam("lower") String lower, @QueryParam("upper") String upper) {
         final Collection<StyleRequest> styleRequests;
         try {
-            DateTime limit = new DateTime(limitString);
-            styleRequests = styleRequestService.findMerchantCompletedAppointments(merchantId, limit);
+            final DateTime lowerLimit = new DateTime(lower);
+            final DateTime upperLimit = new DateTime(upper);
+            styleRequests = styleRequestService.findMerchantCompletedAppointments(merchantId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         }
@@ -107,11 +111,12 @@ public class StyleRequestServlet extends AbstractRequestServlet {
     @Path(FIND_CUSTOMER_ACCEPTED_STYLEREQUEST_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response findCustomerAcceptedAppointments(@QueryParam("customerId") Long customerId, @QueryParam("dateTime") String limitString) {
+    public Response findCustomerAcceptedAppointments(@QueryParam("customerId") Long customerId, @QueryParam("lower") String lower, @QueryParam("upper") String upper) {
         final Collection<StyleRequest> styleRequests;
         try {
-            DateTime limit = new DateTime(limitString);
-            styleRequests = styleRequestService.findCustomerAcceptedAppointments(customerId, limit);
+            final DateTime lowerLimit = new DateTime(lower);
+            final DateTime upperLimit = new DateTime(upper);
+            styleRequests = styleRequestService.findCustomerAcceptedAppointments(customerId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         }
@@ -122,11 +127,12 @@ public class StyleRequestServlet extends AbstractRequestServlet {
     @Path(FIND_CUSTOMER_CANCELLED_STYLEREQUEST_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response findCustomerCancelledAppointments(@QueryParam("customerId") Long customerId, @QueryParam("dateTime") String limitString) {
+    public Response findCustomerCancelledAppointments(@QueryParam("customerId") Long customerId, @QueryParam("lower") String lower, @QueryParam("upper") String upper) {
         final Collection<StyleRequest> styleRequests;
         try {
-            DateTime limit = new DateTime(limitString);
-            styleRequests = styleRequestService.findCustomerCancelledAppointments(customerId, limit);
+            final DateTime lowerLimit = new DateTime(lower);
+            final DateTime upperLimit = new DateTime(upper);
+            styleRequests = styleRequestService.findCustomerCancelledAppointments(customerId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         }
@@ -137,11 +143,12 @@ public class StyleRequestServlet extends AbstractRequestServlet {
     @Path(FIND_CUSTOMER_PENDING_STYLEREQUEST_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response findCustomerPendingAppointments(@QueryParam("customerId") Long customerId, @QueryParam("dateTime") String limitString) {
+    public Response findCustomerPendingAppointments(@QueryParam("customerId") Long customerId, @QueryParam("lower") String lower, @QueryParam("upper") String upper) {
         final Collection<StyleRequest> styleRequests;
         try {
-            DateTime limit = new DateTime(limitString);
-            styleRequests = styleRequestService.findCustomerPendingAppointments(customerId, limit);
+            final DateTime lowerLimit = new DateTime(lower);
+            final DateTime upperLimit = new DateTime(upper);
+            styleRequests = styleRequestService.findCustomerPendingAppointments(customerId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         }
@@ -152,11 +159,12 @@ public class StyleRequestServlet extends AbstractRequestServlet {
     @Path(FIND_CUSTOMER_COMPLETED_STYLEREQUEST_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response findCustomerCompletedAppointments(@QueryParam("customerId") Long customerId, @QueryParam("dateTime") String limitString) {
+    public Response findCustomerCompletedAppointments(@QueryParam("customerId") Long customerId, @QueryParam("lower") String lower, @QueryParam("upper") String upper) {
         final Collection<StyleRequest> styleRequests;
         try {
-            DateTime limit = new DateTime(limitString);
-            styleRequests = styleRequestService.findCustomerCompletedAppointments(customerId, limit);
+            final DateTime lowerLimit = new DateTime(lower);
+            final DateTime upperLimit = new DateTime(upper);
+            styleRequests = styleRequestService.findCustomerCompletedAppointments(customerId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         }

@@ -6,6 +6,7 @@ import static com.x.y.EntityTestConstants.createStyle;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.joda.time.DateTime.now;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,6 +45,8 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     private TaskQueue emailQueue = Mockito.mock(TaskQueue.class);
     private TaskQueue apnsQueue = Mockito.mock(TaskQueue.class);
     private PaymentService paymentService = Mockito.mock(PaymentService.class);
+
+    private static final DateTime baseDateTime = new DateTime();
 
 
     @Before
@@ -97,14 +100,14 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     public void testFindMerchantUpcomingAppointments() throws Exception {
         StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
 
-        assertThat(srs.findMerchantAcceptedAppointments(sr.getMerchantPermanentId(), new DateTime().plusHours(5)).size(), is(1));
+        assertThat(srs.findMerchantAcceptedAppointments(sr.getMerchantPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
     }
 
     @Test
     public void testFindMerchantCancelledAppointments() throws Exception {
         StyleRequest sr = initStyleRequest(StyleRequestState.CANCELLED);
 
-        assertThat(srs.findMerchantCancelledAppointments(sr.getMerchantPermanentId(), new DateTime().plusHours(5)).size(), is(1));
+        assertThat(srs.findMerchantCancelledAppointments(sr.getMerchantPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
 
     }
 
@@ -112,7 +115,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     public void testFindMerchantPendingAppointments() throws Exception {
         StyleRequest sr = initStyleRequest(StyleRequestState.PENDING);
 
-        assertThat(srs.findMerchantPendingAppointments(sr.getMerchantPermanentId(), new DateTime().plusHours(5)).size(), is(1));
+        assertThat(srs.findMerchantPendingAppointments(sr.getMerchantPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
 
     }
 
@@ -120,7 +123,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     public void testFindMerchantCompletedAppointments() throws Exception {
         StyleRequest sr = initStyleRequest(StyleRequestState.COMPLETED);
 
-        assertThat(srs.findMerchantCompletedAppointments(sr.getMerchantPermanentId(), new DateTime().plusHours(5)).size(), is(1));
+        assertThat(srs.findMerchantCompletedAppointments(sr.getMerchantPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
 
     }
 
@@ -128,29 +131,36 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     public void testFindCustomerCompletedAppointments() throws Exception {
         StyleRequest sr = initStyleRequest(StyleRequestState.COMPLETED);
 
-        assertThat(srs.findCustomerCompletedAppointments(sr.getCustomerPermanentId(), new DateTime().plusHours(5)).size(), is(1));
+        assertThat(srs.findCustomerCompletedAppointments(sr.getCustomerPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
 
     }
     @Test
     public void testFindCustomerPendingAppointments() throws Exception {
         StyleRequest sr = initStyleRequest(StyleRequestState.PENDING);
 
-        assertThat(srs.findCustomerPendingAppointments(sr.getCustomerPermanentId(), new DateTime().plusHours(5)).size(), is(1));
+        assertThat(srs.findCustomerPendingAppointments(sr.getCustomerPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
 
     }
     @Test
     public void testFindCustomerCancelledAppointments() throws Exception {
         StyleRequest sr = initStyleRequest(StyleRequestState.CANCELLED);
 
-        assertThat(srs.findCustomerCancelledAppointments(sr.getCustomerPermanentId(), new DateTime().plusHours(5)).size(), is(1));
+        assertThat(srs.findCustomerCancelledAppointments(sr.getCustomerPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
 
     }
     @Test
     public void testFindCustomerUpcomingAppointments() throws Exception {
         StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
 
-        assertThat(srs.findCustomerAcceptedAppointments(sr.getCustomerPermanentId(), new DateTime().plusHours(5)).size(), is(1));
+        assertThat(srs.findCustomerAcceptedAppointments(sr.getCustomerPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
 
+    }
+
+    @Test
+    public void testFindCustomerUpcomingAppointmentsUpperLower() throws Exception {
+        StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
+
+        assertThat(srs.findCustomerAcceptedAppointments(sr.getCustomerPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(4)).size(), is(1));
     }
 
     @Test
@@ -202,6 +212,6 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
         Merchant m = createMerchant();
         repository.saveFew(style, customer, m);
 
-        return srs.placeStyleRequest(style.getId(), customer.getId(), m.getId(), DateTime.now().plusHours(3));
+        return srs.placeStyleRequest(style.getId(), customer.getId(), m.getId(), now().plusHours(3));
     }
 }
