@@ -59,13 +59,13 @@ public class ServicesModule extends AbstractModule {
 
         bind(APIContext.class).toInstance(new APIContext(System.getProperty("paypal.client.id"), System.getProperty("paypal.client.secret"), System.getProperty("paypal.environment")));
 
-        bindInterceptor(any(), annotatedWith(Timed.class), new ExecTimeLoggerInterceptor());
+        bindInterceptor(any(), NotSyntheticMethodMatcher.INSTANCE.and(annotatedWith(Timed.class)), new ExecTimeLoggerInterceptor());
 
     }
 
     @Singleton
     @Provides
-    CloseableHttpClient clientProvider() {
+    public CloseableHttpClient clientProvider() {
         final SSLConnectionSocketFactory sf = createSSLContext();
         return HttpClients.custom().setSSLSocketFactory(sf).build();
     }

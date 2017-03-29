@@ -44,9 +44,14 @@ public class StyleRequest extends AbstractActorEnablerEntity {
     private StyleRequestPayment settledPayment;
     private List<AddOn> addOns;
 
+    private String placedTime;
+    private String acceptedTime;
+    private String cancelledTime;
+    private String completedTime;
 
     public StyleRequest(){
-        addOns = Collections.emptyList();
+        this.addOns = Collections.emptyList();
+        this.placedTime = DateTime.now().toString();
     }
 
     public StyleRequest(Style style, Merchant merchant, Customer customer, Location location, StyleRequestState state, DateTime appointmentStartTime, DateTime appointmentEndTime) {
@@ -163,5 +168,37 @@ public class StyleRequest extends AbstractActorEnablerEntity {
 
     public void setAddOns(List<AddOn> addOns) {
         this.addOns = addOns;
+    }
+
+    public String getPlacedTime() {
+        return placedTime;
+    }
+
+    public void setPlacedTime(String placedTime) {
+        this.placedTime = placedTime;
+    }
+
+    public String getAcceptedTime() {
+        return acceptedTime;
+    }
+
+    public void setAcceptedTime(String acceptedTime) {
+        this.acceptedTime = acceptedTime;
+    }
+
+    public String getCancelledTime() {
+        return cancelledTime;
+    }
+
+    public void setCancelledTime(String cancelledtime) {
+        this.cancelledTime = cancelledtime;
+    }
+
+    public String getCompletedTime() {
+        return completedTime;
+    }
+
+    public void setCompletedTime(String completedTime) {
+        this.completedTime = completedTime;
     }
 }

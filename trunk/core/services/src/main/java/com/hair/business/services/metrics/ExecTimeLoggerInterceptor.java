@@ -2,6 +2,8 @@ package com.hair.business.services.metrics;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import com.google.appengine.repackaged.com.google.common.base.Stopwatch;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
@@ -14,20 +16,25 @@ import org.slf4j.Logger;
 public class ExecTimeLoggerInterceptor implements MethodInterceptor {
 
     private final Logger logger = getLogger(this.getClass());
+    private final Stopwatch stopwatch = Stopwatch.createStarted();
 
     @Override
     public Object invoke(final MethodInvocation invocation) throws Throwable {
-        //final Stopwatch stopwatch = Stopwatch.createStarted();
-        long start = System.nanoTime();
-        final Object returnedObject = invocation.proceed();
-        long estimatedTime = (System.nanoTime() - start) / 1000000000;
-        logger.info("Method: " +
-                invocation.getMethod().getName() +
-                " of class: " + invocation.getMethod().getDeclaringClass().getName() +
-                " took(s): " + estimatedTime
-                //stopwatch.stop().toString()
-        );
+        stopwatch.reset();
+        try {
+            stopwatch.start();
+            final Object returnedObject = invocation.proceed();
+            stopwatch.stop();
+            logger.info("Method: {} of class: {} took: {}",
+                    invocation.getMethod().getName(),
+                    invocation.getMethod().getDeclaringClass().getName(),
+                    stopwatch.toString()
+                    //stopwatch.stop().toString()
+            );
+            return returnedObject;
+        } finally {
+            stopwatch.reset();
+        }
 
-        return returnedObject;
     }
 }

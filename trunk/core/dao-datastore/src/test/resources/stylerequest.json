@@ -151,5 +151,9 @@
   "locationPermanentId" : "-3193905381353190639",
   "authorizedPayment" : {},
   "settledPayment" : {},
-  "addOns" : []
+  "addOns" : [],
+  "placedTime": "",
+  "acceptedTime": "",
+  "cancelledTime": "",
+  "completedTime": ""
 }

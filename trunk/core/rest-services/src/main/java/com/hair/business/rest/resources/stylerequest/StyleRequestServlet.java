@@ -55,6 +55,8 @@ public class StyleRequestServlet extends AbstractRequestServlet {
             styleRequests = styleRequestService.findMerchantAcceptedAppointments(merchantId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        } catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }
         return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
     }
@@ -71,6 +73,8 @@ public class StyleRequestServlet extends AbstractRequestServlet {
             styleRequests = styleRequestService.findMerchantCancelledAppointments(merchantId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        } catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }
         return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
     }
@@ -87,6 +91,8 @@ public class StyleRequestServlet extends AbstractRequestServlet {
             styleRequests = styleRequestService.findMerchantPendingAppointments(merchantId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        } catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }
         return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
     }
@@ -103,6 +109,8 @@ public class StyleRequestServlet extends AbstractRequestServlet {
             styleRequests = styleRequestService.findMerchantCompletedAppointments(merchantId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        }  catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }
         return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
     }
@@ -119,6 +127,8 @@ public class StyleRequestServlet extends AbstractRequestServlet {
             styleRequests = styleRequestService.findCustomerAcceptedAppointments(customerId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        } catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }
         return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
     }
@@ -135,6 +145,8 @@ public class StyleRequestServlet extends AbstractRequestServlet {
             styleRequests = styleRequestService.findCustomerCancelledAppointments(customerId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        } catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }
         return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
     }
@@ -151,6 +163,8 @@ public class StyleRequestServlet extends AbstractRequestServlet {
             styleRequests = styleRequestService.findCustomerPendingAppointments(customerId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        } catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }
         return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
     }
@@ -167,6 +181,8 @@ public class StyleRequestServlet extends AbstractRequestServlet {
             styleRequests = styleRequestService.findCustomerCompletedAppointments(customerId, lowerLimit, upperLimit);
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        } catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }
         return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
     }

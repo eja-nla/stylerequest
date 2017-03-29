@@ -101,6 +101,12 @@ public class MerchantRequestServlet extends AbstractRequestServlet {
 
     }
 
+    /**
+     * With current design, it's possible for a different merchant to accept a styleRequest
+     * The alternative is to load the stylerequest's merchant and compare their email with this merchant's email
+     * That's costly (compared to the tiny benefit, given the chance of a different merchant accepting a request is actually low)
+     * as we have to do a fetch of the stylerequest merchant
+     * */
     @POST
     @Path(ACCEPT_REQUEST_ENDPOINT)
     @Consumes(APPLICATION_JSON)

@@ -1,5 +1,9 @@
 package com.hair.business.services;
 
+import static com.hair.business.beans.constants.StyleRequestState.ACCEPTED;
+import static com.hair.business.beans.constants.StyleRequestState.CANCELLED;
+import static com.hair.business.beans.constants.StyleRequestState.COMPLETED;
+import static com.hair.business.beans.constants.StyleRequestState.PENDING;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import com.hair.business.beans.constants.Preferences;
@@ -57,6 +61,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
         this.paymentService = paymentService;
     }
 
+    @Timed
     @Override
     public StyleRequest findStyleRequest(Long id) {
         Assert.validId(id);
@@ -64,44 +69,52 @@ public class StyleRequestServiceImpl implements StyleRequestService {
         return repository.findOne(id, StyleRequest.class);
     }
 
+    @Timed
     @Override
     public List<StyleRequest> findMerchantAcceptedAppointments(Long merchantId, DateTime lower, DateTime upper) {
-        return findMerchantStyleRequests(merchantId, lower, upper, StyleRequestState.ACCEPTED);
+        return findMerchantStyleRequests(merchantId, lower, upper, ACCEPTED);
     }
 
+    @Timed
     @Override
     public List<StyleRequest> findMerchantCancelledAppointments(Long merchantId, DateTime lower, DateTime upper) {
-        return findMerchantStyleRequests(merchantId, lower, upper, StyleRequestState.CANCELLED);
+        return findMerchantStyleRequests(merchantId, lower, upper, CANCELLED);
     }
 
+    @Timed
     @Override
     public List<StyleRequest> findMerchantPendingAppointments(Long merchantId, DateTime lower, DateTime upper) {
-        return findMerchantStyleRequests(merchantId, lower, upper, StyleRequestState.PENDING);
+        return findMerchantStyleRequests(merchantId, lower, upper, PENDING);
     }
 
+    @Timed
     @Override
     public List<StyleRequest> findMerchantCompletedAppointments(Long merchantId, DateTime lower, DateTime upper) {
-        return findMerchantStyleRequests(merchantId, lower, upper, StyleRequestState.COMPLETED);
+        return findMerchantStyleRequests(merchantId, lower, upper, COMPLETED);
     }
 
+    @Timed
     @Override
     public Collection<StyleRequest> findCustomerAcceptedAppointments(Long customerId, DateTime lower, DateTime upper) {
-        return findCustomerStyleRequests(customerId, lower, upper, StyleRequestState.ACCEPTED);
+        return findCustomerStyleRequests(customerId, lower, upper, ACCEPTED);
     }
 
+    @Timed
     @Override
     public List<StyleRequest> findCustomerCancelledAppointments(Long customerId, DateTime lower, DateTime upper) {
-        return findCustomerStyleRequests(customerId, lower, upper, StyleRequestState.CANCELLED);
+        return findCustomerStyleRequests(customerId, lower, upper, CANCELLED);
     }
 
+    @Timed
     @Override
     public List<StyleRequest> findCustomerPendingAppointments(Long customerId, DateTime lower, DateTime upper) {
-        return findCustomerStyleRequests(customerId, lower, upper, StyleRequestState.PENDING);
+        return findCustomerStyleRequests(customerId, lower, upper, PENDING);
     }
 
+    @Timed
     @Override
     public List<StyleRequest> findCustomerCompletedAppointments(Long customerId, DateTime lower, DateTime upper) {
-        return findCustomerStyleRequests(customerId, lower, upper, StyleRequestState.COMPLETED);
+        return findCustomerStyleRequests(customerId, lower, upper, COMPLETED);
     }
 
     @Timed
@@ -124,13 +137,14 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 
         style.setRequestCount(style.getRequestCount() + 1);
 
-        final StyleRequest styleRequest = new StyleRequest(style, merchant, customer, merchant.getAddress().getLocation(), StyleRequestState.PENDING, appointmentTime, new DateTime().plusMinutes(style.getDurationEstimate()));
+        final StyleRequest styleRequest = new StyleRequest(style, merchant, customer, merchant.getAddress().getLocation(), PENDING, appointmentTime, new DateTime().plusMinutes(style.getDurationEstimate()));
         Long id = repository.allocateId(StyleRequest.class);
         styleRequest.setId(id);
         styleRequest.setPermanentId(id);
 
         // add payment authorization request to a new payments queue
         // paymentService.holdPayment(styleRequest, customer); //fixme uncomment before deployment TLS v1.2 issues, GAE says it works in prod but not dev, idiots
+        repository.saveFew(styleRequest, style);
 
         emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
 
@@ -142,7 +156,6 @@ public class StyleRequestServiceImpl implements StyleRequestService {
 //                .setDeviceTokens(customer.getDevice().getDeviceId()); // Nullable?
 //        apnsQueue.add(new SendPushNotificationToApnsTask(pushNotification));
 
-        repository.saveFew(styleRequest, style);
         logger.debug("Placed Style Request. ID: " + styleRequest.getId());
         return styleRequest;
     }
@@ -155,21 +168,24 @@ public class StyleRequestServiceImpl implements StyleRequestService {
     @Override
     public void acceptStyleRequest(Long styleRequestId, Preferences preferences) {
         Assert.validId(styleRequestId);
-        StyleRequest styleRequest = transitionStyleRequest(styleRequestId, StyleRequestState.ACCEPTED);
+        StyleRequest styleRequest = transition(styleRequestId, ACCEPTED);
+        styleRequest.setAcceptedTime(DateTime.now().toString());
 
         emailTaskQueue.add(new AcceptedStyleRequestNotification(styleRequest, preferences));
     }
 
     @Override
     public void completeStyleRequest(Long styleRequestId, Preferences preferences) {
-        StyleRequest styleRequest = transitionStyleRequest(styleRequestId, StyleRequestState.COMPLETED);
+        StyleRequest styleRequest = transition(styleRequestId, COMPLETED);
+        styleRequest.setCompletedTime(DateTime.now().toString());
 
         emailTaskQueue.add(new CompletedStyleRequestNotification(styleRequest, preferences));
     }
 
     @Override
     public void cancelStyleRequest(Long styleRequestId, Preferences preferences) {
-        StyleRequest styleRequest = transitionStyleRequest(styleRequestId, StyleRequestState.CANCELLED);
+        StyleRequest styleRequest = transition(styleRequestId, CANCELLED);
+        styleRequest.setCancelledTime(DateTime.now().toString());
 
         //TODO notify merchant
         emailTaskQueue.add(new CancelledStyleRequestNotification(styleRequest, preferences));
@@ -194,10 +210,12 @@ public class StyleRequestServiceImpl implements StyleRequestService {
         return Arrays.asList(id, state, start, stop);
     }
 
-    private StyleRequest transitionStyleRequest(Long id, StyleRequestState state) {
+    private StyleRequest transition(final Long id, final StyleRequestState state) {
         Assert.validId(id);
         StyleRequest styleRequest = repository.findOne(id, StyleRequest.class);
         Assert.notNull(styleRequest, String.format("Style request with ID %s not found", styleRequest));
+
+//        Assert.isTrue(styleRequest.getMerchant().getEmail().equals(email));
         styleRequest.setState(state);
 
         updateStyleRequest(styleRequest);
