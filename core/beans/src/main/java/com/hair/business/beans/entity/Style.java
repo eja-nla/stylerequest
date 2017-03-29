@@ -39,15 +39,16 @@ public class Style extends AbstractActorEnablerEntity {
 
     private double price;
 
-    public Style(){}
+    public Style(){
+        this.trending = true;
+        this.active = true;
+    }
 
     public Style(String name, int durationEstimate, Long publisherId, Location location, Collection<Image> styleImages) {
         this();
         this.name = name;
         this.durationEstimate = durationEstimate;
         this.publisherId = publisherId;
-        this.trending = true;
-        this.active = true;
         this.location = location;
         this.styleImages = styleImages;
     }

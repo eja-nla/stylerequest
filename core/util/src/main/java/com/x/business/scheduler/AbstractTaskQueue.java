@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
+ *
  * Created by Olukorede Aguda on 07/08/2016.
  */
 public abstract class AbstractTaskQueue implements TaskQueue {
