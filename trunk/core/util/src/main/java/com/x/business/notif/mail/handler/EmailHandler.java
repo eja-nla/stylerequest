@@ -9,8 +9,8 @@ import java.util.Collection;
  *
  *
  */
-public interface EmailHandler {
+public interface EmailHandler<T extends AbstractStyleRequestNotificationTask> {
 
-    <R extends AbstractStyleRequestNotificationTask> void send(R notification, boolean sendMerchantCopy);
-    <T extends AbstractStyleRequestNotificationTask> void sendBulk(Collection<T> notifications);
+    void send(T notification, boolean sendMerchantCopy);
+    void sendBulk(Collection<T> notifications);
 }

@@ -13,7 +13,7 @@ import com.x.business.notif.mail.handler.EmailHandler;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,7 +21,7 @@ import java.util.List;
  * Created by Olukorede Aguda on 22/06/2016.
  *
  */
-public class SendgridStyleRequestEmailHandler implements EmailHandler {
+public class SendgridStyleRequestEmailHandler<T extends AbstractStyleRequestNotificationTask> implements EmailHandler {
 
     private final Logger logger = getLogger(this.getClass());
 
@@ -43,7 +43,9 @@ public class SendgridStyleRequestEmailHandler implements EmailHandler {
 
     @Override
     public void sendBulk(Collection notifications) {
-        partition(notifications instanceof List ? (List) notifications : new ArrayList<>(notifications), 1000).forEach(
+        List partitions = partition(notifications instanceof List ? (List) notifications : Arrays.asList(notifications), 1000);
+
+        partitions.forEach(
                 listOfNotifications -> ((List) listOfNotifications).forEach(notification -> send((AbstractStyleRequestNotificationTask) notification, false))
         );
     }
