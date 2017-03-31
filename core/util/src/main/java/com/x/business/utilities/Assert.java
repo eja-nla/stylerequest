@@ -38,13 +38,8 @@ public class Assert extends Validate {
         }
     }
 
-    public static void isFound(Object entity, String message){
-        if(null == entity){
-            throw new IllegalArgumentException(message);
-        }
-    }
-
     public static void validId(Long key){
+        notNull(key);
         if(Objects.equals(key, Defaults.defaultValue(Long.TYPE))){
             throw new IllegalArgumentException(String.format("Invalid ID value %s", key));
         }

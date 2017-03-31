@@ -24,7 +24,6 @@ import com.hair.business.services.pushNotification.SendPushNotificationToApnsTas
 import com.x.business.notif.AbstractNotification;
 import com.x.business.scheduler.TaskQueue;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -40,14 +39,16 @@ import java.io.IOException;
  */
 public class StyleRequestServiceTest extends AbstractServicesTestBase {
 
-    private Repository repository;
+    Repository repository;
     private StyleRequestService srs;
     private TaskQueue emailQueue = Mockito.mock(TaskQueue.class);
     private TaskQueue apnsQueue = Mockito.mock(TaskQueue.class);
     private PaymentService paymentService = Mockito.mock(PaymentService.class);
 
-    private static final DateTime baseDateTime = new DateTime();
-
+    public StyleRequestServiceTest() {
+        repository = injector.getInstance(Repository.class);
+        srs = new StyleRequestServiceImpl(repository, emailQueue, apnsQueue, paymentService);
+    }
 
     @Before
     public void setUp(){
@@ -96,72 +97,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
 
     }
 
-    @Test
-    public void testFindMerchantUpcomingAppointments() throws Exception {
-        StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
 
-        assertThat(srs.findMerchantAcceptedAppointments(sr.getMerchantPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
-    }
-
-    @Test
-    public void testFindMerchantCancelledAppointments() throws Exception {
-        StyleRequest sr = initStyleRequest(StyleRequestState.CANCELLED);
-
-        assertThat(srs.findMerchantCancelledAppointments(sr.getMerchantPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
-
-    }
-
-    @Test
-    public void testFindMerchantPendingAppointments() throws Exception {
-        StyleRequest sr = initStyleRequest(StyleRequestState.PENDING);
-
-        assertThat(srs.findMerchantPendingAppointments(sr.getMerchantPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
-
-    }
-
-    @Test
-    public void testFindMerchantCompletedAppointments() throws Exception {
-        StyleRequest sr = initStyleRequest(StyleRequestState.COMPLETED);
-
-        assertThat(srs.findMerchantCompletedAppointments(sr.getMerchantPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
-
-    }
-
-    @Test
-    public void testFindCustomerCompletedAppointments() throws Exception {
-        StyleRequest sr = initStyleRequest(StyleRequestState.COMPLETED);
-
-        assertThat(srs.findCustomerCompletedAppointments(sr.getCustomerPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
-
-    }
-    @Test
-    public void testFindCustomerPendingAppointments() throws Exception {
-        StyleRequest sr = initStyleRequest(StyleRequestState.PENDING);
-
-        assertThat(srs.findCustomerPendingAppointments(sr.getCustomerPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
-
-    }
-    @Test
-    public void testFindCustomerCancelledAppointments() throws Exception {
-        StyleRequest sr = initStyleRequest(StyleRequestState.CANCELLED);
-
-        assertThat(srs.findCustomerCancelledAppointments(sr.getCustomerPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
-
-    }
-    @Test
-    public void testFindCustomerUpcomingAppointments() throws Exception {
-        StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
-
-        assertThat(srs.findCustomerAcceptedAppointments(sr.getCustomerPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(5)).size(), is(1));
-
-    }
-
-    @Test
-    public void testFindCustomerUpcomingAppointmentsUpperLower() throws Exception {
-        StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
-
-        assertThat(srs.findCustomerAcceptedAppointments(sr.getCustomerPermanentId(), baseDateTime.plusHours(2), baseDateTime.plusHours(4)).size(), is(1));
-    }
 
     @Test
     public void testAcceptStyleRequest() throws Exception {
@@ -197,7 +133,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
         assertThat(sr.getState(), is(StyleRequestState.IN_PROGRESS));
     }
 
-    private StyleRequest initStyleRequest(StyleRequestState state){
+    StyleRequest initStyleRequest(StyleRequestState state){
         StyleRequest sr = placeStyleRequest();
 
         sr.setState(state);
@@ -206,7 +142,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
         return sr;
     }
 
-    private StyleRequest placeStyleRequest(){
+    StyleRequest placeStyleRequest(){
         Style style = createStyle();
         Customer customer = createCustomer();
         Merchant m = createMerchant();

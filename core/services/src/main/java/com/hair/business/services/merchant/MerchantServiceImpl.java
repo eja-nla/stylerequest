@@ -110,10 +110,10 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public void acceptStyleRequest(Long merchantId, Long styleRequestId) {
         Merchant merchant = repository.findOne(merchantId, Merchant.class);
-        Assert.isFound(merchant, String.format("Merchant with id %s not found", merchantId));
+        Assert.notNull(merchant, String.format("Merchant with id '%s' not found", merchantId));
 
         StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
-        Assert.isFound(styleRequest, String.format("StyleRequest with id %s not found", styleRequest));
+        Assert.notNull(styleRequest, String.format("StyleRequest with id '%s' not found", styleRequest));
 
         //Assert.isTrue(!isBooked(merchantId, styleRequest.getAppointmentStartTime()), "%s has an active booking during this period.", merchant.getFirstName());
 

@@ -1,6 +1,7 @@
 package com.x.business.tasks;
 
 import static com.google.appengine.repackaged.com.google.common.collect.Lists.partition;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import com.sendgrid.Method;
 import com.sendgrid.Request;
@@ -9,13 +10,12 @@ import com.sendgrid.SendGrid;
 import com.x.business.notif.AbstractStyleRequestNotificationTask;
 import com.x.business.notif.mail.handler.EmailHandler;
 
-import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Created by Olukorede Aguda on 22/06/2016.
@@ -23,15 +23,12 @@ import java.util.logging.Logger;
  */
 public class SendgridStyleRequestEmailHandler implements EmailHandler {
 
-    private static final Logger logger = Logger.getLogger(SendgridStyleRequestEmailHandler.class.getName());
+    private final Logger logger = getLogger(this.getClass());
 
     private static final SendGrid sg = new SendGrid(System.getProperty("sendgrid.api.key"));
-    private static final Request request = new Request();
-    private static Response response = null;
+    private static final String endpoint = "mail/send";
 
     public SendgridStyleRequestEmailHandler(){
-        request.method = Method.POST;
-        request.endpoint = "mail/send";
     }
 
     @Override
@@ -52,16 +49,17 @@ public class SendgridStyleRequestEmailHandler implements EmailHandler {
     }
 
     private void send(String body){
+        Request request = new Request();
+        request.endpoint = endpoint;
+        request.method = Method.POST;
         try {
             request.body = body;
-            response = sg.api(request);
+            Response response = sg.api(request);
 
-            logger.fine("SendGrid email response " + response.statusCode + " Response body " + response.body + " Response header " + response.headers);
+            logger.info("SendGrid email response: {} Response body: {} Response header: {}", response.statusCode, response.body, response.headers);
         } catch (IOException ex) {
 
-            logger.severe(ex.getMessage());
-        } finally {
-            request.body = StringUtils.EMPTY;
+            logger.error(ex.getMessage());
         }
     }
 }

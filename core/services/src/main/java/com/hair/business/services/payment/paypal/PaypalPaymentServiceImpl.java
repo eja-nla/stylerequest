@@ -1,6 +1,7 @@
 package com.hair.business.services.payment.paypal;
 
 import com.hair.business.beans.constants.PaymentType;
+import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.PaymentMethod;
 import com.hair.business.beans.entity.StyleRequest;
@@ -28,7 +29,7 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 /**
- *
+ * Paypal payment service implementation
  *
  * Created by Olukorede Aguda on 24/02/2017.
  */
@@ -164,9 +165,25 @@ public class PaypalPaymentServiceImpl implements PaypalPaymentService {
     /**
      * Fires an authorization request to Paypal
      */
-    //@Override
-    public StyleRequestPayment holdPayment(StyleRequest styleRequest, Customer customer) {
-        return authorizePayment(styleRequest, customer);
+    @Override
+    public StyleRequest holdPayment(StyleRequest styleRequest, Customer customer) {
+        authorizePayment(styleRequest, customer);
+        return null;
+    }
+
+    @Override
+    public StyleRequest deductPreAuthPayment(Long styleRequestId, double totalAmount) {
+        return null;
+    }
+
+    @Override
+    public void deductNonPreAuthPayment(String paymentToken, List<AddOn> addOns) {
+
+    }
+
+    @Override
+    public void refund(StyleRequest styleRequest) {
+
     }
 
     /**
@@ -177,12 +194,12 @@ public class PaypalPaymentServiceImpl implements PaypalPaymentService {
         return capturePreauthorizedPayment(authorizationId, totalAmount, isFinalCapture);
     }
 
-    //@Override
+    @Override
     public double computeTax(String countryCode, double itemPrice) {
         return 0;
     }
 
-    //@Override
+    @Override
     public void updatePayment(Long customerId, PaymentMethod paymentMethod, PaymentType paymentType, boolean isDefault) {
 
     }
