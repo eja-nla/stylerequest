@@ -25,11 +25,10 @@ public class ExecTimeLoggerInterceptor implements MethodInterceptor {
             stopwatch.start();
             final Object returnedObject = invocation.proceed();
             stopwatch.stop();
-            logger.info("Method: {} of class: {} took: {}",
+            logger.info("Method: '{}' of class: '{}' took: '{}'",
                     invocation.getMethod().getName(),
                     invocation.getMethod().getDeclaringClass().getName(),
                     stopwatch.toString()
-                    //stopwatch.stop().toString()
             );
             return returnedObject;
         } finally {

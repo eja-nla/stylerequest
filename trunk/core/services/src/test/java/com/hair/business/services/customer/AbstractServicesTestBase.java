@@ -14,14 +14,16 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 /**
+ * Abstract services test base
+ *
  * Created by Olukorede Aguda on 23/06/2016.
  */
 public abstract class AbstractServicesTestBase {
 
     private static final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
-    protected static Closeable session;
-    public static Injector injector;
+    private static Closeable session;
+    protected static Injector injector;
 
     @BeforeClass
     public static void setUpBeforeClass() {

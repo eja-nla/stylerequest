@@ -45,7 +45,7 @@ public class StyleServiceImpl implements StyleService {
 
         Merchant merchant = repository.findOne(publisherId, Merchant.class);
 
-        Assert.isFound(merchant, format("Could not find Merchant with id %s", publisherId));
+        Assert.notNull(merchant, format("Could not find Merchant with id '%s'", publisherId));
 
         Long stylePermId = repository.allocateId(Style.class);
         Style style = new Style(styleName, duration, merchant.getId(), merchant.getAddress().getLocation(), styleImages);
@@ -71,7 +71,7 @@ public class StyleServiceImpl implements StyleService {
     public void updateStyleImages(Long styleId, List<Image> styleImages) {
         Style style = repository.findOne(styleId, Style.class);
 
-        Assert.isFound(style, format("Could not find Style with id %s", styleId));
+        Assert.notNull(style, format("Could not find Style with id '%s'", styleId));
 
         Collection<Image> images = new ArrayList<>();
 
@@ -98,7 +98,7 @@ public class StyleServiceImpl implements StyleService {
         Assert.validId(styleId);
         Style style = repository.findOne(styleId, Style.class);
 
-        Assert.notNull(style, String.format("Cannot remove style with id %s. Style not found", styleId));
+        Assert.notNull(style, String.format("Cannot remove style with id '%s'. Style not found", styleId));
 
         style.setActive(false);
 

@@ -5,59 +5,17 @@ import com.hair.business.beans.entity.StyleRequest;
 
 import org.joda.time.DateTime;
 
-import java.util.Collection;
-
 /**
  * Style Service
  *
  * Created by Olukorede Aguda on 20/09/2016.
  */
-public interface StyleRequestService {
+public interface StyleRequestService extends AppointmentFinder {
 
     /**
      * Finds stylerequest with given id
      */
     StyleRequest findStyleRequest(Long id);
-
-    /**
-     * Returns merchant's accepted appointments (whose start time is) between two given dateTime bounds
-     */
-    Collection<StyleRequest> findMerchantAcceptedAppointments(Long merchantId, DateTime lower, DateTime upper);
-
-    /**
-     * Returns merchant's cancelled appointments between two given dateTime bounds
-     */
-    Collection<StyleRequest> findMerchantCancelledAppointments(Long merchantId, DateTime lower, DateTime upper);
-
-    /**
-     * Returns merchant's pending appointments between two given dateTime bounds
-     */
-    Collection<StyleRequest> findMerchantPendingAppointments(Long merchantId, DateTime lower, DateTime upper);
-
-    /**
-     * Returns merchant's completed appointments between two given dateTime bounds
-     */
-    Collection<StyleRequest> findMerchantCompletedAppointments(Long merchantId, DateTime lower, DateTime upper);
-
-    /**
-     * Returns customer's upcoming appointments between two given dateTime bounds
-     */
-    Collection<StyleRequest> findCustomerAcceptedAppointments(Long customerId, DateTime lower, DateTime upper);
-
-    /**
-     * Returns customer's cancelled appointments between two given dateTime bounds
-     */
-    Collection<StyleRequest> findCustomerCancelledAppointments(Long customerId, DateTime lower, DateTime upper);
-
-    /**
-     * Returns customer's pending appointments between two given dateTime bounds
-     */
-    Collection<StyleRequest> findCustomerPendingAppointments(Long customerId, DateTime lower, DateTime upper);
-
-    /**
-     * Returns customer's completed appointments between two given dateTime bounds
-     */
-    Collection<StyleRequest> findCustomerCompletedAppointments(Long customerId, DateTime lower, DateTime upper);
 
     /**
      * Place a new style request for this customer

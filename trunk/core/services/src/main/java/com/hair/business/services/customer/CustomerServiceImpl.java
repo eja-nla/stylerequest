@@ -140,7 +140,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         Assert.validId(customerId);
         Customer customer = repository.findOne(customerId, Customer.class);
-        Assert.isFound(customer, String.format("Customer with id %s not found", customerId));
+        Assert.notNull(customer, String.format("Customer with id '%s' not found", customerId));
         final Map<Integer, Integer> weightedRatings = customer.getRatings();
 
         weightedRatings.put(score, weightedRatings.get(score) + 1);

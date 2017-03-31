@@ -27,10 +27,6 @@ import com.x.business.utilities.Assert;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 import javax.inject.Inject;
 
 /**
@@ -38,15 +34,12 @@ import javax.inject.Inject;
  *
  * Created by Olukorede Aguda on 07/01/2017.
  */
-public class StyleRequestServiceImpl implements StyleRequestService {
+public class StyleRequestServiceImpl extends AppointmentFinderExt implements StyleRequestService {
 
     private final Repository repository;
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;
     private final PaymentService paymentService;
-
-    private static final List<String> MERCHANT_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("merchantPermanentId ==", "state ==", "appointmentStartTime >=", "appointmentStartTime <=");
-    private static final List<String> CUSTOMER_APPOINTMENTS_QUERY_CONDITIONS = Arrays.asList("customerPermanentId ==", "state ==", "appointmentStartTime >=", "appointmentStartTime <=");
 
     private final Logger logger = getLogger(this.getClass());
 
@@ -55,6 +48,7 @@ public class StyleRequestServiceImpl implements StyleRequestService {
                             @EmailTaskQueue TaskQueue emailTaskQueue,
                             @ApnsTaskQueue TaskQueue apnsQueue,
                             PaymentService paymentService) {
+        super(repository);
         this.repository = repository;
         this.emailTaskQueue = emailTaskQueue;
         this.apnsQueue = apnsQueue;
@@ -69,53 +63,6 @@ public class StyleRequestServiceImpl implements StyleRequestService {
         return repository.findOne(id, StyleRequest.class);
     }
 
-    @Timed
-    @Override
-    public List<StyleRequest> findMerchantAcceptedAppointments(Long merchantId, DateTime lower, DateTime upper) {
-        return findMerchantStyleRequests(merchantId, lower, upper, ACCEPTED);
-    }
-
-    @Timed
-    @Override
-    public List<StyleRequest> findMerchantCancelledAppointments(Long merchantId, DateTime lower, DateTime upper) {
-        return findMerchantStyleRequests(merchantId, lower, upper, CANCELLED);
-    }
-
-    @Timed
-    @Override
-    public List<StyleRequest> findMerchantPendingAppointments(Long merchantId, DateTime lower, DateTime upper) {
-        return findMerchantStyleRequests(merchantId, lower, upper, PENDING);
-    }
-
-    @Timed
-    @Override
-    public List<StyleRequest> findMerchantCompletedAppointments(Long merchantId, DateTime lower, DateTime upper) {
-        return findMerchantStyleRequests(merchantId, lower, upper, COMPLETED);
-    }
-
-    @Timed
-    @Override
-    public Collection<StyleRequest> findCustomerAcceptedAppointments(Long customerId, DateTime lower, DateTime upper) {
-        return findCustomerStyleRequests(customerId, lower, upper, ACCEPTED);
-    }
-
-    @Timed
-    @Override
-    public List<StyleRequest> findCustomerCancelledAppointments(Long customerId, DateTime lower, DateTime upper) {
-        return findCustomerStyleRequests(customerId, lower, upper, CANCELLED);
-    }
-
-    @Timed
-    @Override
-    public List<StyleRequest> findCustomerPendingAppointments(Long customerId, DateTime lower, DateTime upper) {
-        return findCustomerStyleRequests(customerId, lower, upper, PENDING);
-    }
-
-    @Timed
-    @Override
-    public List<StyleRequest> findCustomerCompletedAppointments(Long customerId, DateTime lower, DateTime upper) {
-        return findCustomerStyleRequests(customerId, lower, upper, COMPLETED);
-    }
 
     @Timed
     @Override
@@ -124,11 +71,11 @@ public class StyleRequestServiceImpl implements StyleRequestService {
         Assert.dateInFuture(appointmentTime);
 
         Style style = repository.findOne(styleId, Style.class);
-        Assert.isFound(style, String.format("Style with id %s not found", styleId));
+        Assert.notNull(style, String.format("Style with id %s not found", styleId));
         Customer customer = repository.findOne(customerId, Customer.class);
-        Assert.isFound(style, String.format("Customer with id %s not found", customerId));
+        Assert.notNull(style, String.format("Customer with id %s not found", customerId));
         Merchant merchant = repository.findOne(merchantId, Merchant.class);
-        Assert.isFound(style, String.format("Merchant with id %s not found", merchantId));
+        Assert.notNull(style, String.format("Merchant with id %s not found", merchantId));
 
         // TODO : further validations
         // is the merchant free at this time?
@@ -143,7 +90,8 @@ public class StyleRequestServiceImpl implements StyleRequestService {
         styleRequest.setPermanentId(id);
 
         // add payment authorization request to a new payments queue
-        // paymentService.holdPayment(styleRequest, customer); //fixme uncomment before deployment TLS v1.2 issues, GAE says it works in prod but not dev, idiots
+        paymentService.holdPayment(styleRequest, customer); //fixme bind to braintree impl before deployment TLS v1.2 issues, GAE says it works in prod but not dev, idiots
+
         repository.saveFew(styleRequest, style);
 
         emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
@@ -169,45 +117,32 @@ public class StyleRequestServiceImpl implements StyleRequestService {
     public void acceptStyleRequest(Long styleRequestId, Preferences preferences) {
         Assert.validId(styleRequestId);
         StyleRequest styleRequest = transition(styleRequestId, ACCEPTED);
-        styleRequest.setAcceptedTime(DateTime.now().toString());
+        styleRequest.setAcceptedTime(DateTime.now());
+        updateStyleRequest(styleRequest);
 
         emailTaskQueue.add(new AcceptedStyleRequestNotification(styleRequest, preferences));
     }
 
     @Override
     public void completeStyleRequest(Long styleRequestId, Preferences preferences) {
+        Assert.validId(styleRequestId);
         StyleRequest styleRequest = transition(styleRequestId, COMPLETED);
-        styleRequest.setCompletedTime(DateTime.now().toString());
+        styleRequest.setCompletedTime(DateTime.now());
+        updateStyleRequest(styleRequest);
 
         emailTaskQueue.add(new CompletedStyleRequestNotification(styleRequest, preferences));
     }
 
     @Override
     public void cancelStyleRequest(Long styleRequestId, Preferences preferences) {
+        Assert.validId(styleRequestId);
         StyleRequest styleRequest = transition(styleRequestId, CANCELLED);
-        styleRequest.setCancelledTime(DateTime.now().toString());
+        styleRequest.setCancelledTime(DateTime.now());
+        updateStyleRequest(styleRequest);
 
         //TODO notify merchant
         emailTaskQueue.add(new CancelledStyleRequestNotification(styleRequest, preferences));
 
-    }
-
-    private List<StyleRequest> findMerchantStyleRequests(Long id, DateTime start, DateTime stop, StyleRequestState state) {
-        List<Object> values = validate(id, state, start, stop);
-
-        return repository.findByQuery(StyleRequest.class, MERCHANT_APPOINTMENTS_QUERY_CONDITIONS, values);
-    }
-
-    private List<StyleRequest> findCustomerStyleRequests(Long id, DateTime start, DateTime stop, StyleRequestState state) {
-        List<Object> values = validate(id, state, start, stop);
-
-        return repository.findByQuery(StyleRequest.class, CUSTOMER_APPOINTMENTS_QUERY_CONDITIONS, values);
-    }
-
-    private List<Object> validate(Long id, StyleRequestState state, DateTime start, DateTime stop) {
-        Assert.validId(id);
-
-        return Arrays.asList(id, state, start, stop);
     }
 
     private StyleRequest transition(final Long id, final StyleRequestState state) {
@@ -215,10 +150,10 @@ public class StyleRequestServiceImpl implements StyleRequestService {
         StyleRequest styleRequest = repository.findOne(id, StyleRequest.class);
         Assert.notNull(styleRequest, String.format("Style request with ID %s not found", styleRequest));
 
-//        Assert.isTrue(styleRequest.getMerchant().getEmail().equals(email));
-        styleRequest.setState(state);
+        Assert.isTrue(!state.equals(styleRequest.getState()), "Style request state and new state are equal.");
+        Assert.isTrue(!styleRequest.getState().equals(StyleRequestState.CANCELLED), "Request is already cancelled.");
 
-        updateStyleRequest(styleRequest);
+        styleRequest.setState(state);
 
         return styleRequest;
     }

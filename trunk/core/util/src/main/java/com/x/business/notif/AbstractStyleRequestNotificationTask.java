@@ -1,16 +1,18 @@
 package com.x.business.notif;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import com.x.business.notif.mail.handler.EmailHandler;
 import com.x.business.tasks.SendgridStyleRequestEmailHandler;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.logging.Logger;
 
 /**
  * Abstract Abstract Stylerequest Notification
@@ -20,7 +22,7 @@ import java.util.logging.Logger;
 public abstract class AbstractStyleRequestNotificationTask extends AbstractNotification {
 
     private static final EmailHandler emailHandler = new SendgridStyleRequestEmailHandler();
-    private static final Logger LOGGER = Logger.getLogger(PlacedStyleRequestNotification.class.getName());
+    private static final Logger logger = getLogger(AbstractStyleRequestNotificationTask.class);
     private static final String adminEmail = System.getProperty("sendgrid.from.email");
 
     @Override
@@ -47,7 +49,7 @@ public abstract class AbstractStyleRequestNotificationTask extends AbstractNotif
         try {
             template = new String(Files.readAllBytes(Paths.get(fileName)), StandardCharsets.ISO_8859_1);
         } catch (IOException e){
-            LOGGER.severe(String.format("Unable to load email template file %s. Reason: %s", fileName, e.getMessage()));
+            logger.error("Unable to load email template file '{}'. Reason: '{}'", fileName, e.getMessage());
         }
 
         return template;

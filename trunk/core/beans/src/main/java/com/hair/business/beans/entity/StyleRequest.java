@@ -44,14 +44,14 @@ public class StyleRequest extends AbstractActorEnablerEntity {
     private StyleRequestPayment settledPayment;
     private List<AddOn> addOns;
 
-    private String placedTime;
-    private String acceptedTime;
-    private String cancelledTime;
-    private String completedTime;
+    private @Index DateTime placedTime;
+    private @Index DateTime acceptedTime;
+    private @Index DateTime cancelledTime;
+    private @Index DateTime completedTime;
 
     public StyleRequest(){
         this.addOns = Collections.emptyList();
-        this.placedTime = DateTime.now().toString();
+        this.placedTime = DateTime.now();
     }
 
     public StyleRequest(Style style, Merchant merchant, Customer customer, Location location, StyleRequestState state, DateTime appointmentStartTime, DateTime appointmentEndTime) {
@@ -170,35 +170,35 @@ public class StyleRequest extends AbstractActorEnablerEntity {
         this.addOns = addOns;
     }
 
-    public String getPlacedTime() {
+    public DateTime getPlacedTime() {
         return placedTime;
     }
 
-    public void setPlacedTime(String placedTime) {
+    public void setPlacedTime(DateTime placedTime) {
         this.placedTime = placedTime;
     }
 
-    public String getAcceptedTime() {
+    public DateTime getAcceptedTime() {
         return acceptedTime;
     }
 
-    public void setAcceptedTime(String acceptedTime) {
+    public void setAcceptedTime(DateTime acceptedTime) {
         this.acceptedTime = acceptedTime;
     }
 
-    public String getCancelledTime() {
+    public DateTime getCancelledTime() {
         return cancelledTime;
     }
 
-    public void setCancelledTime(String cancelledtime) {
+    public void setCancelledTime(DateTime cancelledtime) {
         this.cancelledTime = cancelledtime;
     }
 
-    public String getCompletedTime() {
+    public DateTime getCompletedTime() {
         return completedTime;
     }
 
-    public void setCompletedTime(String completedTime) {
+    public void setCompletedTime(DateTime completedTime) {
         this.completedTime = completedTime;
     }
 }

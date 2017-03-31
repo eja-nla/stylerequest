@@ -9,6 +9,7 @@ import static com.hair.business.rest.MvcConstants.UPDATE_PAYMENT_PATH;
 import static com.hair.business.rest.MvcConstants.UPDATE_PREFERENCES_PATH;
 import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import com.google.identitytoolkit.GitkitUser;
 
@@ -22,8 +23,7 @@ import com.hair.business.services.customer.CustomerService;
 import com.hair.business.services.payment.PaymentService;
 
 import org.joda.time.DateTime;
-
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +48,7 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
     private final StyleRequestService styleRequestService;
     private final PaymentService paymentService;
 
-    private static final Logger log = Logger.getLogger(CustomerRequestServlet.class.getName());
+    private final Logger log = getLogger(getClass());
 
     @Inject
     public CustomerRequestServlet(CustomerService customerService, StyleRequestService styleRequestService, PaymentService paymentService) {
@@ -61,8 +61,8 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
     @Path(CREATE_CUSTOMER_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response createNewCustomer(@Context HttpServletRequest request, Customer customer) {
-        log.fine(String.format("Creating new customer %s", customer.getEmail()));
+    public Response createNewCustomer(final @Context HttpServletRequest request, final Customer customer) {
+        log.debug("Creating new customer '{}'", customer.getEmail());
         GitkitUser user = (GitkitUser) request.getAttribute(REST_USER_ATTRIBUTE);
 
         customer.setEmail(user.getEmail());
