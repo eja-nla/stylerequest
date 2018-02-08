@@ -22,6 +22,8 @@ import com.hair.business.services.payment.braintree.BraintreePaymentHandler;
 import com.hair.business.services.payment.braintree.BraintreePaymentHandlerImpl;
 import com.hair.business.services.payment.paypal.PaymentRequestHandler;
 import com.hair.business.services.payment.paypal.PaypalPaymentRequestHandlerImpl;
+import com.hair.business.services.state.StylerequestStateMgr;
+import com.hair.business.services.state.StylerequestStateMgrImpl;
 import com.hair.business.services.stereotype.Timed;
 import com.paypal.base.rest.APIContext;
 
@@ -50,6 +52,7 @@ public class ServicesModule extends AbstractModule {
         bind(MerchantService.class).to(MerchantServiceImpl.class).in(Singleton.class);
         bind(StyleService.class).to(StyleServiceImpl.class).in(Singleton.class);
         bind(StyleRequestService.class).to(StyleRequestServiceImpl.class).in(Singleton.class);
+        bind(StylerequestStateMgr.class).to(StylerequestStateMgrImpl.class).in(Singleton.class);
 
         bind(PaymentService.class).to(NoopPaymentServiceImpl.class).in(Singleton.class);
         bind(BraintreePaymentHandler.class).to(BraintreePaymentHandlerImpl.class).in(Singleton.class);

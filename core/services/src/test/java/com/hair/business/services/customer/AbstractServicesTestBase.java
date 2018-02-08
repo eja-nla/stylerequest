@@ -23,7 +23,7 @@ public abstract class AbstractServicesTestBase {
     private static final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
     private static Closeable session;
-    protected static Injector injector;
+    public static Injector injector;
 
     @BeforeClass
     public static void setUpBeforeClass() {

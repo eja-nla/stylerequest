@@ -23,20 +23,20 @@ public interface AppointmentFinder {
      */
     Collection<StyleRequest> findMerchantCancelledAppointments(Long merchantId, DateTime lower, DateTime upper);
 
-    /**
-     * Returns merchant's pending appointments between two given dateTime bounds
-     */
-    Collection<StyleRequest> findMerchantPendingAppointments(Long merchantId, DateTime lower, DateTime upper);
+//    /**
+//     * Returns merchant's pending appointments between two given dateTime bounds
+//     */
+//    Collection<StyleRequest> findMerchantPendingAppointments(Long merchantId, DateTime lower, DateTime upper);
 
     /**
      * Returns merchant's completed appointments between two given dateTime bounds
      */
     Collection<StyleRequest> findMerchantCompletedAppointments(Long merchantId, DateTime lower, DateTime upper);
 
-    /**
-     * Returns customer's upcoming appointments between two given dateTime bounds
-     */
-    Collection<StyleRequest> findCustomerAcceptedAppointments(Long customerId, DateTime lower, DateTime upper);
+//    /**
+//     * Returns customer's upcoming appointments between two given dateTime bounds
+//     */
+//    Collection<StyleRequest> findCustomerAcceptedAppointments(Long customerId, DateTime lower, DateTime upper);
 
     /**
      * Returns customer's cancelled appointments between two given dateTime bounds
@@ -47,10 +47,10 @@ public interface AppointmentFinder {
      * Returns customer's pending appointments between two given dateTime bounds
      */
     Collection<StyleRequest> findCustomerPendingAppointments(Long customerId, DateTime lower, DateTime upper);
-
-    /**
-     * Returns customer's completed appointments between two given dateTime bounds
-     */
-    Collection<StyleRequest> findCustomerCompletedAppointments(Long customerId, DateTime lower, DateTime upper);
+//
+//    /**
+//     * Returns customer's completed appointments between two given dateTime bounds
+//     */
+//    Collection<StyleRequest> findCustomerCompletedAppointments(Long customerId, DateTime lower, DateTime upper);
 
 }

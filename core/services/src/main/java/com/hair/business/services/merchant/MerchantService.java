@@ -45,8 +45,6 @@ public interface MerchantService {
      * Ideally, we'd want to check if that time lies between start and
      * end time of the appointment but objectify has a unitary inequality search restriction on entity fields
      * */
-    boolean isBooked(Long merchantId, DateTime period);
-
-    void acceptStyleRequest(Long merchantId, Long styleRequestId);
+    boolean isBooked(Long merchantId, DateTime startTime, DateTime endTime);
 
 }

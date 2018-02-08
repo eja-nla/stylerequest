@@ -52,6 +52,7 @@ public class StyleRequest extends AbstractActorEnablerEntity {
     public StyleRequest(){
         this.addOns = Collections.emptyList();
         this.placedTime = DateTime.now();
+
     }
 
     public StyleRequest(Style style, Merchant merchant, Customer customer, Location location, StyleRequestState state, DateTime appointmentStartTime, DateTime appointmentEndTime) {

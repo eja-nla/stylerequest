@@ -41,6 +41,7 @@ public class RestServicesModule extends ServletModule {
 
     private ServletContext servletContext;
     private final Map<Integer, Pair<String, String>> endpoints = new HashMap<>();
+    private int count = 1;
 
     public RestServicesModule() {
         this.servletContext = this.getServletContext();
@@ -88,7 +89,6 @@ public class RestServicesModule extends ServletModule {
     private void exposeServletEndpoints(Class resourceClass) {
         AbstractResource resource = IntrospectionModeller.createResource(resourceClass);
         String uriPrefix = resource.getPath().getValue();
-        int count = 1;
         for (AbstractSubResourceMethod srm :resource.getSubResourceMethods()) {
             String uri = uriPrefix + srm.getPath().getValue();
             endpoints.put(count, Pair.of(srm.getHttpMethod(), uri));

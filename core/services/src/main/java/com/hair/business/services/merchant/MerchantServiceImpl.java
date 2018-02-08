@@ -10,7 +10,6 @@ import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.StyleRequestService;
-import com.x.business.notif.AcceptedStyleRequestNotification;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 import com.x.business.scheduler.stereotype.EmailTaskQueue;
@@ -39,7 +38,7 @@ public class MerchantServiceImpl implements MerchantService {
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;
 
-    private final List<String> isBookedFilter = Arrays.asList("merchantPermanentId", "state", "appointmentStartTime <=", "appointmentStartTime >=");
+    private final List<String> IS_BOOOKED_FILTER = Arrays.asList("merchantPermanentId", "state", "appointmentStartTime >=", "appointmentStartTime <=");
 
     @Inject
     public MerchantServiceImpl(Repository repository, StyleRequestService styleRequestService, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue) {
@@ -51,7 +50,9 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public Merchant findMerchant(long id) {
-        return null;
+        Assert.validId(id);
+
+        return repository.findOne(id, Merchant.class);
     }
 
     @Override
@@ -90,8 +91,7 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public void updateMerchant(Merchant merchant) {
-        Assert.notNull(merchant, "Merchant cannot be null.");
-        repository.saveOne(merchant);
+        repository.update(merchant);
     }
 
     @Override
@@ -100,30 +100,11 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public boolean isBooked(Long merchantId, DateTime period) {
-        List<Object> isBookedValue = Arrays.asList(merchantId, StyleRequestState.ACCEPTED, period, period.minusMinutes(30));
-        List<Long> foundRequests = repository.peekByQuery(StyleRequest.class, isBookedFilter, isBookedValue);
+    public boolean isBooked(Long merchantId, DateTime startTime, DateTime endTime) {
+        List<Object> isBookedValue = Arrays.asList(merchantId, StyleRequestState.ACCEPTED, startTime, endTime);
+        List<Long> foundRequests = repository.peekByQuery(StyleRequest.class, IS_BOOOKED_FILTER, isBookedValue);
 
         return foundRequests.size() > 0;
     }
-
-    @Override
-    public void acceptStyleRequest(Long merchantId, Long styleRequestId) {
-        Merchant merchant = repository.findOne(merchantId, Merchant.class);
-        Assert.notNull(merchant, String.format("Merchant with id '%s' not found", merchantId));
-
-        StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
-        Assert.notNull(styleRequest, String.format("StyleRequest with id '%s' not found", styleRequest));
-
-        //Assert.isTrue(!isBooked(merchantId, styleRequest.getAppointmentStartTime()), "%s has an active booking during this period.", merchant.getFirstName());
-
-        styleRequest.setState(StyleRequestState.ACCEPTED);
-        styleRequestService.updateStyleRequest(styleRequest);
-
-        emailTaskQueue.add(new AcceptedStyleRequestNotification(styleRequest, merchant.getPreferences()));
-        logger.debug("Successfully accepted style request " + styleRequestId);
-
-    }
-
 
 }
