@@ -1,5 +1,7 @@
 package com.hair.business.app;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -14,12 +16,13 @@ import com.hair.business.rest.RestServicesModule;
 import com.hair.business.services.config.ServicesModule;
 import com.x.business.config.UtilModule;
 
+import org.slf4j.Logger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContextEvent;
 
@@ -30,7 +33,7 @@ import javax.servlet.ServletContextEvent;
  */
 public class AppConfigurationMain extends GuiceServletContextListener {
 
-    private static final Logger log = Logger.getLogger(AppConfigurationMain.class.getName());
+    private final Logger log = getLogger(getClass());
 
     /**
      * Main application entry point.
@@ -65,7 +68,7 @@ public class AppConfigurationMain extends GuiceServletContextListener {
             properties.load(is);
 
         } catch (IOException e) {
-            log.severe("Failed to load properties file with errors: " + e.getMessage());
+            log.error("Failed to load properties file with errors: " + e.getMessage());
         }
 
         return properties;
@@ -88,6 +91,6 @@ public class AppConfigurationMain extends GuiceServletContextListener {
 
         long millis = System.currentTimeMillis() - time;
 
-        log.info("Guice initialization took " + millis + " millis");
+        log.info("Guice initialization took {} millis", millis);
     }
 }

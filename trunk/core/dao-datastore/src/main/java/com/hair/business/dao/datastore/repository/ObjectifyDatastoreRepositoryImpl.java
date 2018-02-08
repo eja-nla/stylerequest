@@ -126,4 +126,11 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
         return results;
     }
 
+
+    @Override
+    public <T> void update(T entity) {
+        Assert.notNull(entity, "Persistent entity cannot be null.");
+
+        saveOne(entity);
+    }
 }

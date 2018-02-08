@@ -71,6 +71,11 @@ public interface Repository {
     <E> Result<Map<Key<E>, E>> saveFew(E... entities);
 
     /**
+     * updates an entity, updating entity's lastUpdateTime
+     * */
+    <T> void update(T entity);
+
+    /**
      * Deletes the given entity
      * */
     <T> void delete(T... entities);

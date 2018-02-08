@@ -119,6 +119,7 @@ public class EntityTestConstants {
         Style s = new Style("didi", 20, m.getId(), m.getAddress().getLocation(), Arrays.asList(createImage(), createImage(), createImage(), createImage(), createImage()));
         s.setId(new Random().nextLong());
         s.setPermanentId(new Random().nextLong());
+        s.setDurationEstimate(59);
         return s;
     }
 

@@ -20,7 +20,6 @@ public class ExecTimeLoggerInterceptor implements MethodInterceptor {
 
     @Override
     public Object invoke(final MethodInvocation invocation) throws Throwable {
-        stopwatch.reset();
         try {
             stopwatch.start();
             final Object returnedObject = invocation.proceed();

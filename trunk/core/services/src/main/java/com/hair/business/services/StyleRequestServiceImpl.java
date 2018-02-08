@@ -7,13 +7,14 @@ import static com.hair.business.beans.constants.StyleRequestState.PENDING;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import com.hair.business.beans.constants.Preferences;
-import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.hair.business.services.merchant.MerchantService;
 import com.hair.business.services.payment.PaymentService;
+import com.hair.business.services.state.StylerequestStateMgr;
 import com.hair.business.services.stereotype.Timed;
 import com.x.business.notif.AcceptedStyleRequestNotification;
 import com.x.business.notif.CancelledStyleRequestNotification;
@@ -40,6 +41,8 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;
     private final PaymentService paymentService;
+    private final MerchantService merchantService;
+    private final StylerequestStateMgr stateMgr;
 
     private final Logger logger = getLogger(this.getClass());
 
@@ -47,12 +50,14 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     StyleRequestServiceImpl(Repository repository,
                             @EmailTaskQueue TaskQueue emailTaskQueue,
                             @ApnsTaskQueue TaskQueue apnsQueue,
-                            PaymentService paymentService) {
+                            PaymentService paymentService, MerchantService merchantService, StylerequestStateMgr stateMgr) {
         super(repository);
         this.repository = repository;
         this.emailTaskQueue = emailTaskQueue;
         this.apnsQueue = apnsQueue;
         this.paymentService = paymentService;
+        this.merchantService = merchantService;
+        this.stateMgr = stateMgr;
     }
 
     @Timed
@@ -104,7 +109,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
 //                .setDeviceTokens(customer.getDevice().getDeviceId()); // Nullable?
 //        apnsQueue.add(new SendPushNotificationToApnsTask(pushNotification));
 
-        logger.debug("Placed Style Request. ID: " + styleRequest.getId());
+        logger.info("Placed Style Request. ID:'{}' customer:'{}' merchant:'{}'", styleRequest.getId(), customer.getEmail(), merchant.getEmail());
         return styleRequest;
     }
 
@@ -116,7 +121,13 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     @Override
     public void acceptStyleRequest(Long styleRequestId, Preferences preferences) {
         Assert.validId(styleRequestId);
-        StyleRequest styleRequest = transition(styleRequestId, ACCEPTED);
+
+        StyleRequest styleRequest = stateMgr.transition(styleRequestId, ACCEPTED);
+
+        Merchant merchant = styleRequest.getMerchant();
+        Assert.isTrue(!merchantService.isBooked(merchant.getId(), styleRequest.getAppointmentStartTime(),
+                styleRequest.getAppointmentStartTime().plusMinutes(styleRequest.getStyle().getDurationEstimate())), "%s has an active booking during this period.", merchant.getFirstName());
+
         styleRequest.setAcceptedTime(DateTime.now());
         updateStyleRequest(styleRequest);
 
@@ -126,7 +137,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     @Override
     public void completeStyleRequest(Long styleRequestId, Preferences preferences) {
         Assert.validId(styleRequestId);
-        StyleRequest styleRequest = transition(styleRequestId, COMPLETED);
+        StyleRequest styleRequest = stateMgr.transition(styleRequestId, COMPLETED);
         styleRequest.setCompletedTime(DateTime.now());
         updateStyleRequest(styleRequest);
 
@@ -136,7 +147,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     @Override
     public void cancelStyleRequest(Long styleRequestId, Preferences preferences) {
         Assert.validId(styleRequestId);
-        StyleRequest styleRequest = transition(styleRequestId, CANCELLED);
+        StyleRequest styleRequest = stateMgr.transition(styleRequestId, CANCELLED);
         styleRequest.setCancelledTime(DateTime.now());
         updateStyleRequest(styleRequest);
 
@@ -145,17 +156,6 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
 
     }
 
-    private StyleRequest transition(final Long id, final StyleRequestState state) {
-        Assert.validId(id);
-        StyleRequest styleRequest = repository.findOne(id, StyleRequest.class);
-        Assert.notNull(styleRequest, String.format("Style request with ID %s not found", styleRequest));
 
-        Assert.isTrue(!state.equals(styleRequest.getState()), "Style request state and new state are equal.");
-        Assert.isTrue(!styleRequest.getState().equals(StyleRequestState.CANCELLED), "Request is already cancelled.");
-
-        styleRequest.setState(state);
-
-        return styleRequest;
-    }
 
 }

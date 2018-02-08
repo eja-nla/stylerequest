@@ -1,13 +1,10 @@
 package com.hair.business.rest.resources.stylerequest;
 
-import static com.hair.business.rest.MvcConstants.FIND_CUSTOMER_ACCEPTED_STYLEREQUEST_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.FIND_CUSTOMER_CANCELLED_STYLEREQUEST_ENDPOINT;
-import static com.hair.business.rest.MvcConstants.FIND_CUSTOMER_COMPLETED_STYLEREQUEST_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.FIND_CUSTOMER_PENDING_STYLEREQUEST_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.FIND_MERCHANT_ACCEPTED_STYLEREQUEST_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.FIND_MERCHANT_CANCELLED_STYLEREQUEST_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.FIND_MERCHANT_COMPLETED_STYLEREQUEST_ENDPOINT;
-import static com.hair.business.rest.MvcConstants.FIND_MERCHANT_PENDING_STYLEREQUEST_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.STYLE_REQUEST_URI;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -79,23 +76,23 @@ public class StyleRequestServlet extends AbstractRequestServlet {
         return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
     }
 
-    @POST
-    @Path(FIND_MERCHANT_PENDING_STYLEREQUEST_ENDPOINT)
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
-    public Response findMerchantPendingAppointments(@QueryParam("merchantId") Long merchantId, @QueryParam("lower") String lower, @QueryParam("upper") String upper) {
-        final Collection<StyleRequest> styleRequests;
-        try {
-            final DateTime lowerLimit = new DateTime(lower);
-            final DateTime upperLimit = new DateTime(upper);
-            styleRequests = styleRequestService.findMerchantPendingAppointments(merchantId, lowerLimit, upperLimit);
-        } catch (IllegalArgumentException e){
-            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
-        } catch (Exception e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
-        }
-        return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
-    }
+//    @POST
+//    @Path(FIND_MERCHANT_PENDING_STYLEREQUEST_ENDPOINT)
+//    @Consumes(APPLICATION_JSON)
+//    @Produces(APPLICATION_JSON)
+//    public Response findMerchantPendingAppointments(@QueryParam("merchantId") Long merchantId, @QueryParam("lower") String lower, @QueryParam("upper") String upper) {
+//        final Collection<StyleRequest> styleRequests;
+//        try {
+//            final DateTime lowerLimit = new DateTime(lower);
+//            final DateTime upperLimit = new DateTime(upper);
+//            styleRequests = styleRequestService.findMerchantPendingAppointments(merchantId, lowerLimit, upperLimit);
+//        } catch (IllegalArgumentException e){
+//            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+//        } catch (Exception e){
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
+//        }
+//        return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
+//    }
 
     @POST
     @Path(FIND_MERCHANT_COMPLETED_STYLEREQUEST_ENDPOINT)
@@ -115,23 +112,23 @@ public class StyleRequestServlet extends AbstractRequestServlet {
         return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
     }
 
-    @POST
-    @Path(FIND_CUSTOMER_ACCEPTED_STYLEREQUEST_ENDPOINT)
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
-    public Response findCustomerAcceptedAppointments(@QueryParam("customerId") Long customerId, @QueryParam("lower") String lower, @QueryParam("upper") String upper) {
-        final Collection<StyleRequest> styleRequests;
-        try {
-            final DateTime lowerLimit = new DateTime(lower);
-            final DateTime upperLimit = new DateTime(upper);
-            styleRequests = styleRequestService.findCustomerAcceptedAppointments(customerId, lowerLimit, upperLimit);
-        } catch (IllegalArgumentException e){
-            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
-        } catch (Exception e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
-        }
-        return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
-    }
+//    @POST
+//    @Path(FIND_CUSTOMER_ACCEPTED_STYLEREQUEST_ENDPOINT)
+//    @Consumes(APPLICATION_JSON)
+//    @Produces(APPLICATION_JSON)
+//    public Response findCustomerAcceptedAppointments(@QueryParam("customerId") Long customerId, @QueryParam("lower") String lower, @QueryParam("upper") String upper) {
+//        final Collection<StyleRequest> styleRequests;
+//        try {
+//            final DateTime lowerLimit = new DateTime(lower);
+//            final DateTime upperLimit = new DateTime(upper);
+//            styleRequests = styleRequestService.findCustomerAcceptedAppointments(customerId, lowerLimit, upperLimit);
+//        } catch (IllegalArgumentException e){
+//            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+//        } catch (Exception e){
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
+//        }
+//        return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
+//    }
 
     @POST
     @Path(FIND_CUSTOMER_CANCELLED_STYLEREQUEST_ENDPOINT)
@@ -169,22 +166,22 @@ public class StyleRequestServlet extends AbstractRequestServlet {
         return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
     }
 
-    @POST
-    @Path(FIND_CUSTOMER_COMPLETED_STYLEREQUEST_ENDPOINT)
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
-    public Response findCustomerCompletedAppointments(@QueryParam("customerId") Long customerId, @QueryParam("lower") String lower, @QueryParam("upper") String upper) {
-        final Collection<StyleRequest> styleRequests;
-        try {
-            final DateTime lowerLimit = new DateTime(lower);
-            final DateTime upperLimit = new DateTime(upper);
-            styleRequests = styleRequestService.findCustomerCompletedAppointments(customerId, lowerLimit, upperLimit);
-        } catch (IllegalArgumentException e){
-            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
-        } catch (Exception e){
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
-        }
-        return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
-    }
+//    @POST
+//    @Path(FIND_CUSTOMER_COMPLETED_STYLEREQUEST_ENDPOINT)
+//    @Consumes(APPLICATION_JSON)
+//    @Produces(APPLICATION_JSON)
+//    public Response findCustomerCompletedAppointments(@QueryParam("customerId") Long customerId, @QueryParam("lower") String lower, @QueryParam("upper") String upper) {
+//        final Collection<StyleRequest> styleRequests;
+//        try {
+//            final DateTime lowerLimit = new DateTime(lower);
+//            final DateTime upperLimit = new DateTime(upper);
+//            styleRequests = styleRequestService.findCustomerCompletedAppointments(customerId, lowerLimit, upperLimit);
+//        } catch (IllegalArgumentException e){
+//            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+//        } catch (Exception e){
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
+//        }
+//        return Response.ok(styleRequests, MediaType.APPLICATION_JSON).build();
+//    }
 
 }
