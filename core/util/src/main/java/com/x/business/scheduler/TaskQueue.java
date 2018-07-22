@@ -15,4 +15,6 @@ public interface TaskQueue {
     /** Allows any number of tasks; automatically partitions as necessary */
     void add(Iterable<? extends DeferredTask> payloads);
 
+    void remove(DeferredTask payload);
+
 }

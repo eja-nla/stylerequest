@@ -2,7 +2,11 @@ package com.x.business.notif;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import com.google.appengine.api.datastore.Transaction;
+import com.google.appengine.api.taskqueue.DeferredTask;
+
 import com.x.business.notif.mail.handler.EmailHandler;
+import com.x.business.scheduler.TaskQueue;
 import com.x.business.tasks.SendgridStyleRequestEmailHandler;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -19,9 +23,29 @@ import java.nio.file.Paths;
  *
  * Created by Olukorede Aguda on 17/02/2017.
  */
-public abstract class AbstractStyleRequestNotificationTask extends AbstractNotification {
+public abstract class AbstractStyleRequestNotificationTask extends AbstractEmailNotification {
 
-    private static final EmailHandler emailHandler = new SendgridStyleRequestEmailHandler();
+    private static final EmailHandler emailHandler = new SendgridStyleRequestEmailHandler(new TaskQueue() {
+        @Override
+        public void add(DeferredTask payload) {
+
+        }
+
+        @Override
+        public void add(Transaction txn, DeferredTask payload) {
+
+        }
+
+        @Override
+        public void add(Iterable<? extends DeferredTask> payloads) {
+
+        }
+
+        @Override
+        public void remove(DeferredTask payload) {
+
+        }
+    });//emailTaskQueue);
     private static final Logger logger = getLogger(AbstractStyleRequestNotificationTask.class);
     private static final String adminEmail = System.getProperty("sendgrid.from.email");
 

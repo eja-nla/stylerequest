@@ -24,18 +24,13 @@ public class Assert extends Validate {
         }
     }
 
-    public static Object notNull(Object o){
-        if(null == o){
-            throw new IllegalArgumentException(NULL_MESSAGE);
-        }
-
-        return o;
-    }
-
     public static void notNull(Object... args){
-        for(Object arg : args) {
-            notNull(arg);
+        for (int i = 0; i < args.length; i++) {
+            if(null == args[i]){
+                throw new IllegalArgumentException(NULL_MESSAGE);
+            }
         }
+
     }
 
     public static void validId(Long key){

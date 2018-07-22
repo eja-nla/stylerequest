@@ -48,7 +48,7 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
     private final StyleRequestService styleRequestService;
     private final PaymentService paymentService;
 
-    private final Logger log = getLogger(getClass());
+    private static final Logger log = getLogger(CustomerRequestServlet.class);
 
     @Inject
     public CustomerRequestServlet(CustomerService customerService, StyleRequestService styleRequestService, PaymentService paymentService) {

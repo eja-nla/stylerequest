@@ -24,7 +24,7 @@ import com.hair.business.services.payment.PaymentService;
 import com.hair.business.services.pushNotification.SendPushNotificationToApnsTask;
 import com.hair.business.services.state.StylerequestStateMgr;
 import com.hair.business.services.state.StylerequestStateMgrImpl;
-import com.x.business.notif.AbstractNotification;
+import com.x.business.notif.AbstractEmailNotification;
 import com.x.business.scheduler.TaskQueue;
 
 import org.junit.Before;
@@ -88,7 +88,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     public void testPlaceStyleRequest() throws Exception {
         StyleRequest styleRequest = placeStyleRequest();
 
-        verify(emailQueue, times(1)).add(any(AbstractNotification.class));
+        verify(emailQueue, times(1)).add(any(AbstractEmailNotification.class));
 
         assertThat(styleRequest, is(notNullValue()));
         assertThat(styleRequest.getStyle().getRequestCount(), is(1L));

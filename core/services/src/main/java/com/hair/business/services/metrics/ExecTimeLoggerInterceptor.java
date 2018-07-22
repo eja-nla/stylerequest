@@ -15,14 +15,14 @@ import org.slf4j.Logger;
  */
 public class ExecTimeLoggerInterceptor implements MethodInterceptor {
 
-    private final Logger logger = getLogger(this.getClass());
-    private final Stopwatch stopwatch = Stopwatch.createStarted();
+    private static final Logger logger = getLogger(ExecTimeLoggerInterceptor.class);
+    private static final Stopwatch stopwatch = Stopwatch.createStarted();
 
     @Override
     public Object invoke(final MethodInvocation invocation) throws Throwable {
         try {
             stopwatch.start();
-            final Object returnedObject = invocation.proceed();
+            final Object returnedObject = invocation.proceed(); // what if the executing method is async?
             stopwatch.stop();
             logger.info("Method: '{}' of class: '{}' took: '{}'",
                     invocation.getMethod().getName(),

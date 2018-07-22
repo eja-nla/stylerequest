@@ -1,6 +1,6 @@
 package com.hair.business.services.payment.paypal;
 
-import static java.util.logging.Logger.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hair.business.services.com.hair.business.client.AbstractClient;
@@ -14,13 +14,13 @@ import com.paypal.base.rest.PayPalResource;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -33,7 +33,7 @@ import javax.inject.Provider;
  */
 public class PaypalPaymentRequestHandlerImpl extends AbstractClient<Object> implements PaymentRequestHandler {
 
-    private static final Logger logger = getLogger(PaypalPaymentRequestHandlerImpl.class.getName());
+    private static final Logger logger = getLogger(PaypalPaymentRequestHandlerImpl.class);
 
     private static final String paypal_api_base = "https://api.sandbox.paypal.com";
     private static final String ACCESS_TOKEN_ENDPOINT = paypal_api_base + "/v1/oauth2/token";
@@ -63,7 +63,7 @@ public class PaypalPaymentRequestHandlerImpl extends AbstractClient<Object> impl
 
             return go(PAYMENT_ENDPOINT, headers, payment, Payment.class);
         } catch (NoSuchAlgorithmException | KeyManagementException | IOException | PayPalRESTException e) {
-            logger.severe(e.getMessage());
+            logger.error(e.getMessage());
         }
 
         return null;
@@ -78,7 +78,7 @@ public class PaypalPaymentRequestHandlerImpl extends AbstractClient<Object> impl
 
             return go(String.format(AUTHORIZATION_ENDPOINT, authorizationId), headers, null, Authorization.class);
         } catch (NoSuchAlgorithmException | KeyManagementException | IOException | PayPalRESTException e) {
-            logger.severe(e.getMessage());
+            logger.error(e.getMessage());
         }
 
         return null;
@@ -93,7 +93,7 @@ public class PaypalPaymentRequestHandlerImpl extends AbstractClient<Object> impl
 
             return go(String.format(CAPTURE_REQUEST_ENDPOINT, authorizationId), headers, capture, Capture.class);
         } catch (NoSuchAlgorithmException | KeyManagementException | IOException | PayPalRESTException e) {
-            logger.severe(e.getMessage());
+            logger.error(e.getMessage());
         }
 
         return null;
