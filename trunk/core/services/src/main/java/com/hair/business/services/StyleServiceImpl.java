@@ -26,7 +26,7 @@ import javax.inject.Inject;
 public class StyleServiceImpl implements StyleService {
 
     private final Repository repository;
-    private final Logger logger = getLogger(this.getClass());
+    private static final Logger logger = getLogger(StyleServiceImpl.class);
 
     @Inject
     public StyleServiceImpl(Repository repository) {

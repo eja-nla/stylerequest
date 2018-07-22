@@ -30,7 +30,7 @@ import javax.inject.Provider;
  */
 public class BraintreePaymentServiceImpl implements PaymentService {
 
-    private final Logger logger = getLogger(this.getClass());
+    private static final Logger logger = getLogger(BraintreePaymentServiceImpl.class);
     private final BraintreeGateway gateway;
     private final BraintreePaymentHandler braintreePaymentHandler;
     private final Repository repository;

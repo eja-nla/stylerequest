@@ -33,7 +33,7 @@ import javax.servlet.ServletContextEvent;
  */
 public class AppConfigurationMain extends GuiceServletContextListener {
 
-    private final Logger log = getLogger(getClass());
+    private static final Logger log = getLogger(AppConfigurationMain.class);
 
     /**
      * Main application entry point.
@@ -46,7 +46,7 @@ public class AppConfigurationMain extends GuiceServletContextListener {
                 @Override
                 protected void configure() {
                     Properties props = loadProperties();
-                    log.info("found properties " + props.propertyNames());
+                    log.info("found properties {}", props.propertyNames());
                     Names.bindProperties(binder(), props);
 
                 }

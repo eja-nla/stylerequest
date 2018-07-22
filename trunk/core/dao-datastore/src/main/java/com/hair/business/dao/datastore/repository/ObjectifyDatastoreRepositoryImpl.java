@@ -113,7 +113,7 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
         ofy().delete().entities(entities);
     }
 
-    private <T> Query<T> buildQuery(Class<T> clazz, List<String> conditions, List<Object> conditionsValues) {
+    private static <T> Query<T> buildQuery(Class<T> clazz, List<String> conditions, List<Object> conditionsValues) {
         if (conditions.size() != conditionsValues.size() && (conditions.size() != 0 && conditionsValues.size() != 0)){
             throw new IllegalArgumentException("Conditions and supplied values sizes must match and must not be empty.");
         }

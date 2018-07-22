@@ -6,7 +6,7 @@ import com.hair.business.beans.entity.StyleRequest;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
- * AbstractNotification object
+ * AbstractEmailNotification object
  * Created by Olukorede Aguda on 21/06/2016.
  */
 public class CancelledStyleRequestNotification extends AbstractStyleRequestNotificationTask {

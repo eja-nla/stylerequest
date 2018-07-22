@@ -31,7 +31,7 @@ import javax.inject.Inject;
  */
 public class MerchantServiceImpl implements MerchantService {
 
-    private final Logger logger = getLogger(this.getClass());
+    private static final Logger logger = getLogger(MerchantServiceImpl.class);
 
     private final Repository repository;
     private final StyleRequestService styleRequestService;
@@ -104,7 +104,7 @@ public class MerchantServiceImpl implements MerchantService {
         List<Object> isBookedValue = Arrays.asList(merchantId, StyleRequestState.ACCEPTED, startTime, endTime);
         List<Long> foundRequests = repository.peekByQuery(StyleRequest.class, IS_BOOOKED_FILTER, isBookedValue);
 
-        return foundRequests.size() > 0;
+        return !foundRequests.isEmpty();
     }
 
 }

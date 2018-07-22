@@ -44,7 +44,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     private final MerchantService merchantService;
     private final StylerequestStateMgr stateMgr;
 
-    private final Logger logger = getLogger(this.getClass());
+    private static final Logger logger = getLogger(StyleRequestServiceImpl.class);
 
     @Inject
     StyleRequestServiceImpl(Repository repository,

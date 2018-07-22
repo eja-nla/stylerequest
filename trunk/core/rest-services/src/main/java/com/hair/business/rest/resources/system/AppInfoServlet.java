@@ -32,7 +32,7 @@ import javax.ws.rs.core.Response;
 public class AppInfoServlet extends AbstractRequestServlet {
 
     private Map<Integer, Pair<String, String>> endpoints;
-    private final Logger logger = getLogger(this.getClass());
+    private static final Logger logger = getLogger(AppInfoServlet.class);
 
     @Inject
     public AppInfoServlet(Provider<Map<Integer, Pair<String, String>>> endpoints) {

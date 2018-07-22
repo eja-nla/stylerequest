@@ -39,7 +39,7 @@ import javax.inject.Inject;
  */
 public class CustomerServiceImpl implements CustomerService {
 
-    private final Logger logger = getLogger(this.getClass());
+    private static final Logger logger = getLogger(CustomerServiceImpl.class);
     private final Repository repository;
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;

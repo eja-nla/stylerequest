@@ -32,10 +32,10 @@ import javax.inject.Provider;
  */
 public class BraintreePaymentHandlerImpl implements BraintreePaymentHandler {
 
-    private final Logger logger = getLogger(this.getClass());
+    private static final Logger logger = getLogger(BraintreePaymentHandlerImpl.class);
 
     private final BraintreeGateway gateway;
-    private final ClientTokenRequest clientTokenRequest = new ClientTokenRequest();
+    private static final ClientTokenRequest clientTokenRequest = new ClientTokenRequest();
 
     @Inject
     public BraintreePaymentHandlerImpl(Provider<BraintreeGateway> gatewayProvider) {
@@ -43,8 +43,8 @@ public class BraintreePaymentHandlerImpl implements BraintreePaymentHandler {
     }
 
     @Override
-    public Transaction authorizeTransaction(Long customerId, String paymentMethodToken, double amount, boolean isSettled) {
-        TransactionRequest request = new TransactionRequest()
+    public Transaction authorizeTransaction(final Long customerId, final String paymentMethodToken, double amount, boolean isSettled) {
+        final TransactionRequest request = new TransactionRequest()
                 .customerId(customerId.toString())
                 .amount(BigDecimal.valueOf(amount))
                 .paymentMethodToken(paymentMethodToken)
@@ -52,10 +52,10 @@ public class BraintreePaymentHandlerImpl implements BraintreePaymentHandler {
                 .submitForSettlement(isSettled)
                 .done();
 
-        Result result = gateway.transaction().sale(request);
+        final Result result = gateway.transaction().sale(request);
 
         if (!result.isSuccess()){
-            logger.error("Braintree authorization failed with message " + result.getMessage());
+            logger.error("Braintree authorization failed with message {}", result.getMessage());
         }
         return (Transaction) result.getTarget();
     }
@@ -66,7 +66,7 @@ public class BraintreePaymentHandlerImpl implements BraintreePaymentHandler {
                 .submitForSettlement(transactionId, BigDecimal.valueOf(amount));
 
         if (!result.isSuccess()) {
-            logger.error("Braintree settle transaction request failed " + result.getMessage());
+            logger.error("Braintree settle transaction request failed {}", result.getMessage());
         }
 
         return result.getTarget();
@@ -89,7 +89,7 @@ public class BraintreePaymentHandlerImpl implements BraintreePaymentHandler {
         Result<Transaction> result = gateway.transaction().sale(request);
 
         if (!result.isSuccess()) {
-            logger.error("Braintree settle non-preauthorized transaction request failed " + result.getMessage());
+            logger.error("Braintree settle non-preauthorized transaction request failed {}", result.getMessage());
         }
 
         return result.getTarget();
@@ -119,7 +119,7 @@ public class BraintreePaymentHandlerImpl implements BraintreePaymentHandler {
         Result<com.braintreegateway.Customer> result = gateway.customer().create(request);
 
         if (!result.isSuccess()){
-            logger.error("Braintree create customer request failed: " + result.getMessage());
+            logger.error("Braintree create customer request failed: {}", result.getMessage());
         }
 
     }
@@ -129,7 +129,7 @@ public class BraintreePaymentHandlerImpl implements BraintreePaymentHandler {
         Result<Transaction> result = gateway.transaction().refund(transactionId);
 
         if (!result.isSuccess()){
-            logger.error("Braintree refund request failed: " + result.getMessage());
+            logger.error("Braintree refund request failed: {}", result.getMessage());
         }
     }
 
@@ -147,7 +147,7 @@ public class BraintreePaymentHandlerImpl implements BraintreePaymentHandler {
         Result<? extends com.braintreegateway.PaymentMethod> result = gateway.paymentMethod().create(request);
 
         if (!result.isSuccess()){
-            logger.error("Braintree add new payment method request failed " + result.getMessage());
+            logger.error("Braintree add new payment method request failed {}", result.getMessage());
         }
 
         return (Customer) result.getTarget(); //fixme
