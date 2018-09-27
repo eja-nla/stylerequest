@@ -1,21 +1,18 @@
 package com.hair.business.services.payment.braintree;
 
 import static com.x.y.EntityTestConstants.createCustomer;
-import static com.x.y.EntityTestConstants.createMerchant;
-import static com.x.y.EntityTestConstants.createStyle;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import com.hair.business.beans.constants.StyleRequestState;
-import com.hair.business.beans.entity.Customer;
-import com.hair.business.beans.entity.Merchant;
-import com.hair.business.beans.entity.Style;
-import com.hair.business.beans.entity.StyleRequest;
+import com.braintreegateway.BraintreeGateway;
+import com.braintreegateway.Environment;
+import com.braintreegateway.Transaction;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.customer.AbstractServicesTestBase;
-import com.hair.business.services.payment.PaymentService;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -23,49 +20,52 @@ import javax.inject.Provider;
 
 /**
  *
- * Created by olukoredeaguda on 11/03/2017.
+ * Created by olukoredeaguda on 06/03/2017.
  */
 public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
-
-    private BraintreePaymentHandler handler = Mockito.mock(BraintreePaymentHandler.class);
-    private Repository repository;
-    private Provider provider = Mockito.mock(Provider.class);
-    private final PaymentService braintreePaymentService = new BraintreePaymentServiceImpl(provider, handler, repository);
-    private StyleRequest styleRequest; private Customer customer; private Style style;
+    private BraintreePaymentService braintreePaymentService;
 
     @Before
     public void setUp() {
-        repository = injector.getInstance(Repository.class);
-        customer = createCustomer();
-        style = createStyle();
-        Merchant merchant = createMerchant();
-        repository.saveFew(customer, style, merchant);
-        styleRequest = new StyleRequest(style, merchant, customer, customer.getAddress().getLocation(), StyleRequestState.PENDING, null, null);
+        BraintreeGateway bt = new BraintreeGateway(Environment.SANDBOX, "f3x9jjczmbg6gz9y", "q4vncn2hg48mrvgt", "2615a1825093d71eb3daf9d0dd17d9d4");
+        Provider<BraintreeGateway> p = () -> bt;
+        braintreePaymentService = new BraintreePaymentServiceImpl(p, Mockito.mock(Repository.class));
     }
 
+    @Ignore
     @Test
-    public void testHoldPayment() throws Exception {
-        assertThat(braintreePaymentService.holdPayment(styleRequest, customer), notNullValue());
+    public void createTransaction() {
+        Transaction transaction = braintreePaymentService.createTransaction("fake-valid-no-billing-address-nonce", 4533L,9.3, false);
+        assertThat(transaction, notNullValue());
     }
 
+    @Ignore
     @Test
-    public void testDeductPreAuthPayment() throws Exception {
+    public void generateClientToken() {
+        String token = braintreePaymentService.issueClientToken("4533");
+
+        assertThat(token, notNullValue());
     }
 
+    @Ignore
     @Test
-    public void testDeductNonPreAuthPayment() throws Exception {
+    public void addPaymentMethod() {
+        com.hair.business.beans.entity.Customer c = createCustomer();
+        c.setId(4533L);
+
+        boolean result = braintreePaymentService.addPaymentMethod("fake-valid-nonce", c.getId(), c.getPayment().getPaymentItems().get(0).getPaymentMethod(), false);
+
+        assertThat(result, is(true));
     }
 
-    @Test
-    public void testComputeTax() throws Exception {
-    }
 
+    //@Ignore
     @Test
-    public void testUpdatePayment() throws Exception {
-    }
+    public void testCreateCustomer() {
+        String id = braintreePaymentService.createCustomer(createCustomer(), "fake-valid-nonce");
+        // see https://developers.braintreepayments.com/reference/general/testing/java for test nonces
 
-    @Test
-    public void testRefund() throws Exception {
+        assertThat(id, notNullValue());
     }
 
 }

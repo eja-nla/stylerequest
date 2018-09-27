@@ -75,11 +75,11 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         Assert.validIds(styleId, customerId, merchantId);
         Assert.dateInFuture(appointmentTime);
 
-        Style style = repository.findOne(styleId, Style.class);
+        final Style style = repository.findOne(styleId, Style.class);
         Assert.notNull(style, String.format("Style with id %s not found", styleId));
-        Customer customer = repository.findOne(customerId, Customer.class);
+        final Customer customer = repository.findOne(customerId, Customer.class);
         Assert.notNull(style, String.format("Customer with id %s not found", customerId));
-        Merchant merchant = repository.findOne(merchantId, Merchant.class);
+        final Merchant merchant = repository.findOne(merchantId, Merchant.class);
         Assert.notNull(style, String.format("Merchant with id %s not found", merchantId));
 
         // TODO : further validations
@@ -95,7 +95,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         styleRequest.setPermanentId(id);
 
         // add payment authorization request to a new payments queue
-        paymentService.holdPayment(styleRequest, customer); //fixme bind to braintree impl before deployment TLS v1.2 issues, GAE says it works in prod but not dev, idiots
+        paymentService.holdPayment(styleRequest, customer); //fixme bind to braintree impl before deployment TLS v1.2 issues, GAE says it works in prod but not dev. Sounds idiotic
 
         repository.saveFew(styleRequest, style);
 

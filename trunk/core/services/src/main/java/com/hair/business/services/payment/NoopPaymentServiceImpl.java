@@ -29,6 +29,11 @@ public class NoopPaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    public Customer createCustomerPaymentProfile(Customer customer, PaymentType paymentType, boolean isDefault) {
+        return null;
+    }
+
+    @Override
     public void refund(StyleRequest styleRequest) {
     }
 

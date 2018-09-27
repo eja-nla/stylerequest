@@ -72,7 +72,6 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
         customerService.saveCustomer(customer);
 
         return Response.ok().build();
-        //todo on signup, store their payment details with braintree
     }
 
     @GET

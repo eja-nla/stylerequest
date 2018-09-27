@@ -125,7 +125,7 @@ public class EntityTestConstants {
 
     public static PaymentInformation createPaymentInfo(Long custId){
         PaymentInformation paymentInfo = new PaymentInformation();
-        PaymentMethod pm = new PaymentMethod("email", "agreementId", true, "custId");
+        PaymentMethod pm = new PaymentMethod("agreementId", true, "custId");
         pm.setToken("9zfg8d");
         PaymentItem paymentItem = new PaymentItem(PaymentType.CARD, pm, true);
         paymentInfo.setPaymentItems(Collections.singletonList(paymentItem));

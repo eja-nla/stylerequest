@@ -33,6 +33,8 @@ public interface PaymentService {
      * */
     void deductNonPreAuthPayment(String paymentToken, List<AddOn> addOns);
 
+    Customer createCustomerPaymentProfile(Customer customer, PaymentType paymentType, boolean isDefault);
+
     /**
      * Fires an refund request to downstream
      * */
