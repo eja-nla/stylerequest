@@ -49,9 +49,7 @@ public class Assert extends Validate {
     }
 
     public static void dateInFuture(DateTime dateTime) {
-        if (dateTime == null) {
-            throw new IllegalArgumentException("Null date not allowed.");
-        }
+        notNull(dateTime, "Null date not allowed.");
         if (dateTime.isBeforeNow()) {
             throw new IllegalArgumentException(String.format("Date %s must be in the future.", dateTime.toString()));
         }

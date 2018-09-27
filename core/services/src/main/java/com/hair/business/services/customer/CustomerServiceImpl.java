@@ -3,6 +3,7 @@ package com.hair.business.services.customer;
 import static com.x.business.utilities.RatingUtil.averagingWeighted;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Address;
@@ -13,7 +14,7 @@ import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
-import com.paypal.base.rest.APIContext;
+import com.hair.business.services.payment.PaymentService;
 import com.x.business.exception.DuplicateEntityException;
 import com.x.business.exception.EntityNotFoundException;
 import com.x.business.scheduler.TaskQueue;
@@ -43,15 +44,15 @@ public class CustomerServiceImpl implements CustomerService {
     private final Repository repository;
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;
-    private final APIContext paypalApiContext;
+    private final PaymentService paymentService;
     private static final String CUSTOMER_NOT_FOUND_MESSAGE = "Customer with Id %s not found";
 
     @Inject
-    CustomerServiceImpl(Repository repository, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue, APIContext paypalApiContext) {
+    CustomerServiceImpl(Repository repository, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue, PaymentService paymentService) {
         this.repository = repository;
         this.emailTaskQueue = emailTaskQueue;
         this.apnsQueue = apnsQueue;
-        this.paypalApiContext = paypalApiContext;
+        this.paymentService = paymentService;
     }
 
     @Override
@@ -78,6 +79,9 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = new Customer(firstname, lastname, email, phone, device, address);
         customer.setId(permId);
         customer.setPermanentId(permId);
+
+        customer = paymentService.createCustomerPaymentProfile(customer, PaymentType.CARD, true);
+
         saveCustomer(customer);
 
         return customer;

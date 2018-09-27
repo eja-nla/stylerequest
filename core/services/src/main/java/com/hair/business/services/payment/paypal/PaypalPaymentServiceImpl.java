@@ -182,6 +182,11 @@ public class PaypalPaymentServiceImpl implements PaypalPaymentService {
     }
 
     @Override
+    public Customer createCustomerPaymentProfile(Customer customer, PaymentType paymentType, boolean isDefault) {
+        return null;
+    }
+
+    @Override
     public void refund(StyleRequest styleRequest) {
 
     }

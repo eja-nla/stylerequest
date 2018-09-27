@@ -13,7 +13,7 @@ public class Preferences extends AbstractBean {
     private boolean acceptedNotificationEnabled = true;
     private boolean cancelledNotificationEnabled = true;
     private boolean completedNotificationEnabled = true;
-    private PaymentType preferredPaymentType = PaymentType.PAYPAL;
+    private PaymentType preferredPaymentType = PaymentType.CARD;
 
     public Preferences(){}
 

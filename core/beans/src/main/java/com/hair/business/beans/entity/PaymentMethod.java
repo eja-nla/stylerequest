@@ -14,7 +14,7 @@ import java.io.Serializable;
  * but objectify/datastore restrictions are forcing us to have to copy the response into an
  * entity that can be registered.
  *
- * Since there could be a myrad combination of payment methods,
+ * Since there could be a myriad combination of payment methods,
  * we use this class to store useful bits in whatever got returned.
  *
  * Note: Storing Creditcard info requires PCI compliance, and we don't want to get involved in that business
@@ -30,20 +30,14 @@ public class PaymentMethod extends AbstractActorEnablerEntity implements Seriali
 
     // For credit cards
     private String type;
-    private String firstName;
-    private String lastName;
 
-    // For paypal account
-    private String email;
-
-    public PaymentMethod(String email, String billingAgreementId, boolean isDefault, String customerId) {
-        this.email = email;
+    public PaymentMethod(String billingAgreementId, boolean isDefault, String customerId) {
         this.billingAgreementId = billingAgreementId;
         this.isDefault = isDefault;
         this.customerId = customerId;
     }
 
-    private String billingAgreementId;
+    private String billingAgreementId; // what is this?
     private boolean isDefault;
     private String imageUrl;
     private String customerId;
@@ -59,22 +53,6 @@ public class PaymentMethod extends AbstractActorEnablerEntity implements Seriali
         this.type = type;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getToken() {
         return token;
     }
@@ -83,13 +61,6 @@ public class PaymentMethod extends AbstractActorEnablerEntity implements Seriali
         this.token = token;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public String getBillingAgreementId() {
         return billingAgreementId;

@@ -34,6 +34,7 @@ public class StylerequestStateMgrImpl implements StylerequestStateMgr {
      * 4. COMPLETED or CANCELLED are immutable
      *
      * */
+    @Override
     public StyleRequest transition(final Long id, final StyleRequestState newState) {
         Assert.validId(id);
         StyleRequest styleRequest = repository.findOne(id, StyleRequest.class);
