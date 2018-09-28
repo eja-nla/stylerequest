@@ -67,8 +67,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
 
         styleRequest = braintreePaymentService.holdPayment("fake-valid-nonce", styleRequest, customer);
 
-        assertThat(styleRequest, is(notNullValue()));
-        assertThat(styleRequest.getAuthorizedPayment(), notNullValue());
+        assertThat(styleRequest.getAuthorizedPayment().getPayment().getStatus(), is(Transaction.Status.AUTHORIZED));
     }
 
     @Test
