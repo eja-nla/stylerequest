@@ -8,9 +8,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Environment;
 import com.braintreegateway.Transaction;
+import com.hair.business.beans.entity.PaymentMethod;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.customer.AbstractServicesTestBase;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,34 +34,48 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
         braintreePaymentService = new BraintreePaymentServiceImpl(p, Mockito.mock(Repository.class));
     }
 
-    @Ignore
     @Test
-    public void createTransaction() {
-        Transaction transaction = braintreePaymentService.createTransaction("fake-valid-no-billing-address-nonce", 4533L,9.3, false);
+    public void testCreateTransaction() {
+        double amount = 9.3;
+        Transaction transaction = braintreePaymentService.createTransaction("fake-valid-no-billing-address-nonce", 4533L,amount, false);
         assertThat(transaction, notNullValue());
+        assertThat(transaction.getAmount().doubleValue(), is(amount));
     }
 
-    @Ignore
     @Test
-    public void generateClientToken() {
-        String token = braintreePaymentService.issueClientToken("4533");
+    /*
+    * ee https://developers.braintreepayments.com/reference/general/validation-errors/all/ruby#code-91522 for restrictions on settlement amount
+    */
+    public void testSettleTransaction() {
+        double original = 9.00;
+        double revised = original - 1.00;
+        Transaction transaction = braintreePaymentService.createTransaction("fake-valid-no-billing-address-nonce", 4533L,original, false);
+        assertThat(transaction.getStatus(), is(Transaction.Status.AUTHORIZED));
 
+        transaction = braintreePaymentService.settleTransaction(transaction.getId(), revised);
+        assertThat(transaction.getStatus(), is(Transaction.Status.SUBMITTED_FOR_SETTLEMENT));
+
+        Assert.assertEquals(transaction.getAmount().doubleValue(), revised, 0.00);
+
+    }
+
+    @Test
+    public void testIssueClientToken() {
+        String token = braintreePaymentService.issueClientToken("4533");
         assertThat(token, notNullValue());
     }
 
     @Ignore
     @Test
-    public void addPaymentMethod() {
-        com.hair.business.beans.entity.Customer c = createCustomer();
-        c.setId(4533L);
-
-        boolean result = braintreePaymentService.addPaymentMethod("fake-valid-nonce", c.getId(), c.getPayment().getPaymentItems().get(0).getPaymentMethod(), false);
+    public void testAddPaymentMethod() {
+        String id = "4533L";
+        boolean result = braintreePaymentService.addPaymentMethod("fake-valid-nonce", id,
+                new PaymentMethod("agreementId-" + id, false, id));
 
         assertThat(result, is(true));
     }
 
 
-    //@Ignore
     @Test
     public void testCreateCustomer() {
         String id = braintreePaymentService.createCustomer(createCustomer(), "fake-valid-nonce");
