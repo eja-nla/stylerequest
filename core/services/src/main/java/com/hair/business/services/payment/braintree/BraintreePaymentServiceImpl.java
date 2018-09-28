@@ -113,7 +113,7 @@ public class BraintreePaymentServiceImpl implements BraintreePaymentService {
     public void updatePayment(Long customerId, PaymentMethod paymentMethod, PaymentType paymentType, String nonce, boolean isDefault) {
         Customer customer = repository.findOne(customerId, Customer.class);
         customer.getPayment().getPaymentItems().add(new PaymentItem(paymentType, paymentMethod, isDefault));
-        addPaymentMethod(nonce, customerId, paymentMethod, isDefault);
+        addPaymentMethod(nonce, String.valueOf(customerId), paymentMethod);
 
         repository.saveOne(customer);
     }
@@ -211,7 +211,6 @@ public class BraintreePaymentServiceImpl implements BraintreePaymentService {
                 .email(customer.getEmail())
                 .paymentMethodNonce(nonce);
 
-
         Result<com.braintreegateway.Customer> result = gateway.customer().create(request);
 
         if (!result.isSuccess()){
@@ -264,19 +263,19 @@ public class BraintreePaymentServiceImpl implements BraintreePaymentService {
     }
 
     @Override
-    public boolean addPaymentMethod(String nonce, Long customerId, PaymentMethod paymentMethod, boolean isDefault) {
+    public boolean addPaymentMethod(String nonce, String customerId, PaymentMethod paymentMethod) {
         PaymentMethodRequest request = new PaymentMethodRequest()
-                .customerId(customerId.toString())
+                .customerId(customerId)
                 .paymentMethodNonce(nonce)
                 .options()
-                .verifyCard(true)
-                .failOnDuplicatePaymentMethod(true)
-                .makeDefault(isDefault)
-                .done();
+                    .verifyCard(true)
+                    .failOnDuplicatePaymentMethod(true)
+                    .makeDefault(paymentMethod.isDefault())
+                    .done();
         Result<? extends com.braintreegateway.PaymentMethod> result = gateway.paymentMethod().create(request);
 
         if (!result.isSuccess()){
-            logger.error("Braintree add new payment method request failed {}", result.getMessage());
+            logger.error("Braintree add new payment method request failed: {}", result.getMessage());
         }
 
         return result.isSuccess();

@@ -38,7 +38,7 @@ public interface BraintreePaymentService extends PaymentService {
      * */
     Transaction settleTransaction(String nonce, String paymentMethodToken, List<AddOn> addOns);
 
-    boolean addPaymentMethod(String nonce, Long customerId, PaymentMethod payment, boolean isDefault);
+    boolean addPaymentMethod(String nonce, String customerId, PaymentMethod payment);
 
     StyleRequest holdPayment(String nonce, StyleRequest styleRequest, Customer customer);
 
