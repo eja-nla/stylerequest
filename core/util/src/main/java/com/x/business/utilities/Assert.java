@@ -27,7 +27,6 @@ public class Assert extends Validate {
     public static void notNull(Object... args){
         for (int i = 0; i < args.length; i++) {
             if(null == args[i]){
-                System.out.println();
                 throw new IllegalArgumentException(NULL_MESSAGE);
             }
         }

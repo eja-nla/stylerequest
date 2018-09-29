@@ -19,6 +19,8 @@ import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.beans.entity.StyleRequestPayment;
 import com.hair.business.beans.helper.PaymentStatus;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.hair.business.services.payment.PaymentService;
+import com.x.business.exception.PaymentException;
 import com.x.business.utilities.Assert;
 
 import org.slf4j.Logger;
@@ -35,7 +37,7 @@ import javax.inject.Provider;
  *
  * Created by olukoredeaguda on 06/03/2017.
  */
-public class BraintreePaymentServiceImpl implements BraintreePaymentService {
+public class BraintreePaymentServiceImpl implements PaymentService {
 
     private static final Logger logger = getLogger(BraintreePaymentServiceImpl.class);
     private final BraintreeGateway gateway;
@@ -48,7 +50,9 @@ public class BraintreePaymentServiceImpl implements BraintreePaymentService {
     }
 
     @Override
-    public StyleRequest holdPayment(String nonce, final StyleRequest styleRequest, final Customer customer) {
+    public StyleRequest authorize(String nonce, final Long styleRequestId, final Long customerId) {
+        StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
+        Customer customer = repository.findOne(customerId, Customer.class);
         Assert.notNull(styleRequest, styleRequest.getStyle(), customer.getId(), customer.getPayment());
         final double price = styleRequest.getStyle().getPrice();
         final Transaction result = createTransaction(nonce, customer.getId(), price, false);
@@ -132,11 +136,6 @@ public class BraintreePaymentServiceImpl implements BraintreePaymentService {
         createCustomer(customer, nonce);
 
         return customer;
-    }
-
-    @Override
-    public StyleRequest holdPayment(StyleRequest styleRequest, Customer customer) {
-        return null;
     }
 
     @Override
@@ -244,7 +243,7 @@ public class BraintreePaymentServiceImpl implements BraintreePaymentService {
         final Result result = gateway.transaction().sale(request);
 
         if (!result.isSuccess()){
-            logger.error("Braintree authorization failed with message {}", result.getMessage());
+            throw new PaymentException("Braintree authorization failed with message: " + result.getMessage());
         }
         return (Transaction) result.getTarget();
 
@@ -256,7 +255,7 @@ public class BraintreePaymentServiceImpl implements BraintreePaymentService {
         Result<Transaction> result = gateway.transaction().submitForSettlement(transactionId, BigDecimal.valueOf(amount));
 
         if (!result.isSuccess()) {
-            logger.error("Braintree settle transaction request failed {}", result.getMessage());
+            throw new PaymentException("Braintree settle transaction request failed: " + result.getMessage());
         }
 
         return result.getTarget();

@@ -2,19 +2,19 @@ package com.hair.business.rest.resources.payment;
 
 import static com.hair.business.rest.MvcConstants.BRAINTREE_AUTHORIZE_URI_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.BRAINTREE_CAPTURE_URI_ENDPOINT;
+import static com.hair.business.rest.MvcConstants.BRAINTREE_TOKEN_URI_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.PAYMENT_URI;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.payment.PaymentService;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 /**
@@ -32,30 +32,27 @@ public class PaymentServlet extends AbstractRequestServlet {
     private final PaymentService paymentService;
 
     @Inject
-    public PaymentServlet(PaymentService PaypalPaymentProcessor) {
-        this.paymentService = PaypalPaymentProcessor;
+    public PaymentServlet(PaymentService paymentService) {
+        this.paymentService = paymentService;
     }
 
     @POST
     @Path(BRAINTREE_AUTHORIZE_URI_ENDPOINT)
-    @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response authorisePayment(StyleRequest styleRequest, Customer customer) {
+    public Response authorizePayment(@QueryParam("tk") String nonce, @QueryParam("srId") Long styleRequestId, @QueryParam("cId") Long customerId) {
 
         try {
-            StyleRequest payment = paymentService.holdPayment(styleRequest, customer);
+            StyleRequest payment = paymentService.authorize(nonce, styleRequestId, customerId);
             return Response.ok(payment).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }
-
     }
 
     @POST
     @Path(BRAINTREE_CAPTURE_URI_ENDPOINT)
-    @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response captureAuthorisedPayment(Long stylerequestId, double total) {
+    public Response captureAuthorizedPayment(@QueryParam("srId") Long stylerequestId, @QueryParam("total") double total) {
 
         try {
             StyleRequest payment = paymentService.deductPreAuthPayment(stylerequestId, total);
@@ -63,6 +60,17 @@ public class PaymentServlet extends AbstractRequestServlet {
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }
+    }
 
+    @POST
+    @Path(BRAINTREE_TOKEN_URI_ENDPOINT)
+    @Produces(APPLICATION_JSON)
+    public Response issueClientToken(@QueryParam("cId") String customerId) {
+
+        try {
+            return Response.ok(paymentService.issueClientToken(customerId)).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
+        }
     }
 }

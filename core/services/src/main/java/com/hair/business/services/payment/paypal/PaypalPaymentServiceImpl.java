@@ -162,15 +162,6 @@ public class PaypalPaymentServiceImpl implements PaypalPaymentService {
         return responsePayment.getTransactions().get(0).getRelatedResources().get(0).getAuthorization();
     }
 
-    /**
-     * Fires an authorization request to Paypal
-     */
-    @Override
-    public StyleRequest holdPayment(StyleRequest styleRequest, Customer customer) {
-        authorizePayment(styleRequest, customer);
-        return null;
-    }
-
     @Override
     public StyleRequest deductPreAuthPayment(Long styleRequestId, double totalAmount) {
         return null;
@@ -314,6 +305,65 @@ public class PaypalPaymentServiceImpl implements PaypalPaymentService {
         return payment;
     }
 
+    @Override
+    public com.braintreegateway.Transaction createTransaction(String nonce, Long customerId, double amount, boolean isSettled) {
+        return null;
+    }
+
+    @Override
+    public com.braintreegateway.Transaction settleTransaction(String transactionId, double amount) {
+        return null;
+    }
+
+    @Override
+    public com.braintreegateway.Transaction settleTransaction(String nonce, String paymentMethodToken, List<AddOn> addOns) {
+        return null;
+    }
+
+    @Override
+    public boolean addPaymentMethod(String nonce, String customerId, PaymentMethod payment) {
+        return false;
+    }
+
+    @Override
+    public StyleRequest authorize(String nonce, Long styleRequestId, Long customerId) {
+        return null;
+    }
+
+    @Override
+    public StyleRequest deductPreAuthPayment(String nonce, Long styleRequestId, double totalAmount) {
+        return null;
+    }
+
+    @Override
+    public void deductNonPreAuthPayment(String nonce, String paymentToken, List<AddOn> items) {
+
+    }
+
+    @Override
+    public void updatePayment(Long customerId, PaymentMethod paymentMethod, PaymentType paymentType, String nonce, boolean isDefault) {
+
+    }
+
+    @Override
+    public Customer createCustomerPaymentProfile(Customer customer, PaymentType paymentType, String nonce, boolean isDefault) {
+        return null;
+    }
+
+    @Override
+    public String issueClientToken(String customerId) {
+        return null;
+    }
+
+    @Override
+    public String createCustomer(Customer customer, String nonce) {
+        return null;
+    }
+
+    @Override
+    public void refund(String transactionId) {
+
+    }
 }
 
 

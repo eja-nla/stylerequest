@@ -84,12 +84,12 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
 
     @POST
     @Path(STYLE_REQUEST_PATH)
-    @Consumes(APPLICATION_JSON)
+    //@Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response placeStyleRequest(@QueryParam("styleId") Long styleId, @QueryParam("customerId") Long customerId, @QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String when) {
+    public Response placeStyleRequest(@QueryParam("token") String token, @QueryParam("styleId") Long styleId, @QueryParam("customerId") Long customerId, @QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String when) {
         try {
             DateTime dateOfRequest = new DateTime(when);
-            return Response.ok(styleRequestService.placeStyleRequest(styleId, customerId, merchantId, dateOfRequest)).build();
+            return Response.ok(styleRequestService.placeStyleRequest(token, styleId, customerId, merchantId, dateOfRequest)).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {
