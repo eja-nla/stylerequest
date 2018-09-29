@@ -17,14 +17,10 @@ import com.hair.business.services.merchant.MerchantService;
 import com.hair.business.services.merchant.MerchantServiceImpl;
 import com.hair.business.services.metrics.ExecTimeLoggerInterceptor;
 import com.hair.business.services.payment.PaymentService;
-import com.hair.business.services.payment.braintree.BraintreePaymentService;
 import com.hair.business.services.payment.braintree.BraintreePaymentServiceImpl;
-import com.hair.business.services.payment.paypal.PaymentRequestHandler;
-import com.hair.business.services.payment.paypal.PaypalPaymentRequestHandlerImpl;
 import com.hair.business.services.state.StylerequestStateMgr;
 import com.hair.business.services.state.StylerequestStateMgrImpl;
 import com.hair.business.services.stereotype.Timed;
-import com.paypal.base.rest.APIContext;
 
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -54,12 +50,10 @@ public class ServicesModule extends AbstractModule {
         bind(StylerequestStateMgr.class).to(StylerequestStateMgrImpl.class).in(Singleton.class);
 
         bind(PaymentService.class).to(BraintreePaymentServiceImpl.class).in(Singleton.class);
-        bind(BraintreePaymentService.class).to(BraintreePaymentServiceImpl.class).in(Singleton.class);
 
         //bind(PaypalPaymentService.class).to(PaypalPaymentServiceImpl.class).in(Singleton.class);
-        bind(PaymentRequestHandler.class).to(PaypalPaymentRequestHandlerImpl.class).in(Singleton.class);
-
-        bind(APIContext.class).toInstance(new APIContext(System.getProperty("paypal.client.id"), System.getProperty("paypal.client.secret"), System.getProperty("paypal.environment")));
+        //bind(PaymentRequestHandler.class).to(PaypalPaymentRequestHandlerImpl.class).in(Singleton.class);
+        //bind(APIContext.class).toInstance(new APIContext(System.getProperty("paypal.client.id"), System.getProperty("paypal.client.secret"), System.getProperty("paypal.environment")));
 
         bindInterceptor(any(), NotSyntheticMethodMatcher.INSTANCE.and(annotatedWith(Timed.class)), new ExecTimeLoggerInterceptor());
 

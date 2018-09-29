@@ -36,7 +36,6 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
 
     @Override
     public <T> T findOne(Long id, Class<T> clazz) {
-
         return ofy().load().type(clazz).id(id).now();
     }
 
@@ -99,7 +98,6 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
     @SafeVarargs
     @Override
     public final <E> Result<Map<Key<E>, E>> saveFew(E... entities) {
-        Assert.notNull(entities);
         for (E entity : entities) {
             Assert.hasPermanentId(entity);
             ((AbstractPersistenceEntity) entity).setLastUpdated(DateTime.now());
@@ -129,8 +127,6 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
 
     @Override
     public <T> void update(T entity) {
-        Assert.notNull(entity, "Persistent entity cannot be null.");
-
         saveOne(entity);
     }
 }

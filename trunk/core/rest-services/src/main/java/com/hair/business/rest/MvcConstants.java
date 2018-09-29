@@ -58,6 +58,7 @@ public class MvcConstants {
     private static final String BRAINTREE_URI_BASE = "/braintree";
     public static final String BRAINTREE_AUTHORIZE_URI_ENDPOINT = BRAINTREE_URI_BASE + "/authorize";
     public static final String BRAINTREE_CAPTURE_URI_ENDPOINT = BRAINTREE_URI_BASE + "/capture";
+    public static final String BRAINTREE_TOKEN_URI_ENDPOINT = BRAINTREE_URI_BASE + "/token/issue";
 
     public static final String STYLE_REQUEST_PATH = "/request" + STYLE_URI;
 

@@ -152,6 +152,6 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
         Merchant m = createMerchant();
         repository.saveFew(style, customer, m);
 
-        return srs.placeStyleRequest(style.getId(), customer.getId(), m.getId(), now().plusHours(3));
+        return srs.placeStyleRequest("testNonce", style.getId(), customer.getId(), m.getId(), now().plusHours(3));
     }
 }

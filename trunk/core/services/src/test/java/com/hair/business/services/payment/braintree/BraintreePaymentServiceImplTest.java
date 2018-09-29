@@ -23,7 +23,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import javax.inject.Provider;
 
@@ -43,8 +42,8 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
     public void setUp() {
         BraintreeGateway bt = new BraintreeGateway(Environment.SANDBOX, "f3x9jjczmbg6gz9y", "q4vncn2hg48mrvgt", "2615a1825093d71eb3daf9d0dd17d9d4");
         Provider<BraintreeGateway> p = () -> bt;
-        braintreePaymentService = new BraintreePaymentServiceImpl(p, Mockito.mock(Repository.class));
         repository = injector.getInstance(Repository.class);
+        braintreePaymentService = new BraintreePaymentServiceImpl(p, repository);
     }
 
     @Test
@@ -56,7 +55,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
     }
 
     @Test
-    public void testHoldPayment(){
+    public void testAuthorize(){
         Style style = createStyle();
         style.setPrice(50.6);
 
@@ -65,7 +64,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
         styleRequest.setMerchant(merchant);
         repository.saveFew(style, styleRequest, customer, merchant);
 
-        styleRequest = braintreePaymentService.holdPayment("fake-valid-nonce", styleRequest, customer);
+        styleRequest = braintreePaymentService.authorize("fake-valid-nonce", styleRequest.getId(), customer.getId());
 
         assertThat(styleRequest.getAuthorizedPayment().getPayment().getStatus(), is(Transaction.Status.AUTHORIZED));
     }

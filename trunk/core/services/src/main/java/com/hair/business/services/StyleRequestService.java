@@ -19,6 +19,7 @@ public interface StyleRequestService extends AppointmentFinder {
 
     /**
      * Place a new style request for this customer
+     * @param token token from client indicating authorization. Could be anything e.g. nonce from braintree.
      * @param styleId the ID of the style to be requested
      * @param customerId customer id
      * @param merchantId merchant id
@@ -31,7 +32,7 @@ public interface StyleRequestService extends AppointmentFinder {
      *               if the style is placed > 3 days in advance, we might have to reauthorize within
      *               a 3 day period of the request date to guarantee payment capture on the fulfillment date
      */
-    StyleRequest placeStyleRequest(Long styleId, Long customerId, Long merchantId, DateTime appointmentTime);
+    StyleRequest placeStyleRequest(String token, Long styleId, Long customerId, Long merchantId, DateTime appointmentTime);
 
     /**
      * Update style request

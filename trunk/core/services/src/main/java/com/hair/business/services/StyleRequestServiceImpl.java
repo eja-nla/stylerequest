@@ -71,7 +71,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
 
     @Timed
     @Override
-    public StyleRequest placeStyleRequest(Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
+    public StyleRequest placeStyleRequest(String token, Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
         Assert.validIds(styleId, customerId, merchantId);
         Assert.dateInFuture(appointmentTime);
 
@@ -94,8 +94,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         styleRequest.setId(id);
         styleRequest.setPermanentId(id);
 
-        // add payment authorization request to a new payments queue
-        paymentService.holdPayment(styleRequest, customer); //fixme bind to braintree impl before deployment TLS v1.2 issues, GAE says it works in prod but not dev. Sounds idiotic
+        paymentService.authorize(token, styleRequest.getId(), customer.getId());
 
         repository.saveFew(styleRequest, style);
 

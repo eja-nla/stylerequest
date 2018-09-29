@@ -6,7 +6,6 @@ import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.PaymentMethod;
 import com.hair.business.beans.entity.StyleRequest;
-import com.hair.business.services.payment.PaymentService;
 
 import java.util.List;
 
@@ -15,7 +14,7 @@ import java.util.List;
  *
  * Created by olukoredeaguda on 06/03/2017.
  */
-public interface BraintreePaymentService extends PaymentService {
+public interface BraintreePaymentService {
 
     /**
      * Creates a transaction, which:
@@ -40,7 +39,7 @@ public interface BraintreePaymentService extends PaymentService {
 
     boolean addPaymentMethod(String nonce, String customerId, PaymentMethod payment);
 
-    StyleRequest holdPayment(String nonce, StyleRequest styleRequest, Customer customer);
+    StyleRequest authorize(String nonce, Long styleRequestId, Long customerId);
 
     StyleRequest deductPreAuthPayment(String nonce, Long styleRequestId, double totalAmount);
 

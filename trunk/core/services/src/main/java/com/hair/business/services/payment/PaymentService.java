@@ -5,6 +5,7 @@ import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.PaymentMethod;
 import com.hair.business.beans.entity.StyleRequest;
+import com.hair.business.services.payment.braintree.BraintreePaymentService;
 
 import java.util.List;
 
@@ -13,15 +14,7 @@ import java.util.List;
  *
  * StyleRequest Payment processor
  */
-public interface PaymentService {
-
-    /**
-     * Fires an authorization request to downstream.
-     *
-     * Some implementations of this require that the passed in customer's
-     * information exist in the provider's vault e.g. Braintree.
-     * */
-    StyleRequest holdPayment(StyleRequest styleRequest, Customer customer);
+public interface PaymentService extends BraintreePaymentService {
 
     /**
      * Actually take the pre-authorized payment
