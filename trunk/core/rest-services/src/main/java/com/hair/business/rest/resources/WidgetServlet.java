@@ -37,7 +37,7 @@ public class WidgetServlet extends HttpServlet{
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.getWriter().print(e.toString());
+            response.getWriter().print(e.getMessage());
         }
     }
 
