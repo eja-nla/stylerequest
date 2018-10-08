@@ -15,6 +15,16 @@ public class Preferences extends AbstractBean {
     private boolean completedNotificationEnabled = true;
     private PaymentType preferredPaymentType = PaymentType.CARD;
 
+    public String getApnsNotificationType() {
+        return apnsNotificationType;
+    }
+
+    public void setApnsNotificationType(String apnsNotificationType) {
+        this.apnsNotificationType = apnsNotificationType;
+    }
+
+    private String apnsNotificationType;
+
     public Preferences(){}
 
     public boolean isPlacedNotificationEnabled() {
@@ -56,4 +66,6 @@ public class Preferences extends AbstractBean {
     public void setPreferredPaymentType(PaymentType preferredPaymentType) {
         this.preferredPaymentType = preferredPaymentType;
     }
+
+
 }

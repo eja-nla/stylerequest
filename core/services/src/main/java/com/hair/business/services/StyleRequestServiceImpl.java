@@ -4,6 +4,12 @@ import static com.hair.business.beans.constants.StyleRequestState.ACCEPTED;
 import static com.hair.business.beans.constants.StyleRequestState.CANCELLED;
 import static com.hair.business.beans.constants.StyleRequestState.COMPLETED;
 import static com.hair.business.beans.constants.StyleRequestState.PENDING;
+import static com.x.business.utilities.MessageConstants.CUSTOMER_NOT_FOUND;
+import static com.x.business.utilities.MessageConstants.HAS_ACTIVE_BOOKING;
+import static com.x.business.utilities.MessageConstants.MERCHANT_NOT_FOUND;
+import static com.x.business.utilities.MessageConstants.NEW_STYLE_REQUEST;
+import static com.x.business.utilities.MessageConstants.PLACED_STYLE_REQUEST;
+import static com.x.business.utilities.MessageConstants.STYLE_NOT_FOUND;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import com.hair.business.beans.constants.Preferences;
@@ -14,6 +20,7 @@ import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.merchant.MerchantService;
 import com.hair.business.services.payment.PaymentService;
+import com.hair.business.services.pushNotification.PushNotificationServiceInternal;
 import com.hair.business.services.state.StylerequestStateMgr;
 import com.hair.business.services.stereotype.Timed;
 import com.x.business.notif.AcceptedStyleRequestNotification;
@@ -21,7 +28,6 @@ import com.x.business.notif.CancelledStyleRequestNotification;
 import com.x.business.notif.CompletedStyleRequestNotification;
 import com.x.business.notif.PlacedStyleRequestNotification;
 import com.x.business.scheduler.TaskQueue;
-import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 import com.x.business.scheduler.stereotype.EmailTaskQueue;
 import com.x.business.utilities.Assert;
 
@@ -39,25 +45,26 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
 
     private final Repository repository;
     private final TaskQueue emailTaskQueue;
-    private final TaskQueue apnsQueue;
+
     private final PaymentService paymentService;
     private final MerchantService merchantService;
     private final StylerequestStateMgr stateMgr;
+    private final PushNotificationServiceInternal pushNotificationService;
 
     private static final Logger logger = getLogger(StyleRequestServiceImpl.class);
 
     @Inject
     StyleRequestServiceImpl(Repository repository,
                             @EmailTaskQueue TaskQueue emailTaskQueue,
-                            @ApnsTaskQueue TaskQueue apnsQueue,
-                            PaymentService paymentService, MerchantService merchantService, StylerequestStateMgr stateMgr) {
+                            PaymentService paymentService, MerchantService merchantService, StylerequestStateMgr stateMgr, PushNotificationServiceInternal pushNotificationService) {
         super(repository);
         this.repository = repository;
         this.emailTaskQueue = emailTaskQueue;
-        this.apnsQueue = apnsQueue;
+
         this.paymentService = paymentService;
         this.merchantService = merchantService;
         this.stateMgr = stateMgr;
+        this.pushNotificationService = pushNotificationService;
     }
 
     @Timed
@@ -71,16 +78,16 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
 
     @Timed
     @Override
-    public StyleRequest placeStyleRequest(String token, Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
+    public StyleRequest placeStyleRequest(String authorizationToken, Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
         Assert.validIds(styleId, customerId, merchantId);
         Assert.dateInFuture(appointmentTime);
 
         final Style style = repository.findOne(styleId, Style.class);
-        Assert.notNull(style, String.format("Style with id %s not found", styleId));
+        Assert.notNull(style, String.format(STYLE_NOT_FOUND, styleId));
         final Customer customer = repository.findOne(customerId, Customer.class);
-        Assert.notNull(style, String.format("Customer with id %s not found", customerId));
+        Assert.notNull(style, String.format(CUSTOMER_NOT_FOUND, customerId));
         final Merchant merchant = repository.findOne(merchantId, Merchant.class);
-        Assert.notNull(style, String.format("Merchant with id %s not found", merchantId));
+        Assert.notNull(style, String.format(MERCHANT_NOT_FOUND, merchantId));
 
         // TODO : further validations
         // is the merchant free at this time?
@@ -94,21 +101,16 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         styleRequest.setId(id);
         styleRequest.setPermanentId(id);
 
-        paymentService.authorize(token, styleRequest.getId(), customer.getId());
+        paymentService.authorize(authorizationToken, styleRequest.getId(), customer.getId());
 
         repository.saveFew(styleRequest, style);
 
         emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
 
-//        Use feature toggle to turn this off or on instead of commenting
-//        PushNotification pushNotification = new PushNotification()
-//                .setAlert("New Style Request")
-//                .setBadge(9)
-//                .setSound("styleRequestSound.aiff")
-//                .setDeviceTokens(customer.getDevice().getDeviceId()); // Nullable?
-//        apnsQueue.add(new SendPushNotificationToApnsTask(pushNotification));
+        pushNotificationService.send(customer.getDevice().getDeviceId(), NEW_STYLE_REQUEST);
 
-        logger.info("Placed Style Request. ID:'{}' customer:'{}' merchant:'{}'", styleRequest.getId(), customer.getEmail(), merchant.getEmail());
+        logger.info(PLACED_STYLE_REQUEST, styleRequest.getId(), customer.getEmail(), merchant.getEmail());
+
         return styleRequest;
     }
 
@@ -125,7 +127,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
 
         Merchant merchant = styleRequest.getMerchant();
         Assert.isTrue(!merchantService.isBooked(merchant.getId(), styleRequest.getAppointmentStartTime(),
-                styleRequest.getAppointmentStartTime().plusMinutes(styleRequest.getStyle().getDurationEstimate())), "%s has an active booking during this period.", merchant.getFirstName());
+                styleRequest.getAppointmentStartTime().plusMinutes(styleRequest.getStyle().getDurationEstimate())), HAS_ACTIVE_BOOKING, merchant.getFirstName());
 
         styleRequest.setAcceptedTime(DateTime.now());
         updateStyleRequest(styleRequest);
