@@ -21,6 +21,7 @@ import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.customer.AbstractServicesTestBase;
 import com.hair.business.services.merchant.MerchantService;
 import com.hair.business.services.payment.PaymentService;
+import com.hair.business.services.pushNotification.PushNotificationServiceInternal;
 import com.hair.business.services.pushNotification.SendPushNotificationToApnsTask;
 import com.hair.business.services.state.StylerequestStateMgr;
 import com.hair.business.services.state.StylerequestStateMgrImpl;
@@ -48,18 +49,19 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     private TaskQueue apnsQueue = Mockito.mock(TaskQueue.class);
     private PaymentService paymentService = Mockito.mock(PaymentService.class);
     private MerchantService merchantService = Mockito.mock(MerchantService.class);
+    private PushNotificationServiceInternal pushNotification = Mockito.mock(PushNotificationServiceInternal.class);
     private StylerequestStateMgr stateMgr;
 
     public StyleRequestServiceTest() {
         repository = injector.getInstance(Repository.class);
         stateMgr = new StylerequestStateMgrImpl(repository);
-        srs = new StyleRequestServiceImpl(repository, emailQueue, apnsQueue, paymentService, merchantService, stateMgr);
+        srs = new StyleRequestServiceImpl(repository, emailQueue, paymentService, merchantService, stateMgr, pushNotification);
     }
 
     @Before
     public void setUp(){
         repository = injector.getInstance(Repository.class);
-        srs = new StyleRequestServiceImpl(repository, emailQueue, apnsQueue, paymentService, merchantService, stateMgr);
+        srs = new StyleRequestServiceImpl(repository, emailQueue, paymentService, merchantService, stateMgr, pushNotification);
 
         // See sendgrid section in appengine-web.xml
         try {
@@ -78,14 +80,14 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     }
 
     @Test
-    public void testFindStyleRequest() throws Exception {
+    public void testFindStyleRequest() {
         StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
 
         assertThat(srs.findStyleRequest(sr.getId()), is(notNullValue()));
     }
 
     @Test
-    public void testPlaceStyleRequest() throws Exception {
+    public void testPlaceStyleRequest() {
         StyleRequest styleRequest = placeStyleRequest();
 
         verify(emailQueue, times(1)).add(any(AbstractEmailNotification.class));
@@ -104,14 +106,14 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     }
 
     @Test
-    public void testAcceptStyleRequest() throws Exception {
+    public void testAcceptStyleRequest() {
         StyleRequest sr = initStyleRequest(StyleRequestState.PENDING);
         srs.acceptStyleRequest(sr.getId(), new Preferences());
         assertThat(sr.getState(), is(StyleRequestState.ACCEPTED));
     }
 
     @Test
-    public void testCancelStyleRequest() throws Exception {
+    public void testCancelStyleRequest() {
         StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
         srs.cancelStyleRequest(sr.getId(), new Preferences());
 
@@ -121,7 +123,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     }
 
     @Test
-    public void testCompleteStyleRequest() throws Exception {
+    public void testCompleteStyleRequest() {
         StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
         srs.completeStyleRequest(sr.getId(), new Preferences());
         StyleRequest updatedSr = srs.findStyleRequest(sr.getId());
@@ -129,7 +131,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     }
 
     @Test
-    public void testUpdate() throws Exception {
+    public void testUpdate() {
         StyleRequest sr = placeStyleRequest();
         sr.setState(StyleRequestState.IN_PROGRESS);
         srs.updateStyleRequest(sr);
