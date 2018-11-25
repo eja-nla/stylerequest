@@ -88,7 +88,7 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
     @Produces(APPLICATION_JSON)
     public Response placeStyleRequest(@QueryParam("token") String token, @QueryParam("styleId") Long styleId, @QueryParam("customerId") Long customerId, @QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String when) {
         try {
-            DateTime dateOfRequest = new DateTime(when);
+            DateTime dateOfRequest = DateTime.parse(when);
             return Response.ok(styleRequestService.placeStyleRequest(token, styleId, customerId, merchantId, dateOfRequest)).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();

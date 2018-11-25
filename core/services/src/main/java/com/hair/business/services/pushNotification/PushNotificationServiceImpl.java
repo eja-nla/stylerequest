@@ -43,7 +43,7 @@ public class PushNotificationServiceImpl implements PushNotificationServiceInter
     }
 
     @Override
-    public void send(String deviceId, String alert) {
+    public void scheduleSend(String deviceId, String alert) {
         PushNotification pushNotification = new PushNotification() // we should pool these and reuse. Not worth incurring allocation as volume increases
                 .setAlert(alert)
                 .setDeviceTokens(deviceId); // Nullable?

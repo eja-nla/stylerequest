@@ -47,10 +47,10 @@ public interface AppointmentFinder {
      * Returns customer's pending appointments between two given dateTime bounds
      */
     Collection<StyleRequest> findCustomerPendingAppointments(Long customerId, DateTime lower, DateTime upper);
-//
-//    /**
-//     * Returns customer's completed appointments between two given dateTime bounds
-//     */
-//    Collection<StyleRequest> findCustomerCompletedAppointments(Long customerId, DateTime lower, DateTime upper);
+
+    /**
+     * Returns customer's completed appointments between two given dateTime bounds
+     */
+    Collection<StyleRequest> findCustomerCompletedAppointments(Long customerId, DateTime lower, DateTime upper);
 
 }

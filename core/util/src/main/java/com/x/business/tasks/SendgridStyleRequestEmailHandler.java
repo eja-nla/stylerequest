@@ -14,10 +14,9 @@ import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 
 import org.slf4j.Logger;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -58,7 +57,7 @@ public class SendgridStyleRequestEmailHandler implements EmailHandler {
 
     @Override
     public void sendBulk(Collection notifications) {
-        List partitions = partition(notifications instanceof List ? (List) notifications : Arrays.asList(notifications), 1000);
+        List partitions = partition(notifications instanceof List ? (List) notifications : Collections.singletonList(notifications), 1000);
         for (int i = 0; i < partitions.size(); i++) {
             send((AbstractStyleRequestNotificationTask) partitions.get(i), false);
         }
@@ -76,13 +75,11 @@ public class SendgridStyleRequestEmailHandler implements EmailHandler {
             Response response = sg.api(r);
 
             logger.debug("SendGrid email response: {} Response body: {} Response header: {}", response.statusCode, response.body, response.headers);
-        } catch (IOException ex) {
-
-            logger.error(ex.getMessage());
         } catch (Exception e) {
             // put the failed requests into some store to resend them once the problem is resolved
             // add task to continously drain this
             //emailTaskQueue.add(new D);
+            logger.error("Failure in email send: Message {} : Adding email to failed email request queue" , e.getMessage());
             failedRequests.add(clone(request));
         } finally {
             r.body = "";

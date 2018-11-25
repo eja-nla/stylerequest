@@ -60,4 +60,5 @@ public interface StyleRequestService extends AppointmentFinder {
      * Cancels a placed style request
      */
     void cancelStyleRequest(Long styleRequestId, Preferences preferences);
+
 }

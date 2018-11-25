@@ -73,6 +73,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer createCustomer(String firstname, String lastname, String email, String phone, Device device, Address address) throws EntityNotFoundException, IllegalArgumentException {
+
         Assert.notNull(firstname, lastname, email, phone, device, address);
 
         Long permId = repository.allocateId(Customer.class);

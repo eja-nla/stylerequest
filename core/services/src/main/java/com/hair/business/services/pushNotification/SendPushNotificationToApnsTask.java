@@ -42,9 +42,9 @@ public class SendPushNotificationToApnsTask implements DeferredTask {
         } catch (CannotOpenConnectionException e) {
             throw new RuntimeException("Could not connect to APNS", e);
         } catch (CannotUseConnectionException e) {
-            throw new RuntimeException("Could not send: " + mPushNotification, e);
+            throw new RuntimeException("Could not scheduleSend: " + mPushNotification, e);
         } catch (PayloadException e) {
-            logger.severe("Could not send push notification (dropping task) " + e.getMessage());
+            logger.severe("Could not scheduleSend push notification (dropping task) " + e.getMessage());
         }
     }
 
@@ -59,7 +59,7 @@ public class SendPushNotificationToApnsTask implements DeferredTask {
             getPushNotificationService().send(mPushNotification, apnsConnection);
             getApnsConnectionPool().put(apnsConnection);
         } catch (CannotUseConnectionException e) {
-            logger.fine("Could not send push notification - opening new connection");
+            logger.fine("Could not scheduleSend push notification - opening new connection");
             apnsConnection = openConnection();
             logger.fine("Retrying sending push notification");
             getPushNotificationService().send(mPushNotification, apnsConnection);
