@@ -46,5 +46,4 @@ public interface MerchantService {
      * end time of the appointment but objectify has a unitary inequality search restriction on entity fields
      * */
     boolean isBooked(Long merchantId, DateTime startTime, DateTime endTime);
-
 }

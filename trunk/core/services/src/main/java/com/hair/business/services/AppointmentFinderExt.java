@@ -21,6 +21,10 @@ import javax.inject.Inject;
 /**
  * Appointment finder
  *
+ * Convenience class for routine queries on stylerequests
+ * A merchant can only have accepted, cancelled and completed requests
+ * A customer can only have placed, cancelled, and completed requests
+ *
  * Created by olukoredeaguda on 29/03/2017.
  */
 public class AppointmentFinderExt implements AppointmentFinder {
@@ -33,7 +37,7 @@ public class AppointmentFinderExt implements AppointmentFinder {
 
     private static final List<String> CUSTOMER_APPOINTMENTS_PLACED_QUERY = Arrays.asList("customerPermanentId ==", "state ==", "placedTime >=", "placedTime <=");
     private static final List<String> CUSTOMER_APPOINTMENTS_CANCELLED_QUERY = Arrays.asList("customerPermanentId ==", "state ==", "cancelledTime >=", "cancelledTime <=");
-
+    private static final List<String> CUSTOMER_APPOINTMENTS_COMPLETED_QUERY = Arrays.asList("customerPermanentId ==", "state ==", "completedTime >=", "completedTime <=");
     @Inject
     public AppointmentFinderExt(Repository repository) {
         this.repository = repository;
@@ -56,14 +60,6 @@ public class AppointmentFinderExt implements AppointmentFinder {
         return repository.findByQuery(StyleRequest.class, MERCHANT_APPOINTMENTS_CANCELLED_QUERY, values);
     }
 
-//    @Timed
-//    @Override
-//    public List<StyleRequest> findMerchantPendingAppointments(Long merchantId, DateTime lower, DateTime upper) {
-//        List<Object> values = validate(merchantId, PENDING, lower, upper);
-//
-//        return repository.findByQuery(StyleRequest.class, MERCHANT_APPOINTMENTS_PLACED_QUERY, values);
-//    }
-
     @Timed
     @Override
     public List<StyleRequest> findMerchantCompletedAppointments(Long merchantId, DateTime lower, DateTime upper) {
@@ -71,14 +67,6 @@ public class AppointmentFinderExt implements AppointmentFinder {
 
         return repository.findByQuery(StyleRequest.class, MERCHANT_APPOINTMENTS_COMPLETED_QUERY, values);
     }
-
-//    @Timed
-//    @Override
-//    public Collection<StyleRequest> findCustomerAcceptedAppointments(Long customerId, DateTime lower, DateTime upper) {
-//        List<Object> values = validate(customerId, ACCEPTED, lower, upper);
-//
-//        return repository.findByQuery(StyleRequest.class, CUSTOMER_APPOINTMENTS_ACCEPTED_QUERY, values);
-//    }
 
     @Timed
     @Override
@@ -96,13 +84,14 @@ public class AppointmentFinderExt implements AppointmentFinder {
         return repository.findByQuery(StyleRequest.class, CUSTOMER_APPOINTMENTS_PLACED_QUERY, values);
     }
 
-//    @Timed
-//    @Override
-//    public List<StyleRequest> findCustomerCompletedAppointments(Long customerId, DateTime lower, DateTime upper) {
-//        List<Object> values = validate(customerId, COMPLETED, lower, upper);
-//
-//        return repository.findByQuery(StyleRequest.class, CUSTOMER_APPOINTMENTS_COMPLETED_QUERY, values);
-//    }
+
+    @Timed
+    @Override
+    public List<StyleRequest> findCustomerCompletedAppointments(Long customerId, DateTime lower, DateTime upper) {
+        List<Object> values = validate(customerId, COMPLETED, lower, upper);
+
+        return repository.findByQuery(StyleRequest.class, CUSTOMER_APPOINTMENTS_COMPLETED_QUERY, values);
+    }
 
     private List<Object> validate(Long id, StyleRequestState state, DateTime start, DateTime stop) {
         Assert.validId(id);

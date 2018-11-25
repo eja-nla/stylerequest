@@ -75,7 +75,10 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         return repository.findOne(id, StyleRequest.class);
     }
 
-
+    /**
+     *  Places a style request
+     *  Goal is to keep this as simple as possible and move most validations upstream to the client
+     * */
     @Timed
     @Override
     public StyleRequest placeStyleRequest(String authorizationToken, Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
@@ -90,7 +93,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         Assert.notNull(style, String.format(MERCHANT_NOT_FOUND, merchantId));
 
         // TODO : further validations
-        // is the merchant free at this time?
+        // is the merchant free at this time? - on rethink We really do not want to do this here. We should move to the client
         // is the customer and merchant's country and city the same?
         // do we have this customer's sufficient payment info to make an authorization?
 
@@ -101,13 +104,12 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         styleRequest.setId(id);
         styleRequest.setPermanentId(id);
 
-        paymentService.authorize(authorizationToken, styleRequest.getId(), customer.getId());
-
         repository.saveFew(styleRequest, style);
 
-        emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
+        paymentService.authorize(authorizationToken, styleRequest.getId(), customer.getId());
 
-        pushNotificationService.send(customer.getDevice().getDeviceId(), NEW_STYLE_REQUEST);
+        emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
+        pushNotificationService.scheduleSend(customer.getDevice().getDeviceId(), NEW_STYLE_REQUEST);
 
         logger.info(PLACED_STYLE_REQUEST, styleRequest.getId(), customer.getEmail(), merchant.getEmail());
 

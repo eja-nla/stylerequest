@@ -65,10 +65,10 @@ public class PaymentServlet extends AbstractRequestServlet {
     @POST
     @Path(BRAINTREE_TOKEN_URI_ENDPOINT)
     @Produces(APPLICATION_JSON)
-    public Response issueClientToken(@QueryParam("cId") String customerId) {
+    public Response issueClientToken(@QueryParam("entityId") String entityId) {
 
         try {
-            return Response.ok(paymentService.issueClientToken(customerId)).build();
+            return Response.ok(paymentService.issueClientToken(entityId)).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }

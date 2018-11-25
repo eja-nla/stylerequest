@@ -23,6 +23,7 @@ import com.hair.business.services.payment.PaymentService;
 import com.x.business.exception.PaymentException;
 import com.x.business.utilities.Assert;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import java.math.BigDecimal;
@@ -150,7 +151,10 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
     @Override
     public Customer createCustomerPaymentProfile(Customer customer, PaymentType paymentType, boolean isDefault) {
-        return null;
+
+        createCustomer(customer, "");
+
+        return customer;
     }
 
     @Override
@@ -191,9 +195,14 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         return result.getTarget();
     }
 
+
     @Override
-    public String issueClientToken(String customerId) {
-        final ClientTokenRequest clientTokenRequest = new ClientTokenRequest().customerId(customerId);
+    public String issueClientToken(String entityId) {
+        final ClientTokenRequest clientTokenRequest = new ClientTokenRequest();
+
+        if (StringUtils.isNotEmpty(entityId)) {
+            clientTokenRequest.customerId(entityId);
+        }
 
         return gateway.clientToken().generate(clientTokenRequest);
     }
