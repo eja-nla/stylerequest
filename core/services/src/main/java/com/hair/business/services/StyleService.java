@@ -14,7 +14,7 @@ public interface StyleService {
 
     Style findStyle(Long styleId);
 
-    Style publishStyle(String styleName, int duration, Long publisherId, List<Image> styleImages);
+    Style publishStyle(Style style, Long publisherId);
 
     void updateStyleImages(Long styleId, List<Image> styleImages);
 

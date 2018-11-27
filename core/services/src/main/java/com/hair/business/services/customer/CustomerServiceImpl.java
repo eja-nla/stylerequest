@@ -3,12 +3,9 @@ package com.hair.business.services.customer;
 import static com.x.business.utilities.RatingUtil.averagingWeighted;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.constants.StyleRequestState;
-import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
-import com.hair.business.beans.entity.Device;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
@@ -16,7 +13,6 @@ import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.payment.PaymentService;
 import com.x.business.exception.DuplicateEntityException;
-import com.x.business.exception.EntityNotFoundException;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 import com.x.business.scheduler.stereotype.EmailTaskQueue;
@@ -72,21 +68,38 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public Customer createCustomer(String firstname, String lastname, String email, String phone, Device device, Address address) throws EntityNotFoundException, IllegalArgumentException {
+    public void createCustomer(Customer customer, String nonce) {
 
-        Assert.notNull(firstname, lastname, email, phone, device, address);
+        Assert.notNull(customer, "customer cannot be null");
+        Assert.notNull(nonce, "Nonce cannot be null");
 
         Long permId = repository.allocateId(Customer.class);
-        Customer customer = new Customer(firstname, lastname, email, phone, device, address);
         customer.setId(permId);
         customer.setPermanentId(permId);
 
-        customer = paymentService.createCustomerPaymentProfile(customer, PaymentType.CARD, true);
+        paymentService.createProfile(customer.getId().toString(), customer.getFirstName(), customer.getLastName(), customer.getEmail(), nonce);
 
         saveCustomer(customer);
 
-        return customer;
+        logger.info("Created customer with ID {}", customer.getId());
     }
+
+//    @Override
+//    public Customer createProfile(String firstname, String lastname, String email, String phone, Device device, Address address) throws EntityNotFoundException, IllegalArgumentException {
+//
+//        Assert.notNull(firstname, lastname, email, phone, device, address);
+//
+//        Long permId = repository.allocateId(Customer.class);
+//        Customer customer = new Customer(firstname, lastname, email, phone, device, address);
+//        customer.setId(permId);
+//        customer.setPermanentId(permId);
+//
+//        customer = paymentService.createPaymentProfile(customer, PaymentType.CARD, true, nonce);
+//
+//        saveCustomer(customer);
+//
+//        return customer;
+//    }
 
     @Override
     public void saveCustomer(Customer customer) {

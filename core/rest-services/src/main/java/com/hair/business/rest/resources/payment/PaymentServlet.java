@@ -68,7 +68,8 @@ public class PaymentServlet extends AbstractRequestServlet {
     public Response issueClientToken(@QueryParam("entityId") String entityId) {
 
         try {
-            return Response.ok(paymentService.issueClientToken(entityId)).build();
+            String token = paymentService.issueClientToken(entityId);
+            return token == null ? Response.status(Response.Status.NOT_FOUND).build() : Response.ok(wrapString(token)).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }

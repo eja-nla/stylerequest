@@ -2,7 +2,6 @@ package com.hair.business.services.payment;
 
 import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.entity.AddOn;
-import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.PaymentMethod;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.services.payment.braintree.BraintreePaymentService;
@@ -25,8 +24,6 @@ public interface PaymentService extends BraintreePaymentService {
      * Deduct one time payment with AddOns
      * */
     void deductNonPreAuthPayment(String paymentToken, List<AddOn> addOns);
-
-    Customer createCustomerPaymentProfile(Customer customer, PaymentType paymentType, boolean isDefault);
 
     /**
      * Fires an refund request to downstream

@@ -23,14 +23,35 @@
     }
   },
   "styleImages" : [ {
-    "permanentId" : 1627324436263907989,
-    "version" : 1,
-    "createdDate" : "2016-08-29T20:22:44.556Z",
-    "id" : 6055824299439456969,
-    "url" : "http//187v58eaa902ostno5f9rm30l7.com",
+   "url" : "http//187v58eaa902ostno5f9rm30l7.com",
     "owner" : "test owner name",
     "views" : 20
-  } ],
+  },
+    {
+    "url" : "http//kj5yrtusdhjknzmfbgnmfdgf.com",
+    "owner" : "test owner name",
+    "views" : 20
+  },
+    {
+      "url" : "http//tfgdhghgfhg.com",
+      "owner" : "test owner name",
+      "views" : 20
+    },
+    {
+      "url" : "http//dfgfdhdfgmnfdsgfdgf.com",
+      "owner" : "test owner name",
+      "views" : 20
+    },
+    {
+      "url" : "http//rmrskhdglkjydsuitly4ekjabtdf.com",
+      "owner" : "test owner name",
+      "views" : 20
+    },
+    {
+      "url" : "http//mn,bsadnfghjksad734br ,faev.com",
+      "owner" : "test owner name",
+      "views" : 20
+    } ],
   "durationEstimate" : 5,
   "price" : 13.45
 }

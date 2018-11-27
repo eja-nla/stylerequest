@@ -40,13 +40,15 @@ public class MerchantRequestServletTest {
     @Test
     public void testCreateMerchant() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getAttribute("user")).thenReturn(new GitkitUser());
-        assertThat(merchantRequestServlet.createMerchant(request, new Merchant()).getStatus(), is(Response.Status.OK.getStatusCode()));
+        GitkitUser user = new GitkitUser();
+        user.setName("mark spencer");
+        when(request.getAttribute("user")).thenReturn(user);
+        assertThat(merchantRequestServlet.createMerchant(request, new Merchant(), "fake-valid-nonce").getStatus(), is(Response.Status.OK.getStatusCode()));
     }
 
     @Test
     public void testPublishStyle() throws Exception {
-        assertThat(merchantRequestServlet.publishStyle(null, null, 1, 2L).getStatus(), is(Response.Status.OK.getStatusCode()));
+        assertThat(merchantRequestServlet.publishStyle(null, null).getStatus(), is(Response.Status.OK.getStatusCode()));
     }
 
     @Test

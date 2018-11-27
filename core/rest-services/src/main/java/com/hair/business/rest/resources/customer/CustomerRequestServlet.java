@@ -21,6 +21,7 @@ import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.StyleRequestService;
 import com.hair.business.services.customer.CustomerService;
 import com.hair.business.services.payment.PaymentService;
+import com.x.business.utilities.Assert;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -61,17 +62,20 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
     @Path(CREATE_CUSTOMER_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response createNewCustomer(final @Context HttpServletRequest request, final Customer customer) {
-        log.debug("Creating new customer '{}'", customer.getEmail());
+    public Response createNewCustomer(final @Context HttpServletRequest request, Customer customer, final @QueryParam("token") String nonce) {
+        log.info("Creating new customer '{}'", customer.getEmail());
         GitkitUser user = (GitkitUser) request.getAttribute(REST_USER_ATTRIBUTE);
+        Assert.notNull(user);
 
         customer.setEmail(user.getEmail());
-        customer.setFirstName(user.getName());
+        String names[] = user.getName().split(" ", 2);
+        customer.setFirstName(names[0]);
+        customer.setLastName(names[1]);
         customer.setPhotoUrl(user.getPhotoUrl());
 
-        customerService.saveCustomer(customer);
+        customerService.createCustomer(customer, nonce);
 
-        return Response.ok().build();
+        return Response.ok(wrapString(customer.getId().toString())).build();
     }
 
     @GET

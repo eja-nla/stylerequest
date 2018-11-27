@@ -6,7 +6,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Represents a style
@@ -33,7 +33,7 @@ public class Style extends AbstractActorEnablerEntity {
 
     private Location location;
 
-    private Collection<Image> styleImages;
+    private List<Image> styleImages;
 
     private int durationEstimate; // how long to make this style, in minutes
 
@@ -44,7 +44,7 @@ public class Style extends AbstractActorEnablerEntity {
         this.active = true;
     }
 
-    public Style(String name, int durationEstimate, Long publisherId, Location location, Collection<Image> styleImages) {
+    public Style(String name, int durationEstimate, Long publisherId, Location location, List<Image> styleImages) {
         this();
         this.name = name;
         this.durationEstimate = durationEstimate;
@@ -101,11 +101,11 @@ public class Style extends AbstractActorEnablerEntity {
         this.location = location;
     }
 
-    public Collection<Image> getStyleImages() {
+    public List<Image> getStyleImages() {
         return styleImages;
     }
 
-    public void setStyleImages(Collection<Image>  styleImages) {
+    public void setStyleImages(List<Image>  styleImages) {
         this.styleImages = styleImages;
     }
 

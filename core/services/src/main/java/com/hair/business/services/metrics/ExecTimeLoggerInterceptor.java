@@ -16,23 +16,22 @@ import org.slf4j.Logger;
 public class ExecTimeLoggerInterceptor implements MethodInterceptor {
 
     private static final Logger logger = getLogger(ExecTimeLoggerInterceptor.class);
-    private static final Stopwatch stopwatch = Stopwatch.createStarted();
+    private static final ThreadLocal<Stopwatch> stopwatch = ThreadLocal.withInitial(Stopwatch::createStarted);
 
     @Override
     public Object invoke(final MethodInvocation invocation) throws Throwable {
-        try {
-            stopwatch.start();
-            final Object returnedObject = invocation.proceed(); // what if the executing method is async?
-            stopwatch.stop();
-            logger.info("Method: '{}' of class: '{}' took: '{}'",
-                    invocation.getMethod().getName(),
-                    invocation.getMethod().getDeclaringClass().getName(),
-                    stopwatch.toString()
-            );
-            return returnedObject;
-        } finally {
-            stopwatch.reset();
-        }
+        Stopwatch watch = stopwatch.get();
+        if (watch.isRunning()) watch.reset();
+        watch.start();
+        final Object returnedObject = invocation.proceed(); // what if the executing method is async?
+        watch.stop();
 
+        logger.info("Method: '{}' of class: '{}' took: '{}'",
+                invocation.getMethod().getName(),
+                invocation.getMethod().getDeclaringClass().getName(),
+                watch.toString()
+        );
+
+        return returnedObject;
     }
 }

@@ -12,7 +12,6 @@ import com.braintreegateway.TransactionRequest;
 import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.Customer;
-import com.hair.business.beans.entity.PaymentInformation;
 import com.hair.business.beans.entity.PaymentItem;
 import com.hair.business.beans.entity.PaymentMethod;
 import com.hair.business.beans.entity.StyleRequest;
@@ -20,6 +19,7 @@ import com.hair.business.beans.entity.StyleRequestPayment;
 import com.hair.business.beans.helper.PaymentStatus;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.payment.PaymentService;
+import com.hair.business.services.stereotype.Timed;
 import com.x.business.exception.PaymentException;
 import com.x.business.utilities.Assert;
 
@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -50,6 +49,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         this.repository = repository;
     }
 
+    @Timed
     @Override
     public StyleRequest authorize(String nonce, final Long styleRequestId, final Long customerId) {
         StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
@@ -60,11 +60,12 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
         final StyleRequestPayment authorizedPayment = new StyleRequestPayment(price, customer.getId(), styleRequest.getMerchant().getId(), false, result);
         styleRequest.setAuthorizedPayment(authorizedPayment);
-        logger.debug("Successfully authorized payment for stylerequest {}", styleRequest.getId());
+        logger.debug("Successfully authorized payment amount {} for style request {}", authorizedPayment.getAmount(), styleRequest.getId());
 
         return styleRequest;
     }
 
+    @Timed
     @Override
     public StyleRequest deductPreAuthPayment(String nonce, Long styleRequestId, double totalAmount) {
         Assert.validId(styleRequestId);
@@ -87,6 +88,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         return styleRequest;
     }
 
+    @Timed
     @Override
     public void deductNonPreAuthPayment(String nonce, String paymentToken, List<AddOn> items) {
 
@@ -123,21 +125,21 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         repository.saveOne(customer);
     }
 
-    @Override
-    public Customer createCustomerPaymentProfile(final Customer customer, PaymentType paymentType, String nonce, boolean isDefault) {
-
-        PaymentMethod paymentMethod = new PaymentMethod(UUID.randomUUID().toString(), isDefault, customer.getPermanentId().toString());
-        PaymentItem paymentItem = new PaymentItem(paymentType, paymentMethod, isDefault);
-
-        PaymentInformation paymentInformation = new PaymentInformation();
-        paymentInformation.setDefaultPaymentMethod(paymentItem);
-
-        customer.setPayment(paymentInformation);
-
-        createCustomer(customer, nonce);
-
-        return customer;
-    }
+//    @Override
+//    public Customer createPaymentProfile(final Customer customer, PaymentType paymentType, String nonce, boolean isDefault) {
+//
+//        PaymentMethod paymentMethod = new PaymentMethod(UUID.randomUUID().toString(), isDefault, customer.getPermanentId().toString());
+//        PaymentItem paymentItem = new PaymentItem(paymentType, paymentMethod, isDefault);
+//
+//        PaymentInformation paymentInformation = new PaymentInformation();
+//        paymentInformation.setDefaultPaymentMethod(paymentItem);
+//
+//        customer.setPayment(paymentInformation);
+//
+//        createProfile(customer.getId().toString(), customer.getFirstName(), customer.getLastName(), customer.getEmail(), nonce);
+//
+//        return customer;
+//    }
 
     @Override
     public StyleRequest deductPreAuthPayment(Long styleRequestId, double totalAmount) {
@@ -147,14 +149,6 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     @Override
     public void deductNonPreAuthPayment(String paymentToken, List<AddOn> addOns) {
 
-    }
-
-    @Override
-    public Customer createCustomerPaymentProfile(Customer customer, PaymentType paymentType, boolean isDefault) {
-
-        createCustomer(customer, "");
-
-        return customer;
     }
 
     @Override
@@ -204,19 +198,21 @@ public class BraintreePaymentServiceImpl implements PaymentService {
             clientTokenRequest.customerId(entityId);
         }
 
-        return gateway.clientToken().generate(clientTokenRequest);
+        String result = gateway.clientToken().generate(clientTokenRequest);
+
+        if (StringUtils.isEmpty(result)){
+            logger.warn("Failed to issue token for entity {}", entityId);
+        }
+        return result;
     }
 
     @Override
-    public String createCustomer(Customer customer, String nonce) {
-        PaymentInformation pInfo = customer.getPayment();
-        Assert.notNull(customer, pInfo, pInfo.getDefaultPaymentMethod(), pInfo.getDefaultPaymentMethod().getToken());
-
+    public String createProfile(String id, String firstName, String lastName, String email, String nonce) {
         CustomerRequest request = new CustomerRequest()
-                .id(customer.getId().toString())
-                .firstName(customer.getFirstName())
-                .lastName(customer.getLastName())
-                .email(customer.getEmail())
+                .id(id)
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
                 .paymentMethodNonce(nonce);
 
         Result<com.braintreegateway.Customer> result = gateway.customer().create(request);
@@ -226,7 +222,6 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         }
 
         return result.getTarget().getId();
-
     }
 
     @Override
@@ -252,7 +247,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         final Result result = gateway.transaction().sale(request);
 
         if (!result.isSuccess()){
-            throw new PaymentException("Braintree authorization failed with message: " + result.getMessage());
+            throw new PaymentException("Payment authorization failed with message: " + result.getMessage());
         }
         return (Transaction) result.getTarget();
 

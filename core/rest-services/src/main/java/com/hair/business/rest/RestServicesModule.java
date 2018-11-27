@@ -36,7 +36,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
  */
 public class RestServicesModule extends ServletModule {
 
-    private static final String API_ENDPOINT = "/api/v1/*";
+    private static final String API_ENDPOINT = System.getProperty("app.api.url");
     private static final String RESOURCE_PACKAGES = "com.hair.business.rest.resources";
 
     private ServletContext servletContext;

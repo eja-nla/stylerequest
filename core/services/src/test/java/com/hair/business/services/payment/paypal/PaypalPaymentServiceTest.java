@@ -44,7 +44,7 @@ public class PaypalPaymentServiceTest extends AbstractServicesTestBase {
 
     @Test
     public void testauthorizePayment() throws Exception {
-    //    StyleRequestPayment styleRequestPayment = paypalPaymentProcessor.authorizePayment(createStyleRequest(), createCustomer(), 34.54, 676.34);
+    //    StyleRequestPayment styleRequestPayment = paypalPaymentProcessor.authorizePayment(createStyleRequest(), createProfile(), 34.54, 676.34);
 
 
     }
