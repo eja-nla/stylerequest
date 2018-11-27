@@ -14,6 +14,7 @@ import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.StyleRequestService;
 import com.hair.business.services.merchant.MerchantService;
 import com.hair.business.services.merchant.MerchantServiceImpl;
+import com.hair.business.services.payment.PaymentService;
 import com.x.business.scheduler.TaskQueue;
 
 import org.joda.time.DateTime;
@@ -30,6 +31,7 @@ public class MerchantServiceTest extends AbstractServicesTestBase {
     private MerchantService merchantService;
     private Repository repository;
     private StyleRequestService styleRequestService = Mockito.mock(StyleRequestService.class);
+    private PaymentService paymentService = Mockito.mock(PaymentService.class);
     private TaskQueue emailQueue = Mockito.mock(TaskQueue.class);
     private TaskQueue apnsQueue = Mockito.mock(TaskQueue.class);
 
@@ -37,7 +39,7 @@ public class MerchantServiceTest extends AbstractServicesTestBase {
     @Before
     public void setUp() {
         repository = injector.getInstance(Repository.class);
-        merchantService = new MerchantServiceImpl(repository, styleRequestService, emailQueue, apnsQueue);
+        merchantService = new MerchantServiceImpl(repository, styleRequestService, emailQueue, apnsQueue, paymentService);
     }
 
     @Test // figure out how to find time overlap

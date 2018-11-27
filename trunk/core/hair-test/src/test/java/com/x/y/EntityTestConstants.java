@@ -23,8 +23,9 @@ import org.joda.time.DateTime;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -116,7 +117,14 @@ public class EntityTestConstants {
 
     public static Style createStyle(){
         Merchant m = createMerchant();
-        Style s = new Style("didi", 20, m.getId(), m.getAddress().getLocation(), Arrays.asList(createImage(), createImage(), createImage(), createImage(), createImage()));
+        List<Image> imageList = new ArrayList<>();
+        imageList.add(createImage());
+        imageList.add(createImage());
+        imageList.add(createImage());
+        imageList.add(createImage());
+        imageList.add(createImage());
+
+        Style s = new Style("didi", 20, m.getId(), m.getAddress().getLocation(), imageList);
         s.setId(new Random().nextLong());
         s.setPermanentId(new Random().nextLong());
         s.setDurationEstimate(59);

@@ -22,7 +22,7 @@ public abstract class AbstractTransactionEntity extends AbstractPersistenceEntit
         return lastName;
     }
 
-    protected void setLastName(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 }

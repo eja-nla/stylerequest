@@ -25,4 +25,8 @@ public abstract class AbstractRequestServlet {
         return String.format("{\"status\" : \"failed\", \"message\" : \"%s\"}", exception.getMessage());
     }
 
+    protected String wrapString(String entity) {
+        return String.format("{\"key\" : \"%s\"}", entity);
+    }
+
 }

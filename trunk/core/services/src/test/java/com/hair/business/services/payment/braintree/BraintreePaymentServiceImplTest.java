@@ -105,7 +105,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
 
     @Test
     public void testCreateCustomer() {
-        String id = braintreePaymentService.createCustomer(customer, "fake-valid-nonce");
+        String id = braintreePaymentService.createProfile(customer.getId().toString(), customer.getFirstName(), customer.getLastName(), customer.getEmail(), "fake-valid-nonce");
         // see https://developers.braintreepayments.com/reference/general/testing/java for test nonces
 
         assertThat(id, notNullValue());

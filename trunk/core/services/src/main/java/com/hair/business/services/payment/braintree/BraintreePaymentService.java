@@ -3,7 +3,6 @@ package com.hair.business.services.payment.braintree;
 import com.braintreegateway.Transaction;
 import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.entity.AddOn;
-import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.PaymentMethod;
 import com.hair.business.beans.entity.StyleRequest;
 
@@ -47,8 +46,6 @@ public interface BraintreePaymentService {
 
     void updatePayment(Long customerId, PaymentMethod paymentMethod, PaymentType paymentType, String nonce, boolean isDefault);
 
-    Customer createCustomerPaymentProfile(Customer customer, PaymentType paymentType, String nonce, boolean isDefault);
-
     /**
      *
      * Including a customerId when generating the client token lets returning customers
@@ -63,7 +60,7 @@ public interface BraintreePaymentService {
      * returns their ID
      **/
 
-    String createCustomer(Customer customer, String nonce);
+    String createProfile(String id, String firstName, String lastName, String email, String nonce);
 
 
     void refund(String transactionId);

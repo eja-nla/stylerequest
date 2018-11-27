@@ -2,6 +2,7 @@ package com.hair.business.services.customer;
 
 import static com.x.y.EntityTestConstants.createImage;
 import static com.x.y.EntityTestConstants.createMerchant;
+import static com.x.y.EntityTestConstants.createStyle;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.is;
@@ -20,7 +21,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,14 +47,17 @@ public class StyleServiceTest extends AbstractServicesTestBase {
         Merchant merchant = createMerchant();
         repository.saveOne(merchant);
 
-        Style style = styleService.publishStyle("Test style", 2, merchant.getId(), Arrays.asList(createImage(), createImage(), createImage(), createImage(), createImage()));
+        Style style = styleService.publishStyle(createStyle(), merchant.getId());
 
         assertThat(style, is(notNullValue()));
         assertThat(style.isActive(), is(true));
+        assertThat(style.getLocation(), is(notNullValue()));
+
+        assertThat(repository.findOne(style.getId(), Style.class), is(notNullValue()));
     }
 
     @Test
-    public void testUpdateStyle() throws Exception {
+    public void testUpdateStyle() {
         Style style = EntityTestConstants.createStyle();
         repository.saveOne(style);
 

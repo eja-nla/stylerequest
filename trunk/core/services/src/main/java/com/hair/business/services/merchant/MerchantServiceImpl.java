@@ -3,13 +3,12 @@ package com.hair.business.services.merchant;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import com.hair.business.beans.constants.StyleRequestState;
-import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
-import com.hair.business.beans.entity.Device;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.StyleRequestService;
+import com.hair.business.services.payment.PaymentService;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 import com.x.business.scheduler.stereotype.EmailTaskQueue;
@@ -37,15 +36,17 @@ public class MerchantServiceImpl implements MerchantService {
     private final StyleRequestService styleRequestService;
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;
+    private final PaymentService paymentService;
 
     private final List<String> IS_BOOOKED_FILTER = Arrays.asList("merchantPermanentId", "state", "appointmentStartTime >=", "appointmentStartTime <=");
 
     @Inject
-    public MerchantServiceImpl(Repository repository, StyleRequestService styleRequestService, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue) {
+    public MerchantServiceImpl(Repository repository, StyleRequestService styleRequestService, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue, PaymentService paymentService) {
         this.repository = repository;
         this.styleRequestService = styleRequestService;
         this.emailTaskQueue = emailTaskQueue;
         this.apnsQueue = apnsQueue;
+        this.paymentService = paymentService;
     }
 
     @Override
@@ -81,11 +82,17 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public void createMerchant(String firstName, String lastName, String displayName, String email, String phone, Device device, Address address) {
+    public void createMerchant(Merchant merchant, String nonce) {
+        Assert.notNull(merchant, "Merchant cannot be null");
+        Assert.notNull(nonce, "Nonce cannot be null");
+        Assert.notNull(merchant.getBusinessName(), "Merchant must have a business name");
+
         Long permId = repository.allocateId(Merchant.class);
-        Merchant merchant = new Merchant(firstName, lastName, displayName, email, phone, device, address);
         merchant.setId(permId);
         merchant.setPermanentId(permId);
+
+        paymentService.createProfile(merchant.getId().toString(), merchant.getFirstName(), merchant.getLastName(), merchant.getEmail(), nonce);
+
         updateMerchant(merchant);
     }
 

@@ -13,7 +13,6 @@ import com.x.business.utilities.Assert;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -39,20 +38,21 @@ public class StyleServiceImpl implements StyleService {
     }
 
     @Override
-    public Style publishStyle(String styleName, int duration, Long publisherId, List<Image> styleImages) {
-        Assert.notNull(styleImages, styleName, duration, publisherId);
-        Assert.isTrue(styleImages.size() >= 5, "Style must have at least 5 images showing different views");
+    public Style publishStyle(Style style, Long publisherId) {
+        Assert.notNull(style, publisherId);
+        Assert.isTrue(style.getStyleImages().size() >= 5, "Style must have at least 5 images showing different views");
 
         Merchant merchant = repository.findOne(publisherId, Merchant.class);
 
         Assert.notNull(merchant, format("Could not find Merchant with id '%s'", publisherId));
 
         Long stylePermId = repository.allocateId(Style.class);
-        Style style = new Style(styleName, duration, merchant.getId(), merchant.getAddress().getLocation(), styleImages);
 
         style.setId(stylePermId);
         style.setPermanentId(stylePermId);
         style.setActive(true);
+        style.setLocation(merchant.getAddress().getLocation());
+
         repository.saveOne(style);
 
         return style;
@@ -73,7 +73,7 @@ public class StyleServiceImpl implements StyleService {
 
         Assert.notNull(style, format("Could not find Style with id '%s'", styleId));
 
-        Collection<Image> images = new ArrayList<>();
+        List<Image> images = new ArrayList<>();
 
         images.addAll(style.getStyleImages());
         images.addAll(styleImages);

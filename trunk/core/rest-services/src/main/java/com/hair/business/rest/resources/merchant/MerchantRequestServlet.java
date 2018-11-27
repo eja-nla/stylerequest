@@ -8,20 +8,22 @@ import static com.hair.business.rest.MvcConstants.ID;
 import static com.hair.business.rest.MvcConstants.INFO;
 import static com.hair.business.rest.MvcConstants.MERCHANT_URI;
 import static com.hair.business.rest.MvcConstants.PUBLISH_STYLE_ENDPOINT;
+import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import com.google.identitytoolkit.GitkitUser;
 
 import com.hair.business.beans.constants.Preferences;
-import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Merchant;
+import com.hair.business.beans.entity.Style;
 import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.StyleRequestService;
 import com.hair.business.services.StyleService;
 import com.hair.business.services.merchant.MerchantService;
 import com.x.business.utilities.Assert;
 
-import java.util.List;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +48,8 @@ public class MerchantRequestServlet extends AbstractRequestServlet {
     private final MerchantService merchantService;
     private final StyleService styleService;
     private final StyleRequestService styleRequestService;
+
+    private static final Logger log = getLogger(MerchantRequestServlet.class);
 
     @Inject
     public MerchantRequestServlet(MerchantService merchantService, StyleService styleService, StyleRequestService styleRequestService) {
@@ -73,16 +77,18 @@ public class MerchantRequestServlet extends AbstractRequestServlet {
     @Path(CREATE_MERCHANT_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response createMerchant(@Context HttpServletRequest request, Merchant merchant) {
-        Assert.notNull(merchant, request);
-        GitkitUser user = (GitkitUser) request.getAttribute("user");
+    public Response createMerchant(@Context HttpServletRequest request, Merchant merchant, final @QueryParam("token") String nonce) {
+        log.info("Creating new merchant '{}'", merchant.getEmail());
+        GitkitUser user = (GitkitUser) request.getAttribute(REST_USER_ATTRIBUTE);
         Assert.notNull(user);
 
+        String names[] = user.getName().split(" ", 2);
+        merchant.setFirstName(names[0]);
+        merchant.setLastName(names[1]);
         merchant.setEmail(user.getEmail());
-        merchant.setFirstName(user.getName());
         merchant.setPhotoUrl(user.getPhotoUrl());
 
-        merchantService.updateMerchant(merchant);
+        merchantService.createMerchant(merchant, nonce);
         return Response.ok().entity(merchant).build();
     }
 
@@ -90,9 +96,10 @@ public class MerchantRequestServlet extends AbstractRequestServlet {
     @Path(PUBLISH_STYLE_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response publishStyle(List<Image> styleImages, @QueryParam("styleName") String styleName, @QueryParam("duration") int estimatedDuration, @QueryParam("merchantId") Long merchantId) {
+    public Response publishStyle(Style style, @QueryParam("merchantId") Long merchantId) {
         try {
-            return Response.ok(styleService.publishStyle(styleName, estimatedDuration, merchantId, styleImages), MediaType.APPLICATION_JSON_TYPE).build();
+            //return Response.ok(styleService.publishStyle(styleName, estimatedDuration, merchantId, styleImages), MediaType.APPLICATION_JSON_TYPE).build();
+            return Response.ok(styleService.publishStyle(style, merchantId), MediaType.APPLICATION_JSON_TYPE).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {

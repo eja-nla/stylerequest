@@ -173,11 +173,6 @@ public class PaypalPaymentServiceImpl implements PaypalPaymentService {
     }
 
     @Override
-    public Customer createCustomerPaymentProfile(Customer customer, PaymentType paymentType, boolean isDefault) {
-        return null;
-    }
-
-    @Override
     public void refund(StyleRequest styleRequest) {
 
     }
@@ -346,17 +341,12 @@ public class PaypalPaymentServiceImpl implements PaypalPaymentService {
     }
 
     @Override
-    public Customer createCustomerPaymentProfile(Customer customer, PaymentType paymentType, String nonce, boolean isDefault) {
-        return null;
-    }
-
-    @Override
     public String issueClientToken(String customerId) {
         return null;
     }
 
     @Override
-    public String createCustomer(Customer customer, String nonce) {
+    public String createProfile(String id, String firstName, String lastName, String email, String nonce) {
         return null;
     }
 
