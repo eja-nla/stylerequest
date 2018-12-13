@@ -23,6 +23,7 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
     private Address address;
     private Preferences preferences;
     private PaymentInformation payment;
+    private String paymentId;
 
     public String getEmail() {
         return email;
@@ -94,5 +95,13 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
 
     public void setPayment(PaymentInformation payment) {
         this.payment = payment;
+    }
+
+    public String getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
     }
 }

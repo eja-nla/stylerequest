@@ -28,7 +28,7 @@ public class StylerequestStateMgrImpl implements StylerequestStateMgr {
 
     /**
      * enforce state rules
-     * 1. If current and new states are the same, fail loudly (save write cost)
+     * 1. If current and new states are the same, fail loudly
      * 2. PENDING can only state to ACCEPTED
      * 3. ACCEPTED can state anywhere
      * 4. COMPLETED or CANCELLED are immutable
@@ -40,7 +40,7 @@ public class StylerequestStateMgrImpl implements StylerequestStateMgr {
         StyleRequest styleRequest = repository.findOne(id, StyleRequest.class);
         Assert.notNull(styleRequest, String.format("Transition failure. Style request with ID %s not found", styleRequest));
 
-        StyleRequestState currentState = styleRequest.getState();
+        final StyleRequestState currentState = styleRequest.getState();
 
         //1
         Assert.isTrue(!newState.equals(currentState), "Transition failure. Style request state and new state are equal.");

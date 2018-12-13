@@ -2,42 +2,44 @@
 	"variables": [],
 	"info": {
 		"name": "Request Style Collection",
-		"_postman_id": "8b74a268-efb5-1e67-3a4e-be11c2de4390",
+		"_postman_id": "45432372-8670-8ba4-b1ea-96765c973e7c",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Create Customer",
+			"name": "Test Initializer",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"postman.setEnvironmentVariable(\"serviceUrl\", \"http://localhost:4567/api/v1\");",
-							"postman.setEnvironmentVariable(\"customerId\", \"-1926853767843327050\");",
+							"tests[\"health is fine\"] = responseCode.code === 200;"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable(\"servicePort\", \"4567\");",
+							"postman.setEnvironmentVariable(\"serviceHealthUrl\", \"http://localhost:{{servicePort}}/health\");",
+							"postman.setEnvironmentVariable(\"serviceUrl\", \"http://localhost:{{servicePort}}/api/v1\");",
 							"",
-							"tests[\"Customer created\"] = responseCode.code === 200;"
+							"",
+							"postman.setEnvironmentVariable(\"nonce\", \"fake-valid-nonce\");"
 						]
 					}
 				}
 			],
 			"request": {
-				"url": "http://localhost:4567/api/v1/customer/create/customer",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"permanentId\" : -4528939108101019240,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-06T21:56:24.274Z\",\n  \"lastUpdated\" : \"2017-02-06T21:56:24.274Z\",\n  \"firstName\" : \"Customer first Name\",\n  \"lastName\" : \"lastname\",\n  \"email\" : \"customer@email.com\",\n  \"phone\" : \"+4453635436237\",\n  \"device\" : {\n    \"permanentId\" : -2907136812157778054,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-06T21:56:24.274Z\",\n    \"id\" : -5159650623228815323,\n    \"deviceId\" : \"br3q06dk5tcfs0202l3k2a15tg\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"M\",\n  \"active\" : true,\n  \"address\" : {\n    \"permanentId\" : 8386694704757603465,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-02-27T03:00:00.436Z\",\n    \"id\" : 7083066285675174389,\n    \"addressLine\" : \"flat x\",\n    \"postCode\" : \"SE5 tgg\",\n    \"location\" : {\n      \"permanentId\" : 2138116990435268255,\n      \"version\" : 1,\n      \"createdDate\" : \"2017-02-27T03:00:00.436Z\",\n      \"id\" : 2138116990435268255,\n      \"city\" : \"London\",\n      \"state\" : \"Alabama\",\n      \"countryCode\" : \"UK\",\n      \"geoPoint\" : {\n        \"id\" : 8868894011258282251,\n        \"latitude\" : 51.503407,\n        \"longitude\" : -0.127592\n      }\n    }\n  },\n  \"id\" : -1926853767843327050,\n  \"ratings\" : {\n    \"0\" : 0,\n    \"1\" : 0,\n    \"2\" : 0,\n    \"3\" : 0,\n    \"4\" : 3,\n    \"5\" : 2\n  },\n  \"score\" : 4.5,\n  \"preferences\" : {\n    \"placedNotificationEnabled\" : true,\n    \"acceptedNotificationEnabled\" : true,\n    \"cancelledNotificationEnabled\" : true,\n    \"completedNotificationEnabled\" : true,\n    \"preferredPaymentType\" : \"PAYPAL\"\n  }\n}"
-				},
-				"description": "Create new customer"
+				"url": "http://localhost:4567/health",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "must be run before running any other tests"
 			},
 			"response": []
 		},
@@ -56,7 +58,24 @@
 				}
 			],
 			"request": {
-				"url": "{{serviceUrl}}/customer/info/?id={{customerId}}",
+				"url": {
+					"raw": "{{serviceUrl}}/customer/info/?id={{customerId}}",
+					"host": [
+						"{{serviceUrl}}"
+					],
+					"path": [
+						"customer",
+						"info",
+						""
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{customerId}}"
+						}
+					],
+					"variable": []
+				},
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -77,20 +96,35 @@
 						"exec": [
 							"tests[\"Merchant created\"] = responseCode.code === 200;",
 							"",
-							"postman.setEnvironmentVariable(\"merchantId\", \"6621510167243271896\");"
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"merchantId\", jsonData.key);"
 						]
 					}
 				}
 			],
 			"request": {
-				"url": "{{serviceUrl}}/merchant/create/merchant",
+				"url": {
+					"raw": "{{serviceUrl}}/merchant/create/merchant?token={{nonce}}",
+					"host": [
+						"{{serviceUrl}}"
+					],
+					"path": [
+						"merchant",
+						"create",
+						"merchant"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "{{nonce}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
 				"method": "POST",
 				"header": [
-					{
-						"key": "gtoken",
-						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjBoQU13ZyJ9.eyJpc3MiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGUuY29tLyIsImF1ZCI6ImFteXJyaC10ZXN0MSIsImlhdCI6MTQ2Njk1OTc0OCwiZXhwIjoxNDY4MTY5MzQ4LCJ1c2VyX2lkIjoiZDVuYk85YmZVdGhkUHVCMEtVbTBDUFd6T0xwMiIsImVtYWlsIjoiY2lvQGFteXJyaC5jb20iLCJwcm92aWRlcl9pZCI6Imdvb2dsZS5jb20iLCJ2ZXJpZmllZCI6dHJ1ZX0.CkrrMZ-VBRJ6HYXevwGYisr7p_8afYMVRs2vAc9thFz5Eb6jUxTwGARGjroaGDAluM7LmfCDwJ1VeTCVWFB07HT_eVCiOci-9-Yk2x9dnotqGXrUNko3oNTGBE89SsEl_BFiKdyZZVhxbm14pMfhPCVZmxs5cxBEOfZ80HdKgc12zuMD_TUXQBY3746a9_Ca_DT20MkW9TAminmHxUQ8iXedPUyNQmNLBpbEy1ibJ0rOjoDfHym91sUfEu-YRXAxmGZKEUeOT9crbGmm7hrM7_UcUCISY68XXqg0HNpAJc2GI9p9mcQJP3wL6zNyOSmB9pJamt_SwzITP8gNqbaNSg",
-						"description": ""
-					},
 					{
 						"key": "Content-Type",
 						"value": "application/json",
@@ -99,7 +133,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"permanentId\" : 6621510167243271896,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-03-02T23:05:14.822Z\",\n  \"lastUpdated\" : \"2017-03-02T23:05:14.823Z\",\n  \"firstName\" : \"Test Merchant FirstName\",\n  \"lastName\" : \"lastname\",\n  \"email\" : \"merchant@email.com\",\n  \"phone\" : \"+1134555643654\",\n  \"device\" : {\n    \"permanentId\" : 5981815732749760502,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-03-02T23:05:14.544Z\",\n    \"id\" : -9033332049852286847,\n    \"deviceId\" : \"l7dmjvt67oafc81rs48udsd5em\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"styleRequestPayment\" : {\n    \"permanentId\" : 5447845332032134393,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-03-02T23:05:14.825Z\",\n    \"id\" : 5447845332032134393,\n    \"amount\" : 3255.43,\n    \"customerId\" : 35345432,\n    \"merchantId\" : 3241342,\n    \"settled\" : true,\n    \"type\" : \"PAYPAL\"\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"F\",\n  \"active\" : true,\n  \"address\" : {\n    \"permanentId\" : 6417910370860107413,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-03-02T23:05:14.822Z\",\n    \"id\" : -2007306903756970418,\n    \"addressLine\" : \"flat x\",\n    \"postCode\" : \"SE5 tgg\",\n    \"location\" : {\n      \"permanentId\" : 3063022651781677231,\n      \"version\" : 1,\n      \"createdDate\" : \"2017-03-02T23:05:14.822Z\",\n      \"id\" : 3063022651781677231,\n      \"city\" : \"London\",\n      \"state\" : \"Alabama\",\n      \"countryCode\" : \"GB\",\n      \"geoPoint\" : {\n        \"id\" : 2446360220652607486,\n        \"latitude\" : 51.503407,\n        \"longitude\" : -0.127592\n      }\n    }\n  },\n  \"preferences\" : {\n    \"placedNotificationEnabled\" : true,\n    \"acceptedNotificationEnabled\" : true,\n    \"cancelledNotificationEnabled\" : true,\n    \"completedNotificationEnabled\" : true,\n    \"preferredPaymentType\" : \"PAYPAL\"\n  },\n  \"id\" : 6621510167243271896,\n  \"businessName\" : \"Midas Touch\",\n  \"ratings\" : {\n    \"0\" : 0,\n    \"1\" : 0,\n    \"2\" : 0,\n    \"3\" : 0,\n    \"4\" : 3,\n    \"5\" : 2\n  },\n  \"score\" : 4.5\n}"
+					"raw": "{\n  \"firstName\" : \"Test Merchant FirstName\",\n  \"lastName\" : \"lastname\",\n  \"email\" : \"merchant@email.com\",\n  \"phone\" : \"+1134555643654\",\n  \"device\" : {\n    \"deviceId\" : \"l7dmjvt67oafc81rs48udsd5em\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"F\",\n  \"address\" : {\n    \"addressLine\" : \"flat x\",\n    \"postCode\" : \"SE5 tgg\",\n    \"location\" : {\n      \"id\" : 6353,\t\n      \"city\" : \"London\",\n      \"state\" : \"Alabama\",\n      \"countryCode\" : \"GB\",\n      \"geoPoint\" : {\n        \"latitude\" : 51.503407,\n        \"longitude\" : -0.127592\n      }\n    }\n  },\n  \"preferences\" : {\n    \"placedNotificationEnabled\" : false,\n    \"acceptedNotificationEnabled\" : false,\n    \"cancelledNotificationEnabled\" : false,\n    \"completedNotificationEnabled\" : false,\n    \"preferredPaymentType\" : \"PAYPAL\"\n  },\n  \"payment\" : {\n    \"ownerId\" : 4,\n    \"paymentItems\" : [ {\n      \"type\" : \"CARD\",\n      \"paymentMethod\" : {\n        \"type\" : \"NO NEED\",\n        \"firstName\" : \"NO NEED\",\n        \"lastName\" : \"NO NEED\",\n        \"email\" : \"email\",\n        \"billingAgreementId\" : \"agreementId\",\n        \"imageUrl\" : \"SOME URL\",\n        \"customerId\" : 1,\n        \"token\" : \"SAMPLE TOKEN\",\n        \"default\" : false\n      },\n      \"default\" : false\n    } ],\n    \"defaultPaymentMethod\" : {\n      \"type\" : \"CARD\",\n      \"paymentMethod\" : {\n       \"type\" : \"NO NEED\",\n        \"firstName\" : \"NO NEED\",\n        \"lastName\" : \"NO NEED\",\n        \"email\" : \"email\",\n        \"billingAgreementId\" : \"agreementId\",\n        \"imageUrl\" : \"SOME URL\",\n        \"customerId\" : 1,\n        \"token\" : \"SAMPLE TOKEN\",\n        \"default\" : true\n      },\n      \"default\" : true\n    }\n  },\n  \"businessName\" : \"Midas Touch\",\n  \"ratings\" : {\n    \"0\" : 0,\n    \"1\" : 0,\n    \"2\" : 0,\n    \"3\" : 0,\n    \"4\" : 3,\n    \"5\" : 2\n  },\n  \"score\" : 4.5\n}"
 				},
 				"description": "Create new merchant"
 			},
@@ -119,7 +153,24 @@
 				}
 			],
 			"request": {
-				"url": "{{serviceUrl}}/merchant/info/?id={{merchantId}}",
+				"url": {
+					"raw": "{{serviceUrl}}/merchant/info/?id={{merchantId}}",
+					"host": [
+						"{{serviceUrl}}"
+					],
+					"path": [
+						"merchant",
+						"info",
+						""
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{merchantId}}"
+						}
+					],
+					"variable": []
+				},
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -138,7 +189,6 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"postman.setEnvironmentVariable(\"serviceUrl\", \"http://localhost:4567/api/v1\");",
 							"tests[\"Syle created\"] = responseCode.code === 200;",
 							"",
 							"var jsonData = JSON.parse(responseBody);",
@@ -148,7 +198,26 @@
 				}
 			],
 			"request": {
-				"url": "{{serviceUrl}}/merchant/create/style?styleName=didi&merchantId={{merchantId}}&duration=45",
+				"url": {
+					"raw": "{{serviceUrl}}/merchant/create/style?merchantId={{merchantId}}",
+					"host": [
+						"{{serviceUrl}}"
+					],
+					"path": [
+						"merchant",
+						"create",
+						"style"
+					],
+					"query": [
+						{
+							"key": "merchantId",
+							"value": "{{merchantId}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
 				"method": "POST",
 				"header": [
 					{
@@ -159,7 +228,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[{\n  \"permanentId\" : 3549878539167814701,\n  \"version\" : 1,\n  \"id\" : -5224463303045973708,\n  \"url\" : \"http//lsoigej4bl8li4mmg6va4ullras.com\",\n  \"owner\" : \"test owner name\",\n  \"views\" : 4,\n  \"durationEstimate\" : 5\n  \n},{\n  \"permanentId\" : 3549878539167814702,\n  \"version\" : 1,\n  \"id\" : -5224463303045973708,\n  \"url\" : \"http//lsoigej4bl8li4mmg6va4ullrab.com\",\n  \"owner\" : \"test owner name\",\n  \"views\" : 7,\n  \"durationEstimate\" : 50\n  \n},{\n  \"permanentId\" : 3549878539167814703,\n  \"version\" : 1,\n  \"id\" : -5224463303045973708,\n  \"url\" : \"http//lsoigej4bl8li4mmg6va4ullrag.com\",\n  \"owner\" : \"test owner name\",\n  \"views\" : 12,\n  \"durationEstimate\" : 8\n  \n},{\n  \"permanentId\" : 3549878539167814704,\n  \"version\" : 1,\n  \"id\" : -5224463303045973708,\n  \"url\" : \"http//lsoigej4bl8li4mmg6va4ullraw.com\",\n  \"owner\" : \"test owner name\",\n  \"views\" : 9,\n  \"durationEstimate\" : 45\n  \n},{\n  \"permanentId\" : 3549878539167814705,\n  \"version\" : 1,\n  \"id\" : -5224463303045973708,\n  \"url\" : \"http//lsoigej4bl8li4mmg6va4ullraf.com\",\n  \"owner\" : \"test owner name\",\n  \"views\" : 94,\n  \"durationEstimate\" : 38\n  \n}]"
+					"raw": "{\n  \"name\" : \"didiNew\",\n  \"styleImages\" : [ \n  \t{\n\t   \"url\" : \"http//187v58eaa902ostno5f9rm30l7.com\",\n\t   \"owner\" : \"test owner name\"\n    },\n    {\n    \"url\" : \"http//kj5yrtusdhjknzmfbgnmfdgf.com\",\n    \"owner\" : \"test owner name\"\n  },\n    {\n      \"url\" : \"http//tfgdhghgfhg.com\",\n      \"owner\" : \"test owner name\"\n    },\n    {\n      \"url\" : \"http//dfgfdhdfgmnfdsgfdgf.com\",\n      \"owner\" : \"test owner name\"\n    },\n    {\n      \"url\" : \"http//rmrskhdglkjydsuitly4ekjabtdf.com\",\n      \"owner\" : \"test owner name\"\n    }\n    ],\n  \"durationEstimate\" : 45,\n  \"price\" : 13.45\n}"
 				},
 				"description": "Create new Style"
 			},
@@ -173,13 +242,34 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"tests[\"Style is found\"] = responseCode.code === 200;"
+							"tests[\"response is ok\"] = responseCode.code === 200;",
+							"",
+							"tests[\"Syle is found\"] = JSON.parse(responseBody).id === 1;"
 						]
 					}
 				}
 			],
 			"request": {
-				"url": "{{serviceUrl}}/style/info/?id={{styleId}}",
+				"url": {
+					"raw": "{{serviceUrl}}/style/info/?id={{styleId}}",
+					"host": [
+						"{{serviceUrl}}"
+					],
+					"path": [
+						"style",
+						"info",
+						""
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{styleId}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -222,7 +312,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"permanentId\" : -4424178728855319845,\n  \"version\" : 1,\n  \"createdDate\" : \"2016-08-29T20:22:44.557Z\",\n  \"id\" : {{styleId}},\n  \"name\" : \"style updated after didi\",\n  \"requestCount\" : 0,\n  \"trending\" : true,\n  \"active\" : true,\n  \"publisherId\" : -1733350221602184676,\n  \"location\" : {\n    \"permanentId\" : -4766811198420564245,\n    \"version\" : 1,\n    \"createdDate\" : \"2016-08-29T20:22:44.556Z\",\n    \"id\" : -5712228046471495956,\n    \"city\" : \"London\",\n    \"state\" : \"Alabama\",\n    \"country\" : \"UK\",\n    \"geoPoint\" : {\n      \"id\" : -2914024913972574844,\n      \"latitude\" : 51.503407,\n      \"longitude\" : -0.127592\n    }\n  },\n  \"styleImages\" : [ {\n    \"permanentId\" : 1627324436263907989,\n    \"version\" : 1,\n    \"createdDate\" : \"2016-08-29T20:22:44.556Z\",\n    \"id\" : 6055824299439456969,\n    \"url\" : \"http//187v58eaa902ostno5f9rm30l7.com\",\n    \"owner\" : \"test owner name\",\n    \"views\" : 20\n  } ],\n  \"durationEstimate\" : 5\n}"
+					"raw": "{\n\t\"id\": {{styleId}},\n\t\"permanentId\": {{styleId}},\n    \"name\": \"style updated after didi\",\n    \"requestCount\": 0,\n    \"trending\": true,\n    \"publisherId\": {{merchantId}},\n    \"location\": {\n        \"permanentId\": 3063022651781677231,\n        \"version\": 1,\n        \"createdDate\": \"2017-03-02T23:05:14.822Z\",\n        \"id\": 3063022651781677231,\n        \"city\": \"London\",\n        \"state\": \"Alabama\",\n        \"countryCode\": \"GB\",\n        \"geoPoint\": {\n            \"id\": 2446360220652607486,\n            \"latitude\": 51.503407,\n            \"longitude\": -0.127592\n        }\n    },\n    \"styleImages\": [\n        {\n            \"version\": 1,\n            \"createdDate\": \"2018-10-10T03:27:04.865Z\",\n            \"id\": -5224463303045973100,\n            \"url\": \"http//kj5yrtusdhjknzmfbgnmfdgf.com\",\n            \"owner\": \"test owner name\",\n            \"views\": 20\n        },\n        {\n            \"version\": 1,\n            \"createdDate\": \"2018-10-10T03:27:04.871Z\",\n            \"id\": -5224463303045972345,\n            \"url\": \"http//tfgdhghgfhg.com\",\n            \"owner\": \"test owner name\",\n            \"views\": 20\n        },\n        {\n            \"version\": 1,\n            \"createdDate\": \"2018-10-10T03:27:04.871Z\",\n            \"id\": -5224463303045973708,\n            \"url\": \"http//dfgfdhdfgmnfdsgfdgf.com\",\n            \"owner\": \"test owner name\",\n            \"views\": 20\n        },\n        {\n            \"version\": 1,\n            \"createdDate\": \"2018-10-10T03:27:04.871Z\",\n            \"id\": -5224463302325973708,\n            \"url\": \"http//rmrskhdglkjydsuitly4ekjabtdf.com\",\n            \"owner\": \"test owner name\",\n            \"views\": 20\n        },\n        {\n            \"version\": 1,\n            \"createdDate\": \"2018-10-10T03:27:04.871Z\",\n            \"id\": -5224463302335973708,\n            \"url\": \"http//mn,bsadnfghjksad734br ,faev.com\",\n            \"owner\": \"test owner name\",\n            \"views\": 20\n        }\n    ],\n    \"durationEstimate\": 45,\n    \"price\": 55\n}"
 				},
 				"description": ""
 			},
@@ -250,35 +340,77 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"id\" : -12345\n}"
+					"raw": ""
 				},
 				"description": ""
 			},
 			"response": []
 		},
 		{
-			"name": "Place style request",
+			"name": "Make style request",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"tests[\"Style request placed\"] = responseCode.code === 200;",
 							"",
-							"var jsonData = JSON.parse(responseBody);"
+							"tests[\"stylerequest created\"] = responseCode.code === 200;",
+							""
 						]
 					}
 				}
 			],
 			"request": {
-				"url": "{{serviceUrl}}/customer/request/style?customerId={{customerId}}&styleId={{styleId}}&merchantId={{merchantId}}&dateTime=2017-06-20T09:00:01.635Z",
+				"url": {
+					"raw": "{{serviceUrl}}/customer/request/style?token=fake-valid-nonce&styleId={{styleId}}&customerId={{customerId}}&merchantId={{merchantId}}&dateTime={{appointmentDate}}",
+					"host": [
+						"{{serviceUrl}}"
+					],
+					"path": [
+						"customer",
+						"request",
+						"style"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "fake-valid-nonce",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "styleId",
+							"value": "{{styleId}}",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "customerId",
+							"value": "{{customerId}}",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "merchantId",
+							"value": "{{merchantId}}",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "dateTime",
+							"value": "{{appointmentDate}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
 				"method": "POST",
 				"header": [
 					{
@@ -291,41 +423,37 @@
 					"mode": "raw",
 					"raw": ""
 				},
-				"description": "Place new style request"
+				"description": "Create style request"
 			},
-			"response": []
-		},
-		{
-			"name": "Update customer Payment info",
-			"event": [
+			"response": [
 				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"tests[\"Payment updated\"] = responseCode.code === 200;",
-							""
-						]
-					}
+					"id": "74e0df5c-c1d8-4ce0-ad8c-ddd80b2d87dc",
+					"name": "Create Customer",
+					"originalRequest": {
+						"url": "{{serviceUrl}}/customer/create/customer",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"permanentId\" : -1203767711132640506,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-03-09T00:15:34.343Z\",\n  \"lastUpdated\" : \"2017-03-09T00:15:34.343Z\",\n  \"firstName\" : \"Customer first Name\",\n  \"lastName\" : \"lastname\",\n  \"email\" : \"customer@email.com\",\n  \"phone\" : \"+4453635436237\",\n  \"device\" : {\n    \"permanentId\" : -1767470148608306961,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-03-09T00:15:34.343Z\",\n    \"id\" : 5384207898933496795,\n    \"deviceId\" : \"vd3donbtok2cvphcmh7iu97ag6\",\n    \"os\" : \"ios9\",\n    \"deviceType\" : \"IOS\"\n  },\n  \"photoUrl\" : \"http://some.photo.url\",\n  \"gender\" : \"M\",\n  \"active\" : true,\n  \"address\" : {\n    \"permanentId\" : 7843812292907002917,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-03-09T00:15:34.343Z\",\n    \"id\" : 2733911097595850888,\n    \"addressLine\" : \"flat x\",\n    \"postCode\" : \"SE5 tgg\",\n    \"location\" : {\n      \"permanentId\" : 818439577603065347,\n      \"version\" : 1,\n      \"createdDate\" : \"2017-03-09T00:15:34.343Z\",\n      \"id\" : 818439577603065347,\n      \"city\" : \"London\",\n      \"state\" : \"Alabama\",\n      \"countryCode\" : \"GB\",\n      \"geoPoint\" : {\n        \"id\" : -5102298050113191335,\n        \"latitude\" : 51.503407,\n        \"longitude\" : -0.127592\n      }\n    }\n  },\n  \"preferences\" : {\n    \"placedNotificationEnabled\" : false,\n    \"acceptedNotificationEnabled\" : false,\n    \"cancelledNotificationEnabled\" : false,\n    \"completedNotificationEnabled\" : false,\n    \"preferredPaymentType\" : \"PAYPAL\"\n  },\n  \"payment\" : {\n    \"permanentId\" : 1996041782170603606,\n    \"version\" : 1,\n    \"createdDate\" : \"2017-03-09T20:18:22.287Z\",\n    \"id\" : 1996041782170603606,\n    \"ownerId\" : 4,\n    \"paymentItems\" : [ {\n      \"permanentId\" : 7996041782170603636,\n      \"version\" : 1,\n      \"createdDate\" : \"2017-03-09T20:18:22.441Z\",\n      \"type\" : \"CARD\",\n      \"paymentMethod\" : {\n        \"permanentId\" : 1996041782170603643,\n        \"version\" : 1,\n        \"createdDate\" : \"2017-03-09T20:18:22.441Z\",\n        \"type\" : \"NO NEED\",\n        \"firstName\" : \"NO NEED\",\n        \"lastName\" : \"NO NEED\",\n        \"email\" : \"email\",\n        \"billingAgreementId\" : \"agreementId\",\n        \"imageUrl\" : \"SOME URL\",\n        \"customerId\" : \"345435325544324\",\n        \"token\" : \"SAMPLE TOKEN\",\n        \"default\" : true\n      },\n      \"default\" : true\n    } ],\n    \"defaultPaymentMethod\" : {\n      \"permanentId\" : 1996041782170603643,\n      \"version\" : 1,\n      \"createdDate\" : \"2017-03-09T20:18:22.441Z\",\n      \"type\" : \"CARD\",\n      \"paymentMethod\" : {\n        \"permanentId\" : 1996041782170603643,\n        \"version\" : 1,\n        \"createdDate\" : \"2017-03-09T20:18:22.441Z\",\n        \"type\" : \"NO NEED\",\n        \"firstName\" : \"NO NEED\",\n        \"lastName\" : \"NO NEED\",\n        \"email\" : \"email\",\n        \"billingAgreementId\" : \"agreementId\",\n        \"imageUrl\" : \"SOME URL\",\n        \"customerId\" : \"345435325544324\",\n        \"token\" : \"SAMPLE TOKEN\",\n        \"default\" : true\n      },\n      \"default\" : true\n    }\n  },\n  \"id\" : 7145856800753873508,\n  \"ratings\" : {\n    \"0\" : 0,\n    \"1\" : 0,\n    \"2\" : 0,\n    \"3\" : 0,\n    \"4\" : 3,\n    \"5\" : 2\n  },\n  \"score\" : 4.5\n}\n"
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"_postman_previewtype": "parsed",
+					"header": [],
+					"cookie": [],
+					"responseTime": 0,
+					"body": ""
 				}
-			],
-			"request": {
-				"url": "http://localhost:4567/api/v1/customer/update/payment?customerId={{customerId}}",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"permanentId\" : 79612003400944687,\n  \"version\" : 1,\n  \"createdDate\" : \"2017-02-09T00:16:29.541Z\",\n  \"id\" : 79612003400944687,\n  \"amount\" : 2432.545,\n  \"customerId\" : 435432,\n  \"merchantId\" : 3254234,\n  \"settled\" : true,\n  \"type\" : \"PAYPAL\",\n  \"date\" : null\n}"
-				},
-				"description": ""
-			},
-			"response": []
+			]
 		}
 	]
 }

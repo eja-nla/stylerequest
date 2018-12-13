@@ -79,17 +79,23 @@ public class MerchantRequestServlet extends AbstractRequestServlet {
     @Produces(APPLICATION_JSON)
     public Response createMerchant(@Context HttpServletRequest request, Merchant merchant, final @QueryParam("token") String nonce) {
         log.info("Creating new merchant '{}'", merchant.getEmail());
-        GitkitUser user = (GitkitUser) request.getAttribute(REST_USER_ATTRIBUTE);
-        Assert.notNull(user);
 
-        String names[] = user.getName().split(" ", 2);
-        merchant.setFirstName(names[0]);
-        merchant.setLastName(names[1]);
-        merchant.setEmail(user.getEmail());
-        merchant.setPhotoUrl(user.getPhotoUrl());
+        try {
+            GitkitUser user = (GitkitUser) request.getAttribute(REST_USER_ATTRIBUTE);
+            Assert.notNull(user);
 
-        merchantService.createMerchant(merchant, nonce);
-        return Response.ok().entity(merchant).build();
+            String names[] = user.getName().split(" ", 2);
+            merchant.setFirstName(names[0]);
+            merchant.setLastName(names[1]);
+            merchant.setEmail(user.getEmail());
+            merchant.setPhotoUrl(user.getPhotoUrl());
+            
+            return Response.ok(wrapString(merchantService.createMerchant(merchant, nonce)), MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
+        }
     }
 
     @POST

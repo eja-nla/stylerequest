@@ -57,6 +57,11 @@ public interface BraintreePaymentService {
     /**
      * Stores a new customer's info in Braintree's vault.
      *
+     * A Braintree client-side integration sends payment information
+     * – like a credit card or a PayPal authorization – to Braintree
+     * in exchange for a payment method nonce, a one time use value
+     * that represents that payment method. By the time we have the nonce, we've already got their payment method in the vault.
+     *
      * returns their ID
      **/
 
