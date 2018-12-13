@@ -68,7 +68,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public void createCustomer(Customer customer, String nonce) {
+    public String createCustomer(Customer customer, String nonce) {
 
         Assert.notNull(customer, "customer cannot be null");
         Assert.notNull(nonce, "Nonce cannot be null");
@@ -77,29 +77,14 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setId(permId);
         customer.setPermanentId(permId);
 
-        paymentService.createProfile(customer.getId().toString(), customer.getFirstName(), customer.getLastName(), customer.getEmail(), nonce);
+        customer.setPaymentId(paymentService.createProfile(customer.getId().toString(), customer.getFirstName(), customer.getLastName(), customer.getEmail(), nonce));
 
         saveCustomer(customer);
 
         logger.info("Created customer with ID {}", customer.getId());
-    }
 
-//    @Override
-//    public Customer createProfile(String firstname, String lastname, String email, String phone, Device device, Address address) throws EntityNotFoundException, IllegalArgumentException {
-//
-//        Assert.notNull(firstname, lastname, email, phone, device, address);
-//
-//        Long permId = repository.allocateId(Customer.class);
-//        Customer customer = new Customer(firstname, lastname, email, phone, device, address);
-//        customer.setId(permId);
-//        customer.setPermanentId(permId);
-//
-//        customer = paymentService.createPaymentProfile(customer, PaymentType.CARD, true, nonce);
-//
-//        saveCustomer(customer);
-//
-//        return customer;
-//    }
+        return permId.toString();
+    }
 
     @Override
     public void saveCustomer(Customer customer) {

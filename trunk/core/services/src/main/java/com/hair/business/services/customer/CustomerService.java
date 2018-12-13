@@ -30,7 +30,7 @@ public interface CustomerService {
     /**
      * Creates a new customer
      * */
-    void createCustomer(Customer customer, String nonce);
+    String createCustomer(Customer customer, String nonce);
 
     /**
      * Saves new customer

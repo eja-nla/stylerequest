@@ -82,7 +82,7 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public void createMerchant(Merchant merchant, String nonce) {
+    public String createMerchant(Merchant merchant, String nonce) {
         Assert.notNull(merchant, "Merchant cannot be null");
         Assert.notNull(nonce, "Nonce cannot be null");
         Assert.notNull(merchant.getBusinessName(), "Merchant must have a business name");
@@ -91,9 +91,12 @@ public class MerchantServiceImpl implements MerchantService {
         merchant.setId(permId);
         merchant.setPermanentId(permId);
 
-        paymentService.createProfile(merchant.getId().toString(), merchant.getFirstName(), merchant.getLastName(), merchant.getEmail(), nonce);
+        String paymentId = paymentService.createProfile(merchant.getId().toString(), merchant.getFirstName(), merchant.getLastName(), merchant.getEmail(), nonce);
 
+        merchant.setPaymentId(paymentId);
         updateMerchant(merchant);
+
+        return permId.toString();
     }
 
     @Override

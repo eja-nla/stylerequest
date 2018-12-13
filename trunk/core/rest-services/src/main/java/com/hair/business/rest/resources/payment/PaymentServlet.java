@@ -10,6 +10,7 @@ import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.payment.PaymentService;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -65,7 +66,7 @@ public class PaymentServlet extends AbstractRequestServlet {
     @POST
     @Path(BRAINTREE_TOKEN_URI_ENDPOINT)
     @Produces(APPLICATION_JSON)
-    public Response issueClientToken(@QueryParam("entityId") String entityId) {
+    public Response issueClientToken(@QueryParam("entityId") @Nullable String entityId) {
 
         try {
             String token = paymentService.issueClientToken(entityId);

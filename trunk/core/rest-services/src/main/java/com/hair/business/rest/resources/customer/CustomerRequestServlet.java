@@ -35,6 +35,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
@@ -64,18 +65,23 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
     @Produces(APPLICATION_JSON)
     public Response createNewCustomer(final @Context HttpServletRequest request, Customer customer, final @QueryParam("token") String nonce) {
         log.info("Creating new customer '{}'", customer.getEmail());
-        GitkitUser user = (GitkitUser) request.getAttribute(REST_USER_ATTRIBUTE);
-        Assert.notNull(user);
 
-        customer.setEmail(user.getEmail());
-        String names[] = user.getName().split(" ", 2);
-        customer.setFirstName(names[0]);
-        customer.setLastName(names[1]);
-        customer.setPhotoUrl(user.getPhotoUrl());
+        try {
+            GitkitUser user = (GitkitUser) request.getAttribute(REST_USER_ATTRIBUTE);
+            Assert.notNull(user);
 
-        customerService.createCustomer(customer, nonce);
+            customer.setEmail(user.getEmail());
+            String names[] = user.getName().split(" ", 2);
+            customer.setFirstName(names[0]);
+            customer.setLastName(names[1]);
+            customer.setPhotoUrl(user.getPhotoUrl());
 
-        return Response.ok(wrapString(customer.getId().toString())).build();
+            return Response.ok(wrapString(customerService.createCustomer(customer, nonce)), MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
+        }
     }
 
     @GET
