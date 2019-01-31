@@ -88,7 +88,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
         double amount = 9.3;
         when(t.getAmount()).thenReturn(new BigDecimal(amount));
 
-        Transaction transaction = braintreePaymentService.createTransaction(Nonce.Transactable, 4533L,amount, false);
+        Transaction transaction = braintreePaymentService.createTransaction(Nonce.Transactable, "CUSTOMER ID",amount, false);
         assertThat(transaction, notNullValue());
         assertThat(transaction.getAmount().doubleValue(), is(amount));
     }
@@ -99,8 +99,10 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
         style.setPrice(50.6);
 
         customer.setId(4533L);
+        customer.setPaymentId("testID");
         styleRequest.setStyle(style);
         styleRequest.setMerchant(merchant);
+
         repository.saveFew(style, styleRequest, customer, merchant);
 
         styleRequest = braintreePaymentService.authorize(Nonce.Transactable, styleRequest.getId(), customer.getId());
@@ -115,7 +117,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
     public void testSettleTransaction() {
         double original = 9.00;
         double revised = original - 1.00;
-        Transaction transaction = braintreePaymentService.createTransaction(Nonce.Transactable, 4533L,original, false);
+        Transaction transaction = braintreePaymentService.createTransaction(Nonce.Transactable, "CUST ID",original, false);
         assertThat(transaction.getStatus(), is(Transaction.Status.AUTHORIZED));
 
         when(t.getStatus()).thenReturn(Transaction.Status.SUBMITTED_FOR_SETTLEMENT);

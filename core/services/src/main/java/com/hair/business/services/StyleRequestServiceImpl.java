@@ -88,9 +88,9 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         final Style style = repository.findOne(styleId, Style.class);
         Assert.notNull(style, String.format(STYLE_NOT_FOUND, styleId));
         final Customer customer = repository.findOne(customerId, Customer.class);
-        Assert.notNull(style, String.format(CUSTOMER_NOT_FOUND, customerId));
+        Assert.notNull(customer, String.format(CUSTOMER_NOT_FOUND, customerId));
         final Merchant merchant = repository.findOne(merchantId, Merchant.class);
-        Assert.notNull(style, String.format(MERCHANT_NOT_FOUND, merchantId));
+        Assert.notNull(merchant, String.format(MERCHANT_NOT_FOUND, merchantId));
 
         // TODO : further validations
         // is the merchant free at this time? - on rethink We really do not want to do this here. We should move to the client

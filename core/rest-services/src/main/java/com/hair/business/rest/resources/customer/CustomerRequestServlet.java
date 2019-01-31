@@ -5,6 +5,7 @@ import static com.hair.business.rest.MvcConstants.CUSTOMER_URI;
 import static com.hair.business.rest.MvcConstants.ID;
 import static com.hair.business.rest.MvcConstants.INFO;
 import static com.hair.business.rest.MvcConstants.STYLE_REQUEST_PATH;
+import static com.hair.business.rest.MvcConstants.UPDATE_CUSTOMER_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.UPDATE_PAYMENT_PATH;
 import static com.hair.business.rest.MvcConstants.UPDATE_PREFERENCES_PATH;
 import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
@@ -21,6 +22,7 @@ import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.StyleRequestService;
 import com.hair.business.services.customer.CustomerService;
 import com.hair.business.services.payment.PaymentService;
+import com.x.business.exception.PaymentException;
 import com.x.business.utilities.Assert;
 
 import org.joda.time.DateTime;
@@ -84,23 +86,34 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
         }
     }
 
+    @POST
+    @Path(UPDATE_CUSTOMER_ENDPOINT)
+    @Consumes(APPLICATION_JSON)
+    public Response updateCustomerInfo(Customer customer) {
+        try {
+            customerService.saveCustomer(customer);
+            return Response.ok().build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        }
+    }
+
     @GET
     @Path(INFO)
     @Produces(APPLICATION_JSON)
     public Customer getCustomerInfo(@QueryParam(ID) Long customerId) {
-        return customerService.findCustomer(customerId);
+        return customerService.findCustomer(customerId); 
     }
 
 
     @POST
     @Path(STYLE_REQUEST_PATH)
-    //@Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     public Response placeStyleRequest(@QueryParam("token") String token, @QueryParam("styleId") Long styleId, @QueryParam("customerId") Long customerId, @QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String when) {
         try {
             DateTime dateOfRequest = DateTime.parse(when);
             return Response.ok(styleRequestService.placeStyleRequest(token, styleId, customerId, merchantId, dateOfRequest)).build();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | PaymentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
