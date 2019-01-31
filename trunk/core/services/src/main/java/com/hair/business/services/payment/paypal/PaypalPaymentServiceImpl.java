@@ -41,6 +41,7 @@ public class PaypalPaymentServiceImpl implements PaypalPaymentService {
     private final PaymentRequestHandler paypalPaymentRequestHandler;
     private static final String CURRENCY = "USD";
 
+
     @Inject
     PaypalPaymentServiceImpl(APIContext paypalApiContext, Repository repository, PaymentRequestHandler paypalPaymentRequestHandler) {
         this.paypalApiContext = paypalApiContext;
@@ -301,7 +302,7 @@ public class PaypalPaymentServiceImpl implements PaypalPaymentService {
     }
 
     @Override
-    public com.braintreegateway.Transaction createTransaction(String nonce, Long customerId, double amount, boolean isSettled) {
+    public com.braintreegateway.Transaction createTransaction(String nonce, String customerId, double amount, boolean isSettled) {
         return null;
     }
 

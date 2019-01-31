@@ -22,7 +22,7 @@ public interface BraintreePaymentService {
      *
      *
      * */
-    Transaction createTransaction(String nonce, Long customerId, double amount, boolean isSettled);
+    Transaction createTransaction(String nonce, String customerId, double amount, boolean isSettled);
 
     /**
      * Settles a pre-authorized transaction

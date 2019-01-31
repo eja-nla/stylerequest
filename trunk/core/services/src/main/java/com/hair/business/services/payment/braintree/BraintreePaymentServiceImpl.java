@@ -55,7 +55,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         Customer customer = repository.findOne(customerId, Customer.class);
         Assert.notNull(styleRequest, styleRequest.getStyle(), customer.getId(), customer.getPayment());
         final double price = styleRequest.getStyle().getPrice();
-        final Transaction result = createTransaction(nonce, customer.getId(), price, false);
+        final Transaction result = createTransaction(nonce, customer.getPaymentId(), price, false);
 
         final StyleRequestPayment authorizedPayment = new StyleRequestPayment(price, customer.getId(), styleRequest.getMerchant().getId(), false, result);
         styleRequest.setAuthorizedPayment(authorizedPayment);
@@ -216,9 +216,10 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
 
     @Override
-    public Transaction createTransaction(String nonce, Long customerId, double amount, boolean isSettled) {
+    public Transaction createTransaction(String nonce, String paymentId, double amount, boolean isSettled) {
+        Assert.notNull(paymentId, "Payment ID cannot be null");
         final TransactionRequest request = new TransactionRequest()
-                .customerId(customerId.toString())
+                .customerId(paymentId)
                 .amount(BigDecimal.valueOf(amount))
                 .paymentMethodNonce(nonce)
                 .options()
