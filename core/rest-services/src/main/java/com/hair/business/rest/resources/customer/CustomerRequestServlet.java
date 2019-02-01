@@ -70,9 +70,10 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
 
         try {
             GitkitUser user = (GitkitUser) request.getAttribute(REST_USER_ATTRIBUTE);
-            Assert.notNull(user);
+            Assert.notNull(user, "Required user attributes not set.");
 
             customer.setEmail(user.getEmail());
+            Assert.notNull(user.getName(), "User must have a name");
             String names[] = user.getName().split(" ", 2);
             customer.setFirstName(names[0]);
             customer.setLastName(names[1]);
