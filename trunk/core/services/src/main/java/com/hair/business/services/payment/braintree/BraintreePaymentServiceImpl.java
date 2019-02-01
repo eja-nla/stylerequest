@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -190,8 +189,6 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     @Override
     public String createProfile(String customerId, String firstName, String lastName, String email, String nonce) {
         CustomerRequest request = new CustomerRequest()
-                .id(UUID.randomUUID().toString())
-                .customerId(customerId)
                 .email(email)
                 .paymentMethodNonce(nonce);
 

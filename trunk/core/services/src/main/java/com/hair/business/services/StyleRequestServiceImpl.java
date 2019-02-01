@@ -89,6 +89,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         Assert.notNull(style, String.format(STYLE_NOT_FOUND, styleId));
         final Customer customer = repository.findOne(customerId, Customer.class);
         Assert.notNull(customer, String.format(CUSTOMER_NOT_FOUND, customerId));
+        Assert.notNull(customer.getPaymentId(), "Payment method not found for this customer");
         final Merchant merchant = repository.findOne(merchantId, Merchant.class);
         Assert.notNull(merchant, String.format(MERCHANT_NOT_FOUND, merchantId));
 
