@@ -91,7 +91,7 @@ public class MerchantServiceImpl implements MerchantService {
         merchant.setId(permId);
         merchant.setPermanentId(permId);
 
-        String paymentId = paymentService.createProfile(merchant.getId().toString(), merchant.getFirstName(), merchant.getLastName(), merchant.getEmail(), nonce);
+        String paymentId = paymentService.createProfile(merchant.getEmail(), nonce);
 
         merchant.setPaymentId(paymentId);
         updateMerchant(merchant);

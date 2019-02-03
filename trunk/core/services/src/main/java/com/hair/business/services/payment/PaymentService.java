@@ -27,8 +27,10 @@ public interface PaymentService extends BraintreePaymentService {
 
     /**
      * Fires an refund request to downstream
+     *
+     * Useful if the payment is part of an existing style request
      * */
-    void refund(StyleRequest styleRequest);
+    void refund(Long styleRequestId, double amount);
 
     /**
      *

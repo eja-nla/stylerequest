@@ -77,7 +77,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setId(permId);
         customer.setPermanentId(permId);
 
-        customer.setPaymentId(paymentService.createProfile(customer.getId().toString(), customer.getFirstName(), customer.getLastName(), customer.getEmail(), nonce));
+        customer.setPaymentId(paymentService.createProfile(customer.getEmail(), nonce));
 
         saveCustomer(customer);
 

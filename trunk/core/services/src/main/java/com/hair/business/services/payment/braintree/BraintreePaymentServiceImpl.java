@@ -116,7 +116,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     public void updatePayment(Long customerId, PaymentMethod paymentMethod, PaymentType paymentType, String nonce, boolean isDefault) {
         Customer customer = repository.findOne(customerId, Customer.class);
         customer.getPayment().getPaymentItems().add(new PaymentItem(paymentType, paymentMethod, isDefault));
-        addPaymentMethod(nonce, String.valueOf(customerId), paymentMethod);
+        addPaymentMethod(nonce, paymentMethod);
 
         repository.saveOne(customer);
     }
@@ -132,17 +132,33 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void refund(StyleRequest styleRequest) {
+    public void refund(Long styleRequestId, double amount) {
 
-        Assert.notNull(styleRequest);
-        Assert.notNull(styleRequest.getSettledPayment());
+        Assert.notNull(styleRequestId);
 
-        Transaction settledTransaction = styleRequest.getSettledPayment().getPayment();
+        StyleRequest request = repository.findOne(styleRequestId, StyleRequest.class);
+        Assert.notNull(request, "Stylerequest with ID " + styleRequestId + "cannot be found");
+        Transaction settledTransaction = request.getAuthorizedPayment().getPayment();
         Assert.notNull(settledTransaction);
 
         String transactionId = settledTransaction.getId();
 
-        refund(transactionId);
+        refund(transactionId, new BigDecimal(amount));
+    }
+
+    @Override
+    public Result refund(String transactionId, BigDecimal amount) {
+        Result<Transaction> result;
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) == 0) {
+            result = gateway.transaction().refund(transactionId);
+        } else {
+            result = gateway.transaction().refund(transactionId, amount);
+        }
+        if (result != null && !result.isSuccess()){
+            logger.error("Braintree refund request failed: {}", result.getMessage());
+        }
+
+        return result;
     }
 
 
@@ -187,7 +203,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public String createProfile(String customerId, String firstName, String lastName, String email, String nonce) {
+    public String createProfile(String email, String nonce) {
         CustomerRequest request = new CustomerRequest()
                 .email(email)
                 .paymentMethodNonce(nonce);
@@ -199,16 +215,6 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         }
 
         return result.getTarget().getId();
-    }
-
-
-    @Override
-    public void refund(String transactionId) {
-        Result<Transaction> result = gateway.transaction().refund(transactionId);
-
-        if (!result.isSuccess()){
-            logger.error("Braintree refund request failed: {}", result.getMessage());
-        }
     }
 
 
@@ -242,7 +248,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public boolean addPaymentMethod(String nonce, String customerId, PaymentMethod paymentMethod) {
+    public boolean addPaymentMethod(String nonce, PaymentMethod paymentMethod) {
         PaymentMethodRequest request = new PaymentMethodRequest()
                 .customerId(paymentMethod.getCustomerId())
                 .paymentMethodNonce(nonce);
