@@ -1,11 +1,13 @@
 package com.hair.business.services.payment.braintree;
 
+import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
 import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.PaymentMethod;
 import com.hair.business.beans.entity.StyleRequest;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -36,7 +38,10 @@ public interface BraintreePaymentService {
      * */
     Transaction settleTransaction(String nonce, String paymentMethodToken, List<AddOn> addOns);
 
-    boolean addPaymentMethod(String nonce, String customerId, PaymentMethod payment);
+    /**
+     * Add new payment method to an existing customer
+     * */
+    boolean addPaymentMethod(String nonce, PaymentMethod payment);
 
     StyleRequest authorize(String nonce, Long styleRequestId, Long customerId);
 
@@ -44,15 +49,27 @@ public interface BraintreePaymentService {
 
     void deductNonPreAuthPayment(String nonce, String paymentToken, List<AddOn> items);
 
+    /**
+     * Convenient refund call for whole or part of a known transaction instead from as part of a style request
+     *
+     * If the amount is zero, we treat as full refund
+     * */
+    Result refund(String transactionId, BigDecimal amount);
+
     void updatePayment(Long customerId, PaymentMethod paymentMethod, PaymentType paymentType, String nonce, boolean isDefault);
 
     /**
+     *
+     * A client token may or may not have a customer ID e.g. ID will be empty during signup.
+     * Not that 'entity' here means
+     * the payment entity which could either be a customer or a merchant that is the
+     * subject/owner of the transaction.
      *
      * Including a customerId when generating the client token lets returning customers
      * select from previously used payment method options, improving user experience
      *
      * */
-    String issueClientToken(String customerId);
+    String issueClientToken(String entityID);
 
     /**
      * Stores a new customer's info in Braintree's vault.
@@ -65,9 +82,5 @@ public interface BraintreePaymentService {
      * returns their ID
      **/
 
-    String createProfile(String id, String firstName, String lastName, String email, String nonce);
-
-
-    void refund(String transactionId);
-
+    String createProfile(String email, String nonce);
 }

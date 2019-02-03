@@ -85,12 +85,11 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
 
     @Test
     public void testCreateTransaction() {
-        double amount = 9.3;
-        when(t.getAmount()).thenReturn(new BigDecimal(amount));
+        when(t.getAmount()).thenReturn(BigDecimal.TEN);
 
-        Transaction transaction = braintreePaymentService.createTransaction(Nonce.Transactable, "CUSTOMER ID",amount, false);
+        Transaction transaction = braintreePaymentService.createTransaction(Nonce.Transactable, "CUSTOMER ID", BigDecimal.TEN.doubleValue(), false);
         assertThat(transaction, notNullValue());
-        assertThat(transaction.getAmount().doubleValue(), is(amount));
+        assertThat(transaction.getAmount().doubleValue(), is(BigDecimal.TEN));
     }
 
     @Test
@@ -141,7 +140,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
     @Test
     public void testAddPaymentMethod() {
         String id = "4533L";
-        boolean result = braintreePaymentService.addPaymentMethod(Nonce.Transactable, id, new PaymentMethod("agreementId-" + id, false, id));
+        boolean result = braintreePaymentService.addPaymentMethod(Nonce.Transactable, new PaymentMethod("agreementId", false, id));
 
         assertThat(result, is(true));
     }
@@ -161,10 +160,27 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
 
         when(result.getTarget()).thenReturn(btc);
 
-        String id = braintreePaymentService.createProfile(customer.getId().toString(), customer.getFirstName(), customer.getLastName(), customer.getEmail(), Nonce.Transactable);
+        String id = braintreePaymentService.createProfile(customer.getEmail(), Nonce.Transactable);
         // see https://developers.braintreepayments.com/reference/general/testing/java for test nonces
 
         assertThat(id, notNullValue());
     }
+
+    @Test
+    public void testRefundPart() {
+        String id = "4533L";
+        when(braintreeGateway.transaction()).thenReturn(txg);
+        when(txg.refund(id, BigDecimal.ONE)).thenReturn(braintreeResult);
+        assertThat(braintreePaymentService.refund(id, BigDecimal.ONE).isSuccess(), is(true));
+    }
+
+    @Test
+    public void testRefundFull() {
+        String id = "4533L";
+        when(braintreeGateway.transaction()).thenReturn(txg);
+        when(txg.refund(id)).thenReturn(braintreeResult);
+        assertThat(braintreePaymentService.refund(id, BigDecimal.ZERO).isSuccess(), is(true));
+    }
+
 
 }

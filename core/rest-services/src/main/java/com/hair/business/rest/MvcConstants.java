@@ -60,6 +60,7 @@ public class MvcConstants {
     public static final String BRAINTREE_AUTHORIZE_URI_ENDPOINT = BRAINTREE_URI_BASE + "/authorize";
     public static final String BRAINTREE_CAPTURE_URI_ENDPOINT = BRAINTREE_URI_BASE + "/capture";
     public static final String BRAINTREE_TOKEN_URI_ENDPOINT = BRAINTREE_URI_BASE + "/token/issue";
+    public static final String BRAINTREE_REFUND_URI_ENDPOINT = BRAINTREE_URI_BASE + "/refund";
 
     public static final String STYLE_REQUEST_PATH = "/request" + STYLE_URI;
 
