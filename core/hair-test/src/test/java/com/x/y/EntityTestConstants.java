@@ -53,6 +53,7 @@ public class EntityTestConstants {
         c.setGender(Gender.M);
         c.setScore(4.5);
         c.setPayment(createPaymentInfo(c.getId()));
+        c.setPaymentId(c.getPayment().getId().toString());
         c.getRatings().put(0, 0); c.getRatings().put(1, 0);c.getRatings().put(2, 0);c.getRatings().put(3, 0);c.getRatings().put(4, 3);c.getRatings().put(5, 2);
         return c;
     }
