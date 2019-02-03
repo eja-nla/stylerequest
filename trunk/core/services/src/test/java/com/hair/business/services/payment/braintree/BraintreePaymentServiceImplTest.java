@@ -85,11 +85,12 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
 
     @Test
     public void testCreateTransaction() {
-        when(t.getAmount()).thenReturn(BigDecimal.TEN);
+        double amount = 9.3;
+        when(t.getAmount()).thenReturn(new BigDecimal(amount));
 
-        Transaction transaction = braintreePaymentService.createTransaction(Nonce.Transactable, "CUSTOMER ID", BigDecimal.TEN.doubleValue(), false);
+        Transaction transaction = braintreePaymentService.createTransaction(Nonce.Transactable, "CUSTOMER ID",amount, false);
         assertThat(transaction, notNullValue());
-        assertThat(transaction.getAmount().doubleValue(), is(BigDecimal.TEN));
+        assertThat(transaction.getAmount().doubleValue(), is(amount));
     }
 
     @Test
