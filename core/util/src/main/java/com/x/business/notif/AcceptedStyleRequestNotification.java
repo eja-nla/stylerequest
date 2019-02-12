@@ -22,9 +22,8 @@ public class AcceptedStyleRequestNotification extends AbstractStyleRequestNotifi
             System.getProperty("sendgrid.accepted.merchant.stylerequest.email.template")
     );
 
-    public AcceptedStyleRequestNotification(StyleRequest styleRequest, Preferences preferences) {
-
-        this.merchantPreferences = preferences;
+    public AcceptedStyleRequestNotification(final StyleRequest styleRequest) {
+        this.merchantPreferences = styleRequest.getMerchant().getPreferences();
         this.tokenizedCustomerEmailBody = tokenizeCustomer(styleRequest);
         this.tokenizedMerchantEmailBody = merchantPreferences.isAcceptedNotificationEnabled() ? tokenizeMerchant(styleRequest) : null;
     }
@@ -42,7 +41,7 @@ public class AcceptedStyleRequestNotification extends AbstractStyleRequestNotifi
 
     @Override
     protected boolean shouldSendToMerchant() {
-        return merchantPreferences.isAcceptedNotificationEnabled();
+        return merchantPreferences != null && merchantPreferences.isAcceptedNotificationEnabled();
     }
 
     private String tokenizeCustomer(StyleRequest styleRequest){

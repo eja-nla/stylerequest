@@ -135,7 +135,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         styleRequest.setAcceptedTime(DateTime.now());
         updateStyleRequest(styleRequest);
 
-        emailTaskQueue.add(new AcceptedStyleRequestNotification(styleRequest, preferences));
+        emailTaskQueue.add(new AcceptedStyleRequestNotification(styleRequest));
     }
 
     @Override

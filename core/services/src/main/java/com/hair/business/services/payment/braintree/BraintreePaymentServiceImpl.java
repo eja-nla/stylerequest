@@ -220,7 +220,8 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
     @Override
     public Transaction createTransaction(String nonce, String paymentId, double amount, boolean isSettled) {
-        Assert.notNull(paymentId, "Payment ID cannot be null");
+        Assert.notNull(paymentId,"Payment ID cannot be null");
+        Assert.notNull(nonce, "Nonce cannot be null");
         final TransactionRequest request = new TransactionRequest()
                 .customerId(paymentId)
                 .amount(BigDecimal.valueOf(amount))
