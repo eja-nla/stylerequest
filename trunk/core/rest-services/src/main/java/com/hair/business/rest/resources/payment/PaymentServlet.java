@@ -1,7 +1,8 @@
 package com.hair.business.rest.resources.payment;
 
 import static com.hair.business.rest.MvcConstants.BRAINTREE_AUTHORIZE_URI_ENDPOINT;
-import static com.hair.business.rest.MvcConstants.BRAINTREE_REFUND_URI_ENDPOINT;
+import static com.hair.business.rest.MvcConstants.BRAINTREE_REFUND_SR_URI_ENDPOINT;
+import static com.hair.business.rest.MvcConstants.BRAINTREE_REFUND_TX_URI_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.BRAINTREE_TOKEN_URI_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.PAYMENT_URI;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -53,7 +54,7 @@ public class PaymentServlet extends AbstractRequestServlet {
     }
 
     @POST
-    @Path(BRAINTREE_REFUND_URI_ENDPOINT)
+    @Path(BRAINTREE_REFUND_SR_URI_ENDPOINT)
     @Produces(APPLICATION_JSON)
     public Response refundStyleRequest(@QueryParam("srId") Long stylerequestId, @QueryParam("amount") double amount) {
 
@@ -66,12 +67,12 @@ public class PaymentServlet extends AbstractRequestServlet {
     }
 
     @POST
-    @Path(BRAINTREE_REFUND_URI_ENDPOINT)
+    @Path(BRAINTREE_REFUND_TX_URI_ENDPOINT)
     @Produces(APPLICATION_JSON)
-    public Response refundStyleRequest(@QueryParam("trId") String transactionId, @QueryParam("amount") BigDecimal amount) {
+    public Response refundTransaction(@QueryParam("trId") String transactionId, @QueryParam("amount") double amount) {
 
         try {
-            paymentService.refund(transactionId, amount);
+            paymentService.refund(transactionId, BigDecimal.valueOf(amount));
             return Response.ok().build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
