@@ -12,7 +12,7 @@ import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
-import com.hair.business.dao.datastore.abstractRepository.ObjectifyRepository;
+import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.dao.datastore.repository.ObjectifyDatastoreRepositoryImpl;
 import com.hair.business.dao.datastore.testbase.AbstractDatastoreTestBase;
 
@@ -35,7 +35,7 @@ public class StyleRequestTest extends AbstractDatastoreTestBase {
 
     private static final Logger LOGGER = Logger.getLogger(StyleRequestTest.class.getName());
 
-    private ObjectifyRepository repo = new ObjectifyDatastoreRepositoryImpl();
+    private Repository repo = new ObjectifyDatastoreRepositoryImpl();
 
     @Override
     @Before

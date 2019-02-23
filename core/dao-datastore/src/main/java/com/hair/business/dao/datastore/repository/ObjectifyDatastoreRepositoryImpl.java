@@ -11,7 +11,7 @@ import com.googlecode.objectify.TxnType;
 import com.googlecode.objectify.cmd.Query;
 import com.googlecode.objectify.cmd.QueryKeys;
 import com.hair.business.beans.abstracts.AbstractPersistenceEntity;
-import com.hair.business.dao.datastore.abstractRepository.ObjectifyRepository;
+import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.dao.datastore.stereotype.DatastoreTransaction;
 import com.x.business.utilities.Assert;
 
@@ -27,7 +27,7 @@ import java.util.Map;
  *
  * Created by Olukorede Aguda on 25/04/2016.
  */
-public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
+public class ObjectifyDatastoreRepositoryImpl implements Repository {
 
     @Override
     public <T> Long allocateId(Class<T> clazz) {
@@ -109,6 +109,11 @@ public class ObjectifyDatastoreRepositoryImpl implements ObjectifyRepository {
     @Override
     public final <T> void delete(T... entities) {
         ofy().delete().entities(entities);
+    }
+
+    @Override
+    public Object getFactory() {
+        return ofy().factory();
     }
 
     private static <T> Query<T> buildQuery(Class<T> clazz, List<String> conditions, List<Object> conditionsValues) {

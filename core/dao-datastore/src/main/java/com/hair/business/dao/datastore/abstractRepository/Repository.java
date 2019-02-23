@@ -15,7 +15,7 @@ import java.util.Map;
  *
  * Created by Olukorede Aguda on 25/04/2016.
  */
-public interface Repository {
+public interface Repository extends ObjectifyRepository {
 
     /**
      * Allocates an id
@@ -79,4 +79,6 @@ public interface Repository {
      * Deletes the given entity
      * */
     <T> void delete(T... entities);
+
+    Object getFactory();
 }

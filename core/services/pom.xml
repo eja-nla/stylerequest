@@ -48,6 +48,12 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.jdo</groupId>
+            <artifactId>jdo-api</artifactId>
+            <version>3.0.1</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 
