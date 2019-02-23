@@ -1,6 +1,11 @@
 package geocell;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
+import com.hair.business.dao.datastore.abstractRepository.Repository;
+
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,13 +13,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import javax.inject.Inject;
 
 import geocell.comparator.LocationComparableTuple;
 import geocell.model.BoundingBox;
 import geocell.model.CostFunction;
-import geocell.model.LocationCapable;
+import geocell.model.GeoLocation;
 import geocell.model.Point;
 import geocell.model.Tuple;
 
@@ -106,7 +111,14 @@ public class GeocellManager {
     // Function used if no custom function is used in bestBboxSearchCells method
     private static final CostFunction DEFAULT_COST_FUNCTION = new DefaultCostFunction();
 
-    private static final Logger logger = GeocellLogger.get();
+    private static final Logger logger = getLogger(GeocellManager.class);
+
+    private final Repository repository;
+
+    @Inject
+    public GeocellManager(Repository repository) {
+        this.repository = repository;
+    }
 
     /**
      * Returns the list of geocells (all resolutions) that are containing the point
@@ -189,7 +201,7 @@ public class GeocellManager {
                 break;
             }
         }
-        logger.log(Level.INFO, "Calculate cells "+ StringUtils.join(minCostCellSet, ", ")+" in box ("+bbox.getSouth()+","+bbox.getWest()+") ("+bbox.getNorth()+","+bbox.getEast()+")");
+        logger.info("Calculate cells "+ StringUtils.join(minCostCellSet, ", ")+" in box ("+bbox.getSouth()+","+bbox.getWest()+") ("+bbox.getNorth()+","+bbox.getEast()+")");
         return minCostCellSet;
     }
 
@@ -209,21 +221,21 @@ public class GeocellManager {
      * @param center A Point indicating the center point around which to search for matching entities.
      * @param maxResults (required) must be > 0. The larger this number, the longer the fetch will take.
      * @param maxDistance (optional) A number indicating the maximum distance to search, in meters. Set to 0 if no max distance is expected
-     * @param repositorySearch class of the entity to search. MUST implement LocationCapable class because we use entity location and key, and also "GEOCELLS" columnn in query.
+//     * @param repositorySearch class of the entity to search. MUST implement LocationCapable class because we use entity location and key, and also "GEOCELLS" columnn in query.
 //     * @param baseQuery query that will be enhanced by algorithm. see GeocellQuery class for more information.
 //     * @param pm PersistentManager to be used to create new queries
-     * @param maxGeocellResolution the resolution (size of cell) when we start the algorithm. If you expect your search to run until big boxes (not many entities near the center), think about using a lower resolution for better performance. If you don't want to bother, use other method below without this parameter.
+//     * @param maxGeocellResolution the resolution (size of cell) when we start the algorithm. If you expect your search to run until big boxes (not many entities near the center), think about using a lower resolution for better performance. If you don't want to bother, use other method below without this parameter.
      * @return the list of entities found near the center and ordered by distance.
      *
 //     * @throws all exceptions that can be thrown when running queries.
      */
     @SuppressWarnings("unchecked")
-    public static final <T extends LocationCapable> List<T> proximityFetch(Point center, int maxResults, double maxDistance, LocationCapableRepositorySearch<T> repositorySearch, int maxGeocellResolution) {
+    public final List<GeoLocation> proximityFetch(Point center, int maxResults, double maxDistance) {
         if (maxResults < 1) return Collections.EMPTY_LIST;
-        List<LocationComparableTuple<T>> results = new ArrayList<LocationComparableTuple<T>>();
+        List<LocationComparableTuple<GeoLocation>> results = new ArrayList<>();
 
         // The current search geocell containing the lat,lon.
-        String curContainingGeocell = GeocellUtils.compute(center, maxGeocellResolution);
+        String curContainingGeocell = GeocellUtils.compute(center, MAX_GEOCELL_RESOLUTION);
 
         Set<String> searchedCells = new HashSet<String>();
 
@@ -258,24 +270,24 @@ public class GeocellManager {
             List<String> curGeocellsUnique = new ArrayList<String>(curTempUnique);
 
             // TODO we should just do a Keys query which is free
-            List<T> newResultEntities = repositorySearch.search(curGeocellsUnique);
-            
-            logger.log(Level.FINE, "fetch complete for: " + StringUtils.join(curGeocellsUnique, ", "));
+            List<GeoLocation> newResultEntities = repository.geoQuery(curGeocellsUnique, GeoLocation.class);
+
+            logger.debug("fetch complete for: " + StringUtils.join(curGeocellsUnique, ", "));
 
             searchedCells.addAll(curGeocells);
 
             // Begin storing distance from the search result entity to the
             // search center along with the search result itself, in a tuple.
-            List<LocationComparableTuple<T>> newResults = new ArrayList<LocationComparableTuple<T>>();
-            for(T entity : newResultEntities) {
-                newResults.add(new LocationComparableTuple<T>(entity, GeocellUtils.distance(center, entity.getLocation())));
+            List<LocationComparableTuple<GeoLocation>> newResults = new ArrayList<>();
+            for(GeoLocation entity : newResultEntities) {
+                newResults.add(new LocationComparableTuple<GeoLocation>(entity, GeocellUtils.distance(center, entity.getLocation())));
             }
             // TODO (Alex) we can optimize here. Sort is needed only if new_results.size() > max_results.
             Collections.sort(newResults);
             newResults = newResults.subList(0, Math.min(maxResults, newResults.size()));
 
             // Merge new_results into results
-            for(LocationComparableTuple<T> tuple : newResults) {
+            for(LocationComparableTuple<GeoLocation> tuple : newResults) {
                 // contains method will check if entity in tuple have same key
                 if(!results.contains(tuple)) {
                     results.add(tuple);
@@ -344,25 +356,25 @@ public class GeocellManager {
 
             // We don't have enough items yet, keep searching.
             if(results.size() < maxResults) {
-                logger.log(Level.FINE,  results.size()+" results found but want "+maxResults+" results, continuing search.");
+                logger.debug(results.size()+" results found but want "+maxResults+" results, continuing search.");
                 continue;
             }
 
-            logger.log(Level.INFO, results.size()+" results found.");
+            logger.info(results.size()+" results found.");
 
             // If the currently max_results'th closest item is closer than any
             // of the next test geocells, we're done searching.
             double currentFarthestReturnableResultDist = GeocellUtils.distance(center, results.get(maxResults - 1).getFirst().getLocation());
             if (closestPossibleNextResultDist >=
                 currentFarthestReturnableResultDist) {
-                logger.log(Level.FINE, "DONE next result at least "+closestPossibleNextResultDist+" away, current farthest is "+currentFarthestReturnableResultDist+" dist");
+                logger.debug("DONE next result at least "+closestPossibleNextResultDist+" away, current farthest is "+currentFarthestReturnableResultDist+" dist");
                 break;
             }
-            logger.log(Level.FINE, "next result at least "+closestPossibleNextResultDist+" away, current farthest is "+currentFarthestReturnableResultDist+" dist");
+            logger.debug("next result at least "+closestPossibleNextResultDist+" away, current farthest is "+currentFarthestReturnableResultDist+" dist");
         }
         
-        List<T> result = new ArrayList<T>();
-		for (Tuple<T, Double> entry : results.subList(0, Math.min(maxResults, results.size()))) {
+        List<GeoLocation> result = new ArrayList<>();
+		for (LocationComparableTuple<GeoLocation> entry : results.subList(0, Math.min(maxResults, results.size()))) {
 			if (maxDistance == 0 || entry.getSecond() < maxDistance) {
 				result.add(entry.getFirst());
 			}
@@ -377,8 +389,8 @@ public class GeocellManager {
      * Use MAX_GEOCELL_RESOLUTION as a starting resolution.
      *
      */
-    public static final <T extends LocationCapable> List<T> proximityFetch(Point center, int maxResults, double maxDistance, LocationCapableRepositorySearch<T> searchRepository) {
-        return proximityFetch(center, maxResults, maxDistance, searchRepository, MAX_GEOCELL_RESOLUTION);
-    }
+//    public static final <T extends LocationCapable> List<T> proximityFetch(Point center, int maxResults, double maxDistance, LocationCapableRepositorySearch<T> searchRepository, int maxGeocellResolution) {
+//        return proximityFetch(center, maxResults, maxDistance, searchRepository, MAX_GEOCELL_RESOLUTION);
+//    }
 
 }

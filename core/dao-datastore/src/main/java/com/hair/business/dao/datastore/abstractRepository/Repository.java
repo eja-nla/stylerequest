@@ -81,4 +81,6 @@ public interface Repository extends ObjectifyRepository {
     <T> void delete(T... entities);
 
     Object getFactory();
+
+    <T> List<T> geoQuery(List<String> geocells, Class<T> clazz);
 }

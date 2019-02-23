@@ -13,20 +13,19 @@ and limitations under the License.
 
 package utils;
 
-import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
-
+import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.customer.AbstractServicesTestBase;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import geocell.GeocellManager;
-import geocell.LocationCapableRepositorySearch;
-import geocell.OfyEntityLocationCapableRepositorySearchImpl;
 import geocell.model.BoundingBox;
 import geocell.model.CostFunction;
 import geocell.model.GeoLocation;
@@ -42,12 +41,20 @@ public class HowToUseGeocell extends AbstractServicesTestBase {
 
     private final Logger log = Logger.getLogger("com.beoui.utils");
 
-    LocationCapableRepositorySearch<GeoLocation> ofySearch = new OfyEntityLocationCapableRepositorySearchImpl();
+    Repository repository;
+    GeocellManager geoManager;
+
+    @Before
+    public void setUp(){
+        repository = injector.getInstance(Repository.class);
+        geoManager = new GeocellManager(repository);
+    }
 
     /**
      * First step is to save your entities.
      * In database, you don't save only latitude and longitude of your point but also geocells around this point.
      */
+    @Test
     public void testHowToSaveGeocellsInDatabase() {
         // Incoming data: latitude and longitude (Bordeaux for instance)
         double lat = 44.838611;
@@ -64,8 +71,10 @@ public class HowToUseGeocell extends AbstractServicesTestBase {
         obj.setLatitude(lat);
         obj.setLongitude(lon);
         obj.setGeocells(cells);
+        obj.setId(1L);
+        obj.setPermanentId(1L);
 
-        //objDao.save(obj);
+        repository.saveOne(obj);
 
         // Just checking that cells are not empty
         Assert.assertTrue(cells.size() > 0);
@@ -131,30 +140,28 @@ public class HowToUseGeocell extends AbstractServicesTestBase {
     public void testHowToQueryWithProximitySearch() {
 
         // other ideas https://stackoverflow.com/questions/45378268/search-10-nearest-locations-in-datastore
-        Point center = new Point(40.68645125859434, -73.92800644040109);
+        createGeoLocation(40.68645125859434, -73.92800644040109);
+
+        createGeoLocation(40.6891334, -73.9849069);
+
+        Point center = new Point(40.68888704954965, -73.98117855191231);
+        createGeoLocation(center.getLat(), center.getLon());
+
+        List<GeoLocation> objects = geoManager.proximityFetch(center, 10, 1000);
+        Assert.assertEquals(2, objects.size());
+
+    }
+
+    private GeoLocation createGeoLocation(double lat, double lon){
+        Point center = new Point(lat, lon);
         GeoLocation geoLocation = new GeoLocation();
+        geoLocation.setPermanentId(new Random().nextLong());
+        geoLocation.setId(geoLocation.getPermanentId());
         geoLocation.setLatitude(center.getLat());
         geoLocation.setLongitude(center.getLon());
         geoLocation.setGeocells(GeocellManager.generateGeoCell(center));
-        ofy().save().entity(geoLocation).now();
-
-        center = new Point(40.6891334, -73.9849069);
-        geoLocation = new GeoLocation();
-        geoLocation.setLatitude(center.getLat());
-        geoLocation.setLongitude(center.getLon());
-        geoLocation.setGeocells(GeocellManager.generateGeoCell(center));
-        ofy().save().entity(geoLocation).now();
-
-        center = new Point(40.68888704954965, -73.98117855191231);
-        geoLocation = new GeoLocation();
-        geoLocation.setLatitude(center.getLat());
-        geoLocation.setLongitude(center.getLon());
-        geoLocation.setGeocells(GeocellManager.generateGeoCell(center));
-        ofy().save().entity(geoLocation).now();
-
-        List<GeoLocation> objects = GeocellManager.proximityFetch(center, 10, 1000, ofySearch);
-        Assert.assertTrue(objects.size() == 2);
-
+        repository.saveOne(geoLocation);
+        return geoLocation;
     }
 
 }
