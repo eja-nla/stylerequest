@@ -116,6 +116,14 @@ public class ObjectifyDatastoreRepositoryImpl implements Repository {
         return ofy().factory();
     }
 
+    @Override
+    public <T> List<T> geoQuery(List<String> geocells, Class<T> clazz) {
+        System.out.println("Going to DB with cells " + geocells);
+        List<T> result = ofy().load().type(clazz).filter("geocells in ", geocells).list();
+        System.out.println("Got " + result.size() + " this time");
+        return result;
+    }
+
     private static <T> Query<T> buildQuery(Class<T> clazz, List<String> conditions, List<Object> conditionsValues) {
         if (conditions.size() != conditionsValues.size() && (conditions.size() != 0 && conditionsValues.size() != 0)){
             throw new IllegalArgumentException("Conditions and supplied values sizes must match and must not be empty.");

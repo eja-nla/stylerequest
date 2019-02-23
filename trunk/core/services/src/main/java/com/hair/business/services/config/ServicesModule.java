@@ -35,6 +35,8 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.inject.Singleton;
 
+import geocell.GeocellManager;
+
 /**
  * Created by Olukorede Aguda on 24/05/2016.
  *
@@ -55,6 +57,7 @@ public class ServicesModule extends AbstractModule {
 
         bindInterceptor(any(), NotSyntheticMethodMatcher.INSTANCE.and(annotatedWith(Timed.class)), new ExecTimeLoggerInterceptor());
 
+        bind(GeocellManager.class).in(Singleton.class);
     }
 
     @Singleton

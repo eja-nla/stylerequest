@@ -17,6 +17,7 @@ import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ import javax.jdo.annotations.PersistenceCapable;
 @PersistenceCapable
 @Entity
 @Cache
-public class GeoLocation implements LocationCapable {
+public class GeoLocation extends AbstractActorEnablerEntity implements LocationCapable {
 
 //    @PrimaryKey
 //    @Persistent
