@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -38,10 +37,7 @@ import geocell.model.Tuple;
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
- */
 
-
-/**
  * Ported java version of python geocell: http://code.google.com/p/geomodel/source/browse/trunk/geo/geocell.py
  *
  * Defines the notion of 'geocells' and exposes methods to operate on them.
@@ -103,7 +99,7 @@ import geocell.model.Tuple;
 public class GeocellManager {
 
     // The maximum *practical* geocell resolution.
-    public static final int MAX_GEOCELL_RESOLUTION = 13;
+    private static final int MAX_GEOCELL_RESOLUTION = 13;
 
     // The maximum number of geocells to consider for a bounding box search.
     private static final int MAX_FEASIBLE_BBOX_SEARCH_CELLS = 300;
@@ -123,11 +119,11 @@ public class GeocellManager {
     /**
      * Returns the list of geocells (all resolutions) that are containing the point
      *
-     * @param point
+     * @param point The point to generate ceocells for
      * @return Returns the list of geocells (all resolutions) that are containing the point
      */
     public static List<String> generateGeoCell(Point point) {
-        List<String> geocells = new ArrayList<String>();
+        List<String> geocells = new ArrayList<>();
         String geocellMax = GeocellUtils.compute(point, GeocellManager.MAX_GEOCELL_RESOLUTION);
         for(int i = 1; i < GeocellManager.MAX_GEOCELL_RESOLUTION; i++) {
             geocells.add(GeocellUtils.compute(point, i));
@@ -159,7 +155,7 @@ public class GeocellManager {
         double minCost = Double.MAX_VALUE;
 
         // The set of cells having the lowest calculated BBOX-search cost.
-        List<String> minCostCellSet = new ArrayList<String>();
+        List<String> minCostCellSet = new ArrayList<>();
 
         // First find the common prefix, if there is one.. this will be the base
         // resolution.. i.e. we don't have to look at any higher resolution cells.
@@ -237,7 +233,7 @@ public class GeocellManager {
         // The current search geocell containing the lat,lon.
         String curContainingGeocell = GeocellUtils.compute(center, MAX_GEOCELL_RESOLUTION);
 
-        Set<String> searchedCells = new HashSet<String>();
+        Set<String> searchedCells = new HashSet<>();
 
         /*
          * The currently-being-searched geocells.
@@ -247,9 +243,9 @@ public class GeocellManager {
          * Must always form a rectangular region.
          * One of these must be equal to the cur_containing_geocell.
          */
-        List<String> curGeocells = new ArrayList<String>();
+        List<String> curGeocells = new ArrayList<>();
         curGeocells.add(curContainingGeocell);
-        double closestPossibleNextResultDist = 0;
+        double closestPossibleNextResultDist;
 
         /*
          * Assumes both a and b are lists of (entity, dist) tuples, *sorted by dist*.
@@ -257,7 +253,7 @@ public class GeocellManager {
          */
 
         int noDirection [] = {0,0};
-        List<Tuple<int[], Double>> sortedEdgesDistances = Arrays.asList(new Tuple<int[], Double>(noDirection, 0d));
+        List<Tuple<int[], Double>> sortedEdgesDistances = Collections.singletonList(new Tuple<>(noDirection, 0d));
 
         while(!curGeocells.isEmpty()) {
             closestPossibleNextResultDist = sortedEdgesDistances.get(0).getSecond();
@@ -265,9 +261,9 @@ public class GeocellManager {
                 break;
             }
 
-            Set<String> curTempUnique = new HashSet<String>(curGeocells);
+            Set<String> curTempUnique = new HashSet<>(curGeocells);
             curTempUnique.removeAll(searchedCells);
-            List<String> curGeocellsUnique = new ArrayList<String>(curTempUnique);
+            List<String> curGeocellsUnique = new ArrayList<>(curTempUnique);
 
             // TODO we should just do a Keys query which is free
             List<GeoLocation> newResultEntities = repository.geoQuery(curGeocellsUnique, GeoLocation.class);
@@ -280,7 +276,7 @@ public class GeocellManager {
             // search center along with the search result itself, in a tuple.
             List<LocationComparableTuple<GeoLocation>> newResults = new ArrayList<>();
             for(GeoLocation entity : newResultEntities) {
-                newResults.add(new LocationComparableTuple<GeoLocation>(entity, GeocellUtils.distance(center, entity.getLocation())));
+                newResults.add(new LocationComparableTuple<>(entity, GeocellUtils.distance(center, entity.getLocation())));
             }
             // TODO (Alex) we can optimize here. Sort is needed only if new_results.size() > max_results.
             Collections.sort(newResults);
@@ -308,7 +304,7 @@ public class GeocellManager {
                 if(curContainingGeocell.length() == 0) {
                     break;  // Done with search, we've searched everywhere.
                 }
-                List<String> oldCurGeocells = new ArrayList<String>(curGeocells);
+                List<String> oldCurGeocells = new ArrayList<>(curGeocells);
                 curGeocells.clear();
                 for(String cell : oldCurGeocells) {
                     if(cell.length() > 0) {
@@ -328,7 +324,7 @@ public class GeocellManager {
                 curGeocells.add(GeocellUtils.adjacent(curGeocells.get(0), nearestEdge));
             } else if(curGeocells.size() == 2) {
                 // Get adjacents in perpendicular direction.
-                int nearestEdge[] = GeocellUtils.distanceSortedEdges(Arrays.asList(curContainingGeocell), center).get(0).getFirst();
+                int nearestEdge[] = GeocellUtils.distanceSortedEdges(Collections.singletonList(curContainingGeocell), center).get(0).getFirst();
                 int[] perpendicularNearestEdge = {0,0};
                 if(nearestEdge[0] == 0) {
                     // Was vertical, perpendicular is horizontal.
@@ -347,7 +343,7 @@ public class GeocellManager {
                         }
                     }
                 }
-                List<String> tempCells = new ArrayList<String>();
+                List<String> tempCells = new ArrayList<>();
                 for(String cell : curGeocells) {
                     tempCells.add(GeocellUtils.adjacent(cell, perpendicularNearestEdge));
                 }
@@ -382,15 +378,4 @@ public class GeocellManager {
 		return result;
         
     }
-
-    /**
-     *
-     * See javadoc of method with parameter maxResolution.
-     * Use MAX_GEOCELL_RESOLUTION as a starting resolution.
-     *
-     */
-//    public static final <T extends LocationCapable> List<T> proximityFetch(Point center, int maxResults, double maxDistance, LocationCapableRepositorySearch<T> searchRepository, int maxGeocellResolution) {
-//        return proximityFetch(center, maxResults, maxDistance, searchRepository, MAX_GEOCELL_RESOLUTION);
-//    }
-
 }
