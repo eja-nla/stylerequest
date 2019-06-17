@@ -3,6 +3,8 @@ package com.hair.business.dao.datastore.repository;
 
 import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
 
+import com.google.appengine.api.datastore.Cursor;
+import com.google.appengine.api.datastore.QueryResultIterator;
 import com.google.appengine.repackaged.com.google.common.base.Defaults;
 
 import com.googlecode.objectify.Key;
@@ -19,6 +21,7 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -118,11 +121,50 @@ public class ObjectifyDatastoreRepositoryImpl implements Repository {
 
     @Override
     public <T> List<T> geoQuery(List<String> geocells, Class<T> clazz) {
-        System.out.println("Going to DB with cells " + geocells);
+//        System.out.println("Going to DB with cells " + geocells);
         List<T> result = ofy().load().type(clazz).filter("geocells in ", geocells).list();
-        System.out.println("Got " + result.size() + " this time");
+//        System.out.println("Got " + result.size() + " this time");
         return result;
     }
+
+    /**
+     * CAVEAT: IN and/or NOT EQUAL queries with cursors are unsupported. See
+     * https://cloud.google.com/appengine/docs/standard/java/datastore/query-cursors
+     * Because the NOT_EQUAL and IN operators are implemented with multiple queries,
+     *      queries that use them do not support cursors, nor do composite queries
+     *      constructed with the CompositeFilterOperator.or method.
+     *
+     * */
+
+    @Override
+    public <T> Map<String, List<T>> searchWithCursor(String condition, Object value, Class<T> clazz, int limit, String cursorStr){
+        Query<T> query = ofy().load().type(clazz).filter(condition, value).limit(limit);
+        if (cursorStr != null ) {
+            query = query.startAt(Cursor.fromWebSafeString(cursorStr));
+        }
+
+        boolean toContinue = false;
+
+        List<T> result = new ArrayList<>();
+        QueryResultIterator<T> iterator = query.iterator();
+        while (iterator.hasNext()) {
+            T item = iterator.next();
+            result.add(item);
+            toContinue = true;
+        }
+
+        Map<String, List<T>> resultWithNextcursor = new HashMap<>();
+
+        if (toContinue) {
+            Cursor cursor = iterator.getCursor();
+            if (cursor != null) {
+                resultWithNextcursor.put(cursor.toWebSafeString(), result);
+            }
+        }
+
+        return resultWithNextcursor;
+    }
+
 
     private static <T> Query<T> buildQuery(Class<T> clazz, List<String> conditions, List<Object> conditionsValues) {
         if (conditions.size() != conditionsValues.size() && (conditions.size() != 0 && conditionsValues.size() != 0)){
@@ -136,7 +178,6 @@ public class ObjectifyDatastoreRepositoryImpl implements Repository {
 
         return results;
     }
-
 
     @Override
     public <T> void update(T entity) {

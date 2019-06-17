@@ -65,6 +65,8 @@ public class MvcConstants {
 
     public static final String STYLE_REQUEST_PATH = "/request" + STYLE_URI;
 
+    public static final String STYLE_SEARCH_PATH = FIND_URI + "/zipcodes/";
+
     public static final String ID ="id";
 
     public static final String EMAIL="email";

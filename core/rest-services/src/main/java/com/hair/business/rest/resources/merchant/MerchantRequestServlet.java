@@ -12,7 +12,7 @@ import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import com.google.identitytoolkit.GitkitUser;
+import com.google.firebase.auth.FirebaseToken;
 
 import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.entity.Merchant;
@@ -81,14 +81,14 @@ public class MerchantRequestServlet extends AbstractRequestServlet {
         log.info("Creating new merchant '{}'", merchant.getEmail());
 
         try {
-            GitkitUser user = (GitkitUser) request.getAttribute(REST_USER_ATTRIBUTE);
+            FirebaseToken user = (FirebaseToken) request.getAttribute(REST_USER_ATTRIBUTE);
             Assert.notNull(user);
 
             String names[] = user.getName().split(" ", 2);
             merchant.setFirstName(names[0]);
             merchant.setLastName(names[1]);
             merchant.setEmail(user.getEmail());
-            merchant.setPhotoUrl(user.getPhotoUrl());
+            merchant.setPhotoUrl(user.getPicture());
             
             return Response.ok(wrapString(merchantService.createMerchant(merchant, nonce)), MediaType.APPLICATION_JSON_TYPE).build();
         } catch (IllegalArgumentException e) {

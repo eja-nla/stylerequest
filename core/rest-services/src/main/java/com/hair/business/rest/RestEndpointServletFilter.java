@@ -2,22 +2,26 @@ package com.hair.business.rest;
 
 import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 
-import com.google.identitytoolkit.GitkitClient;
-import com.google.identitytoolkit.GitkitClientException;
-import com.google.identitytoolkit.GitkitUser;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import com.google.inject.servlet.GuiceFilter;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URI;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.servlet.FilterChain;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by Olukorede Aguda on 25/06/2016.
@@ -28,55 +32,59 @@ import javax.servlet.http.HttpServletResponse;
 public final class RestEndpointServletFilter extends GuiceFilter {
 
     private static final Logger log = Logger.getLogger(RestEndpointServletFilter.class.getName());
-    private static GitkitClient gitkitClient;
 
     private static final String loginUrl = System.getProperty("login.url");
-    private static final String projectId = System.getProperty("project.id");
-    private static final String gitkitUrl = System.getProperty("login.url") + System.getProperty("gitkit.url");
-    private static final String clientId = System.getProperty("client.id");
+    public static final String userSessionName = System.getProperty("session.cookie.name");
+    public static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance(FirebaseApp.initializeApp(System.getProperty("firebase.appname")));
 
     public RestEndpointServletFilter(){
-
     }
 
-    public RestEndpointServletFilter(ServletContext ctx) {
+    @Inject
+    public RestEndpointServletFilter(Provider<FirebaseApp> firebaseAppProvider){
         this();
-
-        InputStream keyStream = ctx.getResourceAsStream("WEB-INF/amyrrh-test1-48c176ef2baa.p12");
-
-        gitkitClient = new GitkitClient.Builder()
-                .setGoogleClientId(clientId)
-                .setProjectId(projectId)
-                .setServiceAccountEmail(System.getProperty("service.account.email"))
-                .setKeyStream(keyStream)
-                .setWidgetUrl(gitkitUrl)
-                .setCookieName(System.getProperty("web.cookie.name")).build();
+//        this.firebaseApp = firebaseAppProvider.get();
+//        System.out.println("RestEndpointServletFilter(); " + firebaseApp);
     }
+
+//    public RestEndpointServletFilter(ServletContext ctx) {
+//        System.out.println("RestEndpointServletFilter(ctx);" + firebaseApp);
+//    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        String sessionCookie = null;
 
-        GitkitUser gitkitUser;
-        HttpServletResponse response = ((HttpServletResponse) servletResponse);
-        try {
-            gitkitUser = gitkitClient.validateTokenInRequest((HttpServletRequest) servletRequest);
-            if (gitkitUser == null && !servletResponse.isCommitted()){
-                response.sendRedirect(loginUrl);
-                return;
+        HttpServletRequest request = ((HttpServletRequest) servletRequest);
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (int i = 0; i < cookies.length; i++) {
+                if (cookies[i].getName().equals(userSessionName)){
+                    sessionCookie = cookies[i].getValue();
+                }
             }
+        }
 
-            servletRequest.setAttribute(REST_USER_ATTRIBUTE, gitkitUser);
+        if (sessionCookie == null && request.getServletPath().endsWith("/auth0/sessionLogin")){
+            filterChain.doFilter(servletRequest, servletResponse); // they're on their way to acquiring one, let them go. May need review.
+            return;
+        }
 
+        if (sessionCookie == null && !servletResponse.isCommitted()){
+            ((HttpServletResponse) servletResponse).sendRedirect(loginUrl);
+            return;
+        }
+        try {
+            // Verify the session cookie. In this case an additional check is added to detect
+            // if the user's Firebase session was revoked, user deleted/disabled, etc.
+            final boolean checkRevoked = true;
+            FirebaseToken decodedToken = firebaseAuth.verifySessionCookie(sessionCookie, checkRevoked);
+            servletRequest.setAttribute(REST_USER_ATTRIBUTE, decodedToken);
             filterChain.doFilter(servletRequest, servletResponse);
-
-        } catch (GitkitClientException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(e.getMessage());
-            log.severe(e.getMessage());
-        } catch (Exception ex) {
-            log.severe(ex.getMessage());
+        } catch (FirebaseAuthException e) {
+            // Session cookie is unavailable, invalid or revoked. Force user to login.
+            Response.temporaryRedirect(URI.create(loginUrl)).build();
         }
     }
 }

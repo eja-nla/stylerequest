@@ -4,6 +4,7 @@ package com.hair.business.beans.entity;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 
 import java.util.List;
@@ -32,6 +33,8 @@ public class Style extends AbstractActorEnablerEntity {
     private Long publisherId;
 
     private Location location;
+
+    @Index private Integer zipcode;
 
     private List<Image> styleImages;
 
@@ -135,5 +138,13 @@ public class Style extends AbstractActorEnablerEntity {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public Integer getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(Integer zipcode) {
+        this.zipcode = zipcode;
     }
 }

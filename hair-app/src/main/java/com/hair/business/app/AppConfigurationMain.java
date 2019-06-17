@@ -39,6 +39,7 @@ public class AppConfigurationMain extends GuiceServletContextListener {
      * Main application entry point.
      *
      * */
+    @Override
     protected Injector getInjector() {
         log.info("Application initialization starting...");
         Injector appInjector = Guice.createInjector(new DaoDatastoreModule(), new HealthcheckModule(), new RestServicesModule(),
