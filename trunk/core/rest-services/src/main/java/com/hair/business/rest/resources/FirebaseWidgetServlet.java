@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by Olukorede Aguda on 25/06/2016.
  */
-public class WidgetServlet extends HttpServlet{
+public class FirebaseWidgetServlet extends HttpServlet{
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
@@ -30,7 +30,7 @@ public class WidgetServlet extends HttpServlet{
         String postBody = URLEncoder.encode(builder.toString(), "UTF-8");
 
         try {
-            response.getWriter().print(new Scanner(this.getServletContext().getResourceAsStream("/gitkit-widget.html"), "UTF-8")
+            response.getWriter().print(new Scanner(this.getServletContext().getResourceAsStream("/firebase_widget.html"), "UTF-8")
                     .useDelimiter("\\A").next()
                     .replaceAll("JAVASCRIPT_ESCAPED_POST_BODY", postBody));
             response.setStatus(HttpServletResponse.SC_OK);

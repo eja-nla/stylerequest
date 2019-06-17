@@ -1,6 +1,6 @@
 package com.hair.business.rest.resources;
 
-import com.google.identitytoolkit.GitkitUser;
+import com.google.firebase.auth.FirebaseToken;
 
 import org.json.JSONException;
 
@@ -20,18 +20,17 @@ public class LoginServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-// This check prevents the "/" handler from handling all requests by default
-//        if (!"/".equals(request.getServletPath())) {
-//            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-//            return;
-//        }
 
+        if (!"/".equals(request.getServletPath())) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
         try {
-            GitkitUser gitkitUser = (GitkitUser) request.getAttribute("user");
+            FirebaseToken userToken = (FirebaseToken) request.getAttribute("user");
             String userInfo = null;
-            if (gitkitUser != null) {
-                userInfo = "Welcome back!<br><br> Email: " + gitkitUser.getEmail() + "<br> Id: "
-                        + gitkitUser.getLocalId() + "<br> Provider: " + gitkitUser.getCurrentProvider();
+            if (userToken != null) {
+                userInfo = "Welcome back!<br><br> Email: " + userToken.getEmail() + "<br> Name: "
+                        + userToken.getName() + "<br> Provider: " + userToken.getIssuer();
             }
 
             response.getWriter().print(new Scanner(this.getServletContext().getResourceAsStream("/index.html"), "UTF-8")
@@ -42,5 +41,28 @@ public class LoginServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             response.getWriter().print(e.toString());
         }
+
+
+// This check prevents the "/" handler from handling all requests by default
+//        if (!"/".equals(request.getServletPath())) {
+//            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+//            return;
+//        }
+//        try {
+//            GitkitUser gitkitUser = (GitkitUser) request.getAttribute("user");
+//            String userInfo = null;
+//            if (gitkitUser != null) {
+//                userInfo = "Welcome back!<br><br> Email: " + gitkitUser.getEmail() + "<br> Id: "
+//                        + gitkitUser.getLocalId() + "<br> Provider: " + gitkitUser.getCurrentProvider();
+//            }
+//
+//            response.getWriter().print(new Scanner(this.getServletContext().getResourceAsStream("/index.html"), "UTF-8")
+//                    .useDelimiter("\\A").next().replaceAll("WELCOME_MESSAGE", userInfo != null ? userInfo : "You are not logged in"));
+//            response.setStatus(HttpServletResponse.SC_OK);
+//        } catch (FileNotFoundException | JSONException e) {
+//            e.printStackTrace();
+//            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+//            response.getWriter().print(e.toString());
+//        }
     }
 }

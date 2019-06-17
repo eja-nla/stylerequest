@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -103,5 +104,16 @@ public class StyleServiceImpl implements StyleService {
         style.setActive(false);
 
         repository.saveOne(style);
+    }
+
+    @Override
+    public Map<String, List<Style>> proximitySearchByZipcode(List<Integer> zipcodes, int limit, String cursorStr) {
+
+        return repository.searchWithCursor("zipcode in", zipcodes, Style.class, limit, cursorStr);
+    }
+
+    @Override
+    public List<Style> proximitySearchByGeo() {
+        return null;
     }
 }

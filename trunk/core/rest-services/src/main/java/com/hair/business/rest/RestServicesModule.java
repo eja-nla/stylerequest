@@ -1,5 +1,6 @@
 package com.hair.business.rest;
 
+import com.google.firebase.FirebaseApp;
 import com.google.inject.Provides;
 import com.google.inject.servlet.ServletModule;
 
@@ -61,8 +62,7 @@ public class RestServicesModule extends ServletModule {
         filter(API_ENDPOINT).through(ObjectifyFilter.class);
 
         bind(ObjectifyFilter.class).in(Singleton.class);
-
-        bind(RestEndpointServletFilter.class).toInstance(new RestEndpointServletFilter(servletContext));
+        bind(RestEndpointServletFilter.class).in(Singleton.class);
 
         // Jackson
         bind(ObjectMapper.class).toProvider(ObjectMapperProvider.class).in(Singleton.class);
@@ -84,6 +84,12 @@ public class RestServicesModule extends ServletModule {
     @Provides
     Map<Integer, Pair<String, String>> provideMap() {
         return endpoints;
+    }
+
+    @Singleton
+    @Provides
+    FirebaseApp firebaseAppProvider(){
+        return FirebaseApp.initializeApp(System.getProperty("firebase.appname"));
     }
 
     private void exposeServletEndpoints(Class resourceClass) {

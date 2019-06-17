@@ -12,7 +12,7 @@ import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import com.google.identitytoolkit.GitkitUser;
+import com.google.firebase.auth.FirebaseToken;
 
 import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.constants.Preferences;
@@ -69,7 +69,7 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
         log.info("Creating new customer '{}'", customer.getEmail());
 
         try {
-            GitkitUser user = (GitkitUser) request.getAttribute(REST_USER_ATTRIBUTE);
+            FirebaseToken user = (FirebaseToken) request.getAttribute(REST_USER_ATTRIBUTE);
             Assert.notNull(user, "Required user attributes not set.");
 
             customer.setEmail(user.getEmail());
@@ -77,7 +77,7 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
             String names[] = user.getName().split(" ", 2);
             customer.setFirstName(names[0]);
             customer.setLastName(names[1]);
-            customer.setPhotoUrl(user.getPhotoUrl());
+            customer.setPhotoUrl(user.getPicture());
 
             return Response.ok(wrapString(customerService.createCustomer(customer, nonce)), MediaType.APPLICATION_JSON_TYPE).build();
         } catch (IllegalArgumentException e) {

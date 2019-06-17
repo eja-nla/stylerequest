@@ -2,7 +2,7 @@ package com.hair.business.rest;
 
 import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 
-import com.google.identitytoolkit.GitkitUser;
+import com.google.firebase.auth.FirebaseToken;
 import com.google.inject.servlet.GuiceFilter;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public final class PrivilegedEndpointServletFilter extends GuiceFilter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletResponse response = ((HttpServletResponse) servletResponse);
-        GitkitUser user = (GitkitUser) servletRequest.getAttribute(REST_USER_ATTRIBUTE);
+        FirebaseToken user = (FirebaseToken) servletRequest.getAttribute(REST_USER_ATTRIBUTE);
 
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

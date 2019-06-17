@@ -2,6 +2,7 @@ package com.hair.business.rest.resources.style;
 
 import static com.hair.business.rest.MvcConstants.ID;
 import static com.hair.business.rest.MvcConstants.INFO;
+import static com.hair.business.rest.MvcConstants.STYLE_SEARCH_PATH;
 import static com.hair.business.rest.MvcConstants.STYLE_URI;
 import static com.hair.business.rest.MvcConstants.UPDATE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -9,6 +10,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.services.StyleService;
 import com.x.business.utilities.Assert;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -57,6 +60,18 @@ public class StyleServlet {
         }
     }
 
+
+    @GET
+    @Path(STYLE_SEARCH_PATH)
+    @Produces(APPLICATION_JSON)
+    public Response searchStylesByZip(@QueryParam("limit") Integer limit, @QueryParam("cursor") String cursor, List<Integer> zipcodes) {
+        try {
+            return Response.ok(styleService.proximitySearchByZipcode(zipcodes, limit, cursor), MediaType.APPLICATION_JSON).build();
+
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
 
     @POST
     @Path(UPDATE)

@@ -3,6 +3,7 @@ package geocell;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.x.business.utilities.Assert;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -123,6 +124,7 @@ public class GeocellManager {
      * @return Returns the list of geocells (all resolutions) that are containing the point
      */
     public static List<String> generateGeoCell(Point point) {
+        Assert.notNull(point, "Geocells cannot be generated for an empty Point");
         List<String> geocells = new ArrayList<>();
         String geocellMax = GeocellUtils.compute(point, GeocellManager.MAX_GEOCELL_RESOLUTION);
         for(int i = 1; i < GeocellManager.MAX_GEOCELL_RESOLUTION; i++) {
