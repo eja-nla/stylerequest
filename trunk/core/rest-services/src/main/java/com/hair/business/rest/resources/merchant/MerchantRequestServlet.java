@@ -82,13 +82,9 @@ public class MerchantRequestServlet extends AbstractRequestServlet {
 
         try {
             FirebaseToken user = (FirebaseToken) request.getAttribute(REST_USER_ATTRIBUTE);
-            Assert.notNull(user);
+            Assert.notNull(user, "Required user attributes not set.");
 
-            String names[] = user.getName().split(" ", 2);
-            merchant.setFirstName(names[0]);
-            merchant.setLastName(names[1]);
-            merchant.setEmail(user.getEmail());
-            merchant.setPhotoUrl(user.getPicture());
+            Assert.notNull(merchant.getFirstName(), "User must have a first name");
             
             return Response.ok(wrapString(merchantService.createMerchant(merchant, nonce)), MediaType.APPLICATION_JSON_TYPE).build();
         } catch (IllegalArgumentException e) {

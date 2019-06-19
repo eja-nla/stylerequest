@@ -9,14 +9,14 @@ import com.x.business.notif.mail.handler.EmailHandler;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.tasks.SendgridStyleRequestEmailHandler;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 /**
  * Abstract Abstract Stylerequest Notification
@@ -71,7 +71,7 @@ public abstract class AbstractStyleRequestNotificationTask extends AbstractEmail
 
         String template = null;
         try {
-            template = new String(Files.readAllBytes(Paths.get(fileName)), StandardCharsets.ISO_8859_1);
+            template = IOUtils.toString(new FileInputStream(new File(fileName)));
         } catch (IOException e){
             logger.error("Unable to load email template file '{}'. Reason: '{}'", fileName, e.getMessage());
         }

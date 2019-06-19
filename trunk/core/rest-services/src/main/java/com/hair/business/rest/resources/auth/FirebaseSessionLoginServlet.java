@@ -54,7 +54,7 @@ public class FirebaseSessionLoginServlet extends HttpServlet {
             // The session cookie will have the same claims as the ID token.
             String sessionCookie = firebaseAuth.createSessionCookie(idToken, options);
             // Set cookie policy parameters as required.
-            final NewCookie cookie = new NewCookie(userSessionName, sessionCookie);
+            final NewCookie cookie = new NewCookie(userSessionName, sessionCookie, "/", "", "SessionID", 864000, false);
             return Response.ok().cookie(cookie).build();
         } catch (FirebaseAuthException e) {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Failed to create a session cookie").build();

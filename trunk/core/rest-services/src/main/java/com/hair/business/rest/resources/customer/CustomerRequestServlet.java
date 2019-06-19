@@ -72,12 +72,7 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
             FirebaseToken user = (FirebaseToken) request.getAttribute(REST_USER_ATTRIBUTE);
             Assert.notNull(user, "Required user attributes not set.");
 
-            customer.setEmail(user.getEmail());
-            Assert.notNull(user.getName(), "User must have a name");
-            String names[] = user.getName().split(" ", 2);
-            customer.setFirstName(names[0]);
-            customer.setLastName(names[1]);
-            customer.setPhotoUrl(user.getPicture());
+            Assert.notNull(customer.getFirstName(), "User must have a first name");
 
             return Response.ok(wrapString(customerService.createCustomer(customer, nonce)), MediaType.APPLICATION_JSON_TYPE).build();
         } catch (IllegalArgumentException e) {
