@@ -1,7 +1,5 @@
 package com.x.business.utilities;
 
-import com.google.appengine.repackaged.com.google.common.base.Defaults;
-
 import com.hair.business.beans.abstracts.AbstractPersistenceEntity;
 
 import org.apache.commons.lang3.Validate;
@@ -35,7 +33,7 @@ public class Assert extends Validate {
 
     public static void validId(Long key){
         notNull(key);
-        if(Objects.equals(key, Defaults.defaultValue(Long.TYPE))){
+        if(Objects.equals(key, 0L)){
             throw new IllegalArgumentException(String.format("Invalid ID value %s", key));
         }
     }
