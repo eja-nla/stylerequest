@@ -50,7 +50,7 @@ public class PlacedStyleRequestNotification extends AbstractStyleRequestNotifica
 
     private String tokenizeCustomer(StyleRequest styleRequest){
         return String.format(merchant_customer_template_pair.getLeft(),
-                styleRequest.getMerchant().getEmail(),
+                styleRequest.getCustomer().getEmail(),
                 styleRequest.getCustomer().getFirstName(),
                 styleRequest.getStyle().getName(),
                 styleRequest.getAppointmentStartTime().toDate(),
