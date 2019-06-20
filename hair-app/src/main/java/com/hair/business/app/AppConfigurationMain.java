@@ -77,10 +77,11 @@ public class AppConfigurationMain extends GuiceServletContextListener {
 
     //TODO move into own class
     private class HealthcheckModule extends ServletModule {
+        private final String apiUrl = System.getProperty("app.api.url");
+
         @Override
         protected void configureServlets() {
-            serve("/health").with(HealthcheckServlet.class);
-
+            serve(apiUrl + "/health").with(HealthcheckServlet.class);
         }
     }
 

@@ -51,8 +51,8 @@ public class RestServicesModule extends ServletModule {
     @Override
     protected void configureServlets() {
 
+        super.configureServlets();
         ResourceConfig rc = new PackagesResourceConfig(RESOURCE_PACKAGES);
-        endpoints.put(0, Pair.of("/health", "GET"));
         for (Class clazz : rc.getClasses()) {
             this.bind(clazz); // Register jersey resources
             exposeServletEndpoints(clazz);
@@ -62,7 +62,6 @@ public class RestServicesModule extends ServletModule {
         filter(API_ENDPOINT).through(ObjectifyFilter.class);
 
         bind(ObjectifyFilter.class).in(Singleton.class);
-        bind(RestEndpointServletFilter.class).in(Singleton.class);
 
         // Jackson
         bind(ObjectMapper.class).toProvider(ObjectMapperProvider.class).in(Singleton.class);
