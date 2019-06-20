@@ -22,7 +22,6 @@ import com.hair.business.services.merchant.MerchantService;
 import com.hair.business.services.payment.PaymentService;
 import com.hair.business.services.pushNotification.PushNotificationServiceInternal;
 import com.hair.business.services.state.StylerequestStateMgr;
-import com.hair.business.services.stereotype.Timed;
 import com.x.business.notif.AcceptedStyleRequestNotification;
 import com.x.business.notif.CancelledStyleRequestNotification;
 import com.x.business.notif.CompletedStyleRequestNotification;
@@ -67,7 +66,6 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         this.pushNotificationService = pushNotificationService;
     }
 
-    @Timed
     @Override
     public StyleRequest findStyleRequest(Long id) {
         Assert.validId(id);
@@ -79,7 +77,6 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
      *  Places a style request
      *  Goal is to keep this as simple as possible and move most validations upstream to the client
      * */
-    @Timed
     @Override
     public StyleRequest placeStyleRequest(String authorizationToken, Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
         Assert.validIds(styleId, customerId, merchantId);
@@ -159,7 +156,4 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         emailTaskQueue.add(new CancelledStyleRequestNotification(styleRequest, preferences));
 
     }
-
-
-
 }
