@@ -190,7 +190,7 @@
 			"response": []
 		},
 		{
-			"name": "Place style request",
+			"name": "Place Style Request",
 			"event": [
 				{
 					"listen": "test",
@@ -216,7 +216,7 @@
 					"mode": "raw",
 					"raw": ""
 				},
-				"description": "Place new style request"
+				"description": "Place new Style Request"
 			},
 			"response": []
 		}
