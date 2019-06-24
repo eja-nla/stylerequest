@@ -25,11 +25,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Named;
+
 /**
  * Objectify Datastore repository impl.
  *
  * Created by Olukorede Aguda on 25/04/2016.
  */
+@Named
 public class ObjectifyDatastoreRepositoryImpl implements Repository {
 
     @Override

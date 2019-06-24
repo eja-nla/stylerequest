@@ -1,6 +1,7 @@
 package com.hair.business.rest;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.inject.Provides;
 import com.google.inject.servlet.ServletModule;
 
@@ -40,6 +41,8 @@ public class RestServicesModule extends ServletModule {
     private static final String API_ENDPOINT = System.getProperty("app.api.url");
     private static final String RESOURCE_PACKAGES = "com.hair.business.rest.resources";
 
+    private static final ResourceConfig rc = new PackagesResourceConfig(RESOURCE_PACKAGES);
+
     private ServletContext servletContext;
     private final Map<Integer, Pair<String, String>> endpoints = new HashMap<>();
     private int count = 1;
@@ -51,8 +54,7 @@ public class RestServicesModule extends ServletModule {
     @Override
     protected void configureServlets() {
 
-        super.configureServlets();
-        ResourceConfig rc = new PackagesResourceConfig(RESOURCE_PACKAGES);
+        //super.configureServlets();
         for (Class clazz : rc.getClasses()) {
             this.bind(clazz); // Register jersey resources
             exposeServletEndpoints(clazz);
@@ -60,7 +62,7 @@ public class RestServicesModule extends ServletModule {
 
         serve(API_ENDPOINT).with(GuiceContainer.class);
         filter(API_ENDPOINT).through(ObjectifyFilter.class);
-
+//
         bind(ObjectifyFilter.class).in(Singleton.class);
 
         // Jackson
@@ -71,6 +73,12 @@ public class RestServicesModule extends ServletModule {
         initParams.put("com.sun.jersey.config.feature.Trace", "true");
         initParams.put("com.sun.jersey.api.json.POJOMappingFeature", "true");
         bind(JacksonJsonProvider.class).toProvider(JacksonJsonProvidersProvider.class).in(Singleton.class);
+
+        //FirebaseAuth auth = initFirebaseAuth();
+        bind(RestEndpointServletFilter.class).toInstance(new RestEndpointServletFilter());
+//        bind(FirebaseSessionLoginServlet.class).toInstance(new FirebaseSessionLoginServlet(auth));
+
+        install(this);
 
     }
 
@@ -85,10 +93,8 @@ public class RestServicesModule extends ServletModule {
         return endpoints;
     }
 
-    @Singleton
-    @Provides
-    FirebaseApp firebaseAppProvider(){
-        return FirebaseApp.initializeApp(System.getProperty("firebase.appname"));
+    private FirebaseAuth initFirebaseAuth(){
+        return FirebaseAuth.getInstance(FirebaseApp.initializeApp(System.getProperty("firebase.appname")));
     }
 
     private void exposeServletEndpoints(Class resourceClass) {

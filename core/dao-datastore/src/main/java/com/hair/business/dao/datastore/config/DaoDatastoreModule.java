@@ -6,8 +6,19 @@ import com.google.inject.matcher.Matchers;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.dao.datastore.ofy.OfyService;
 import com.hair.business.dao.datastore.repository.DatastoreTransactInterceptor;
+import com.hair.business.dao.datastore.repository.ElasticsearchDatastoreRepositoryImpl;
 import com.hair.business.dao.datastore.repository.ObjectifyDatastoreRepositoryImpl;
 import com.hair.business.dao.datastore.stereotype.DatastoreTransaction;
+
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestHighLevelClient;
+
+import java.io.IOException;
 
 import javax.inject.Singleton;
 
@@ -26,6 +37,30 @@ public class DaoDatastoreModule extends AbstractModule {
         bind(Repository.class).to(ObjectifyDatastoreRepositoryImpl.class).in(Singleton.class);
         bindInterceptor(Matchers.any(), Matchers.annotatedWith(DatastoreTransaction.class), new DatastoreTransactInterceptor());
 
+        try {
+            bind(ElasticsearchDatastoreRepositoryImpl.class).toInstance(new ElasticsearchDatastoreRepositoryImpl(this::elasticClientProvider));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         requireBinding(Repository.class);
+
+        install(this);
     }
+
+    private RestHighLevelClient elasticClientProvider(){
+        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(System.getProperty("elastic.access.key"), System.getProperty("elastic.access.secret")));
+
+        return new RestHighLevelClient(RestClient.builder(
+                new HttpHost(System.getProperty("elastic.url"), Integer.valueOf(System.getProperty("elastic.port")), "https"))
+                .setHttpClientConfigCallback(httpAsyncClientBuilder -> httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider))
+        );
+    }
+
+//    public static void main(String[] args) throws IOException {
+//        DaoDatastoreModule dsm = new DaoDatastoreModule();
+//        ElasticsearchDatastoreRepositoryImpl es = new ElasticsearchDatastoreRepositoryImpl(dsm::elasticClientProvider);
+//
+//        es.createIndex("style", IOUtils.toString(new FileInputStream(new File("WEB-INF/elasticsearch/style_mapping.json"))));
+//    }
 }

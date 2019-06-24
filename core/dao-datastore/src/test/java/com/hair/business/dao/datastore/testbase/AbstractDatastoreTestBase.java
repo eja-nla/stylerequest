@@ -35,7 +35,11 @@ public class AbstractDatastoreTestBase {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-          Guice.createInjector(new DaoDatastoreModule());
+        System.setProperty("elastic.access.key", "boo");
+        System.setProperty("elastic.access.secret", "pass");
+        System.setProperty("elastic.url", "url");
+        System.setProperty("elastic.port", "123");
+        Guice.createInjector(new DaoDatastoreModule());
     }
 
     @Before

@@ -7,9 +7,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.name.Names;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.google.inject.servlet.ServletModule;
 
-import com.hair.business.app.servlets.HealthcheckServlet;
 import com.hair.business.auth.config.SecurityModule;
 import com.hair.business.dao.datastore.config.DaoDatastoreModule;
 import com.hair.business.rest.RestServicesModule;
@@ -23,8 +21,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
-import javax.servlet.ServletContextEvent;
 
 /**
  * Created by Olukorede Aguda on 23/05/2016.
@@ -42,7 +38,7 @@ public class AppConfigurationMain extends GuiceServletContextListener {
     @Override
     protected Injector getInjector() {
         log.info("Application initialization starting...");
-        Injector appInjector = Guice.createInjector(new DaoDatastoreModule(), new HealthcheckModule(), new RestServicesModule(),
+        Injector appInjector = Guice.createInjector(new DaoDatastoreModule(), new RestServicesModule(),
                     new ServicesModule(), new SecurityModule(), new UtilModule(), new AbstractModule() {
                 @Override
                 protected void configure() {
@@ -50,6 +46,7 @@ public class AppConfigurationMain extends GuiceServletContextListener {
                     log.info("found properties {}", props.propertyNames());
                     Names.bindProperties(binder(), props);
 
+                    install(this);
                 }
             }
 
@@ -73,26 +70,5 @@ public class AppConfigurationMain extends GuiceServletContextListener {
         }
 
         return properties;
-    }
-
-    //TODO move into own class
-    private class HealthcheckModule extends ServletModule {
-        private final String apiUrl = System.getProperty("app.api.url");
-
-        @Override
-        protected void configureServlets() {
-            serve(apiUrl + "/health").with(HealthcheckServlet.class);
-        }
-    }
-
-    @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
-        long time = System.currentTimeMillis();
-
-        super.contextInitialized(servletContextEvent);
-
-        long millis = System.currentTimeMillis() - time;
-
-        log.info("Guice initialization took {} millis", millis);
     }
 }

@@ -25,17 +25,19 @@ import javax.inject.Inject;
  */
 public class StyleServiceImpl implements StyleService {
 
-    private final Repository repository;
+    private final Repository datastoreRepository;
+    //private final Repository elasticsearchRepository;
     private static final Logger logger = getLogger(StyleServiceImpl.class);
 
     @Inject
-    public StyleServiceImpl(Repository repository) {
-        this.repository = repository;
+    public StyleServiceImpl(Repository repository){//}, @ElasticsearchRepository Repository elasticsearchRepository) {
+        this.datastoreRepository = repository;
+        //this.elasticsearchRepository = elasticsearchRepository;
     }
 
     @Override
     public Style findStyle(Long styleId) {
-        return repository.findOne(styleId, Style.class);
+        return datastoreRepository.findOne(styleId, Style.class);
     }
 
     @Override
@@ -43,18 +45,19 @@ public class StyleServiceImpl implements StyleService {
         Assert.notNull(style, publisherId);
         Assert.isTrue(style.getStyleImages().size() >= 5, "Style must have at least 5 images showing different views");
 
-        Merchant merchant = repository.findOne(publisherId, Merchant.class);
+        Merchant merchant = datastoreRepository.findOne(publisherId, Merchant.class);
 
         Assert.notNull(merchant, format("Could not find Merchant with id '%s'", publisherId));
 
-        Long stylePermId = repository.allocateId(Style.class);
+        Long stylePermId = datastoreRepository.allocateId(Style.class);
 
         style.setId(stylePermId);
         style.setPermanentId(stylePermId);
         style.setActive(true);
         style.setLocation(merchant.getAddress().getLocation());
 
-        repository.saveOne(style);
+        datastoreRepository.saveOne(style);
+//        elasticsearchRepository.saveOne(style);
 
         return style;
     }
@@ -62,15 +65,15 @@ public class StyleServiceImpl implements StyleService {
     @Override
     public void updateStyle(Style style) throws IllegalArgumentException, EntityNotFoundException {
         Assert.notNull(style, "Style cannot be null");
-        Assert.validId(repository.peekOne(style.getId(), Style.class));
+        Assert.validId(datastoreRepository.peekOne(style.getId(), Style.class));
 
-        repository.saveOne(style);
+        datastoreRepository.saveOne(style);
 
     }
 
     @Override
     public void updateStyleImages(Long styleId, List<Image> styleImages) {
-        Style style = repository.findOne(styleId, Style.class);
+        Style style = datastoreRepository.findOne(styleId, Style.class);
 
         Assert.notNull(style, format("Could not find Style with id '%s'", styleId));
 
@@ -80,13 +83,13 @@ public class StyleServiceImpl implements StyleService {
         images.addAll(styleImages);
 
         style.setStyleImages(images);
-        repository.saveOne(style);
+        datastoreRepository.saveOne(style);
 
     }
 
     @Override
     public List<Style> findStyles(List<Long> ids) {
-        return new ArrayList<>(repository.findMany(ids, Style.class).values());
+        return new ArrayList<>(datastoreRepository.findMany(ids, Style.class).values());
     }
 
     @Override
@@ -97,19 +100,19 @@ public class StyleServiceImpl implements StyleService {
     @Override
     public void removeStyle(Long styleId) {
         Assert.validId(styleId);
-        Style style = repository.findOne(styleId, Style.class);
+        Style style = datastoreRepository.findOne(styleId, Style.class);
 
         Assert.notNull(style, String.format("Cannot remove style with id '%s'. Style not found", styleId));
 
         style.setActive(false);
 
-        repository.saveOne(style);
+        datastoreRepository.saveOne(style);
     }
 
     @Override
     public Map<String, List<Style>> proximitySearchByZipcode(List<Integer> zipcodes, int limit, String cursorStr) {
 
-        return repository.searchWithCursor("zipcode in", zipcodes, Style.class, limit, cursorStr);
+        return datastoreRepository.searchWithCursor("zipcode in", zipcodes, Style.class, limit, cursorStr);
     }
 
     @Override
