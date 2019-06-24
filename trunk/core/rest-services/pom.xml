@@ -29,10 +29,6 @@
             <artifactId>jersey-guice</artifactId>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>com.google.identitytoolkit</groupId>-->
-            <!--<artifactId>gitkitclient</artifactId>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.google.firebase</groupId>
             <artifactId>firebase-admin</artifactId>

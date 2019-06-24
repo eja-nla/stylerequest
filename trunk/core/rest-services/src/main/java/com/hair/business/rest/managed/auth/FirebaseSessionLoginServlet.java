@@ -1,6 +1,5 @@
-package com.hair.business.rest.resources.auth;
+package com.hair.business.rest.managed.auth;
 
-import static com.hair.business.rest.RestEndpointServletFilter.firebaseAuth;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -9,6 +8,7 @@ import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.SessionCookieOptions;
 
 import com.hair.business.beans.entity.nonPersist.LoginRequest;
+import com.hair.business.rest.RestEndpointServletFilter;
 
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +35,9 @@ public class FirebaseSessionLoginServlet extends HttpServlet {
     private static final String loginUrl = System.getProperty("login.url");
     private static final String userSessionName = System.getProperty("session.cookie.name");
 
+//    public FirebaseSessionLoginServlet(FirebaseAuth firebaseAuth) {
+//        this.firebaseAuth = firebaseAuth;
+//    }
 
     @POST
     @Path("/sessionLogin")
@@ -52,7 +55,7 @@ public class FirebaseSessionLoginServlet extends HttpServlet {
             }
             // Create the session cookie. This will also verify the ID token in the process.
             // The session cookie will have the same claims as the ID token.
-            String sessionCookie = firebaseAuth.createSessionCookie(idToken, options);
+            String sessionCookie = RestEndpointServletFilter.firebaseAuth.createSessionCookie(idToken, options);
             // Set cookie policy parameters as required.
             final NewCookie cookie = new NewCookie(userSessionName, sessionCookie, "/", "", "SessionID", 864000, false);
             return Response.ok().cookie(cookie).build();
@@ -66,7 +69,7 @@ public class FirebaseSessionLoginServlet extends HttpServlet {
     public Response clearSessionCookie(@CookieParam("usersession") Cookie cookie) {
         String sessionCookie = cookie.getValue();
         try {
-            FirebaseToken decodedToken = firebaseAuth.verifySessionCookie(sessionCookie);
+            FirebaseToken decodedToken = RestEndpointServletFilter.firebaseAuth.verifySessionCookie(sessionCookie);
             FirebaseAuth.getInstance().revokeRefreshTokens(decodedToken.getUid());
             NewCookie newCookie = new NewCookie(cookie, "Expired", 0, true);
             return Response.temporaryRedirect(URI.create(loginUrl)).cookie(newCookie).build();

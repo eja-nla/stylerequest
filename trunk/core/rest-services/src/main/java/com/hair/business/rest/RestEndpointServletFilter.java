@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Logger;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -34,22 +32,15 @@ public final class RestEndpointServletFilter extends GuiceFilter {
     private static final Logger log = Logger.getLogger(RestEndpointServletFilter.class.getName());
 
     private static final String loginUrl = System.getProperty("login.url");
-    public static final String userSessionName = System.getProperty("session.cookie.name");
+    private static final String userSessionName = System.getProperty("session.cookie.name");
     public static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance(FirebaseApp.initializeApp(System.getProperty("firebase.appname")));
 
     public RestEndpointServletFilter(){
     }
 
-    @Inject
-    public RestEndpointServletFilter(Provider<FirebaseApp> firebaseAppProvider){
-        this();
-//        this.firebaseApp = firebaseAppProvider.get();
-//        System.out.println("RestEndpointServletFilter(); " + firebaseApp);
+    public RestEndpointServletFilter(FirebaseAuth firebaseAuth){
+        this.firebaseAuth = firebaseAuth;
     }
-
-//    public RestEndpointServletFilter(ServletContext ctx) {
-//        System.out.println("RestEndpointServletFilter(ctx);" + firebaseApp);
-//    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -72,7 +63,7 @@ public final class RestEndpointServletFilter extends GuiceFilter {
         }
 
         if (sessionCookie == null && !servletResponse.isCommitted()){
-            ((HttpServletResponse) servletResponse).sendRedirect(loginUrl);
+            ((HttpServletResponse) servletResponse).sendRedirect(loginUrl); // keep it simple, just let them know they're unauthorized
             return;
         }
         try {

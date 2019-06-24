@@ -30,6 +30,11 @@ public abstract class AbstractServicesTestBase {
     @BeforeClass
     public static void setUpBeforeClass() {
 
+        System.setProperty("elastic.access.key", "boo");
+        System.setProperty("elastic.access.secret", "pass");
+        System.setProperty("elastic.url", "url");
+        System.setProperty("elastic.port", "123");
+
         injector = Guice.createInjector(new DaoDatastoreModule());
 
         OfyService.register(GeoLocation.class);
