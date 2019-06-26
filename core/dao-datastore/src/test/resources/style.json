@@ -17,10 +17,10 @@
     "city" : "London",
     "state" : "Alabama",
     "countryCode" : "GB",
-    "geoPoint" : {
+    "geo_point" : {
       "id" : -2914024913972574844,
-      "latitude" : 51.503407,
-      "longitude" : -0.127592
+      "lat" : 51.503407,
+      "lon" : -0.127592
     }
   },
   "styleImages" : [ {

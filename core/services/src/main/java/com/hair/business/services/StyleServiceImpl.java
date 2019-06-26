@@ -7,6 +7,7 @@ import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.hair.business.dao.datastore.impl.HairstyleElasticsearchRepositoryImpl;
 import com.x.business.exception.EntityNotFoundException;
 import com.x.business.utilities.Assert;
 
@@ -26,18 +27,19 @@ import javax.inject.Inject;
 public class StyleServiceImpl implements StyleService {
 
     private final Repository datastoreRepository;
-    //private final Repository elasticsearchRepository;
+    private final HairstyleElasticsearchRepositoryImpl hairstyleRepository;
+
     private static final Logger logger = getLogger(StyleServiceImpl.class);
 
     @Inject
-    public StyleServiceImpl(Repository repository){//}, @ElasticsearchRepository Repository elasticsearchRepository) {
+    public StyleServiceImpl(Repository repository, HairstyleElasticsearchRepositoryImpl hairstyleRepository) {
         this.datastoreRepository = repository;
-        //this.elasticsearchRepository = elasticsearchRepository;
+        this.hairstyleRepository = hairstyleRepository;
     }
 
     @Override
     public Style findStyle(Long styleId) {
-        return datastoreRepository.findOne(styleId, Style.class);
+        return hairstyleRepository.findOne(styleId, Style.class);
     }
 
     @Override
@@ -56,8 +58,8 @@ public class StyleServiceImpl implements StyleService {
         style.setActive(true);
         style.setLocation(merchant.getAddress().getLocation());
 
+        hairstyleRepository.saveOne(style);
         datastoreRepository.saveOne(style);
-//        elasticsearchRepository.saveOne(style);
 
         return style;
     }
@@ -67,6 +69,7 @@ public class StyleServiceImpl implements StyleService {
         Assert.notNull(style, "Style cannot be null");
         Assert.validId(datastoreRepository.peekOne(style.getId(), Style.class));
 
+        hairstyleRepository.saveOne(style);
         datastoreRepository.saveOne(style);
 
     }
@@ -83,6 +86,7 @@ public class StyleServiceImpl implements StyleService {
         images.addAll(styleImages);
 
         style.setStyleImages(images);
+        hairstyleRepository.saveOne(style);
         datastoreRepository.saveOne(style);
 
     }
@@ -106,6 +110,7 @@ public class StyleServiceImpl implements StyleService {
 
         style.setActive(false);
 
+        hairstyleRepository.saveOne(style);
         datastoreRepository.saveOne(style);
     }
 

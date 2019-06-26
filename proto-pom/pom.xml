@@ -25,7 +25,7 @@
         <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
         <paypal.version>LATEST</paypal.version>
         <braintree.version>2.83.1</braintree.version>
-        <elastic.version>7.1.1</elastic.version>
+        <elastic.version>6.5.4</elastic.version>
         <firebase.version>6.8.1</firebase.version>
         <google.auth.client.version>1.30.1</google.auth.client.version>
 
@@ -52,7 +52,6 @@
     </organization>
 
     <dependencies>
-
 
         <dependency>
             <groupId>com.google.inject</groupId>
@@ -343,7 +342,7 @@
             </dependency>
             <dependency>
                 <groupId>org.elasticsearch.client</groupId>
-                <artifactId>elasticsearch-rest-high-level-client</artifactId>
+                <artifactId>elasticsearch-rest-client</artifactId>
                 <version>${elastic.version}</version>
             </dependency>
             <dependency>

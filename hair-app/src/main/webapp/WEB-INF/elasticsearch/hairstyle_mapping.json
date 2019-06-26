@@ -59,15 +59,15 @@
             "countryCode" : {
               "type" : "keyword"
             },
-            "geoPoint" : {
+            "geo_point" : {
               "properties" : {
                 "id" : {
                   "type" : "long"
                 },
-                "latitude" : {
+                "lat" : {
                   "type" : "geo_point"
                 },
-                "longitude" : {
+                "lon" : {
                   "type" : "geo_point"
                 }
               }

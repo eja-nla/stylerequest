@@ -22,10 +22,10 @@
       "city" : "London",
       "state" : "Alabama",
       "countryCode" : "GB",
-      "geoPoint" : {
+      "geo_point" : {
         "id" : -7904877200652725625,
-        "latitude" : 51.503407,
-        "longitude" : -0.127592
+        "lat" : 51.503407,
+        "lon" : -0.127592
       }
     },
     "styleImages" : [ {
@@ -76,10 +76,10 @@
         "city" : "London",
         "state" : "Alabama",
         "countryCode" : "UK",
-        "geoPoint" : {
+        "geo_point" : {
           "id" : 8868894011258282251,
-          "latitude" : 51.503407,
-          "longitude" : -0.127592
+          "lat" : 51.503407,
+          "lon" : -0.127592
         }
       }
     }
@@ -120,10 +120,10 @@
         "city" : "London",
         "state" : "Alabama",
         "countryCode" : "GB",
-        "geoPoint" : {
+        "geo_point" : {
           "id" : 8868894011258282251,
-          "latitude" : 51.503407,
-          "longitude" : -0.127592
+          "lat" : 51.503407,
+          "lon" : -0.127592
         }
       }
     },
@@ -137,10 +137,10 @@
     "city" : "London",
     "state" : "Alabama",
     "countryCode" : "US",
-    "geoPoint" : {
+    "geo_point" : {
       "id" : 704945858973872703,
-      "latitude" : 51.503407,
-      "longitude" : -0.127592
+      "lat" : 51.503407,
+      "lon" : -0.127592
     }
   },
   "state" : "ACCEPTED",
