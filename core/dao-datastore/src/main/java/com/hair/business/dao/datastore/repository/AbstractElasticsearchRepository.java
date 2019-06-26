@@ -87,15 +87,64 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
     }
 
     /**
-     * Distance search
-     * We return the json, no marshalling needed.
+     * Initiates a scroll search
+     * We return the json to upstream, no marshalling needed.
+     *
+     * Remember to close all user search context i.e. DELETE /_search/scroll/_all - from client when they logout
      * */
-    public String distanceSearch(int kilometers, GeoPointExt geoPoint, String scrollId){
-        Request searchRequest = new Request("GET", "/" + getAlias() + "/" + getType() + "/_search?scroll=" + scrollId);
+    public String searchWithScroll(String queryString, String scrollTimeout, int size){
+        Request searchRequest = new Request("POST", "/" + getAlias() + "/_search?scroll=" + scrollTimeout + "&size=" + size);
+        searchRequest.setJsonEntity(queryString);
+
+        try {
+            return objectMapper.writeValueAsString(searchRequest.getEntity().getContent());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Convenience pass through to Elastic
+     * Issues query and returns raw response
+     * */
+    public String searchBlind(String query, String endpoint, String httpMethod){
+        Request searchRequest = new Request(httpMethod, endpoint);
+        searchRequest.setJsonEntity(query);
+        try {
+            return objectMapper.writeValueAsString(searchRequest.getEntity().getContent());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Fetches a scroll's result
+     * We return the json to upstream, no marshalling needed.
+     * */
+    public String fetchScroll(String newScrollTimeout, String scrollId){
+        Request searchRequest = new Request("POST", "/_search/scroll");
+        searchRequest.setJsonEntity("{\n" +
+                "    \"scroll\" : \"" + newScrollTimeout + "\", \n" +
+                "    \"scroll_id\" : \"" + scrollId + "\" \n" +
+                "}"
+        );
+        try {
+            return objectMapper.writeValueAsString(searchRequest.getEntity().getContent());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Distance search
+     * We return the json to upstream, no marshalling needed.
+     * */
+    public String searchRadius(int kilometers, GeoPointExt geoPoint){
+        Request searchRequest = new Request("GET", "/" + getAlias() + "/" + getType());
         searchRequest.setJsonEntity(String.format(DISTANCE_QUERY, kilometers, geoPoint.getLat(), geoPoint.getLon()));
 
         try {
-            return objectMapper.readValue(searchRequest.getEntity().getContent(), String.class);
+            return objectMapper.writeValueAsString(searchRequest.getEntity().getContent());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
