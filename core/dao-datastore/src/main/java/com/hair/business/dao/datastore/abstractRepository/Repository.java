@@ -88,5 +88,4 @@ public interface Repository extends ObjectifyRepository {
 
     Object getFactory();
 
-    <T> List<T> geoQuery(List<String> geocells, Class<T> clazz);
 }

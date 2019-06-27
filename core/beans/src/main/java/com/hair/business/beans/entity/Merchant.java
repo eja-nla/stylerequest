@@ -25,6 +25,8 @@ public class Merchant extends AbstractActorEntity {
 
     private String businessName;
 
+    private String description;
+
     @Stringify(IntegerStringifyer.class) // Map of allowed scores and their weights(i.e. count)
     private Map<Integer, Integer> ratings;
     private double score;
@@ -82,4 +84,11 @@ public class Merchant extends AbstractActorEntity {
         this.businessName = businessName;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

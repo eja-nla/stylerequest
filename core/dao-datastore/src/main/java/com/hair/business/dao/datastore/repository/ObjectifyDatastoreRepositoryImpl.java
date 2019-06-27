@@ -122,14 +122,6 @@ public class ObjectifyDatastoreRepositoryImpl implements Repository {
         return ofy().factory();
     }
 
-    @Override
-    public <T> List<T> geoQuery(List<String> geocells, Class<T> clazz) {
-//        System.out.println("Going to DB with cells " + geocells);
-        List<T> result = ofy().load().type(clazz).filter("geocells in ", geocells).list();
-//        System.out.println("Got " + result.size() + " this time");
-        return result;
-    }
-
     /**
      * CAVEAT: IN and/or NOT EQUAL queries with cursors are unsupported. See
      * https://cloud.google.com/appengine/docs/standard/java/datastore/query-cursors
