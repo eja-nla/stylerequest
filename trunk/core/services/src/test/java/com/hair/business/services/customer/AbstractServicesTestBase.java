@@ -13,8 +13,6 @@ import com.hair.business.dao.datastore.ofy.OfyService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import geocell.model.GeoLocation;
-
 /**
  * Abstract services test base
  *
@@ -25,7 +23,7 @@ public abstract class AbstractServicesTestBase {
     private static final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
     private static Closeable session;
-    public static Injector injector;
+    protected static Injector injector;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -36,8 +34,6 @@ public abstract class AbstractServicesTestBase {
         System.setProperty("elastic.port", "123");
 
         injector = Guice.createInjector(new DaoDatastoreModule());
-
-        OfyService.register(GeoLocation.class);
 
         session = OfyService.begin();
         helper.setUp();

@@ -80,12 +80,8 @@ public class StyleServiceImpl implements StyleService {
 
         Assert.notNull(style, format("Could not find Style with id '%s'", styleId));
 
-        List<Image> images = new ArrayList<>();
+        style.getStyleImages().addAll(styleImages);
 
-        images.addAll(style.getStyleImages());
-        images.addAll(styleImages);
-
-        style.setStyleImages(images);
         hairstyleRepository.saveOne(style);
         datastoreRepository.saveOne(style);
 

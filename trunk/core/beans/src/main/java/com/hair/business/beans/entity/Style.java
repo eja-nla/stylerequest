@@ -24,6 +24,8 @@ public class Style extends AbstractActorEnablerEntity {
 
     private String name;
 
+    private String description;
+
     private long requestCount;
 
     private boolean trending; // separate batch job will run queries and set this field based on a defined criteria
@@ -146,5 +148,13 @@ public class Style extends AbstractActorEnablerEntity {
 
     public void setZipcode(Integer zipcode) {
         this.zipcode = zipcode;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
