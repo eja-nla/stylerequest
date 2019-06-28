@@ -92,7 +92,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
 
         // TODO : further validations
         // is the merchant free at this time? - on rethink We really do not want to do this here. We should move to the client
-        // is the customer and merchant's country and city the same?
+        // is the customer and merchant's country and city the same? Na, we should warn client if > 5 miles.
         // do we have this customer's sufficient payment info to make an authorization?
 
         style.setRequestCount(style.getRequestCount() + 1);
@@ -102,12 +102,12 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         styleRequest.setId(id);
         styleRequest.setPermanentId(id);
 
-        repository.saveFew(styleRequest, style);
-
-        paymentService.authorize(authorizationToken, styleRequest.getId(), customer.getId());
+        paymentService.authorize(authorizationToken, styleRequest);
 
         emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
         pushNotificationService.scheduleSend(customer.getDevice().getDeviceId(), NEW_STYLE_REQUEST);
+
+        repository.saveFew(styleRequest, style);
 
         logger.info(PLACED_STYLE_REQUEST, styleRequest.getId(), customer.getEmail(), merchant.getEmail());
 
@@ -138,7 +138,9 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     @Override
     public void completeStyleRequest(Long styleRequestId, Preferences preferences) {
         Assert.validId(styleRequestId);
-        StyleRequest styleRequest = stateMgr.transition(styleRequestId, COMPLETED);
+        final StyleRequest styleRequest = stateMgr.transition(styleRequestId, COMPLETED);
+
+        paymentService.settlePreAuthPayment(styleRequest);
         styleRequest.setCompletedTime(DateTime.now());
         updateStyleRequest(styleRequest);
 

@@ -13,6 +13,7 @@ import com.x.business.utilities.Assert;
 
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -82,11 +83,12 @@ public class StyleServiceImpl implements StyleService {
 
         hairstyleRepository.saveOne(style);
         datastoreRepository.saveOne(style);
+
     }
 
     @Override
     public List<Style> findStyles(List<Long> ids) {
-        return (List<Style>) datastoreRepository.findMany(ids, Style.class).values();
+        return new ArrayList<>(datastoreRepository.findMany(ids, Style.class).values());
     }
 
     @Override

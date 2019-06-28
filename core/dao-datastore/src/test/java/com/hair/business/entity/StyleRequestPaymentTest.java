@@ -62,11 +62,8 @@ public class StyleRequestPaymentTest extends AbstractDatastoreTestBase {
         StyleRequestPayment p = new StyleRequestPayment(2432.545D, 435432L, 3254234L, true, PaymentType.PAYPAL);
         p.setId(new Random().nextLong());
         p.setPermanentId(new Random().nextLong());
-        //Payment payment = createPayment("src/test/resources/paypalTestResources/payment.json", Payment.class);
 
         Transaction t = new Transaction(SimpleNodeWrapper.parse(transactionXml()));
-        p.setPayment(t);
-        p.setAuthorization(t);
         return p;
     }
 
