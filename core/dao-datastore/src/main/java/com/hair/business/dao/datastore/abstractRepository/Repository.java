@@ -71,12 +71,6 @@ public interface Repository extends ObjectifyRepository {
     <E> Result<Map<Key<E>, E>> saveFew(E... entities);
 
     /**
-     * Queries, returning result and cursor pointing to the next batch of results
-     *
-     * */
-    <T> Map<String, List<T>> searchWithCursor(String condition, Object value, Class<T> clazz, int limit, String cursorStr);
-
-    /**
      * updates an entity, updating entity's lastUpdateTime
      * */
     <T> void update(T entity);

@@ -7,6 +7,8 @@ import static com.hair.business.rest.MvcConstants.UPDATE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import com.hair.business.beans.entity.Style;
+import com.hair.business.dao.datastore.impl.HairstyleElasticsearchRepositoryImpl;
+import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.StyleService;
 import com.x.business.utilities.Assert;
 
@@ -28,15 +30,16 @@ import javax.ws.rs.core.Response;
  * Created by Olukorede Aguda on 30/04/2016.
  */
 @Path(STYLE_URI)
-public class StyleServlet {
+public class StyleServlet extends AbstractRequestServlet {
 
     private final StyleService styleService;
+    private final HairstyleElasticsearchRepositoryImpl hairstyleElasticsearchRepository;
     private final String NULL_MESSAGE = "Incoming object cannot be null";
-    private final String NOT_FOUND_MESSAGE = "Style with ID %s not found";
 
     @Inject
-    public StyleServlet(StyleService styleService) {
+    public StyleServlet(StyleService styleService, HairstyleElasticsearchRepositoryImpl hairstyleElasticsearchRepository) {
         this.styleService = styleService;
+        this.hairstyleElasticsearchRepository = hairstyleElasticsearchRepository;
     }
 
     @GET
@@ -62,18 +65,27 @@ public class StyleServlet {
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     public Response updateStyle(Style style) {
-
         try {
             Assert.notNull(style, "Style cannot be null.");
             Assert.validId(style.getId());
             styleService.updateStyle(style);
-
         } catch (IllegalArgumentException e){
-
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
-
         return Response.ok(style, MediaType.APPLICATION_JSON).build();
+    }
+
+    @POST
+    @Path("/blindquery")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    public Response blindRequest(String requestQuery, @QueryParam("endpoint") String endpoint, @QueryParam("httpmethod") String httpMethod) {
+
+        if (httpMethod.equals("GET") || httpMethod.equals("POST") || httpMethod.equals("PUT")){
+            return Response.ok(hairstyleElasticsearchRepository.blindQuery(requestQuery, endpoint, httpMethod), MediaType.APPLICATION_JSON).build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity(wrapString("Requested Blind query not allowed.")).build();
+        }
     }
 
 }

@@ -3,8 +3,6 @@ package com.hair.business.dao.datastore.repository;
 
 import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
 
-import com.google.appengine.api.datastore.Cursor;
-import com.google.appengine.api.datastore.QueryResultIterator;
 import com.google.appengine.repackaged.com.google.common.base.Defaults;
 
 import com.googlecode.objectify.Key;
@@ -21,7 +19,6 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -130,35 +127,6 @@ public class ObjectifyDatastoreRepositoryImpl implements Repository {
      *      constructed with the CompositeFilterOperator.or method.
      *
      * */
-
-    @Override
-    public <T> Map<String, List<T>> searchWithCursor(String condition, Object value, Class<T> clazz, int limit, String cursorStr){
-        Query<T> query = ofy().load().type(clazz).filter(condition, value).limit(limit);
-        if (cursorStr != null ) {
-            query = query.startAt(Cursor.fromWebSafeString(cursorStr));
-        }
-
-        boolean toContinue = false;
-
-        List<T> result = new ArrayList<>();
-        QueryResultIterator<T> iterator = query.iterator();
-        while (iterator.hasNext()) {
-            T item = iterator.next();
-            result.add(item);
-            toContinue = true;
-        }
-
-        Map<String, List<T>> resultWithNextcursor = new HashMap<>();
-
-        if (toContinue) {
-            Cursor cursor = iterator.getCursor();
-            if (cursor != null) {
-                resultWithNextcursor.put(cursor.toWebSafeString(), result);
-            }
-        }
-
-        return resultWithNextcursor;
-    }
 
 
     private static <T> Query<T> buildQuery(Class<T> clazz, List<String> conditions, List<Object> conditionsValues) {

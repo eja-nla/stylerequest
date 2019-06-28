@@ -13,9 +13,7 @@ import com.x.business.utilities.Assert;
 
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -84,12 +82,11 @@ public class StyleServiceImpl implements StyleService {
 
         hairstyleRepository.saveOne(style);
         datastoreRepository.saveOne(style);
-
     }
 
     @Override
     public List<Style> findStyles(List<Long> ids) {
-        return new ArrayList<>(datastoreRepository.findMany(ids, Style.class).values());
+        return (List<Style>) datastoreRepository.findMany(ids, Style.class).values();
     }
 
     @Override
@@ -110,14 +107,4 @@ public class StyleServiceImpl implements StyleService {
         datastoreRepository.saveOne(style);
     }
 
-    @Override
-    public Map<String, List<Style>> proximitySearchByZipcode(List<Integer> zipcodes, int limit, String cursorStr) {
-
-        return datastoreRepository.searchWithCursor("zipcode in", zipcodes, Style.class, limit, cursorStr);
-    }
-
-    @Override
-    public List<Style> proximitySearchByGeo() {
-        return null;
-    }
 }

@@ -18,17 +18,13 @@ import com.x.y.EntityTestConstants;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -86,20 +82,6 @@ public class StyleServiceTest extends AbstractServicesTestBase {
         repository.delete(styles.toArray());
 
     }
-
-    @Test @Ignore
-    public void testSearchByZipCode(){
-        Style style1 = createStyle();
-        Style style2 = createStyle();
-        style1.setZipcode(11201);
-        style2.setZipcode(10028);
-        repository.saveFew(style1, style2);
-
-        Map<String, List<Style>> result = styleService.proximitySearchByZipcode(Arrays.asList(11201, 10028),1, null);
-
-        Assert.assertFalse(result.isEmpty());
-    }
-
 
     private List<Style> createStyles() throws Exception {
         List<Style> styles = new ArrayList<>();

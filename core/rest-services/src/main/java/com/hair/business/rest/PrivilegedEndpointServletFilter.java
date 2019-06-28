@@ -1,9 +1,12 @@
 package com.hair.business.rest;
 
 import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import com.google.firebase.auth.FirebaseToken;
 import com.google.inject.servlet.GuiceFilter;
+
+import org.slf4j.Logger;
 
 import java.io.IOException;
 
@@ -22,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 public final class PrivilegedEndpointServletFilter extends GuiceFilter {
 
     private static final String[] whitelistedUsers = System.getProperty("app.whitelisted.users").split(",");
+    private static final Logger logger = getLogger(PrivilegedEndpointServletFilter.class);
+
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -33,6 +38,7 @@ public final class PrivilegedEndpointServletFilter extends GuiceFilter {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write("Access denied. Please login.");
+            logger.warn(String.format("Admin access denied for user %s", user.getEmail()));
             return;
         }
 
@@ -47,7 +53,8 @@ public final class PrivilegedEndpointServletFilter extends GuiceFilter {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write("Access denied, contact admin. \n" + user);
+            response.getWriter().write("Access denied, contact admin.");
+            logger.warn(String.format("Admin access denied for user %s", user.getEmail()));
             return;
         }
 
