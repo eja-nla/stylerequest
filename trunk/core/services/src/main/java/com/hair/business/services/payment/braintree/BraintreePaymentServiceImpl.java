@@ -49,62 +49,60 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public StyleRequest authorize(String nonce, final Long styleRequestId, final Long customerId) {
+    public StyleRequest authorize(String nonce, final Long styleRequestId) {
         StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
-        Customer customer = repository.findOne(customerId, Customer.class);
-        Assert.notNull(styleRequest, styleRequest.getStyle(), customer.getId(), customer.getPayment());
-        final double price = styleRequest.getStyle().getPrice();
-        final Transaction result = createTransaction(nonce, customer.getPaymentId(), price, false);
+        return authorize(nonce, styleRequest);
+    }
 
-        final StyleRequestPayment authorizedPayment = new StyleRequestPayment(price, customer.getId(), styleRequest.getMerchant().getId(), false, result);
+    @Override
+    public StyleRequest authorize(String nonce, final StyleRequest styleRequest) {
+        Assert.notNull(styleRequest, styleRequest.getStyle());
+
+        Customer customer = styleRequest.getCustomer();
+        Assert.notNull(customer.getId(), customer.getPayment());
+
+        final double price = styleRequest.getStyle().getPrice();
+        final double tax = computeTax("USA", price);
+
+        final Transaction result = createTransaction(nonce, Long.toString(styleRequest.getId()), customer.getPaymentId(), price, tax,false);
+
+        final StyleRequestPayment authorizedPayment = createPayment(result, styleRequest.getMerchant().getId(), PaymentStatus.AUTHORIZED);
         styleRequest.setAuthorizedPayment(authorizedPayment);
-        logger.debug("Successfully authorized payment amount {} for style request {}", authorizedPayment.getAmount(), styleRequest.getId());
+        logger.debug("Successfully authorized payment amount {} for style request {}", authorizedPayment.getTotalAmount(), styleRequest.getId());
 
         return styleRequest;
     }
 
     @Override
-    public StyleRequest deductPreAuthPayment(String nonce, Long styleRequestId, double totalAmount) {
-        Assert.validId(styleRequestId);
-        StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
-        Assert.notNull(styleRequest);
-        Assert.notNull(styleRequest.getSettledPayment());
-        String authorizedId = styleRequest.getSettledPayment().getAuthorization().getAuthorizedTransactionId();
+    public StyleRequest settlePreAuthPayment(StyleRequest styleRequest) {
+        Assert.notNull(styleRequest, "Stylerequest cannot be null");
 
-        Transaction transaction = settleTransaction(nonce, authorizedId, styleRequest.getAddOns());
+        StyleRequestPayment srPayment = styleRequest.getAuthorizedPayment();
+        Assert.notNull(srPayment, "Stylerequest authorized payment cannot be null");
+        Assert.isTrue(srPayment.getPaymentStatus() == PaymentStatus.AUTHORIZED, "Settling an unauthorized transaction is forbidden");
 
-        StyleRequestPayment settledPayment = new StyleRequestPayment();
-        settledPayment.setSettled(true);
-        settledPayment.setPaymentStatus(PaymentStatus.SETTLED);
-        settledPayment.setPayment(transaction);
+        String authorizedId = srPayment.getTransactionId();
+        Assert.notNull(authorizedId, "Pre-Authorized Transaction must have an ID");
 
+        Transaction transaction = settleTransaction(authorizedId, styleRequest.getStyle().getPrice(), styleRequest.getAddOns());
+
+        final StyleRequestPayment settledPayment = createPayment(transaction, styleRequest.getMerchant().getId(), PaymentStatus.SETTLED);
         styleRequest.setSettledPayment(settledPayment);
 
-        repository.saveOne(styleRequest);
-
         return styleRequest;
     }
 
     @Override
-    public void deductNonPreAuthPayment(String nonce, String paymentToken, List<AddOn> items) {
+    public void deductNonPreAuthPayment(String nonce, List<AddOn> items) {
 
-        Transaction transaction = settleTransaction(nonce, paymentToken, items);
-
-        StyleRequestPayment settledPayment = new StyleRequestPayment();
-        settledPayment.setSettled(true);
-        settledPayment.setPaymentStatus(PaymentStatus.SETTLED);
-        settledPayment.setPayment(transaction);
-        //fixme store this somehow?
-//        styleRequest.setSettledPayment(settledPayment);
-//
+//        Transaction transaction = settleTransaction(nonce, items);
+//        final StyleRequestPayment settledPayment = createPayment(transaction, styleRequest);
 //        repository.saveOne(styleRequest);
-//
-//        return styleRequest;
     }
 
     @Override
     public double computeTax(String countryCode, double itemPrice) {
-        return 0;
+        return itemPrice / 10;
     }
 
     @Override
@@ -122,28 +120,15 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public StyleRequest deductPreAuthPayment(Long styleRequestId, double totalAmount) {
-        return null;
-    }
-
-    @Override
-    public void deductNonPreAuthPayment(String paymentToken, List<AddOn> addOns) {
-
-    }
-
-    @Override
     public void refund(Long styleRequestId, double amount) {
 
         Assert.notNull(styleRequestId);
 
         StyleRequest request = repository.findOne(styleRequestId, StyleRequest.class);
         Assert.notNull(request, "Stylerequest with ID " + styleRequestId + "cannot be found");
-        Transaction settledTransaction = request.getAuthorizedPayment().getPayment();
-        Assert.notNull(settledTransaction);
+        Assert.notNull(request.getSettledPayment());
 
-        String transactionId = settledTransaction.getId();
-
-        refund(transactionId, new BigDecimal(amount));
+        refund(Long.toString(request.getSettledPayment().getId()), new BigDecimal(amount));
     }
 
     @Override
@@ -163,25 +148,21 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
 
     @Override
-    public Transaction settleTransaction(String nonce, String paymentMethodToken, List<AddOn> addOnItems) {
-        double total = 0.0;
+    public Transaction settleTransaction(String preAuthorisedTransactionID, double price, List<AddOn> addOnItems) {
         for (AddOn addOn: addOnItems) {
-            total += addOn.getAmount();
+            price += addOn.getAmount();
         }
 
-        TransactionRequest request = new TransactionRequest()
-                .amount(BigDecimal.valueOf(total))
-                .paymentMethodNonce(nonce)
-                .options()
-                    .submitForSettlement(true)
-                .done();
+        return settleTransaction(preAuthorisedTransactionID, price);
+    }
 
-        Result<Transaction> result = gateway.transaction().sale(request);
+    @Override
+    public Transaction settleTransaction(String transactionId, double amount) {
+        Result<Transaction> result = gateway.transaction().submitForSettlement(transactionId, BigDecimal.valueOf(amount));
 
         if (!result.isSuccess()) {
-            logger.error("Braintree settle non-preauthorized transaction request failed {}", result.getMessage());
+            throw new PaymentException("Braintree settle transaction request failed: " + result.getMessage());
         }
-
         return result.getTarget();
     }
 
@@ -203,9 +184,9 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public String createProfile(String email, String nonce) {
+    public String createProfile(String userId, String nonce) {
         CustomerRequest request = new CustomerRequest()
-                .email(email)
+                .customerId(userId)
                 .paymentMethodNonce(nonce);
 
         Result<com.braintreegateway.Customer> result = gateway.customer().create(request);
@@ -219,12 +200,14 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
 
     @Override
-    public Transaction createTransaction(String nonce, String paymentId, double amount, boolean isSettled) {
+    public Transaction createTransaction(String nonce, String orderId, String paymentId, double totalAmount, double taxAmount, boolean isSettled) {
         Assert.notNull(paymentId,"Payment ID cannot be null");
         Assert.notNull(nonce, "Nonce cannot be null");
         final TransactionRequest request = new TransactionRequest()
                 .customerId(paymentId)
-                .amount(BigDecimal.valueOf(amount))
+                .amount(BigDecimal.valueOf(totalAmount))
+                .taxAmount(BigDecimal.valueOf(taxAmount)) //important!! otherwise the interchange reduction won't apply
+                .orderId(orderId)
                 .paymentMethodNonce(nonce)
                 .options()
                     .submitForSettlement(isSettled)
@@ -238,15 +221,6 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         return (Transaction) result.getTarget();
     }
 
-    @Override
-    public Transaction settleTransaction(String transactionId, double amount) {
-        Result<Transaction> result = gateway.transaction().submitForSettlement(transactionId, BigDecimal.valueOf(amount));
-
-        if (!result.isSuccess()) {
-            throw new PaymentException("Braintree settle transaction request failed: " + result.getMessage());
-        }
-        return result.getTarget();
-    }
 
     @Override
     public boolean addPaymentMethod(String nonce, PaymentMethod paymentMethod) {
@@ -260,6 +234,21 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         }
 
         return result.isSuccess();
+    }
+
+    private StyleRequestPayment createPayment(Transaction transaction, Long merchantId, PaymentStatus paymentStatus){
+        final StyleRequestPayment settledPayment = new StyleRequestPayment(
+                transaction.getAmount().doubleValue(),
+                Long.valueOf(transaction.getCustomer().getId()),
+                merchantId,
+                PaymentStatus.SETTLED == paymentStatus
+        );
+        settledPayment.setPaymentStatus(paymentStatus);
+        settledPayment.setTransactionId(transaction.getId());
+        settledPayment.setTax(transaction.getTaxAmount().doubleValue());
+
+        return settledPayment;
+
     }
 
 }

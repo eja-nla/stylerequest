@@ -1,11 +1,9 @@
 package com.hair.business.beans.entity;
 
 
-import com.braintreegateway.Transaction;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
-import com.googlecode.objectify.annotation.Serialize;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.helper.PaymentStatus;
@@ -22,34 +20,35 @@ public class StyleRequestPayment extends AbstractActorEnablerEntity {
     @Id
     private Long id;
 
-    private Double amount;
+    private Double totalAmount;
+    private Double price;
+    private Double tax;
     private Long customerId;
     private Long merchantId;
+    private String transactionId;
+
     private boolean settled;
     private PaymentType type;
     private @Index PaymentStatus paymentStatus;
-    private @Serialize Transaction payment;
-    private @Serialize Transaction authorization;
 
     public StyleRequestPayment(){}
 
-    public StyleRequestPayment(Double amount, Long customerId, Long merchantId, boolean settled, PaymentType type) {
+    public StyleRequestPayment(Double totalAmount, Long customerId, Long merchantId, boolean settled, PaymentType type) {
         this();
-        this.amount = amount;
+        this.totalAmount = totalAmount;
         this.customerId = customerId;
         this.merchantId = merchantId;
         this.settled = settled;
         this.type = type;
     }
 
-    public StyleRequestPayment(double amount, Long customerId, Long merchantId, boolean isSettled, Transaction transaction) {
+    public StyleRequestPayment(double totalAmount, Long customerId, Long merchantId, boolean isSettled) {
         super();
 
-        this.amount = amount;
+        this.totalAmount = totalAmount;
         this.customerId = customerId;
         this.merchantId = merchantId;
         this.settled = isSettled;
-        this.payment = transaction;
     }
 
     public Long getId() {
@@ -60,12 +59,28 @@ public class StyleRequestPayment extends AbstractActorEnablerEntity {
         this.id = id;
     }
 
-    public Double getAmount() {
-        return amount;
+    public Double getTotalAmount() {
+        return totalAmount;
     }
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
+    public void setTotalAmount(Double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Double getTax() {
+        return tax;
+    }
+
+    public void setTax(Double tax) {
+        this.tax = tax;
     }
 
     public Long getCustomerId() {
@@ -108,19 +123,11 @@ public class StyleRequestPayment extends AbstractActorEnablerEntity {
         this.paymentStatus = paymentStatus;
     }
 
-    public Transaction getPayment() {
-        return payment;
+    public String getTransactionId() {
+        return transactionId;
     }
 
-    public void setPayment(Transaction payment) {
-        this.payment = payment;
-    }
-
-    public Transaction getAuthorization() {
-        return authorization;
-    }
-
-    public void setAuthorization(Transaction authorization) {
-        this.authorization = authorization;
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 }

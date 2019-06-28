@@ -13,7 +13,7 @@
     </parent>
 
     <artifactId>hair-test</artifactId>
-    <version>${hair.app.version}</version>
+    <version>1.0-SNAPSHOT</version>
 
     <name>Hair Test</name>
 

@@ -46,7 +46,7 @@ public class PaymentServlet extends AbstractRequestServlet {
     public Response authorizePayment(@QueryParam("tk") String nonce, @QueryParam("srId") Long styleRequestId, @QueryParam("cId") Long customerId) {
 
         try {
-            StyleRequest payment = paymentService.authorize(nonce, styleRequestId, customerId);
+            StyleRequest payment = paymentService.authorize(nonce, styleRequestId);
             return Response.ok(payment).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();

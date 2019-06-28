@@ -25,6 +25,7 @@ import com.hair.business.beans.entity.PaymentMethod;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.beans.entity.StyleRequestPayment;
+import com.hair.business.beans.helper.PaymentStatus;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.customer.AbstractServicesTestBase;
 
@@ -51,7 +52,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
     private Merchant merchant = createMerchant();
 
     private StyleRequest result = mock(StyleRequest.class);
-    private StyleRequestPayment srp = new StyleRequestPayment();
+    private StyleRequestPayment srp;
     private Transaction t = mock(Transaction.class);
     private BraintreeGateway braintreeGateway = mock(BraintreeGateway.class);
     private Result braintreeResult = mock(Result.class);
@@ -77,7 +78,12 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
         repository = injector.getInstance(Repository.class);
 
         when(t.getStatus()).thenReturn(Transaction.Status.AUTHORIZED);
-        srp.setPayment(t);
+        when(t.getAmount()).thenReturn(new BigDecimal(55.0));
+        com.braintreegateway.Customer bc = mock(com.braintreegateway.Customer.class);
+        when(bc.getId()).thenReturn(Long.toString(customer.getId()));
+        when(t.getCustomer()).thenReturn(bc);
+        when(t.getTaxAmount()).thenReturn(new BigDecimal(.5));
+        srp = createPayment(t, 1L, PaymentStatus.AUTHORIZED);
         when(result.getAuthorizedPayment()).thenReturn(srp);
 
         braintreePaymentService = new BraintreePaymentServiceImpl(p, repository);
@@ -88,7 +94,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
         double amount = 9.3;
         when(t.getAmount()).thenReturn(new BigDecimal(amount));
 
-        Transaction transaction = braintreePaymentService.createTransaction(Nonce.Transactable, "CUSTOMER ID",amount, false);
+        Transaction transaction = braintreePaymentService.createTransaction(Nonce.Transactable,  "2","CUSTOMER ID",amount, .9, false);
         assertThat(transaction, notNullValue());
         assertThat(transaction.getAmount().doubleValue(), is(amount));
     }
@@ -102,12 +108,13 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
         customer.setPaymentId("testID");
         styleRequest.setStyle(style);
         styleRequest.setMerchant(merchant);
+        styleRequest.setCustomer(customer);
 
         repository.saveFew(style, styleRequest, customer, merchant);
 
-        styleRequest = braintreePaymentService.authorize(Nonce.Transactable, styleRequest.getId(), customer.getId());
+        styleRequest = braintreePaymentService.authorize(Nonce.Transactable, styleRequest);
 
-        assertThat(styleRequest.getAuthorizedPayment().getPayment().getStatus(), is(Transaction.Status.AUTHORIZED));
+        assertThat(styleRequest.getAuthorizedPayment().getPaymentStatus(), is(PaymentStatus.AUTHORIZED));
     }
 
     @Test
@@ -117,7 +124,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
     public void testSettleTransaction() {
         double original = 9.00;
         double revised = original - 1.00;
-        Transaction transaction = braintreePaymentService.createTransaction(Nonce.Transactable, "CUST ID",original, false);
+        Transaction transaction = braintreePaymentService.createTransaction(Nonce.Transactable, "2","CUST ID",original, .9, false);
         assertThat(transaction.getStatus(), is(Transaction.Status.AUTHORIZED));
 
         when(t.getStatus()).thenReturn(Transaction.Status.SUBMITTED_FOR_SETTLEMENT);
@@ -161,7 +168,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
 
         when(result.getTarget()).thenReturn(btc);
 
-        String id = braintreePaymentService.createProfile(customer.getEmail(), Nonce.Transactable);
+        String id = braintreePaymentService.createProfile(Long.toString(customer.getId()), Nonce.Transactable);
         // see https://developers.braintreepayments.com/reference/general/testing/java for test nonces
 
         assertThat(id, notNullValue());
@@ -182,6 +189,23 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
         when(txg.refund(id)).thenReturn(braintreeResult);
         assertThat(braintreePaymentService.refund(id, BigDecimal.ZERO).isSuccess(), is(true));
     }
+
+    private StyleRequestPayment createPayment(Transaction transaction, Long merchantId, PaymentStatus paymentStatus){
+        final StyleRequestPayment settledPayment = new StyleRequestPayment(
+                transaction.getAmount().doubleValue(),
+                Long.valueOf(transaction.getCustomer().getId()),
+                merchantId,
+                paymentStatus == PaymentStatus.SETTLED
+        );
+        settledPayment.setSettled(true);
+        settledPayment.setPaymentStatus(paymentStatus);
+        settledPayment.setTransactionId(transaction.getId());
+        settledPayment.setTax(transaction.getTaxAmount().doubleValue());
+
+        return settledPayment;
+
+    }
+
 
 
 }

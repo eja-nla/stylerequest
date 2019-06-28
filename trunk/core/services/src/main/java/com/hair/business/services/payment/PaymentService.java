@@ -3,7 +3,6 @@ package com.hair.business.services.payment;
 import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.PaymentMethod;
-import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.services.payment.braintree.BraintreePaymentService;
 
 import java.util.List;
@@ -14,11 +13,6 @@ import java.util.List;
  * StyleRequest Payment processor
  */
 public interface PaymentService extends BraintreePaymentService {
-
-    /**
-     * Actually take the pre-authorized payment
-     * */
-    StyleRequest deductPreAuthPayment(Long styleRequestId, double totalAmount);
 
     /**
      * Deduct one time payment with AddOns
