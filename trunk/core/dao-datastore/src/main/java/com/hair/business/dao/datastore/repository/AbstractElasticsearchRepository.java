@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hair.business.beans.abstracts.AbstractPersistenceEntity;
 import com.hair.business.beans.entity.GeoPointExt;
 
+import org.apache.commons.io.IOUtils;
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.RestClient;
 
@@ -93,11 +94,30 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
      * Remember to close all user search context i.e. DELETE /_search/scroll/_all - from client when they logout
      * */
     public String searchWithScroll(String queryString, String scrollTimeout, int size){
+        // remember to only search style.active = true;
+        //{ "query": { "term": { "active": true } } }
         final Request searchRequest = new Request("POST", "/" + getAlias() + "/_search?scroll=" + scrollTimeout + "&size=" + size);
         searchRequest.setJsonEntity(queryString);
 
         try {
-            return objectMapper.writeValueAsString(searchRequest.getEntity().getContent());
+            return IOUtils.toString(client.performRequest(searchRequest).getEntity().getContent());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Initiates a search
+     * We return the json to upstream, no marshalling needed.
+     *
+     * */
+    public String search(String queryString, int size){
+        // remember to only search style.active = true; GET /active_hairstyles/_search?q=active:true&size=2
+        final Request searchRequest = new Request("POST", "/" + getAlias() + "/_search?&size=" + size);
+        searchRequest.setJsonEntity(queryString);
+
+        try {
+            return IOUtils.toString(client.performRequest(searchRequest).getEntity().getContent());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -112,7 +132,7 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
         searchRequest.setJsonEntity(String.format(DISTANCE_QUERY, kilometers, geoPoint.getLat(), geoPoint.getLon()));
 
         try {
-            return objectMapper.writeValueAsString(searchRequest.getEntity().getContent());
+            return IOUtils.toString(client.performRequest(searchRequest).getEntity().getContent());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -122,11 +142,11 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
      * Convenience pass through to Elastic
      * Issues query and returns raw response
      * */
-    public String searchBlind(String query, String endpoint, String httpMethod){
+    public String blindQuery(String query, String endpoint, String httpMethod){
         final Request searchRequest = new Request(httpMethod, endpoint);
         searchRequest.setJsonEntity(query);
         try {
-            return objectMapper.writeValueAsString(searchRequest.getEntity().getContent());
+            return IOUtils.toString(client.performRequest(searchRequest).getEntity().getContent());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -144,7 +164,7 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
                 "}"
         );
         try {
-            return objectMapper.writeValueAsString(searchRequest.getEntity().getContent());
+            return IOUtils.toString(client.performRequest(searchRequest).getEntity().getContent());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

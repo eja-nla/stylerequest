@@ -6,6 +6,8 @@ import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import com.google.firebase.auth.FirebaseToken;
+
 import com.hair.business.rest.resources.AbstractRequestServlet;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -43,7 +45,7 @@ public class AppInfoServlet extends AbstractRequestServlet {
     @Path(GET_APP_INFO_PATH)
     @Produces(APPLICATION_JSON)
     public Response listEndpoints(@Context HttpServletRequest servletRequest) {
-        logger.info(String.format("dumping endpoints for user %s", servletRequest.getAttribute(REST_USER_ATTRIBUTE)));
+        logger.info(String.format("dumping endpoints for user %s", ((FirebaseToken) servletRequest.getAttribute(REST_USER_ATTRIBUTE)).getEmail()));
         return Response.ok(endpoints, MediaType.APPLICATION_JSON).build();
     }
 

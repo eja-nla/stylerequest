@@ -4,7 +4,6 @@ import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Style;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Style Service
@@ -27,7 +26,4 @@ public interface StyleService {
 
     void removeStyle(Long styleId);
 
-    Map<String, List<Style>> proximitySearchByZipcode(List<Integer> codes, int limit, String cursorStr);
-
-    List<Style> proximitySearchByGeo();
 }
