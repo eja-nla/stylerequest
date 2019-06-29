@@ -102,6 +102,8 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
     @Override
     public double computeTax(String countryCode, double itemPrice) {
+
+        // goo fetch the rate from a provider & store it. If request fails, get from local cache.
         return itemPrice / 10;
     }
 
