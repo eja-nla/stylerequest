@@ -6,6 +6,7 @@ import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.firebase.auth.FirebaseToken;
 
 import com.hair.business.rest.resources.AbstractRequestServlet;
@@ -50,10 +51,17 @@ public class AppInfoServlet extends AbstractRequestServlet {
     }
 
     @GET
-    @Path("/version/info")
+    @Path("/info/version")
     @Produces(APPLICATION_JSON)
     public Response listVersionInfo(@Context HttpServletRequest servletRequest) {
-        return Response.ok("0.0.1-SNAPSHOT", MediaType.APPLICATION_JSON).build();
+        return Response.ok(SystemProperty.version.get(), MediaType.APPLICATION_JSON).build();
+    }
+
+    @GET
+    @Path("/info/details")
+    @Produces(APPLICATION_JSON)
+    public Response listAppDetails(@Context HttpServletRequest servletRequest) {
+        return Response.ok(SystemProperty.applicationId.get() + "\n" + SystemProperty.applicationVersion.get() + "\n" + SystemProperty.environment.get(), MediaType.APPLICATION_JSON).build();
     }
 
 

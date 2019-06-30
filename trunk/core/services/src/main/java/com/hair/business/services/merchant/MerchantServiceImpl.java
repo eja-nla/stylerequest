@@ -111,6 +111,7 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public boolean isBooked(Long merchantId, DateTime startTime, DateTime endTime) {
+        // just lookup Calendars belonging to this merchantId where time overlaps with starttime here
         List<Object> isBookedValue = Arrays.asList(merchantId, StyleRequestState.ACCEPTED, startTime, endTime);
         List<Long> foundRequests = repository.peekByQuery(StyleRequest.class, IS_BOOOKED_FILTER, isBookedValue);
 

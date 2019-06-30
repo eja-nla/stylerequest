@@ -6,6 +6,8 @@ import static com.hair.business.beans.constants.StyleRequestState.PENDING;
 
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.StyleRequest;
+import com.hair.business.beans.entity.StyleRequestPayment;
+import com.hair.business.beans.helper.PaymentStatus;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.x.business.utilities.Assert;
 
@@ -39,6 +41,10 @@ public class StylerequestStateMgrImpl implements StylerequestStateMgr {
         Assert.validId(id);
         StyleRequest styleRequest = repository.findOne(id, StyleRequest.class);
         Assert.notNull(styleRequest, String.format("Transition failure. Style request with ID %s not found", styleRequest));
+
+        StyleRequestPayment authorizedPayment = styleRequest.getAuthorizedPayment();
+        Assert.notNull(authorizedPayment, String.format("Transition failure. Style request {ID=%s} being accepted must have an authorized payment", styleRequest.getId()));
+        Assert.isTrue(authorizedPayment.getPaymentStatus() == PaymentStatus.AUTHORIZED, String.format("Transition failure. Style request {ID=%s} being accepted must have an authorized payment", styleRequest.getId()));
 
         final StyleRequestState currentState = styleRequest.getState();
 

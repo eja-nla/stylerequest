@@ -16,7 +16,7 @@ public abstract class AbstractRequestServlet {
     protected String generateErrorResponse(Exception exception) {
 
 //        if (exception.getClass() == Exception.class) {
-            logger.severe(exception.getMessage());
+            logger.warning(exception.getMessage());
             return String.format("{\"status\" : \"failed\", \"message\" : \"Oops! We didn't quite process your request correctly. " +
                     "It has been logged for review. Apologies for the inconvenience. Actual error message as follows: %s\"}", exception.getMessage());
 //        }

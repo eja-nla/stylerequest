@@ -18,6 +18,8 @@ import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
+import com.hair.business.beans.entity.StyleRequestPayment;
+import com.hair.business.beans.helper.PaymentStatus;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.customer.AbstractServicesTestBase;
 import com.hair.business.services.merchant.MerchantService;
@@ -109,6 +111,9 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     @Test
     public void testAcceptStyleRequest() {
         StyleRequest sr = initStyleRequest(StyleRequestState.PENDING);
+        StyleRequestPayment srp = new StyleRequestPayment();
+        srp.setPaymentStatus(PaymentStatus.AUTHORIZED);
+        sr.setAuthorizedPayment(srp);
         srs.acceptStyleRequest(sr.getId(), new Preferences());
         assertThat(sr.getState(), is(StyleRequestState.ACCEPTED));
     }
@@ -116,6 +121,9 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     @Test
     public void testCancelStyleRequest() {
         StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
+        StyleRequestPayment srp = new StyleRequestPayment();
+        srp.setPaymentStatus(PaymentStatus.AUTHORIZED);
+        sr.setAuthorizedPayment(srp);
         srs.cancelStyleRequest(sr.getId(), new Preferences());
 
         StyleRequest updatedSr = srs.findStyleRequest(sr.getId());
@@ -126,6 +134,9 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     @Test
     public void testCompleteStyleRequest() {
         StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
+        StyleRequestPayment srp = new StyleRequestPayment();
+        srp.setPaymentStatus(PaymentStatus.AUTHORIZED);
+        sr.setAuthorizedPayment(srp);
         srs.completeStyleRequest(sr.getId(), new Preferences());
         StyleRequest updatedSr = srs.findStyleRequest(sr.getId());
         assertThat(updatedSr.getState(), is(StyleRequestState.COMPLETED));

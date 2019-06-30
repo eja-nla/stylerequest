@@ -63,7 +63,7 @@ public final class RestEndpointServletFilter extends GuiceFilter {
         }
 
         if (sessionCookie == null && !servletResponse.isCommitted()){
-            ((HttpServletResponse) servletResponse).sendRedirect(loginUrl); // keep it simple, just let them know they're unauthorized
+            ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
         try {
