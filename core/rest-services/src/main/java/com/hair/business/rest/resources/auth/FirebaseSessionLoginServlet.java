@@ -1,4 +1,4 @@
-package com.hair.business.rest.managed.auth;
+package com.hair.business.rest.resources.auth;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -9,11 +9,11 @@ import com.google.firebase.auth.SessionCookieOptions;
 
 import com.hair.business.beans.entity.nonPersist.LoginRequest;
 import com.hair.business.rest.RestEndpointServletFilter;
+import com.hair.business.rest.resources.AbstractRequestServlet;
 
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.http.HttpServlet;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.POST;
@@ -26,7 +26,7 @@ import javax.ws.rs.core.Response;
  * Created by Olukorede Aguda on 12/06/2019.
  */
 @Path("/auth0")
-public class FirebaseSessionLoginServlet extends HttpServlet {
+public class FirebaseSessionLoginServlet extends AbstractRequestServlet {
 
     // see https://github.com/firebase/firebase-admin-java/blob/master/src/test/java/com/google/firebase/snippets/FirebaseAuthSnippets.java
 

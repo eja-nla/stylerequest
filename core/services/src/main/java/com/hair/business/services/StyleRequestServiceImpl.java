@@ -91,9 +91,10 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         Assert.notNull(merchant, String.format(MERCHANT_NOT_FOUND, merchantId));
 
         // TODO : further validations
-        // is the merchant free at this time? - on rethink We really do not want to do this here. We should move to the client
+        // is the merchant free at this time?
         // is the customer and merchant's country and city the same? Na, we should warn client if > 5 miles.
         // do we have this customer's sufficient payment info to make an authorization?
+        //- on rethink We really do not want to do this here. We should move to the client
 
         style.setRequestCount(style.getRequestCount() + 1);
 
