@@ -6,6 +6,7 @@ import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 import com.hair.business.beans.constants.PaymentType;
+import com.hair.business.beans.entity.tax.ComputeTaxResponse;
 import com.hair.business.beans.helper.PaymentStatus;
 
 /**
@@ -22,13 +23,13 @@ public class StyleRequestPayment extends AbstractActorEnablerEntity {
 
     private Double totalAmount;
     private Double price;
-    private Double tax;
     private Long customerId;
     private Long merchantId;
     private String transactionId;
 
     private boolean settled;
     private PaymentType type;
+    private ComputeTaxResponse taxDetails;
     private @Index PaymentStatus paymentStatus;
 
     public StyleRequestPayment(){}
@@ -73,14 +74,6 @@ public class StyleRequestPayment extends AbstractActorEnablerEntity {
 
     public void setPrice(Double price) {
         this.price = price;
-    }
-
-    public Double getTax() {
-        return tax;
-    }
-
-    public void setTax(Double tax) {
-        this.tax = tax;
     }
 
     public Long getCustomerId() {
@@ -129,5 +122,13 @@ public class StyleRequestPayment extends AbstractActorEnablerEntity {
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public ComputeTaxResponse getTaxDetails() {
+        return taxDetails;
+    }
+
+    public void setTaxDetails(ComputeTaxResponse taxDetails) {
+        this.taxDetails = taxDetails;
     }
 }

@@ -8,7 +8,7 @@ import com.hair.business.beans.abstracts.AbstractActorEntity;
 import java.util.List;
 
 /**
- * Created by ejanla on 6/30/19.
+ * Created by Kore Aguda on 6/30/19.
  */
 @Entity
 @Cache

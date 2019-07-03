@@ -11,21 +11,38 @@ import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
 import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.entity.AddOn;
+import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.PaymentItem;
 import com.hair.business.beans.entity.PaymentMethod;
+import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.beans.entity.StyleRequestPayment;
+import com.hair.business.beans.entity.tax.Buyer;
+import com.hair.business.beans.entity.tax.ComputeTaxRequest;
+import com.hair.business.beans.entity.tax.ComputeTaxResponse;
+import com.hair.business.beans.entity.tax.Currency;
+import com.hair.business.beans.entity.tax.LineItem;
+import com.hair.business.beans.entity.tax.PhysicalOrigin;
+import com.hair.business.beans.entity.tax.Product;
+import com.hair.business.beans.entity.tax.Quantity;
+import com.hair.business.beans.entity.tax.Seller;
+import com.hair.business.beans.entity.tax.TaxRequest;
+import com.hair.business.beans.entity.tax.UnitPrice;
 import com.hair.business.beans.helper.PaymentStatus;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.payment.PaymentService;
+import com.hair.business.services.tax.SalesTaxPalHttpClientImpl;
 import com.x.business.exception.PaymentException;
 import com.x.business.utilities.Assert;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -40,11 +57,13 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
     private static final Logger logger = getLogger(BraintreePaymentServiceImpl.class);
     private final BraintreeGateway gateway;
+    private final SalesTaxPalHttpClientImpl taxClient;
     private final Repository repository;
 
     @Inject
-    public BraintreePaymentServiceImpl(Provider<BraintreeGateway> gatewayProvider, Repository repository) {
+    public BraintreePaymentServiceImpl(Provider<BraintreeGateway> gatewayProvider, SalesTaxPalHttpClientImpl taxClient, Repository repository) {
         this.gateway = gatewayProvider.get();
+        this.taxClient = taxClient;
         this.repository = repository;
     }
 
@@ -56,37 +75,66 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
     @Override
     public StyleRequest authorize(String nonce, final StyleRequest styleRequest) {
-        Assert.notNull(styleRequest, styleRequest.getStyle());
+        Assert.notNull(styleRequest, "You cannot authorize a null style request");
+
+        Style style = styleRequest.getStyle();
+        Assert.notNull(style, "You cannot authorize a style request with a null style");
 
         Customer customer = styleRequest.getCustomer();
         Assert.notNull(customer.getId(), customer.getPayment());
 
-        final double price = styleRequest.getStyle().getPrice();
-        final double tax = computeTax("USA", price);
+        final double price = style.getPrice();
+        String stylrequestID = Long.toString(styleRequest.getId());
 
-        final Transaction result = createTransaction(nonce, Long.toString(styleRequest.getId()), customer.getPaymentId(), price, tax,false);
+        final ComputeTaxResponse tax = computeTax(
+                stylrequestID,
+                style.getName(),
+                price,
+                styleRequest.getMerchant().getAddress(),
+                customer.getAddress(),
+                styleRequest.getAddOns()
+        );
 
-        final StyleRequestPayment authorizedPayment = createPayment(result, styleRequest.getMerchant().getId(), PaymentStatus.AUTHORIZED);
+        final Transaction result = createTransaction(nonce, stylrequestID, customer.getPaymentId(), price, tax.getComputeTaxResponse().getTotalTax(),false);
+
+        final StyleRequestPayment authorizedPayment = createPayment(result, styleRequest.getMerchant().getId(), PaymentStatus.AUTHORIZED, tax);
         styleRequest.setAuthorizedPayment(authorizedPayment);
-        logger.debug("Successfully authorized payment amount {} for style request {}", authorizedPayment.getTotalAmount(), styleRequest.getId());
+
+        logger.info("Successfully authorized payment amount {} for style request {}", authorizedPayment.getTotalAmount(), styleRequest.getId());
 
         return styleRequest;
     }
 
     @Override
-    public StyleRequest settlePreAuthPayment(StyleRequest styleRequest) {
-        Assert.notNull(styleRequest, "Stylerequest cannot be null");
+    public StyleRequest settlePreAuthPayment(final StyleRequest styleRequest) {
+        Assert.notNull(styleRequest, "Style request cannot be null");
 
         StyleRequestPayment srPayment = styleRequest.getAuthorizedPayment();
-        Assert.notNull(srPayment, "Stylerequest authorized payment cannot be null");
+        Assert.notNull(srPayment, "Style request authorized payment cannot be null");
         Assert.isTrue(srPayment.getPaymentStatus() == PaymentStatus.AUTHORIZED, "Settling an unauthorized transaction is forbidden");
 
         String authorizedId = srPayment.getTransactionId();
         Assert.notNull(authorizedId, "Pre-Authorized Transaction must have an ID");
 
-        Transaction transaction = settleTransaction(authorizedId, styleRequest.getStyle().getPrice(), styleRequest.getAddOns());
+        Style style = styleRequest.getStyle();
+        final double price = style.getPrice();
+        String stylrequestID = Long.toString(styleRequest.getId());
 
-        final StyleRequestPayment settledPayment = createPayment(transaction, styleRequest.getMerchant().getId(), PaymentStatus.SETTLED);
+        // the authorized price/tax could have changed, we check again
+        final ComputeTaxResponse tax = computeTax(
+                stylrequestID,
+                style.getName(),
+                price,
+                styleRequest.getMerchant().getAddress(),
+                styleRequest.getCustomer().getAddress(),
+                styleRequest.getAddOns()
+        );
+
+        double totalPrice = price + tax.getComputeTaxResponse().getTotalTax();
+
+        Transaction transaction = settleTransaction(authorizedId, totalPrice);
+
+        final StyleRequestPayment settledPayment = createPayment(transaction, styleRequest.getMerchant().getId(), PaymentStatus.SETTLED, tax);
         styleRequest.setSettledPayment(settledPayment);
 
         return styleRequest;
@@ -94,17 +142,95 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
     @Override
     public void deductNonPreAuthPayment(String nonce, List<AddOn> items) {
-
 //        Transaction transaction = settleTransaction(nonce, items);
 //        final StyleRequestPayment settledPayment = createPayment(transaction, styleRequest);
 //        repository.saveOne(styleRequest);
     }
 
     @Override
-    public double computeTax(String countryCode, double itemPrice) {
+    public ComputeTaxResponse computeTax(String stylerequestID, String styleName, double servicePrice, Address merchantAddress, Address customerAddress, List<AddOn> addOns) {
 
-        // goo fetch the rate from a provider & store it. If request fails, get from local cache.
-        return itemPrice / 10;
+        TaxRequest taxRequest = new TaxRequest(DateTime.now().toString("yyyyMMdd"), "SALE");
+        Currency currency = new Currency();
+        currency.setIsoCurrencyCode("USD");
+        taxRequest.setCurrency(currency);
+
+        Seller seller = new Seller();
+        PhysicalOrigin sellerOrigin = new PhysicalOrigin();
+        sellerOrigin.setCity(merchantAddress.getLocation().getCity());
+        sellerOrigin.setStateOrProvince(merchantAddress.getLocation().getState());
+        sellerOrigin.setDistrictOrCounty(merchantAddress.getDistrict());
+        sellerOrigin.setPostalCode(merchantAddress.getZipCode());
+        sellerOrigin.setCountry(merchantAddress.getLocation().getCountryCode());
+        seller.setPhysicalOrigin(sellerOrigin);
+        taxRequest.setSeller(seller);
+
+        Buyer buyer = new Buyer();
+        PhysicalOrigin buyerOrigin = new PhysicalOrigin();
+        buyerOrigin.setCity(customerAddress.getLocation().getCity());
+        buyerOrigin.setStateOrProvince(customerAddress.getLocation().getState());
+        buyerOrigin.setDistrictOrCounty(customerAddress.getDistrict());
+        buyerOrigin.setPostalCode(customerAddress.getZipCode());
+        buyerOrigin.setCountry(customerAddress.getLocation().getCountryCode());
+        buyer.setDestination(buyerOrigin);
+        taxRequest.setBuyer(buyer);
+
+
+        List<LineItem> items = new ArrayList<>(addOns.size() + 1);
+            LineItem item = new LineItem(); // we create the first lineItem, which is for the style request itself
+            item.setLineItemId(stylerequestID);
+            item.setProductName(styleName);
+            Product product = new Product();
+            product.setClassCode("STP-PCC-00739");
+            product.setValue("Styling Service");
+            item.setProduct(product);
+
+            UnitPrice unitPrice = new UnitPrice();
+            unitPrice.setValue(servicePrice);
+            item.setUnitPrice(unitPrice);
+
+            Quantity quantity = new Quantity();
+            quantity.setUnitOfMeasure("ea");
+            quantity.setValue(1);
+            item.setQuantity(quantity);
+        items.add(item);
+
+        // we add each more lineItems based on purchased adOns
+        for (int i = 1; i <= addOns.size(); i++) { //start from 1 because we use the index as the item ID
+            LineItem addonItem = new LineItem();
+                addonItem.setLineItemId(Integer.toString(i));
+                addonItem.setProductName(addOns.get(i).getItemName());
+                Product addOnProduct = new Product();
+                addOnProduct.setClassCode("STP-PCC-01085");
+                addOnProduct.setValue("Style related Products");
+                addonItem.setProduct(product);
+    
+                UnitPrice addonPrice = new UnitPrice();
+                addonPrice.setValue(addOns.get(i).getAmount());
+                addonItem.setUnitPrice(addonPrice);
+    
+                Quantity addonQtty = new Quantity();
+                addonQtty.setUnitOfMeasure("ea");
+                addonQtty.setValue(addOns.get(i).getQuantity());
+                addonItem.setQuantity(addonQtty);
+            items.add(addonItem);
+        }
+        
+        taxRequest.setLineItems(items);
+        ComputeTaxRequest computeTaxRequest = new ComputeTaxRequest(taxRequest);
+        ComputeTaxResponse computeTaxResponse;
+
+        try {
+            computeTaxResponse = taxClient.doPost(computeTaxRequest, ComputeTaxResponse.class, "tax/compute");
+            if (computeTaxResponse.getComputeTaxResponse() == null){
+                logger.warn("Unable to process tax : StylerequestID={} Request={} Response={}", stylerequestID, computeTaxRequest, computeTaxResponse);
+                throw new RuntimeException("Unable to obtain tax for style request ID " + stylerequestID);
+            }
+        } catch (IOException e) {
+            logger.warn("Unable to process tax : StylerequestID={} Request={} Response={null}", stylerequestID, computeTaxRequest);
+            throw new RuntimeException(e);
+        }
+        return computeTaxResponse;
     }
 
     @Override
@@ -146,16 +272,6 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         }
 
         return result;
-    }
-
-
-    @Override
-    public Transaction settleTransaction(String preAuthorisedTransactionID, double price, List<AddOn> addOnItems) {
-        for (AddOn addOn: addOnItems) {
-            price += addOn.getAmount();
-        }
-
-        return settleTransaction(preAuthorisedTransactionID, price);
     }
 
     @Override
@@ -212,8 +328,8 @@ public class BraintreePaymentServiceImpl implements PaymentService {
                 .orderId(orderId)
                 .paymentMethodNonce(nonce)
                 .options()
-                    .submitForSettlement(isSettled)
-                    .done();
+                .submitForSettlement(isSettled)
+                .done();
 
         final Result result = gateway.transaction().sale(request);
 
@@ -238,18 +354,18 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         return result.isSuccess();
     }
 
-    private StyleRequestPayment createPayment(Transaction transaction, Long merchantId, PaymentStatus paymentStatus){
-        final StyleRequestPayment settledPayment = new StyleRequestPayment(
+    private StyleRequestPayment createPayment(Transaction transaction, Long merchantId, PaymentStatus paymentStatus, ComputeTaxResponse tax){
+        final StyleRequestPayment payment = new StyleRequestPayment(
                 transaction.getAmount().doubleValue(),
                 Long.valueOf(transaction.getCustomer().getId()),
                 merchantId,
                 PaymentStatus.SETTLED == paymentStatus
         );
-        settledPayment.setPaymentStatus(paymentStatus);
-        settledPayment.setTransactionId(transaction.getId());
-        settledPayment.setTax(transaction.getTaxAmount().doubleValue());
+        payment.setPaymentStatus(paymentStatus);
+        payment.setTransactionId(transaction.getId());
+        payment.setTaxDetails(tax);
 
-        return settledPayment;
+        return payment;
 
     }
 

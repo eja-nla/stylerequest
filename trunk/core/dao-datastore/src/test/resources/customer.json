@@ -25,7 +25,8 @@
     "createdDate" : "2017-03-09T00:15:34.343Z",
     "id" : 2733911097595850888,
     "addressLine" : "flat x",
-    "postCode" : "SE5 tgg",
+    "district" : "Brooklyn",
+    "zipCode" : "SE5 tgg",
     "location" : {
       "permanentId" : 818439577603065347,
       "version" : 1,
@@ -33,7 +34,7 @@
       "id" : 818439577603065347,
       "city" : "London",
       "state" : "Alabama",
-      "countryCode" : "GB",
+      "countryCode" : "USA",
       "geo_point" : {
         "id" : -5102298050113191335,
         "lat" : 51.503407,

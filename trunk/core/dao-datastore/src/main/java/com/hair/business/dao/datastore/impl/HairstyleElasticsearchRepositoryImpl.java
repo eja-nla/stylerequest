@@ -12,7 +12,7 @@ import javax.inject.Named;
 import javax.inject.Provider;
 
 /**
- * Created by ejanla on 6/24/19.
+ * Created by Kore Aguda on 6/24/19.
  */
 @Named
 public class HairstyleElasticsearchRepositoryImpl extends AbstractElasticsearchRepository<Style> {

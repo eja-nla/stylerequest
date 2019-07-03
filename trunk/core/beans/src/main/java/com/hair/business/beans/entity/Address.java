@@ -21,16 +21,17 @@ public class Address extends AbstractActorEnablerEntity {
     private Long id;
 
     private String addressLine;
-    private String postCode;
+    private String zipCode;
+    private String district; //e.g. Brooklyn, Santa Clara
     private @Index @Load Location location;
 
     public Address() {
     }
 
-    public Address(String addressLine, String postCode, Location location) {
+    public Address(String addressLine, String zipCode, Location location) {
         this();
         this.addressLine = addressLine;
-        this.postCode = postCode;
+        this.zipCode = zipCode;
         this.location = location;
     }
 
@@ -50,12 +51,12 @@ public class Address extends AbstractActorEnablerEntity {
         this.addressLine = addressLine;
     }
 
-    public String getPostCode() {
-        return postCode;
+    public String getZipCode() {
+        return zipCode;
     }
 
-    public void setPostCode(String postCode) {
-        this.postCode = postCode;
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 
     public Location getLocation() {
@@ -66,5 +67,12 @@ public class Address extends AbstractActorEnablerEntity {
         this.location = location;
     }
 
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
 }
 

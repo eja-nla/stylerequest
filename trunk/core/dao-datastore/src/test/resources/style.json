@@ -17,7 +17,7 @@
     "id" : -5712228046471495956,
     "city" : "London",
     "state" : "Alabama",
-    "countryCode" : "GB",
+    "countryCode" : "USA",
     "geo_point" : {
       "id" : -2914024913972574844,
       "lat" : 51.503407,

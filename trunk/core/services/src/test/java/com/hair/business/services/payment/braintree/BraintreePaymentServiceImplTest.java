@@ -4,10 +4,12 @@ import static com.x.y.EntityTestConstants.createCustomer;
 import static com.x.y.EntityTestConstants.createMerchant;
 import static com.x.y.EntityTestConstants.createStyle;
 import static com.x.y.EntityTestConstants.createStyleRequest;
+import static com.x.y.EntityTestConstants.createTaxInfo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +30,7 @@ import com.hair.business.beans.entity.StyleRequestPayment;
 import com.hair.business.beans.helper.PaymentStatus;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.customer.AbstractServicesTestBase;
+import com.hair.business.services.tax.SalesTaxPalHttpClientImpl;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,6 +38,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 import javax.inject.Provider;
@@ -60,7 +64,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
 
     private BraintreePaymentService braintreePaymentService;
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
 
         when(braintreeResult.isSuccess()).thenReturn(true);
         when(braintreeResult.getTarget()).thenReturn(t);
@@ -83,10 +87,14 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
         when(bc.getId()).thenReturn(Long.toString(customer.getId()));
         when(t.getCustomer()).thenReturn(bc);
         when(t.getTaxAmount()).thenReturn(new BigDecimal(.5));
-        srp = createPayment(t, 1L, PaymentStatus.AUTHORIZED);
+        srp = createPayment(t);
         when(result.getAuthorizedPayment()).thenReturn(srp);
 
-        braintreePaymentService = new BraintreePaymentServiceImpl(p, repository);
+        SalesTaxPalHttpClientImpl salesTaxPalHttpClient = mock(SalesTaxPalHttpClientImpl.class);
+//        when(salesTaxPalHttpClient.getBaseUrl()).thenReturn("http://testbaseurl");
+        when(salesTaxPalHttpClient.doGet(any(), anyString())).thenReturn(createTaxInfo());
+        when(salesTaxPalHttpClient.doPost(any(), any(), anyString())).thenReturn(createTaxInfo());
+        braintreePaymentService = new BraintreePaymentServiceImpl(p, salesTaxPalHttpClient, repository);
     }
 
     @Test
@@ -159,7 +167,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
         CustomerGateway cgw = Mockito.mock(CustomerGateway.class);
         when(braintreeGateway.customer()).thenReturn(cgw);
 
-        Result<com.braintreegateway.Customer> result = mock(Result.class);
+        Result result = mock(Result.class);
         when(result.isSuccess()).thenReturn(true);
         when(cgw.create(any())).thenReturn(result);
 
@@ -190,17 +198,16 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
         assertThat(braintreePaymentService.refund(id, BigDecimal.ZERO).isSuccess(), is(true));
     }
 
-    private StyleRequestPayment createPayment(Transaction transaction, Long merchantId, PaymentStatus paymentStatus){
+    private StyleRequestPayment createPayment(Transaction transaction){
         final StyleRequestPayment settledPayment = new StyleRequestPayment(
                 transaction.getAmount().doubleValue(),
                 Long.valueOf(transaction.getCustomer().getId()),
-                merchantId,
-                paymentStatus == PaymentStatus.SETTLED
+                1L,
+                false
         );
         settledPayment.setSettled(true);
-        settledPayment.setPaymentStatus(paymentStatus);
+        settledPayment.setPaymentStatus(PaymentStatus.AUTHORIZED);
         settledPayment.setTransactionId(transaction.getId());
-        settledPayment.setTax(transaction.getTaxAmount().doubleValue());
 
         return settledPayment;
 

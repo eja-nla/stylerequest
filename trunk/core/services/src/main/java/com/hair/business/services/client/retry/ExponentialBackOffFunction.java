@@ -1,4 +1,4 @@
-package com.hair.business.services.com.hair.business.client.retry;
+package com.hair.business.services.client.retry;
 
 import java.io.IOException;
 

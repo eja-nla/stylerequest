@@ -4,7 +4,7 @@
   "version" : 1,
   "city" : "London",
   "state" : "Alabama",
-  "countryCode" : "GB",
+  "countryCode" : "USA",
   "geo_point" : {
     "lat" : 51.503407,
     "lon" : -0.127592

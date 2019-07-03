@@ -18,6 +18,9 @@ import com.hair.business.beans.entity.Review;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.beans.entity.StyleRequestPayment;
+import com.hair.business.beans.entity.tax.ComputeTaxResponse;
+import com.hair.business.beans.entity.tax.LineItem;
+import com.hair.business.beans.entity.tax.TaxResponse;
 
 import org.joda.time.DateTime;
 
@@ -41,6 +44,8 @@ public class EntityTestConstants {
         address.setId(new Random().nextLong());
         address.setPermanentId(new Random().nextLong());
         address.setLocation(createLocation());
+        address.setZipCode("11210");
+        address.setDistrict("Brooklyn");
         return address;
 
     }
@@ -75,7 +80,7 @@ public class EntityTestConstants {
     public static Location createLocation(){
         GeoPointExt g = new GeoPointExt(51.5034070, -0.1275920);
         g.setId(new Random().nextLong());
-        Location l = new Location("London", "Alabama", "GB", g);
+        Location l = new Location("London", "Alabama", "USA", g);
         l.setId(new Random().nextLong());
         l.setPermanentId(l.getId());
 
@@ -99,6 +104,7 @@ public class EntityTestConstants {
         StyleRequestPayment p = new StyleRequestPayment(3255.43D, 35345432L, 3241342L, true, PaymentType.PAYPAL);
         p.setId(new Random().nextLong());
         p.setPermanentId(p.getId());
+        p.setTaxDetails(createTaxInfo());
         return p;
     }
 
@@ -130,6 +136,17 @@ public class EntityTestConstants {
         s.setPermanentId(new Random().nextLong());
         s.setDurationEstimate(59);
         return s;
+    }
+
+    public static ComputeTaxResponse createTaxInfo(){
+        ComputeTaxResponse tax = new ComputeTaxResponse(new TaxResponse());
+        tax.setHasError(false);
+        tax.getComputeTaxResponse().setSubTotal(15);
+        tax.getComputeTaxResponse().setTotal(25);
+        tax.getComputeTaxResponse().setTotalTax(10);
+        LineItem lineItem = new LineItem();
+        tax.getComputeTaxResponse().setLineItems(Collections.singletonList(lineItem));
+        return tax;
     }
 
     public static PaymentInformation createPaymentInfo(Long custId){

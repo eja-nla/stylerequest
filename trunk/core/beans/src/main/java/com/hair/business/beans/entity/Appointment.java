@@ -6,7 +6,7 @@ import com.hair.business.beans.constants.StyleRequestState;
 import org.joda.time.DateTime;
 
 /**
- * Created by ejanla on 6/30/19.
+ * Created by Kore Aguda on 6/30/19.
  */
 public class Appointment {
 

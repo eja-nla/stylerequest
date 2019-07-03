@@ -33,6 +33,9 @@
         "publisherId" : {
           "type" : "long"
         },
+        "district" : {
+          "type" : "text"
+        },
         "zipcode" : {
           "type" : "keyword"
         },

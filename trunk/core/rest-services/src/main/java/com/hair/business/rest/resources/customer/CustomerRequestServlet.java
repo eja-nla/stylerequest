@@ -112,7 +112,6 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
         } catch (IllegalArgumentException | PaymentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {
-            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }
     }
