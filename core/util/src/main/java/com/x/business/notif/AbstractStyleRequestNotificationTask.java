@@ -5,7 +5,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.taskqueue.DeferredTask;
 
-import com.x.business.notif.mail.handler.EmailHandler;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.tasks.SendgridStyleRequestEmailHandler;
 
@@ -25,7 +24,7 @@ import java.io.IOException;
  */
 public abstract class AbstractStyleRequestNotificationTask extends AbstractEmailNotification {
 
-    private static final EmailHandler emailHandler = new SendgridStyleRequestEmailHandler(new TaskQueue() {
+    private static final SendgridStyleRequestEmailHandler emailHandler = new SendgridStyleRequestEmailHandler(new TaskQueue() {
         @Override
         public void add(DeferredTask payload) {
 

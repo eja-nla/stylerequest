@@ -78,7 +78,7 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
      * Gets from the provided aliases
      * **/
     public T findOne(Long id, Class<T> tClass){
-        final Request getOneRequest = new Request("GET", "/" + getAlias() + "/" + getType() + "/" + id);
+        final Request getOneRequest = new Request("GET", "/" + getIndex() + "/" + getType() + "/" + id);
         try {
             InputStream res = client.performRequest(getOneRequest).getEntity().getContent();
             return objectMapper.treeToValue(objectMapper.readTree(res).get("_source"), tClass);

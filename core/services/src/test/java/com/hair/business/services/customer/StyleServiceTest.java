@@ -74,7 +74,7 @@ public class StyleServiceTest extends AbstractServicesTestBase {
     @Test
     public void testFindStyles() throws Exception {
         Collection<Style> styles = createStyles();
-        repository.saveMany(styles).now();
+        repository.saveMany(styles);
 
         List<Long> x = styles.stream().map(Style::getId).collect(Collectors.toList());
         MatcherAssert.assertThat(styleService.findStyles(x).size(), Is.is(5));

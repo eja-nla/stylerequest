@@ -54,7 +54,6 @@ public class RestServicesModule extends ServletModule {
     @Override
     protected void configureServlets() {
 
-        //super.configureServlets();
         for (Class clazz : rc.getClasses()) {
             this.bind(clazz); // Register jersey resources
             exposeServletEndpoints(clazz);
@@ -62,7 +61,7 @@ public class RestServicesModule extends ServletModule {
 
         serve(API_ENDPOINT).with(GuiceContainer.class);
         filter(API_ENDPOINT).through(ObjectifyFilter.class);
-//
+
         bind(ObjectifyFilter.class).in(Singleton.class);
 
         // Jackson

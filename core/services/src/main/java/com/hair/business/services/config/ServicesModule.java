@@ -23,6 +23,7 @@ import com.hair.business.services.pushNotification.PushNotificationServiceNoopIm
 import com.hair.business.services.state.StylerequestStateMgr;
 import com.hair.business.services.state.StylerequestStateMgrImpl;
 import com.hair.business.services.stereotype.Timed;
+import com.hair.business.services.tax.SalesTaxPalHttpClientImpl;
 
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -53,6 +54,8 @@ public class ServicesModule extends AbstractModule {
         bind(PushNotificationServiceInternal.class).to(PushNotificationServiceNoopImpl.class).in(Singleton.class);
         bind(PaymentService.class).to(BraintreePaymentServiceImpl.class).in(Singleton.class);
 
+        bind(SalesTaxPalHttpClientImpl.class).in(Singleton.class);
+
         bindInterceptor(any(), NotSyntheticMethodMatcher.INSTANCE.and(annotatedWith(Timed.class)), new ExecTimeLoggerInterceptor());
 
         install(this);
@@ -78,6 +81,6 @@ public class ServicesModule extends AbstractModule {
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             e.printStackTrace();
         }
-        return null;
+        return SSLConnectionSocketFactory.getSocketFactory();
     }
 }

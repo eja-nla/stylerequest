@@ -6,7 +6,6 @@ import static com.hair.business.dao.datastore.ofy.OfyService.ofy;
 import com.google.appengine.repackaged.com.google.common.base.Defaults;
 
 import com.googlecode.objectify.Key;
-import com.googlecode.objectify.Result;
 import com.googlecode.objectify.TxnType;
 import com.googlecode.objectify.cmd.Query;
 import com.googlecode.objectify.cmd.QueryKeys;
@@ -90,25 +89,23 @@ public class ObjectifyDatastoreRepositoryImpl implements Repository {
     }
 
     @Override
-    public <E> Result<Map<Key<E>, E>> saveMany(Collection<E> entities) {
+    public <E> void saveMany(Collection<E> entities) {
         entities.forEach(e -> {
             Assert.hasPermanentId(e);
             ((AbstractPersistenceEntity) e).setLastUpdated(DateTime.now());
         });
-        return ofy().save().entities(entities);
+        ofy().save().entities(entities).now();
     }
 
-    @SafeVarargs
     @Override
-    public final <E> Result<Map<Key<E>, E>> saveFew(E... entities) {
+    public final <E> void saveFew(E... entities) {
         for (E entity : entities) {
             Assert.hasPermanentId(entity);
             ((AbstractPersistenceEntity) entity).setLastUpdated(DateTime.now());
         }
-        return ofy().save().entities(entities);
+        ofy().save().entities(entities).now();
     }
 
-    @SafeVarargs
     @Override
     public final <T> void delete(T... entities) {
         ofy().delete().entities(entities);

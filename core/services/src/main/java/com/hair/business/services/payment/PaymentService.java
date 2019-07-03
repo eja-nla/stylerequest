@@ -2,7 +2,9 @@ package com.hair.business.services.payment;
 
 import com.hair.business.beans.constants.PaymentType;
 import com.hair.business.beans.entity.AddOn;
+import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.PaymentMethod;
+import com.hair.business.beans.entity.tax.ComputeTaxResponse;
 import com.hair.business.services.payment.braintree.BraintreePaymentService;
 
 import java.util.List;
@@ -30,7 +32,7 @@ public interface PaymentService extends BraintreePaymentService {
      *
      * Computes how much tax is deductible based on country
      * */
-    double computeTax(String countryCode, double itemPrice);
+    ComputeTaxResponse computeTax(String stylerequestID, String styleName, double servicePrice, Address merchantAddress, Address customerAddress, List<AddOn> addOns);
 
     void updatePayment(Long customerId, PaymentMethod paymentMethod, PaymentType paymentType, boolean isDefault);
 }

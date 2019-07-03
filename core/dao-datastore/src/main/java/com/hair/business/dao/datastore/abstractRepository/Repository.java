@@ -1,7 +1,6 @@
 package com.hair.business.dao.datastore.abstractRepository;
 
 import com.googlecode.objectify.Key;
-import com.googlecode.objectify.Result;
 
 import java.util.Collection;
 import java.util.List;
@@ -63,12 +62,12 @@ public interface Repository extends ObjectifyRepository {
     /**
      * Saves multiple entities, updating entity's lastUpdateTime
      * */
-    <E> Result<Map<Key<E>, E>> saveMany(Collection<E> entities);
+    <E> void saveMany(Collection<E> entities);
 
     /**
      * Array backed entity save suitable for fewer entities, updating entity's lastUpdateTime
      */
-    <E> Result<Map<Key<E>, E>> saveFew(E... entities);
+    <E> void saveFew(E... entities);
 
     /**
      * updates an entity, updating entity's lastUpdateTime

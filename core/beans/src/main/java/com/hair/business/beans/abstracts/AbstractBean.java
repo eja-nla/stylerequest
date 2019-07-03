@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * Created by Olukorede Aguda on 25/04/2016.
  */
-public abstract class AbstractBean implements Serializable{
+public abstract class AbstractBean implements Serializable {
 
     @Override
     public String toString(){

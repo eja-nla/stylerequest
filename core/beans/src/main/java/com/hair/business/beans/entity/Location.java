@@ -19,7 +19,7 @@ public class Location extends AbstractActorEnablerEntity {
     private Long id;
     private String city;
     private String state;
-    private String countryCode; // e.g. US, GB
+    private String countryCode; // e.g. USA, USA
     private GeoPointExt geo_point; // has the long and lat
 
 //    private String current;

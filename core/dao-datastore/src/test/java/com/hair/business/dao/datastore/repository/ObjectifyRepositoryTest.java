@@ -13,8 +13,6 @@ import static org.hamcrest.core.Is.is;
 import com.google.appengine.repackaged.com.google.common.base.Defaults;
 import com.google.common.collect.Lists;
 
-import com.googlecode.objectify.Key;
-import com.googlecode.objectify.Result;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
@@ -72,7 +70,7 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
     @Test
     public void testFindMany() throws Exception {
         Collection<Customer> c = createCustomers();
-        repository.saveMany(c).now();
+        repository.saveMany(c);
 
         List<Long> x = c.stream().map(Customer::getId).collect(Collectors.toList());
         assertThat(repository.findMany(x, Customer.class).size(), is(5));
@@ -120,10 +118,16 @@ public class ObjectifyRepositoryTest extends AbstractDatastoreTestBase {
 
     @Test
     public void testSaveMany() throws Exception {
-        Collection<Customer> c = createCustomers();
-        Result<Map<Key<Customer>, Customer>> x = repository.saveMany(c);
+        List<Customer> c = createCustomers();
 
-        assertThat(x.now().entrySet().size(), is(5));
+        repository.saveMany(c);
+        List<Long> some = new ArrayList<>(2);
+        some.add(c.get(0).getId());
+        some.add(c.get(4).getId());
+
+        Map<Long, Customer> x = repository.findMany(some, Customer.class);
+
+        assertThat(x.entrySet().size(), is(2));
         delete(c);
     }
 

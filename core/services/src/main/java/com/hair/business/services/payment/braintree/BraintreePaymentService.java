@@ -3,12 +3,10 @@ package com.hair.business.services.payment.braintree;
 import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
 import com.hair.business.beans.constants.PaymentType;
-import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.PaymentMethod;
 import com.hair.business.beans.entity.StyleRequest;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * Braintree payment service
@@ -27,17 +25,11 @@ public interface BraintreePaymentService {
     Transaction createTransaction(String nonce, String orderId, String customerId, double totalAmount, double taxAmount, boolean isSettled);
 
     /**
-     * Settles an earlier pre-authorized transaction
-     *
-     * */
-    Transaction settleTransaction(String transactionId, double amount);
-
-    /**
      * Authorizes and settles a one time non-preauthorized transaction
      *
      * Handy for one off payments
      * */
-    Transaction settleTransaction(String nonce, double amount, List<AddOn> addOns);
+    Transaction settleTransaction(String nonce, double amount);
 
     /**
      * Add new payment method to an existing customer
