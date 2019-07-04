@@ -198,6 +198,11 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
         assertThat(braintreePaymentService.refund(id, BigDecimal.ZERO).isSuccess(), is(true));
     }
 
+    @Test
+    public void testComputeTax(){
+
+    }
+
     private StyleRequestPayment createPayment(Transaction transaction){
         final StyleRequestPayment settledPayment = new StyleRequestPayment(
                 transaction.getAmount().doubleValue(),

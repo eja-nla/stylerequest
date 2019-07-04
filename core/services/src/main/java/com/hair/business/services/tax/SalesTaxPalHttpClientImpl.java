@@ -23,7 +23,7 @@ import javax.inject.Named;
 public class SalesTaxPalHttpClientImpl extends AbstractHttpClient<ComputeTaxRequest, ComputeTaxResponse> {
 
     private static final String SALSTAXPAL_BASEURL = "https://api.salestaxpal.com/stp/api/rest/v1";
-    private Map<String, String> headers = new HashMap<>(4);
+    private static final Map<String, String> headers = new HashMap<>(4);
     private ObjectMapper objectMapper;
 
     @Inject
@@ -40,9 +40,9 @@ public class SalesTaxPalHttpClientImpl extends AbstractHttpClient<ComputeTaxRequ
     public void renewApiKey() throws IOException {
         String request = "{ \"loginType\": { \"tokenAccess\": { \"accessKeyId\": \"65E7959B-018A-3AE8-9778-30BC0B8ED07B\", \"accessKeyValue\": \"01C37546-BE9E-3404-B5AE-61DFA29187BB\" } }, \"transactionDate\": " + DateTime.now().toString("yyyyMMdd") + "}";
 
-        InputStream x = doPost(request.getBytes(), "access/token");
+        InputStream response = doPost(request.getBytes(), "access/token");
 
-        String token = objectMapper.readTree(x).get("tokenAccess").get("token").textValue();
+        String token = objectMapper.readTree(response).get("tokenAccess").get("token").textValue();
 
         headers.put("Authorization", "Bearer  " + token);
     }
