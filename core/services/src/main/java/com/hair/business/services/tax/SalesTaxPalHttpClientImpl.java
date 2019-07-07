@@ -1,5 +1,7 @@
 package com.hair.business.services.tax;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hair.business.beans.entity.tax.ComputeTaxRequest;
 import com.hair.business.beans.entity.tax.ComputeTaxResponse;
@@ -7,6 +9,7 @@ import com.hair.business.services.client.AbstractHttpClient;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +24,8 @@ import javax.inject.Named;
  */
 @Named
 public class SalesTaxPalHttpClientImpl extends AbstractHttpClient<ComputeTaxRequest, ComputeTaxResponse> {
+
+    private static final Logger logger = getLogger(SalesTaxPalHttpClientImpl.class);
 
     private static final String SALSTAXPAL_BASEURL = "https://api.salestaxpal.com/stp/api/rest/v1";
     private static final Map<String, String> headers = new HashMap<>(4);
@@ -48,6 +53,22 @@ public class SalesTaxPalHttpClientImpl extends AbstractHttpClient<ComputeTaxRequ
     }
 
     @Override
+    public ComputeTaxResponse doGet(Class<ComputeTaxResponse> responseClass, String endpoint) throws IOException {
+        return super.doGet(responseClass, endpoint);
+    }
+
+    public ComputeTaxResponse doPost(final ComputeTaxRequest requestBean) throws IOException {
+        ComputeTaxResponse computeTaxResponse;
+
+        computeTaxResponse = super.doPost(requestBean, ComputeTaxResponse.class, "tax/compute");
+        if (computeTaxResponse.hasError() || computeTaxResponse.getComputeTaxResponse() == null ){
+            throw new RuntimeException(String.format("Unable to process tax : Request=%s Response=%s", requestBean, computeTaxResponse));
+        }
+
+        return computeTaxResponse;
+    }
+
+        @Override
     protected String getBaseUrl() {
         return SALSTAXPAL_BASEURL;
     }

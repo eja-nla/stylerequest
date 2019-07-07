@@ -19,7 +19,7 @@ public interface PaymentService extends BraintreePaymentService {
     /**
      * Deduct one time payment with AddOns
      * */
-    void deductNonPreAuthPayment(String paymentToken, List<AddOn> addOns);
+    void deductNonPreAuthPayment(String transactionId, List<AddOn> addOns);
 
     /**
      * Fires an refund request to downstream

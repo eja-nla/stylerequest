@@ -1,99 +1,116 @@
 {
-  "settings" : {
-    "number_of_shards" : "3",
-    "number_of_replicas" : "2"
-  },
   "mappings" : {
-    "style" : {
-      "properties" : {
-        "permanentId" : {
-          "type" : "long"
-        },
-        "version" : {
-          "type" : "integer"
-        },
-        "createdDate" : {
-          "type" : "date"
-        },
-        "id" : {
-          "type" : "long"
-        },
-        "name" : {
-          "type" : "text"
-        },
-        "requestCount" : {
-          "type" : "integer"
-        },
-        "trending" : {
-          "type" : "boolean"
-        },
-        "active" : {
-          "type" : "boolean"
-        },
-        "publisherId" : {
-          "type" : "long"
-        },
-        "district" : {
-          "type" : "text"
-        },
-        "zipcode" : {
-          "type" : "keyword"
-        },
-        "location" : {
-          "properties" : {
-            "permanentId" : {
-              "type" : "long"
-            },
-            "version" : {
-              "type" : "integer"
-            },
-            "createdDate" : {
-              "type" : "date"
-            },
-            "id" : {
-              "type" : "long"
-            },
-            "city" : {
-              "type" : "text"
-            },
-            "state" : {
-              "type" : "text"
-            },
-            "countryCode" : {
-              "type" : "keyword"
-            },
-            "geo_point" : {
-              "properties" : {
-                "id" : {
-                  "type" : "long"
-                },
-                "lat" : {
-                  "type" : "geo_point"
-                },
-                "lon" : {
-                  "type" : "geo_point"
-                }
+      "%s": {
+        "properties": {
+          "active": {
+            "type": "boolean"
+          },
+          "createdDate": {
+            "type": "date"
+          },
+          "description": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
-          }
-        },
-        "styleImages" : {
-          "properties" : {
-            "url" : {
-              "type" : "text"
-            },
-            "owner" : {
-              "type" : "text"
-            },
-            "views" : {
-              "type" : "integer"
+          },
+          "durationEstimate": {
+            "type": "long"
+          },
+          "id": {
+            "type": "long"
+          },
+          "location": {
+            "properties": {
+              "city": {
+                "type": "text"
+              },
+              "countryCode": {
+                "type": "keyword"
+              },
+              "createdDate": {
+                "type": "date"
+              },
+              "geoPoint": {
+                "properties": {
+                  "id": {
+                    "type": "long"
+                  },
+                  "lat": {
+                    "type": "geo_point"
+                  },
+                  "lon": {
+                    "type": "geo_point"
+                  }
+                }
+              },
+              "id": {
+                "type": "long"
+              },
+              "permanentId": {
+                "type": "long"
+              },
+              "state": {
+                "type": "text"
+              },
+              "version": {
+                "type": "integer"
+              }
             }
+          },
+          "name": {
+            "type": "text"
+          },
+          "permanentId": {
+            "type": "long"
+          },
+          "price": {
+            "type": "float"
+          },
+          "publisherId": {
+            "type": "long"
+          },
+          "requestCount": {
+            "type": "integer"
+          },
+          "styleImages": {
+            "properties": {
+              "createdDate": {
+                "type": "date"
+              },
+              "id": {
+                "type": "long"
+              },
+              "owner": {
+                "type": "text"
+              },
+              "url": {
+                "type": "text"
+              },
+              "version": {
+                "type": "long"
+              },
+              "views": {
+                "type": "integer"
+              }
+            }
+          },
+          "trending": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "zipcode": {
+            "type": "keyword"
           }
         }
       }
+    },
+    "aliases" : {
+      "%s" : {}
     }
-  },
-  "aliases" : {
-    "active_styles": {}
-  }
 }

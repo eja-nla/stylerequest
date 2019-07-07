@@ -141,10 +141,12 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void deductNonPreAuthPayment(String nonce, List<AddOn> items) {
-//        Transaction transaction = settleTransaction(nonce, items);
-//        final StyleRequestPayment settledPayment = createPayment(transaction, styleRequest);
-//        repository.saveOne(styleRequest);
+    public void deductNonPreAuthPayment(String transactionId, List<AddOn> items) {
+        double total = 0;
+        for (int i = 0; i < items.size(); i++) {
+            total += items.get(i).getAmount();
+        }
+        settleTransaction(transactionId, total);
     }
 
     @Override
@@ -198,20 +200,21 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         // we add each more lineItems based on purchased adOns
         for (int i = 1; i <= addOns.size(); i++) { //start from 1 because we use the index as the item ID
             LineItem addonItem = new LineItem();
+                AddOn addOn = addOns.get(i);
                 addonItem.setLineItemId(Integer.toString(i));
-                addonItem.setProductName(addOns.get(i).getItemName());
+                addonItem.setProductName(addOn.getItemName());
                 Product addOnProduct = new Product();
                 addOnProduct.setClassCode("STP-PCC-01085");
-                addOnProduct.setValue("Style related Products");
+                addOnProduct.setValue(addOn.getItemName());
                 addonItem.setProduct(product);
     
                 UnitPrice addonPrice = new UnitPrice();
-                addonPrice.setValue(addOns.get(i).getAmount());
+                addonPrice.setValue(addOn.getAmount());
                 addonItem.setUnitPrice(addonPrice);
     
                 Quantity addonQtty = new Quantity();
                 addonQtty.setUnitOfMeasure("ea");
-                addonQtty.setValue(addOns.get(i).getQuantity());
+                addonQtty.setValue(addOn.getQuantity());
                 addonItem.setQuantity(addonQtty);
             items.add(addonItem);
         }
@@ -221,11 +224,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         ComputeTaxResponse computeTaxResponse;
 
         try {
-            computeTaxResponse = taxClient.doPost(computeTaxRequest, ComputeTaxResponse.class, "tax/compute");
-            if (computeTaxResponse.getComputeTaxResponse() == null){
-                logger.warn("Unable to process tax : StylerequestID={} Request={} Response={}", stylerequestID, computeTaxRequest, computeTaxResponse);
-                throw new RuntimeException("Unable to obtain tax for style request ID " + stylerequestID);
-            }
+            computeTaxResponse = taxClient.doPost(computeTaxRequest);
         } catch (IOException e) {
             logger.warn("Unable to process tax : StylerequestID={} Request={} Response={null}", stylerequestID, computeTaxRequest);
             throw new RuntimeException(e);
@@ -253,8 +252,8 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         Assert.notNull(styleRequestId);
 
         StyleRequest request = repository.findOne(styleRequestId, StyleRequest.class);
-        Assert.notNull(request, "Stylerequest with ID " + styleRequestId + "cannot be found");
-        Assert.notNull(request.getSettledPayment());
+        Assert.notNull(request, "Stylerequest with ID " + styleRequestId + " cannot be found");
+        Assert.notNull(request.getSettledPayment(), "Cannot refund a Style request ID:" + styleRequestId + " with no settled payment");
 
         refund(Long.toString(request.getSettledPayment().getId()), new BigDecimal(amount));
     }

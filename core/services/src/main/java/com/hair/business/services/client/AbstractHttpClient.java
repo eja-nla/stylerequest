@@ -35,7 +35,7 @@ public abstract class AbstractHttpClient<In, Out> {
         this.objectMapper = objectMapper;
     }
 
-    public Out doGet(Class<Out> responseClass, String endpoint) throws IOException {
+    protected Out doGet(Class<Out> responseClass, String endpoint) throws IOException {
         int responseCode = -1;
         String fullUrl = getBaseUrl() + "/" + endpoint;
         final HttpGet request = new HttpGet(fullUrl);
@@ -62,7 +62,7 @@ public abstract class AbstractHttpClient<In, Out> {
         return objectMapper.readValue(response.getEntity().getContent(), responseClass);
     }
 
-    public Out doPost(final In requestBean, Class<Out> responseClass, String endpoint) throws IOException {
+    protected Out doPost(final In requestBean, Class<Out> responseClass, String endpoint) throws IOException {
 
         if (requestBean == null) {
             return null;
@@ -72,7 +72,7 @@ public abstract class AbstractHttpClient<In, Out> {
         return objectMapper.readValue(doPost(jsonBytes, endpoint), responseClass);
     }
 
-    public InputStream doPost(final byte[] requestBean, String endpoint) throws IOException {
+    protected InputStream doPost(final byte[] requestBean, String endpoint) throws IOException {
         int responseCode = -1;
 
         String fullUrl = getBaseUrl() + "/" + endpoint;
