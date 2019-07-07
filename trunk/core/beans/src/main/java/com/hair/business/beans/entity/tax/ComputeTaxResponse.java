@@ -18,7 +18,7 @@ public class ComputeTaxResponse extends AbstractBean {
         this.computeTaxResponse = computeTaxResponse;
     }
 
-    public boolean isHasError() {
+    public boolean hasError() {
         return hasError;
     }
 
