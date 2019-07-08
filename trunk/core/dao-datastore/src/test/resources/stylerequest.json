@@ -22,8 +22,7 @@
       "city" : "London",
       "state" : "Alabama",
       "countryCode" : "USA",
-      "geo_point" : {
-        "id" : -7904877200652725625,
+      "geoPoint" : {
         "lat" : 51.503407,
         "lon" : -0.127592
       }
@@ -77,8 +76,7 @@
         "city" : "London",
         "state" : "Alabama",
         "countryCode" : "UK",
-        "geo_point" : {
-          "id" : 8868894011258282251,
+        "geoPoint" : {
           "lat" : 51.503407,
           "lon" : -0.127592
         }
@@ -122,8 +120,7 @@
         "city" : "London",
         "state" : "Alabama",
         "countryCode" : "USA",
-        "geo_point" : {
-          "id" : 8868894011258282251,
+        "geoPoint" : {
           "lat" : 51.503407,
           "lon" : -0.127592
         }
@@ -139,8 +136,7 @@
     "city" : "London",
     "state" : "Alabama",
     "countryCode" : "US",
-    "geo_point" : {
-      "id" : 704945858973872703,
+    "geoPoint" : {
       "lat" : 51.503407,
       "lon" : -0.127592
     }

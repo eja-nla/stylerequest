@@ -25,6 +25,8 @@ public class HairstyleElasticsearchRepositoryImpl extends AbstractElasticsearchR
     private static final DateTime dateTime = DateTime.now();
     private static final String styleIndexName = "hairstyles" + "_" + dateTime.getMonthOfYear() + "_" + dateTime.getYear();
 
+
+
     @Inject
     public HairstyleElasticsearchRepositoryImpl(Provider<RestClient> clientProvider, Provider<ObjectMapper> objectMapperProvider) {
         super(clientProvider, objectMapperProvider);
