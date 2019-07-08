@@ -1,8 +1,5 @@
 package com.hair.business.beans.entity;
 
-import com.googlecode.objectify.annotation.Cache;
-import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Id;
 import com.hair.business.beans.abstracts.AbstractBean;
 
 /**
@@ -10,12 +7,8 @@ import com.hair.business.beans.abstracts.AbstractBean;
  *
  * Wrapper around GeoPoint due to Guice no-arg nagging. Should revisit
  */
-@Entity
-@Cache
 public class GeoPointExt extends AbstractBean {
 
-    @Id
-    private Long id;
     private double lat;
     private double lon;
 
@@ -25,14 +18,6 @@ public class GeoPointExt extends AbstractBean {
         this();
         this.lat = lat;
         this.lon = lon;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public double getLat() {

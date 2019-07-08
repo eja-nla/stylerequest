@@ -93,7 +93,7 @@ public class BraintreePaymentServiceImplTest extends AbstractServicesTestBase {
         SalesTaxPalHttpClientImpl salesTaxPalHttpClient = mock(SalesTaxPalHttpClientImpl.class);
 //        when(salesTaxPalHttpClient.getBaseUrl()).thenReturn("http://testbaseurl");
         when(salesTaxPalHttpClient.doGet(any(), anyString())).thenReturn(createTaxInfo());
-        when(salesTaxPalHttpClient.doPost(any(), any(), anyString())).thenReturn(createTaxInfo());
+        when(salesTaxPalHttpClient.doPost(any())).thenReturn(createTaxInfo());
         braintreePaymentService = new BraintreePaymentServiceImpl(p, salesTaxPalHttpClient, repository);
     }
 

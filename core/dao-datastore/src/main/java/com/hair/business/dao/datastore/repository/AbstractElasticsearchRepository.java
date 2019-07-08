@@ -24,16 +24,19 @@ import javax.inject.Provider;
  */
 public abstract class AbstractElasticsearchRepository<T extends AbstractPersistenceEntity> {
 
+    private final RestClient client;
+    private final ObjectMapper objectMapper;
+
     private static final String DISTANCE_QUERY = "{\n" +
             "    \"query\": {\n" +
             "        \"bool\" : {\n" +
             "            \"must\" : {\n" +
-            "                \"match_all\" : {}\n" +
+            "                \"term\" : { \"active\" : true }\n" +
             "            },\n" +
             "            \"filter\" : {\n" +
             "                \"geo_distance\" : {\n" +
             "                    \"distance\" : \"%skm\",\n" +
-            "                    \"pin.location\" : {\n" +
+            "                    \"location.geoPoint\" : {\n" +
             "                        \"lat\" : %s,\n" +
             "                        \"lon\" : %s\n" +
             "                    }\n" +
@@ -43,10 +46,7 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
             "    }\n" +
             "}";
 
-    private final RestClient client;
-    private final ObjectMapper objectMapper;
-
-    public AbstractElasticsearchRepository(Provider<RestClient> clientProvider, Provider<ObjectMapper> objectMapperProvider) {
+    protected AbstractElasticsearchRepository(Provider<RestClient> clientProvider, Provider<ObjectMapper> objectMapperProvider) {
         this.client = clientProvider.get();
         this.objectMapper = objectMapperProvider.get();
     }
@@ -54,7 +54,6 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
     private void createIndex() throws IOException {
         final Request request = new Request("PUT","/" + getIndex());
         request.setJsonEntity(this.getMapping());
-
         client.performRequest(request);
     }
 
@@ -113,7 +112,7 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
      * */
     public String search(String queryString, int size){
         // remember to only search style.active = true; GET /active_hairstyles/_search?q=active:true&size=2
-        final Request searchRequest = new Request("POST", "/" + getAlias() + "/_search?&size=" + size);
+        final Request searchRequest = new Request("POST", "/" + getAlias() + "/_search?size=" + size);
         searchRequest.setJsonEntity(queryString);
 
         try {
@@ -128,7 +127,7 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
      * We return the json to upstream, no marshalling needed.
      * */
     public String searchRadius(int kilometers, GeoPointExt geoPoint){
-        final Request searchRequest = new Request("GET", "/" + getAlias() + "/" + getType());
+        final Request searchRequest = new Request("POST", "/" + getAlias() + "/" + getType() + "/_search?scroll=1m&size=100");
         searchRequest.setJsonEntity(String.format(DISTANCE_QUERY, kilometers, geoPoint.getLat(), geoPoint.getLon()));
 
         try {

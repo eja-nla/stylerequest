@@ -7,7 +7,6 @@ import com.googlecode.objectify.impl.translate.opt.joda.JodaTimeTranslators;
 import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Device;
-import com.hair.business.beans.entity.GeoPointExt;
 import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
@@ -45,7 +44,6 @@ public class OfyFactory extends ObjectifyFactory{
         this.register(StyleRequestPayment.class);
         this.register(Address.class);
         this.register(Device.class);
-        this.register(GeoPointExt.class);
         this.register(Image.class);
         this.register(Location.class);
         this.register(Review.class);

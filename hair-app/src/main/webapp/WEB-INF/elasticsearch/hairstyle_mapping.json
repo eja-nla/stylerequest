@@ -1,4 +1,10 @@
 {
+  "settings" : {
+    "index" : {
+      "number_of_shards" : 2,
+      "number_of_replicas" : 1
+    }
+  },
   "mappings" : {
       "%s": {
         "properties": {
@@ -35,17 +41,7 @@
                 "type": "date"
               },
               "geoPoint": {
-                "properties": {
-                  "id": {
-                    "type": "long"
-                  },
-                  "lat": {
-                    "type": "geo_point"
-                  },
-                  "lon": {
-                    "type": "geo_point"
-                  }
-                }
+                "type": "geo_point"
               },
               "id": {
                 "type": "long"

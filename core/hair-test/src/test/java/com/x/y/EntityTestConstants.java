@@ -79,7 +79,6 @@ public class EntityTestConstants {
 
     public static Location createLocation(){
         GeoPointExt g = new GeoPointExt(51.5034070, -0.1275920);
-        g.setId(new Random().nextLong());
         Location l = new Location("London", "Alabama", "USA", g);
         l.setId(new Random().nextLong());
         l.setPermanentId(l.getId());

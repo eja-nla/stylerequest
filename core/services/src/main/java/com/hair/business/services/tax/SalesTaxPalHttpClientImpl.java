@@ -68,7 +68,12 @@ public class SalesTaxPalHttpClientImpl extends AbstractHttpClient<ComputeTaxRequ
         return computeTaxResponse;
     }
 
-        @Override
+    @Override
+    public ComputeTaxResponse doPost(final ComputeTaxRequest requestBean, Class<ComputeTaxResponse> responseClass, String endpoint) throws IOException {
+        return super.doPost(requestBean, responseClass, endpoint);
+    }
+
+    @Override
     protected String getBaseUrl() {
         return SALSTAXPAL_BASEURL;
     }
