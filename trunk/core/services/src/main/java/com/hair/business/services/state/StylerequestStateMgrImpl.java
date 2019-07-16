@@ -35,6 +35,10 @@ public class StylerequestStateMgrImpl implements StylerequestStateMgr {
      * 3. ACCEPTED can state anywhere
      * 4. COMPLETED or CANCELLED are immutable
      *
+     * Considerations/todo:
+     *  we may want to enforce a max time in which the request must be accepted by merchant
+     *      should we do that here or on the client side?
+     *
      * */
     @Override
     public StyleRequest transition(final Long id, final StyleRequestState newState) {

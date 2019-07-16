@@ -108,7 +108,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
         pushNotificationService.scheduleSend(customer.getDevice().getDeviceId(), NEW_STYLE_REQUEST);
 
-        repository.saveFew(styleRequest, style);
+        repository.saveFew(style, styleRequest);
 
         logger.info(PLACED_STYLE_REQUEST, styleRequest.getId(), customer.getEmail(), merchant.getEmail());
 
