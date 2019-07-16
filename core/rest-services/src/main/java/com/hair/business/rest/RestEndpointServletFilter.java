@@ -9,7 +9,6 @@ import com.google.firebase.auth.FirebaseToken;
 import com.google.inject.servlet.GuiceFilter;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.logging.Logger;
 
 import javax.servlet.FilterChain;
@@ -19,7 +18,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Response;
 
 /**
  * Created by Olukorede Aguda on 25/06/2016.
@@ -74,8 +72,8 @@ public final class RestEndpointServletFilter extends GuiceFilter {
             servletRequest.setAttribute(REST_USER_ATTRIBUTE, decodedToken);
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (FirebaseAuthException e) {
-            // Session cookie is unavailable, invalid or revoked. Force user to login.
-            Response.temporaryRedirect(URI.create(loginUrl)).build();
+            // Session cookie is unavailable, invalid or revoked. Go away
+            ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 }
