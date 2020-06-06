@@ -48,9 +48,9 @@ public final class RestEndpointServletFilter extends GuiceFilter {
 
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
-            for (int i = 0; i < cookies.length; i++) {
-                if (cookies[i].getName().equals(userSessionName)){
-                    sessionCookie = cookies[i].getValue();
+            for (Cookie cooky : cookies) {
+                if (cooky.getName().equals(userSessionName)) {
+                    sessionCookie = cooky.getValue();
                 }
             }
         }
@@ -61,6 +61,10 @@ public final class RestEndpointServletFilter extends GuiceFilter {
         }
 
         if (sessionCookie == null && !servletResponse.isCommitted()){
+            HttpServletResponse response = ((HttpServletResponse) servletResponse);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("Access denied. Please login.");
             ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
@@ -73,6 +77,10 @@ public final class RestEndpointServletFilter extends GuiceFilter {
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (FirebaseAuthException e) {
             // Session cookie is unavailable, invalid or revoked. Go away
+            HttpServletResponse response = ((HttpServletResponse) servletResponse);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(e.getMessage());
             ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
