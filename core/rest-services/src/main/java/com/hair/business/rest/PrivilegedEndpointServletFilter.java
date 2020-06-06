@@ -38,7 +38,6 @@ public final class PrivilegedEndpointServletFilter extends GuiceFilter {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write("Access denied. Please login.");
-            logger.warn(String.format("Admin access denied for user %s", user.getEmail()));
             return;
         }
 
