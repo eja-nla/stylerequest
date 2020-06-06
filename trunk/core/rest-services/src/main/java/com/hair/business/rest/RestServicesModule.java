@@ -17,8 +17,6 @@ import com.sun.jersey.api.model.AbstractSubResourceMethod;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.sun.jersey.server.impl.modelapi.annotation.IntrospectionModeller;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,8 +42,8 @@ public class RestServicesModule extends ServletModule {
     private static final ResourceConfig rc = new PackagesResourceConfig(RESOURCE_PACKAGES);
 
     private ServletContext servletContext;
-    private final Map<Integer, Pair<String, String>> endpoints = new HashMap<>();
-    private int count = 1;
+    private final Map<String, String> endpoints = new HashMap<>();
+//    private int count = 1;
 
     public RestServicesModule() {
         this.servletContext = this.getServletContext();
@@ -88,7 +86,7 @@ public class RestServicesModule extends ServletModule {
 
     @Singleton
     @Provides
-    Map<Integer, Pair<String, String>> provideMap() {
+    Map<String, String> provideMap() {
         return endpoints;
     }
 
@@ -101,8 +99,7 @@ public class RestServicesModule extends ServletModule {
         String uriPrefix = resource.getPath().getValue();
         for (AbstractSubResourceMethod srm :resource.getSubResourceMethods()) {
             String uri = uriPrefix + srm.getPath().getValue();
-            endpoints.put(count, Pair.of(srm.getHttpMethod(), uri));
-            count = count + 1;
+            endpoints.put(uri, srm.getHttpMethod());
         }
     }
 }

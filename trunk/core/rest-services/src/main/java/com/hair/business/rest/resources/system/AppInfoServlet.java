@@ -11,10 +11,10 @@ import com.google.firebase.auth.FirebaseToken;
 
 import com.hair.business.rest.resources.AbstractRequestServlet;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -34,12 +34,12 @@ import javax.ws.rs.core.Response;
 @Path(ADMIN_URI)
 public class AppInfoServlet extends AbstractRequestServlet {
 
-    private Map<Integer, Pair<String, String>> endpoints;
+    private TreeMap<String, String> endpoints;
     private static final Logger logger = getLogger(AppInfoServlet.class);
 
     @Inject
-    public AppInfoServlet(Provider<Map<Integer, Pair<String, String>>> endpoints) {
-        this.endpoints = endpoints.get();
+    public AppInfoServlet(Provider<Map<String, String>> endpoints) {
+        this.endpoints = new TreeMap<>(endpoints.get());
     }
 
     @GET
