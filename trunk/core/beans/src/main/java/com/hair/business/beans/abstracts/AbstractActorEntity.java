@@ -18,7 +18,7 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
     private String phone;
     private Device device;
     private String photoUrl;
-    private Gender gender;
+    @Index private Gender gender;
     private boolean active;
     private Address address;
     private Preferences preferences;

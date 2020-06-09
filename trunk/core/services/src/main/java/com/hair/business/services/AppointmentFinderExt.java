@@ -47,7 +47,7 @@ public class AppointmentFinderExt implements AppointmentFinder {
     @Timed
     @Override
     public List<StyleRequest> findMerchantAcceptedAppointments(Long merchantId, DateTime lower, DateTime upper) {
-        List<Object> values = validate(merchantId, ACCEPTED, lower, upper);
+        final List<Object> values = validate(merchantId, ACCEPTED, lower, upper);
 
         return repository.findByQuery(StyleRequest.class, MERCHANT_APPOINTMENTS_ACCEPTED_QUERY, values);
     }
@@ -55,7 +55,7 @@ public class AppointmentFinderExt implements AppointmentFinder {
     @Timed
     @Override
     public List<StyleRequest> findMerchantCancelledAppointments(Long merchantId, DateTime lower, DateTime upper) {
-        List<Object> values = validate(merchantId, CANCELLED, lower, upper);
+        final List<Object> values = validate(merchantId, CANCELLED, lower, upper);
 
         return repository.findByQuery(StyleRequest.class, MERCHANT_APPOINTMENTS_CANCELLED_QUERY, values);
     }
@@ -63,7 +63,7 @@ public class AppointmentFinderExt implements AppointmentFinder {
     @Timed
     @Override
     public List<StyleRequest> findMerchantCompletedAppointments(Long merchantId, DateTime lower, DateTime upper) {
-        List<Object> values = validate(merchantId, COMPLETED, lower, upper);
+        final List<Object> values = validate(merchantId, COMPLETED, lower, upper);
 
         return repository.findByQuery(StyleRequest.class, MERCHANT_APPOINTMENTS_COMPLETED_QUERY, values);
     }
@@ -71,7 +71,7 @@ public class AppointmentFinderExt implements AppointmentFinder {
     @Timed
     @Override
     public List<StyleRequest> findCustomerCancelledAppointments(Long customerId, DateTime lower, DateTime upper) {
-        List<Object> values = validate(customerId, CANCELLED, lower, upper);
+        final List<Object> values = validate(customerId, CANCELLED, lower, upper);
 
         return repository.findByQuery(StyleRequest.class, CUSTOMER_APPOINTMENTS_CANCELLED_QUERY, values);
     }
@@ -88,7 +88,7 @@ public class AppointmentFinderExt implements AppointmentFinder {
     @Timed
     @Override
     public List<StyleRequest> findCustomerCompletedAppointments(Long customerId, DateTime lower, DateTime upper) {
-        List<Object> values = validate(customerId, COMPLETED, lower, upper);
+        final List<Object> values = validate(customerId, COMPLETED, lower, upper);
 
         return repository.findByQuery(StyleRequest.class, CUSTOMER_APPOINTMENTS_COMPLETED_QUERY, values);
     }

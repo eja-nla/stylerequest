@@ -40,11 +40,6 @@ public class HairstyleElasticsearchRepositoryImpl extends AbstractElasticsearchR
     }
 
     @Override
-    protected String getType() {
-        return "hairstyles";
-    }
-
-    @Override
     protected String getAlias() {
         return "active_hairstyles";
     }
@@ -53,7 +48,7 @@ public class HairstyleElasticsearchRepositoryImpl extends AbstractElasticsearchR
     protected String getMapping(){
         try {
             String mapping = IOUtils.toString(new FileInputStream(new File("WEB-INF/elasticsearch/hairstyle_mapping.json")));
-            return String.format(mapping, getType(), getAlias());
+            return String.format(mapping, getAlias());
         } catch (IOException e) {
             throw new RuntimeException("Mappings file for " + styleIndexName + " could not be loaded.");
         }

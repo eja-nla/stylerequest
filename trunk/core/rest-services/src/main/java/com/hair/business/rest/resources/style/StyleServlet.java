@@ -6,6 +6,7 @@ import static com.hair.business.rest.MvcConstants.STYLE_URI;
 import static com.hair.business.rest.MvcConstants.UPDATE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import com.hair.business.beans.entity.GeoPointExt;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.dao.datastore.impl.HairstyleElasticsearchRepositoryImpl;
 import com.hair.business.rest.resources.AbstractRequestServlet;
@@ -76,7 +77,25 @@ public class StyleServlet extends AbstractRequestServlet {
     }
 
     @POST
+    @Path("/geoStyles")
+    @Produces(APPLICATION_JSON)
+    public Response geoStyles(@QueryParam("lon") double lon, @QueryParam("lat") double lat, @QueryParam("radius") int radius) {
+        try {
+            Assert.isTrue(lon != 0, "Longitude cannot be zero");
+            Assert.isTrue(lat != 0, "Latitude cannot be zero");
+            Assert.isTrue(radius > 0, "Radius must be greater than zero");
+
+            GeoPointExt geoPoint = new GeoPointExt(lat, lon);
+            return Response.ok(styleService.geoSeachStyles(geoPoint, radius), MediaType.APPLICATION_JSON).build();
+        } catch (IllegalArgumentException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
     @Path("/blindquery")
+    // We may need to run an arbitrary query against DB (utility use) so we leave it here.
+    // Discouraged strongly for production use
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     public Response blindRequest(String requestQuery, @QueryParam("endpoint") String endpoint, @QueryParam("httpmethod") String httpMethod) {

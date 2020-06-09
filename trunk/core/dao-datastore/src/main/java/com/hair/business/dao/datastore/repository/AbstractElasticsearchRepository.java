@@ -58,10 +58,11 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
     }
 
     /**
-     * Saves to the given index and type
+     * Saves to the given index
      * **/
     public T saveOne(T requestEntity){
-        final Request saveOneRequest = new Request("PUT", "/" + getIndex() + "/" + getType() + "/" + requestEntity.getPermanentId());
+        //ES 7.x mandates use of default _doc type
+        final Request saveOneRequest = new Request("POST", "/" + getIndex() + "/_doc/" + requestEntity.getPermanentId());
         try {
             String c = objectMapper.writeValueAsString(requestEntity);
             saveOneRequest.setJsonEntity(c);
@@ -77,7 +78,8 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
      * Gets from the provided aliases
      * **/
     public T findOne(Long id, Class<T> tClass){
-        final Request getOneRequest = new Request("GET", "/" + getIndex() + "/" + getType() + "/" + id);
+        //ES 7.x mandates use of default _doc type
+        final Request getOneRequest = new Request("GET", "/" + getIndex() + "/_doc/" + id);
         try {
             InputStream res = client.performRequest(getOneRequest).getEntity().getContent();
             return objectMapper.treeToValue(objectMapper.readTree(res).get("_source"), tClass);
@@ -92,7 +94,7 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
      *
      * Remember to close all user search context i.e. DELETE /_search/scroll/_all - from client when they logout
      * */
-    public String searchWithScroll(String queryString, String scrollTimeout, int size){
+    public String searchWithScroll(String queryString, int scrollTimeout, int size){
         // remember to only search style.active = true;
         //{ "query": { "term": { "active": true } } }
         final Request searchRequest = new Request("POST", "/" + getAlias() + "/_search?scroll=" + scrollTimeout + "&size=" + size);
@@ -127,7 +129,7 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
      * We return the json to upstream, no marshalling needed.
      * */
     public String searchRadius(int kilometers, GeoPointExt geoPoint){
-        final Request searchRequest = new Request("POST", "/" + getAlias() + "/" + getType() + "/_search?scroll=1m&size=100");
+        final Request searchRequest = new Request("POST", "/" + getAlias() + "/_search?scroll=1m&size=100");
         searchRequest.setJsonEntity(String.format(DISTANCE_QUERY, kilometers, geoPoint.getLat(), geoPoint.getLon()));
 
         try {
@@ -182,7 +184,6 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
 
     protected abstract String getIndex();
     protected abstract String getMapping();
-    protected abstract String getType();
     protected abstract String getAlias();
 
 }

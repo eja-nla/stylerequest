@@ -25,14 +25,23 @@ public class Image extends AbstractActorEnablerEntity {
 
     private long views;
 
-    public Image() {
-    }
+    private int reviews; // we want people to vote on images 1-5, 5 being highest
+
+    public Image() {}
 
     public Image(String url, String owner, long views) {
         this();
         this.url = url;
         this.owner = owner;
         this.views = views;
+    }
+
+    public int getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(int reviews) {
+        this.reviews = reviews;
     }
 
     public Long getId() {

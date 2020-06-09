@@ -3,6 +3,7 @@ package com.hair.business.services;
 import static java.lang.String.format;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import com.hair.business.beans.entity.GeoPointExt;
 import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
@@ -42,15 +43,23 @@ public class StyleServiceImpl implements StyleService {
     }
 
     @Override
+    public String geoSeachStyles(GeoPointExt point, int radius) {
+        //Right now, we do nothing to enrich the request or response but mandate that
+        // all queries come through backend for tracking and future enrichment.
+
+        return hairstyleRepository.searchRadius(radius, point);
+    }
+
+    @Override
     public Style publishStyle(Style style, Long publisherId) {
         Assert.notNull(style, publisherId);
         Assert.isTrue(style.getStyleImages().size() >= 5, "Style must have at least 5 images showing different views");
 
-        Merchant merchant = datastoreRepository.findOne(publisherId, Merchant.class);
+        final Merchant merchant = datastoreRepository.findOne(publisherId, Merchant.class);
 
         Assert.notNull(merchant, format("Could not find Merchant with id '%s'", publisherId));
 
-        Long stylePermId = datastoreRepository.allocateId(Style.class);
+        final Long stylePermId = datastoreRepository.allocateId(Style.class);
 
         style.setId(stylePermId);
         style.setPermanentId(stylePermId);
@@ -75,7 +84,7 @@ public class StyleServiceImpl implements StyleService {
 
     @Override
     public void updateStyleImages(Long styleId, List<Image> styleImages) {
-        Style style = datastoreRepository.findOne(styleId, Style.class);
+        final Style style = datastoreRepository.findOne(styleId, Style.class);
 
         Assert.notNull(style, format("Could not find Style with id '%s'", styleId));
 
@@ -101,7 +110,7 @@ public class StyleServiceImpl implements StyleService {
         Assert.validId(styleId);
         Style style = datastoreRepository.findOne(styleId, Style.class);
 
-        Assert.notNull(style, String.format("Cannot remove style with id '%s'. Style not found", styleId));
+        Assert.notNull(style, String.format("Unable to remove style with id '%s'. Style not found", styleId));
 
         style.setActive(false);
 

@@ -11,6 +11,8 @@ import com.hair.business.beans.helper.PaymentStatus;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.x.business.utilities.Assert;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import javax.inject.Inject;
 
 /**
@@ -21,6 +23,7 @@ import javax.inject.Inject;
 public class StylerequestStateMgrImpl implements StylerequestStateMgr {
 
     private final Repository repository;
+    private static final ReentrantLock lock = new ReentrantLock();
 
     @Inject
     public StylerequestStateMgrImpl(Repository repository) {
@@ -43,10 +46,10 @@ public class StylerequestStateMgrImpl implements StylerequestStateMgr {
     @Override
     public StyleRequest transition(final Long id, final StyleRequestState newState) {
         Assert.validId(id);
-        StyleRequest styleRequest = repository.findOne(id, StyleRequest.class);
+        final StyleRequest styleRequest = repository.findOne(id, StyleRequest.class);
         Assert.notNull(styleRequest, String.format("Transition failure. Style request with ID %s not found", styleRequest));
 
-        StyleRequestPayment authorizedPayment = styleRequest.getAuthorizedPayment();
+        final StyleRequestPayment authorizedPayment = styleRequest.getAuthorizedPayment();
         Assert.notNull(authorizedPayment, String.format("Transition failure. Style request {ID=%s} being accepted must have an authorized payment", styleRequest.getId()));
         Assert.isTrue(authorizedPayment.getPaymentStatus() == PaymentStatus.AUTHORIZED, String.format("Transition failure. Style request {ID=%s} being accepted must have an authorized payment", styleRequest.getId()));
 
@@ -60,12 +63,18 @@ public class StylerequestStateMgrImpl implements StylerequestStateMgr {
             Assert.isTrue(newState.equals(ACCEPTED), "Transition failure. Pending requests can only be accepted.");
         }
 
-        //if we just check 4 above, the rest will fall into 3
+        lock.lock();
 
-        //4
-        Assert.isTrue(!currentState.equals(CANCELLED) && !currentState.equals(StyleRequestState.COMPLETED), "Transition failure. Request state is already terminal.");
+        try{
+            //if we just check 4 above, the rest will fall into 3
 
-        styleRequest.setState(newState);
+            //4
+            Assert.isTrue(!currentState.equals(CANCELLED) && !currentState.equals(StyleRequestState.COMPLETED), "Transition failure. Request state is already terminal.");
+
+            styleRequest.setState(newState);
+        } finally {
+            lock.unlock();
+        }
 
         return styleRequest;
     }

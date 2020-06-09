@@ -33,6 +33,8 @@ import com.x.business.utilities.Assert;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import javax.inject.Inject;
 
 /**
@@ -49,6 +51,8 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     private final MerchantService merchantService;
     private final StylerequestStateMgr stateMgr;
     private final PushNotificationServiceInternal pushNotificationService;
+
+    private final AtomicLong styleRequestCounter = new AtomicLong();
 
     private static final Logger logger = getLogger(StyleRequestServiceImpl.class);
 
@@ -78,7 +82,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
      *  Goal is to keep this as simple as possible and move most validations upstream to the client
      * */
     @Override
-    public StyleRequest placeStyleRequest(String authorizationToken, Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
+    public final StyleRequest placeStyleRequest(String authorizationToken, Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
         Assert.validIds(styleId, customerId, merchantId);
         Assert.dateInFuture(appointmentTime);
 
@@ -96,10 +100,11 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         // do we have this customer's sufficient payment info to make an authorization?
         //- on rethink We really do not want to do this here. We should move to the client
 
-        style.setRequestCount(style.getRequestCount() + 1);
+        styleRequestCounter.set(style.getRequestCount());
+        style.setRequestCount(styleRequestCounter.incrementAndGet());
 
         final StyleRequest styleRequest = new StyleRequest(style, merchant, customer, merchant.getAddress().getLocation(), PENDING, appointmentTime, new DateTime().plusMinutes(style.getDurationEstimate()));
-        Long id = repository.allocateId(StyleRequest.class);
+        final Long id = repository.allocateId(StyleRequest.class);
         styleRequest.setId(id);
         styleRequest.setPermanentId(id);
 
@@ -124,9 +129,9 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     public void acceptStyleRequest(Long styleRequestId, Preferences preferences) {
         Assert.validId(styleRequestId);
 
-        StyleRequest styleRequest = stateMgr.transition(styleRequestId, ACCEPTED);
+        final StyleRequest styleRequest = stateMgr.transition(styleRequestId, ACCEPTED);
 
-        Merchant merchant = styleRequest.getMerchant();
+        final Merchant merchant = styleRequest.getMerchant();
         Assert.isTrue(!merchantService.isBooked(merchant.getId(), styleRequest.getAppointmentStartTime(),
                 styleRequest.getAppointmentStartTime().plusMinutes(styleRequest.getStyle().getDurationEstimate())), HAS_ACTIVE_BOOKING, merchant.getFirstName());
 
@@ -151,7 +156,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     @Override
     public void cancelStyleRequest(Long styleRequestId, Preferences preferences) {
         Assert.validId(styleRequestId);
-        StyleRequest styleRequest = stateMgr.transition(styleRequestId, CANCELLED);
+        final StyleRequest styleRequest = stateMgr.transition(styleRequestId, CANCELLED);
         styleRequest.setCancelledTime(DateTime.now());
         updateStyleRequest(styleRequest);
 

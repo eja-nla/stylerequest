@@ -69,7 +69,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
     @Override
     public StyleRequest authorize(String nonce, final Long styleRequestId) {
-        StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
+        final StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
         return authorize(nonce, styleRequest);
     }
 
@@ -77,14 +77,14 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     public StyleRequest authorize(String nonce, final StyleRequest styleRequest) {
         Assert.notNull(styleRequest, "You cannot authorize a null style request");
 
-        Style style = styleRequest.getStyle();
+        final Style style = styleRequest.getStyle();
         Assert.notNull(style, "You cannot authorize a style request with a null style");
 
-        Customer customer = styleRequest.getCustomer();
+        final Customer customer = styleRequest.getCustomer();
         Assert.notNull(customer.getId(), customer.getPayment());
 
         final double price = style.getPrice();
-        String stylrequestID = Long.toString(styleRequest.getId());
+        final String stylrequestID = Long.toString(styleRequest.getId());
 
         final ComputeTaxResponse tax = computeTax(
                 stylrequestID,
@@ -109,14 +109,14 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     public StyleRequest settlePreAuthPayment(final StyleRequest styleRequest) {
         Assert.notNull(styleRequest, "Style request cannot be null");
 
-        StyleRequestPayment srPayment = styleRequest.getAuthorizedPayment();
+        final StyleRequestPayment srPayment = styleRequest.getAuthorizedPayment();
         Assert.notNull(srPayment, "Style request authorized payment cannot be null");
         Assert.isTrue(srPayment.getPaymentStatus() == PaymentStatus.AUTHORIZED, "Settling an unauthorized transaction is forbidden");
 
-        String authorizedId = srPayment.getTransactionId();
+        final String authorizedId = srPayment.getTransactionId();
         Assert.notNull(authorizedId, "Pre-Authorized Transaction must have an ID");
 
-        Style style = styleRequest.getStyle();
+        final Style style = styleRequest.getStyle();
         final double price = style.getPrice();
         String stylrequestID = Long.toString(styleRequest.getId());
 
@@ -130,9 +130,9 @@ public class BraintreePaymentServiceImpl implements PaymentService {
                 styleRequest.getAddOns()
         );
 
-        double totalPrice = price + tax.getComputeTaxResponse().getTotalTax();
+        final double totalPrice = price + tax.getComputeTaxResponse().getTotalTax();
 
-        Transaction transaction = settleTransaction(authorizedId, totalPrice);
+        final Transaction transaction = settleTransaction(authorizedId, totalPrice);
 
         final StyleRequestPayment settledPayment = createPayment(transaction, styleRequest.getMerchant().getId(), PaymentStatus.SETTLED, tax);
         styleRequest.setSettledPayment(settledPayment);
@@ -152,13 +152,13 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     @Override
     public ComputeTaxResponse computeTax(String stylerequestID, String styleName, double servicePrice, Address merchantAddress, Address customerAddress, List<AddOn> addOns) {
 
-        TaxRequest taxRequest = new TaxRequest(DateTime.now().toString("yyyyMMdd"), "SALE");
-        Currency currency = new Currency();
+        final TaxRequest taxRequest = new TaxRequest(DateTime.now().toString("yyyyMMdd"), "SALE");
+        final Currency currency = new Currency();
         currency.setIsoCurrencyCode("USD");
         taxRequest.setCurrency(currency);
 
-        Seller seller = new Seller();
-        PhysicalOrigin sellerOrigin = new PhysicalOrigin();
+        final Seller seller = new Seller();
+        final PhysicalOrigin sellerOrigin = new PhysicalOrigin();
         sellerOrigin.setCity(merchantAddress.getLocation().getCity());
         sellerOrigin.setStateOrProvince(merchantAddress.getLocation().getState());
         sellerOrigin.setDistrictOrCounty(merchantAddress.getDistrict());
@@ -167,8 +167,8 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         seller.setPhysicalOrigin(sellerOrigin);
         taxRequest.setSeller(seller);
 
-        Buyer buyer = new Buyer();
-        PhysicalOrigin buyerOrigin = new PhysicalOrigin();
+        final Buyer buyer = new Buyer();
+        final PhysicalOrigin buyerOrigin = new PhysicalOrigin();
         buyerOrigin.setCity(customerAddress.getLocation().getCity());
         buyerOrigin.setStateOrProvince(customerAddress.getLocation().getState());
         buyerOrigin.setDistrictOrCounty(customerAddress.getDistrict());
@@ -239,7 +239,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
     @Override
     public void updatePayment(Long customerId, PaymentMethod paymentMethod, PaymentType paymentType, String nonce, boolean isDefault) {
-        Customer customer = repository.findOne(customerId, Customer.class);
+        final Customer customer = repository.findOne(customerId, Customer.class);
         customer.getPayment().getPaymentItems().add(new PaymentItem(paymentType, paymentMethod, isDefault));
         addPaymentMethod(nonce, paymentMethod);
 
@@ -251,7 +251,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
         Assert.notNull(styleRequestId);
 
-        StyleRequest request = repository.findOne(styleRequestId, StyleRequest.class);
+        final StyleRequest request = repository.findOne(styleRequestId, StyleRequest.class);
         Assert.notNull(request, "Stylerequest with ID " + styleRequestId + " cannot be found");
         Assert.notNull(request.getSettledPayment(), "Cannot refund a Style request ID:" + styleRequestId + " with no settled payment");
 
@@ -275,7 +275,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
     @Override
     public Transaction settleTransaction(String transactionId, double amount) {
-        Result<Transaction> result = gateway.transaction().submitForSettlement(transactionId, BigDecimal.valueOf(amount));
+        final Result<Transaction> result = gateway.transaction().submitForSettlement(transactionId, BigDecimal.valueOf(amount));
 
         if (!result.isSuccess()) {
             throw new PaymentException("Braintree settle transaction request failed: " + result.getMessage());
@@ -292,7 +292,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
             clientTokenRequest.customerId(entityId);
         }
 
-        String result = gateway.clientToken().generate(clientTokenRequest);
+        final String result = gateway.clientToken().generate(clientTokenRequest);
 
         if (StringUtils.isEmpty(result)){
             logger.warn("Failed to issue token for entity {}", entityId);
@@ -302,11 +302,11 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
     @Override
     public String createProfile(String userId, String nonce) {
-        CustomerRequest request = new CustomerRequest()
+        final CustomerRequest request = new CustomerRequest()
                 .customerId(userId)
                 .paymentMethodNonce(nonce);
 
-        Result<com.braintreegateway.Customer> result = gateway.customer().create(request);
+        final Result<com.braintreegateway.Customer> result = gateway.customer().create(request);
 
         if (!result.isSuccess()){
             logger.error("Braintree create customer request failed: {}", result.getMessage());
@@ -341,10 +341,11 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
     @Override
     public boolean addPaymentMethod(String nonce, PaymentMethod paymentMethod) {
-        PaymentMethodRequest request = new PaymentMethodRequest()
+        final PaymentMethodRequest request = new PaymentMethodRequest()
                 .customerId(paymentMethod.getCustomerId())
                 .paymentMethodNonce(nonce);
-        Result<? extends com.braintreegateway.PaymentMethod> result = gateway.paymentMethod().create(request);
+
+        final Result<? extends com.braintreegateway.PaymentMethod> result = gateway.paymentMethod().create(request);
 
         if (!result.isSuccess()){
             logger.error("Braintree add new payment method request failed: {}", result.getMessage());

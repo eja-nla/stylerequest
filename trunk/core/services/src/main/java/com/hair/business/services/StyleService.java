@@ -1,5 +1,6 @@
 package com.hair.business.services;
 
+import com.hair.business.beans.entity.GeoPointExt;
 import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Style;
 
@@ -13,6 +14,8 @@ import java.util.List;
 public interface StyleService {
 
     Style findStyle(Long styleId);
+
+    String geoSeachStyles(GeoPointExt point, int radius);
 
     Style publishStyle(Style style, Long publisherId);
 
