@@ -3,6 +3,8 @@ package com.hair.business.beans.entity;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.condition.IfNotNull;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 
 /**
@@ -19,22 +21,28 @@ public class Review extends AbstractActorEnablerEntity {
     private String authorDisplayName; // writer of the review
     private String ownerDisplayName; // for who the review is meant
 
-    private long authorId; // to look them up for further subsequent operations
-    private long ownerId;
+    @Index private long authorId; // to look them up for further subsequent operations
+    @Index private long ownerId;
 
-    private int stars;
-    private String comment;
+    @Index private double overallStars;
+    @Index private double easyToFindStars;  //how easy is navigating to them or them to you?
+    @Index private double professionalismStars; // how is their courtesy? Are they kind, understanding and friendly?
+    @Index private double skilledStars; // how is good is their work, their fading/cut/trim?
+
+
+    @Index({IfNotNull.class}) private String comment;
 
     public Review() {
     }
 
-    public Review(String authorDisplayName, String ownerDisplayName, long authorId, long ownerId, int stars, String comment) {
+    public Review(String authorDisplayName, String ownerDisplayName, long authorId, long ownerId, int overallStars,  int skilledStars, String comment) {
         this();
         this.authorDisplayName = authorDisplayName;
         this.ownerDisplayName = ownerDisplayName;
         this.authorId = authorId;
         this.ownerId = ownerId;
-        this.stars = stars;
+        this.overallStars = overallStars;
+        this.skilledStars = skilledStars;
         this.comment = comment;
     }
 
@@ -78,12 +86,12 @@ public class Review extends AbstractActorEnablerEntity {
         this.ownerId = ownerId;
     }
 
-    public int getStars() {
-        return stars;
+    public double getOverallStars() {
+        return (professionalismStars + easyToFindStars) / 2;
     }
 
-    public void setStars(int stars) {
-        this.stars = stars;
+    public void setOverallStars(int overallStars) {
+        this.overallStars = overallStars;
     }
 
     public String getComment() {
@@ -92,5 +100,29 @@ public class Review extends AbstractActorEnablerEntity {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public double getEasyToFindStars() {
+        return easyToFindStars;
+    }
+
+    public void setEasyToFindStars(double easyToFindStars) {
+        this.easyToFindStars = easyToFindStars;
+    }
+
+    public double getProfessionalismStars() {
+        return professionalismStars;
+    }
+
+    public void setProfessionalismStars(int professionalismStars) {
+        this.professionalismStars = professionalismStars;
+    }
+
+    public double getSkilledStars() {
+        return skilledStars;
+    }
+
+    public void setSkilledStars(int skilledStars) {
+        this.skilledStars = skilledStars;
     }
 }

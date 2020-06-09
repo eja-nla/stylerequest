@@ -7,6 +7,9 @@ package com.hair.business.beans.abstracts;
  *
  */
 public abstract class AbstractTransactionEntity extends AbstractPersistenceEntity {
+
+    AbstractTransactionEntity(){}
+
     private String firstName;
     private String lastName;
 

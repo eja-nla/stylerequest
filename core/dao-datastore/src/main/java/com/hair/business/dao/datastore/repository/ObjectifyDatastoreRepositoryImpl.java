@@ -94,7 +94,7 @@ public class ObjectifyDatastoreRepositoryImpl implements Repository {
             Assert.hasPermanentId(e);
             ((AbstractPersistenceEntity) e).setLastUpdated(DateTime.now());
         });
-        ofy().save().entities(entities).now();
+        ofy().save().entities(entities);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class ObjectifyDatastoreRepositoryImpl implements Repository {
             Assert.hasPermanentId(entity);
             ((AbstractPersistenceEntity) entity).setLastUpdated(DateTime.now());
         }
-        ofy().save().entities(entities).now();
+        ofy().save().entities(entities);
     }
 
     @Override

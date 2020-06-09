@@ -67,12 +67,12 @@ public class SendgridStyleRequestEmailHandler implements EmailHandler {
     }
 
     private void send(String body){
-        Request r = request.get();
+        final Request r = request.get();
         r.endpoint = endpoint;
         r.method = Method.POST; // do these inits elsewhere, once. Maybe in threadlocal's get?
         try {
             r.body = body;
-            Response response = sg.api(r);
+            final Response response = sg.api(r);
 
             logger.debug("SendGrid email response: {} Response body: {} Response header: {}", response.statusCode, response.body, response.headers);
         } catch (Exception e) {
@@ -87,7 +87,7 @@ public class SendgridStyleRequestEmailHandler implements EmailHandler {
     }
 
     private Request clone(ThreadLocal<Request> request) {
-        Request req = new Request();
+        final Request req = new Request();
         req.baseUri = request.get().baseUri;
         req.body = request.get().body;
         req.endpoint = request.get().endpoint;

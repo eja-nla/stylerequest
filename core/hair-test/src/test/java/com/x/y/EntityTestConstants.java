@@ -108,7 +108,7 @@ public class EntityTestConstants {
     }
 
     public static Review createReview(){
-        Review r = new Review("author's name here", "owner's name here", new Random().nextLong(), new Random().nextLong(), new Random().nextInt(), "Perfect review");
+        Review r = new Review("author's name here", "owner's name here", new Random().nextLong(), new Random().nextLong(), new Random().nextInt(), new Random().nextInt(), "Perfect review");
         r.setId(new Random().nextLong());
         r.setPermanentId(r.getId());
         return r;
