@@ -78,11 +78,10 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
      * Gets from the provided aliases
      * **/
     public T findOne(Long id, Class<T> tClass){
-        //ES 7.x mandates use of default _doc type
-        final Request getOneRequest = new Request("GET", "/" + getIndex() + "/_doc/" + id);
+        final Request getOneRequest = new Request("GET", "/" + getIndex() + "/_source/" + id);
         try {
             InputStream res = client.performRequest(getOneRequest).getEntity().getContent();
-            return objectMapper.treeToValue(objectMapper.readTree(res).get("_source"), tClass);
+            return objectMapper.readValue(res, tClass);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
