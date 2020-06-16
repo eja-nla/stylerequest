@@ -43,7 +43,12 @@ public class SalesTaxPalHttpClientImpl extends AbstractHttpClient<ComputeTaxRequ
     }
 
     public void renewApiKey() throws IOException {
-        String request = "{ \"loginType\": { \"tokenAccess\": { \"accessKeyId\": \"65E7959B-018A-3AE8-9778-30BC0B8ED07B\", \"accessKeyValue\": \"01C37546-BE9E-3404-B5AE-61DFA29187BB\" } }, \"transactionDate\": " + DateTime.now().toString("yyyyMMdd") + "}";
+        String request = String.format("{ \"loginType\": " +
+                "{ \"tokenAccess\": " +
+                    "{ \"accessKeyId\": \"%s\", \"accessKeyValue\": \"%s\" } " +
+                "}, " +
+                "\"transactionDate\": \"%s\"}"
+                , System.getProperty("salestaxpal.accessKeyId"), System.getProperty("salestaxpal.accessKeyValue"), DateTime.now().toString("yyyyMMdd"));
 
         final InputStream response = doPost(request.getBytes(), "access/token");
         final String token = objectMapper.readTree(response).get("tokenAccess").get("token").textValue();

@@ -14,6 +14,7 @@ import com.x.business.utilities.Assert;
 
 import org.slf4j.Logger;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,11 +44,11 @@ public class StyleServiceImpl implements StyleService {
     }
 
     @Override
-    public String geoSeachStyles(GeoPointExt point, int radius) {
+    public InputStream geoSeachStyles(GeoPointExt point, int radius, int pageSize) {
         //Right now, we do nothing to enrich the request or response but mandate that
         // all queries come through backend for tracking and future enrichment.
 
-        return hairstyleRepository.searchRadius(radius, point);
+        return hairstyleRepository.searchRadius(radius, point, pageSize);
     }
 
     @Override
@@ -102,6 +103,7 @@ public class StyleServiceImpl implements StyleService {
 
     @Override
     public List<Style> findStylesByDescription(String description) {
+        //search by name and description
         return null;
     }
 
@@ -116,6 +118,12 @@ public class StyleServiceImpl implements StyleService {
 
         hairstyleRepository.saveOne(style);
         datastoreRepository.saveOne(style);
+    }
+
+    @Override
+    public InputStream scroll(String scroll, String scrollId) {
+        //what value are we adding by doing this?
+        return hairstyleRepository.fetchScroll(scroll, scrollId);
     }
 
 }
