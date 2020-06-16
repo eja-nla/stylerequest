@@ -79,14 +79,32 @@ public class StyleServlet extends AbstractRequestServlet {
     @POST
     @Path("/geoStyles")
     @Produces(APPLICATION_JSON)
-    public Response geoStyles(@QueryParam("lon") double lon, @QueryParam("lat") double lat, @QueryParam("radius") int radius) {
+    public Response geoStyles(@QueryParam("lon") double lon, @QueryParam("lat") double lat, @QueryParam("radius") int radiusInKm, @QueryParam("pageSize") int pageSize) {
+        /**
+         * We will return pages of ~100 styles, preloading 20 at a time at the client side.*/
         try {
             Assert.isTrue(lon != 0, "Longitude cannot be zero");
             Assert.isTrue(lat != 0, "Latitude cannot be zero");
-            Assert.isTrue(radius > 0, "Radius must be greater than zero");
+            Assert.isTrue(radiusInKm > 0, "Radius must be greater than zero");
 
             GeoPointExt geoPoint = new GeoPointExt(lat, lon);
-            return Response.ok(styleService.geoSeachStyles(geoPoint, radius), MediaType.APPLICATION_JSON).build();
+            return Response.ok(styleService.geoSeachStyles(geoPoint, radiusInKm, pageSize==0?100:pageSize), MediaType.APPLICATION_JSON).build();
+        } catch (IllegalArgumentException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Path("/scroll")
+    @Produces(APPLICATION_JSON)
+    //the scroll API comes here
+    //"scroll" : "1m",
+    //"scroll_id" : "DXF1ZXJ5QW5kRmV0Y2gBAAAAAAAAAD4WYm9laVYtZndUQlNsdDcwakFMNjU1QQ=="
+    public Response fetchPages(@QueryParam("scroll") String scroll, @QueryParam("scrollId") String scrollId){
+        try {
+            Assert.notNull(scroll, "Scroll cannot be null");
+            Assert.notNull(scrollId, "Scroll ID cannot be null");
+            return Response.ok(styleService.scroll(scroll, scrollId), MediaType.APPLICATION_JSON).build();
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
