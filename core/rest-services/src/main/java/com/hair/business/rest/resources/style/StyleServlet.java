@@ -88,7 +88,7 @@ public class StyleServlet extends AbstractRequestServlet {
             Assert.isTrue(radiusInKm > 0, "Radius must be greater than zero");
 
             GeoPointExt geoPoint = new GeoPointExt(lat, lon);
-            return Response.ok(styleService.geoSeachStyles(geoPoint, radiusInKm, pageSize==0?100:pageSize), MediaType.APPLICATION_JSON).build();
+            return Response.ok(styleService.geoFind(geoPoint, radiusInKm, pageSize==0?100:pageSize), MediaType.APPLICATION_JSON).build();
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
@@ -105,6 +105,30 @@ public class StyleServlet extends AbstractRequestServlet {
             Assert.notNull(scroll, "Scroll cannot be null");
             Assert.notNull(scrollId, "Scroll ID cannot be null");
             return Response.ok(styleService.scroll(scroll, scrollId), MediaType.APPLICATION_JSON).build();
+        } catch (IllegalArgumentException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Path("/search")
+    @Produces(APPLICATION_JSON)
+    public Response search(@QueryParam("term") String term){
+        try {
+            Assert.notNull(term, "Search term cannot be null");
+            return Response.ok(styleService.search(term), MediaType.APPLICATION_JSON).build();
+        } catch (IllegalArgumentException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Path("/geosearch")
+    @Produces(APPLICATION_JSON)
+    public Response geoSearch(@QueryParam("term") String term, @QueryParam("lon") double lon, @QueryParam("lat") double lat, @QueryParam("radius") int radiusInKm){
+        try {
+            Assert.notNull(term, "Search term cannot be null");
+            return Response.ok(styleService.geoSearch(term, radiusInKm, lat, lon), MediaType.APPLICATION_JSON).build();
         } catch (IllegalArgumentException e){
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
