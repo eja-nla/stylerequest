@@ -44,11 +44,11 @@ public class StyleServiceImpl implements StyleService {
     }
 
     @Override
-    public InputStream geoSeachStyles(GeoPointExt point, int radius, int pageSize) {
+    public InputStream geoFind(GeoPointExt point, int radius, int pageSize) {
         //Right now, we do nothing to enrich the request or response but mandate that
         // all queries come through backend for tracking and future enrichment.
 
-        return hairstyleRepository.searchRadius(radius, point, pageSize);
+        return hairstyleRepository.searchRadius(HairstyleElasticsearchRepositoryImpl.DISTANCE_QUERY, radius, point, pageSize);
     }
 
     @Override
@@ -102,9 +102,13 @@ public class StyleServiceImpl implements StyleService {
     }
 
     @Override
-    public List<Style> findStylesByDescription(String description) {
-        //search by name and description
-        return null;
+    public InputStream search(String term) {
+        return hairstyleRepository.search(term);
+    }
+
+    @Override
+    public InputStream geoSearch(String term, int radius, double lat, double lon) {
+        return hairstyleRepository.geoTermSearch(term, radius, lat, lon);
     }
 
     @Override

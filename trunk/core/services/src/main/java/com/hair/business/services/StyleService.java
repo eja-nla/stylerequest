@@ -16,18 +16,44 @@ public interface StyleService {
 
     Style findStyle(Long styleId);
 
-    InputStream geoSeachStyles(GeoPointExt point, int radius, int pageSize);
+    /**
+     * Radius find
+     * */
+    InputStream geoFind(GeoPointExt point, int radius, int pageSize);
 
+    /**
+     * Term based search
+     * */
+    InputStream search(String term);
+
+    /**
+     * Term based radius search
+     * */
+    InputStream geoSearch(String term, int radius, double lat, double lon);
+
+    /**
+     * Publish new style
+     * */
     Style publishStyle(Style style, Long publisherId);
 
+    /**
+     * Update the images of a style
+     * */
     void updateStyleImages(Long styleId, List<Image> styleImages);
 
+    /**
+     * update style details
+     * */
     void updateStyle(Style style);
 
+    /**
+     * find styles using ids
+     * */
     List<Style> findStyles(List<Long> ids);
 
-    List<Style> findStylesByDescription(String description);
-
+    /**
+     * deactivate style
+     * */
     void removeStyle(Long styleId);
 
     /**

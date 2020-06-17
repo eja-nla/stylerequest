@@ -26,25 +26,6 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
     private final RestClient client;
     private final ObjectMapper objectMapper;
 
-    private static final String DISTANCE_QUERY = "{\n" +
-            "    \"query\": {\n" +
-            "        \"bool\" : {\n" +
-            "            \"must\" : {\n" +
-            "                \"term\" : { \"active\" : true }\n" +
-            "            },\n" +
-            "            \"filter\" : {\n" +
-            "                \"geo_distance\" : {\n" +
-            "                    \"distance\" : \"%skm\",\n" +
-            "                    \"location.geoPoint\" : {\n" +
-            "                        \"lat\" : %s,\n" +
-            "                        \"lon\" : %s\n" +
-            "                    }\n" +
-            "                }\n" +
-            "            }\n" +
-            "        }\n" +
-            "    }\n" +
-            "}";
-
     protected AbstractElasticsearchRepository(Provider<RestClient> clientProvider, Provider<ObjectMapper> objectMapperProvider) {
         this.client = clientProvider.get();
         this.objectMapper = objectMapperProvider.get();
@@ -110,9 +91,9 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
      * We return the json to upstream, no marshalling needed.
      *
      * */
-    public InputStream search(String queryString, int size){
+    public InputStream search(String queryString, int size, String filter){
         // remember to only search style.active = true; GET /active_hairstyles/_search?q=active:true&size=2
-        final Request searchRequest = new Request("POST", "/" + getAlias() + "/_search?size=" + size);
+        final Request searchRequest = new Request("POST", "/" + getAlias() + "/_search?size=" + size + filter);
         searchRequest.setJsonEntity(queryString);
 
         try {
@@ -126,9 +107,9 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
      * Distance search
      * We return the json to upstream, no marshalling needed.
      * */
-    public InputStream searchRadius(int kilometers, GeoPointExt geoPoint, int pageSize){
+    public InputStream searchRadius(String query, int kilometers, GeoPointExt geoPoint, int pageSize){
         final Request searchRequest = new Request("POST", "/" + getAlias() + "/_search?scroll=1m&size=" + pageSize);
-        searchRequest.setJsonEntity(String.format(DISTANCE_QUERY, kilometers, geoPoint.getLat(), geoPoint.getLon()));
+        searchRequest.setJsonEntity(String.format(query, kilometers, geoPoint.getLat(), geoPoint.getLon()));
 
         try {
             return client.performRequest(searchRequest).getEntity().getContent();
