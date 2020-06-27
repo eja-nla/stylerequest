@@ -8,7 +8,7 @@ import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
-import com.hair.business.dao.datastore.impl.HairstyleElasticsearchRepositoryImpl;
+import com.hair.business.dao.datastore.impl.HairstyleElasticsearchRepositoryExt;
 import com.x.business.exception.EntityNotFoundException;
 import com.x.business.utilities.Assert;
 
@@ -28,12 +28,12 @@ import javax.inject.Inject;
 public class StyleServiceImpl implements StyleService {
 
     private final Repository datastoreRepository;
-    private final HairstyleElasticsearchRepositoryImpl hairstyleRepository;
+    private final HairstyleElasticsearchRepositoryExt hairstyleRepository;
 
     private static final Logger logger = getLogger(StyleServiceImpl.class);
 
     @Inject
-    public StyleServiceImpl(Repository repository, HairstyleElasticsearchRepositoryImpl hairstyleRepository) {
+    public StyleServiceImpl(Repository repository, HairstyleElasticsearchRepositoryExt hairstyleRepository) {
         this.datastoreRepository = repository;
         this.hairstyleRepository = hairstyleRepository;
     }
@@ -48,7 +48,7 @@ public class StyleServiceImpl implements StyleService {
         //Right now, we do nothing to enrich the request or response but mandate that
         // all queries come through backend for tracking and future enrichment.
 
-        return hairstyleRepository.searchRadius(HairstyleElasticsearchRepositoryImpl.DISTANCE_QUERY, radius, point, pageSize);
+        return hairstyleRepository.searchRadius(HairstyleElasticsearchRepositoryExt.DISTANCE_QUERY, radius, point, pageSize);
     }
 
     @Override

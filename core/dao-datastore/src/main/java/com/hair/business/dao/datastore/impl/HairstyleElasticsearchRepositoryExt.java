@@ -21,7 +21,7 @@ import javax.inject.Provider;
  * Created by Kore Aguda on 6/24/19.
  */
 @Named
-public class HairstyleElasticsearchRepositoryImpl extends AbstractElasticsearchRepository<Style> {
+public class HairstyleElasticsearchRepositoryExt extends AbstractElasticsearchRepository<Style> {
 
     private static final DateTime dateTime = DateTime.now();
     private static final String styleIndexName = "hairstyles" + "_" + dateTime.getMonthOfYear() + "_" + dateTime.getYear();
@@ -87,7 +87,7 @@ public class HairstyleElasticsearchRepositoryImpl extends AbstractElasticsearchR
             "}";
 
     @Inject
-    public HairstyleElasticsearchRepositoryImpl(Provider<RestClient> clientProvider, Provider<ObjectMapper> objectMapperProvider) {
+    public HairstyleElasticsearchRepositoryExt(Provider<RestClient> clientProvider, Provider<ObjectMapper> objectMapperProvider) {
         super(clientProvider, objectMapperProvider);
 
         verifyIndex();

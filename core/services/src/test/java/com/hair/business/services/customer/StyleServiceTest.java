@@ -11,7 +11,7 @@ import static org.junit.Assert.assertThat;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
-import com.hair.business.dao.datastore.impl.HairstyleElasticsearchRepositoryImpl;
+import com.hair.business.dao.datastore.impl.HairstyleElasticsearchRepositoryExt;
 import com.hair.business.services.StyleService;
 import com.hair.business.services.StyleServiceImpl;
 import com.x.y.EntityTestConstants;
@@ -41,7 +41,7 @@ public class StyleServiceTest extends AbstractServicesTestBase {
     @Before
     public void setUp(){
         repository = injector.getInstance(Repository.class);
-        styleService = new StyleServiceImpl(repository, Mockito.mock(HairstyleElasticsearchRepositoryImpl.class));
+        styleService = new StyleServiceImpl(repository, Mockito.mock(HairstyleElasticsearchRepositoryExt.class));
     }
 
     @Test

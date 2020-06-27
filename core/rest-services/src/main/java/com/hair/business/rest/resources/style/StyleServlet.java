@@ -8,7 +8,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import com.hair.business.beans.entity.GeoPointExt;
 import com.hair.business.beans.entity.Style;
-import com.hair.business.dao.datastore.impl.HairstyleElasticsearchRepositoryImpl;
+import com.hair.business.dao.datastore.impl.HairstyleElasticsearchRepositoryExt;
 import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.StyleService;
 import com.x.business.utilities.Assert;
@@ -34,11 +34,11 @@ import javax.ws.rs.core.Response;
 public class StyleServlet extends AbstractRequestServlet {
 
     private final StyleService styleService;
-    private final HairstyleElasticsearchRepositoryImpl hairstyleElasticsearchRepository;
+    private final HairstyleElasticsearchRepositoryExt hairstyleElasticsearchRepository;
     private final String NULL_MESSAGE = "Incoming object cannot be null";
 
     @Inject
-    public StyleServlet(StyleService styleService, HairstyleElasticsearchRepositoryImpl hairstyleElasticsearchRepository) {
+    public StyleServlet(StyleService styleService, HairstyleElasticsearchRepositoryExt hairstyleElasticsearchRepository) {
         this.styleService = styleService;
         this.hairstyleElasticsearchRepository = hairstyleElasticsearchRepository;
     }
