@@ -1,5 +1,6 @@
 package com.hair.business.services.payment.braintree;
 
+import static com.hair.business.services.client.retry.RetryWithExponentialBackOff.execute;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import com.braintreegateway.BraintreeGateway;
@@ -31,7 +32,6 @@ import com.hair.business.beans.entity.tax.TaxRequest;
 import com.hair.business.beans.entity.tax.UnitPrice;
 import com.hair.business.beans.helper.PaymentStatus;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
-import com.hair.business.services.client.retry.RetryWithExponentialBackOff;
 import com.hair.business.services.payment.PaymentService;
 import com.hair.business.services.tax.SalesTaxPalHttpClientImpl;
 import com.x.business.exception.PaymentException;
@@ -263,9 +263,9 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     public Result refund(String transactionId, BigDecimal amount) {
         Result<Transaction> result;
         if (amount == null || amount.compareTo(BigDecimal.ZERO) == 0) {
-            result = RetryWithExponentialBackOff.execute(() -> gateway.transaction().refund(transactionId));
+            result = execute(() -> gateway.transaction().refund(transactionId));
         } else {
-            result = RetryWithExponentialBackOff.execute(() -> gateway.transaction().refund(transactionId, amount));
+            result = execute(() -> gateway.transaction().refund(transactionId, amount));
         }
         if (result != null && !result.isSuccess()){
             logger.error("Braintree refund request failed: {}", result.getMessage());
@@ -276,7 +276,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
 
     @Override
     public Transaction settleTransaction(String transactionId, double amount) {
-        final Result<Transaction> result = RetryWithExponentialBackOff.execute(() -> gateway.transaction().submitForSettlement(transactionId, BigDecimal.valueOf(amount)));
+        final Result<Transaction> result = execute(() -> gateway.transaction().submitForSettlement(transactionId, BigDecimal.valueOf(amount)));
 
         if (!result.isSuccess()) {
             throw new PaymentException("Braintree settle transaction request failed: " + result.getMessage());
@@ -293,7 +293,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
             clientTokenRequest.customerId(entityId);
         }
 
-        final String result = RetryWithExponentialBackOff.execute(() -> gateway.clientToken().generate(clientTokenRequest));
+        final String result = execute(() -> gateway.clientToken().generate(clientTokenRequest));
 
         if (StringUtils.isEmpty(result)){
             logger.warn("Failed to issue token for entity {}", entityId);
@@ -307,7 +307,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
                 .customerId(userId)
                 .paymentMethodNonce(nonce);
 
-        final Result<com.braintreegateway.Customer> result = RetryWithExponentialBackOff.execute(() -> gateway.customer().create(request));
+        final Result<com.braintreegateway.Customer> result = execute(() -> gateway.customer().create(request));
 
         if (!result.isSuccess()){
             logger.error("Braintree create customer request failed: {}", result.getMessage());
@@ -331,7 +331,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
                 .submitForSettlement(isSettled)
                 .done();
 
-        final Result result = RetryWithExponentialBackOff.execute(() -> gateway.transaction().sale(request));
+        final Result result = execute(() -> gateway.transaction().sale(request));
 
         if (!result.isSuccess()){
             throw new PaymentException("Payment authorization failed with message: " + result.getMessage());
@@ -346,7 +346,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
                 .customerId(paymentMethod.getCustomerId())
                 .paymentMethodNonce(nonce);
 
-        final Result<? extends com.braintreegateway.PaymentMethod> result = RetryWithExponentialBackOff.execute(() -> gateway.paymentMethod().create(request));
+        final Result<? extends com.braintreegateway.PaymentMethod> result = execute(() -> gateway.paymentMethod().create(request));
 
         if (!result.isSuccess()){
             logger.error("Braintree add new payment method request failed: {}", result.getMessage());

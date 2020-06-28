@@ -1,6 +1,7 @@
 package com.hair.business.services.client.retry;
 
 
+import static com.hair.business.services.client.retry.RetryWithExponentialBackOff.execute;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
 
@@ -24,7 +25,7 @@ public class RetryWithExponentialBackOffTest {
     public void testNoRetry() {
         Test1 cmd = new Test1();
 
-        String result = RetryWithExponentialBackOff.execute(cmd::get);
+        String result = execute(cmd::get);
         assertEquals(cmd.get(), result);
     }
 
@@ -37,7 +38,7 @@ public class RetryWithExponentialBackOffTest {
         exception.expect(RuntimeException.class);
 
         exception.expectMessage(containsString("Final Retry attempt failed"));
-        RetryWithExponentialBackOff.execute(exponentialBackupFunc::getThrows, fib);
+        execute(exponentialBackupFunc::getThrows, fib);
     }
 
     class Test1{
