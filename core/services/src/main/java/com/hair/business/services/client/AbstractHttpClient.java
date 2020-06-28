@@ -2,7 +2,7 @@ package com.hair.business.services.client;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hair.business.services.client.retry.ExponentialBackOff;
+import com.hair.business.services.client.retry.RetryWithExponentialBackOff;
 import com.x.business.exception.RestRequestException;
 
 import org.apache.http.HttpResponse;
@@ -41,7 +41,7 @@ public abstract class AbstractHttpClient<In, Out> {
         final HttpGet request = new HttpGet(fullUrl);
         getHeaders().forEach(request::addHeader);
 
-        final HttpResponse response = ExponentialBackOff.execute(() -> client.execute(request));
+        final HttpResponse response = RetryWithExponentialBackOff.execute(() -> client.execute(request));
 
         if (response != null) {
             responseCode = response.getStatusLine().getStatusCode();
@@ -69,7 +69,10 @@ public abstract class AbstractHttpClient<In, Out> {
         }
 
         byte[] jsonBytes = objectMapper.writeValueAsBytes(requestBean);
-        return objectMapper.readValue(doPost(jsonBytes, endpoint), responseClass);
+
+        final InputStream response = RetryWithExponentialBackOff.execute(() -> doPost(jsonBytes, endpoint));
+
+        return objectMapper.readValue(response, responseClass);
     }
 
     protected InputStream doPost(final byte[] requestBean, String endpoint) throws IOException {
@@ -84,7 +87,7 @@ public abstract class AbstractHttpClient<In, Out> {
             request.setEntity(new ByteArrayEntity(requestBean));
         }
 
-        final HttpResponse response = client.execute(request);
+        final HttpResponse response = RetryWithExponentialBackOff.execute(() -> client.execute(request));
 
         if (response != null) {
             responseCode = response.getStatusLine().getStatusCode();

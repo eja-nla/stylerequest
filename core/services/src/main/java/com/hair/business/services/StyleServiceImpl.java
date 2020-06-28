@@ -54,6 +54,9 @@ public class StyleServiceImpl implements StyleService {
     @Override
     public Style publishStyle(Style style, Long publisherId) {
         Assert.notNull(style, publisherId);
+
+        logger.info("Publishing new style for publisher {}", publisherId);
+
         Assert.isTrue(style.getStyleImages().size() >= 5, "Style must have at least 5 images showing different views");
 
         final Merchant merchant = datastoreRepository.findOne(publisherId, Merchant.class);
@@ -70,6 +73,8 @@ public class StyleServiceImpl implements StyleService {
         hairstyleRepository.saveOne(style);
         datastoreRepository.saveOne(style);
 
+        logger.info("Style {} published Successfully for publisher {}", stylePermId, publisherId);
+
         return style;
     }
 
@@ -78,8 +83,12 @@ public class StyleServiceImpl implements StyleService {
         Assert.notNull(style, "Style cannot be null");
         Assert.validId(datastoreRepository.peekOne(style.getId(), Style.class));
 
+        logger.info("Updating style {}", style.getId());
+
         hairstyleRepository.saveOne(style);
         datastoreRepository.saveOne(style);
+
+        logger.info("Style {} updated Successfully.", style.getId());
 
     }
 
@@ -114,6 +123,9 @@ public class StyleServiceImpl implements StyleService {
     @Override
     public void removeStyle(Long styleId) {
         Assert.validId(styleId);
+
+        logger.info("Attempting to remove Style {}", styleId);
+
         Style style = datastoreRepository.findOne(styleId, Style.class);
 
         Assert.notNull(style, String.format("Unable to remove style with id '%s'. Style not found", styleId));
@@ -122,6 +134,9 @@ public class StyleServiceImpl implements StyleService {
 
         hairstyleRepository.saveOne(style);
         datastoreRepository.saveOne(style);
+
+        logger.info("Style {} removed Successfully.");
+
     }
 
     @Override
