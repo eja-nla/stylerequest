@@ -52,12 +52,16 @@ public class RestServicesModule extends ServletModule {
     @Override
     protected void configureServlets() {
 
-        for (Class clazz : rc.getClasses()) {
+        for (Class<?> clazz : rc.getClasses()) {
             this.bind(clazz); // Register jersey resources
             exposeServletEndpoints(clazz);
         }
 
-        serve(API_ENDPOINT).with(GuiceContainer.class);
+        Map<String, String> initParams = new HashMap<>();
+        initParams.put("com.sun.jersey.config.feature.Trace", "true");
+        initParams.put("com.sun.jersey.api.json.POJOMappingFeature", "true");
+
+        serve(API_ENDPOINT).with(GuiceContainer.class, initParams);
         filter(API_ENDPOINT).through(ObjectifyFilter.class);
 
         bind(ObjectifyFilter.class).in(Singleton.class);
@@ -66,16 +70,10 @@ public class RestServicesModule extends ServletModule {
         bind(ObjectMapper.class).toProvider(ObjectMapperProvider.class).in(Singleton.class);
         bind(MessageBodyReader.class).to(JacksonJsonProvider.class).in(Singleton.class);
         bind(MessageBodyWriter.class).to(JacksonJsonProvider.class).in(Singleton.class);
-        Map<String, String> initParams = new HashMap<>();
-        initParams.put("com.sun.jersey.config.feature.Trace", "true");
-        initParams.put("com.sun.jersey.api.json.POJOMappingFeature", "true");
+
         bind(JacksonJsonProvider.class).toProvider(JacksonJsonProvidersProvider.class).in(Singleton.class);
 
-        //FirebaseAuth auth = initFirebaseAuth();
         bind(RestEndpointServletFilter.class).toInstance(new RestEndpointServletFilter());
-//        bind(FirebaseSessionLoginServlet.class).toInstance(new FirebaseSessionLoginServlet(auth));
-
-        install(this);
 
     }
 

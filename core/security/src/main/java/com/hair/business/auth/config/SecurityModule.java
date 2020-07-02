@@ -24,6 +24,5 @@ public class SecurityModule extends AbstractModule {
             log.severe(e.getMessage());
         }
 
-        install(this);
     }
 }

@@ -39,7 +39,6 @@ public class DaoDatastoreModule extends AbstractModule {
 
         requireBinding(Repository.class);
 
-        install(this);
     }
 
     @Singleton

@@ -58,7 +58,6 @@ public class ServicesModule extends AbstractModule {
 
         bindInterceptor(any(), NotSyntheticMethodMatcher.INSTANCE.and(annotatedWith(Timed.class)), new ExecTimeLoggerInterceptor());
 
-        install(this);
     }
 
     @Singleton

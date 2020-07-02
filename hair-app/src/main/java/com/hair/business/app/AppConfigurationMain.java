@@ -45,8 +45,6 @@ public class AppConfigurationMain extends GuiceServletContextListener {
                     Properties props = loadProperties();
                     log.info("found properties {}", props.propertyNames());
                     Names.bindProperties(binder(), props);
-
-                    install(this);
                 }
             }
 
