@@ -1,22 +1,16 @@
 package com.hair.business.rest.resources.merchant;
 
-import static com.hair.business.rest.MvcConstants.ACCEPT_REQUEST_ENDPOINT;
-import static com.hair.business.rest.MvcConstants.CANCEL_REQUEST_ENDPOINT;
-import static com.hair.business.rest.MvcConstants.COMPLETE_REQUEST_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.CREATE_MERCHANT_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.ID;
 import static com.hair.business.rest.MvcConstants.INFO;
 import static com.hair.business.rest.MvcConstants.MERCHANT_URI;
-import static com.hair.business.rest.MvcConstants.PUBLISH_STYLE_ENDPOINT;
 import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import com.google.firebase.auth.FirebaseToken;
 
-import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.entity.Merchant;
-import com.hair.business.beans.entity.Style;
 import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.StyleRequestService;
 import com.hair.business.services.StyleService;
@@ -94,77 +88,4 @@ public class MerchantRequestServlet extends AbstractRequestServlet {
         }
     }
 
-    @POST
-    @Path(PUBLISH_STYLE_ENDPOINT)
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
-    public Response publishStyle(Style style, @QueryParam("merchantId") Long merchantId) {
-        try {
-            //return Response.ok(styleService.publishStyle(styleName, estimatedDuration, merchantId, styleImages), MediaType.APPLICATION_JSON_TYPE).build();
-            return Response.ok(styleService.publishStyle(style, merchantId), MediaType.APPLICATION_JSON_TYPE).build();
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
-        }
-
-    }
-
-    /**
-     * With current design, it's possible for a different merchant to accept a styleRequest
-     * The alternative is to load the stylerequest's merchant and compare their email with this merchant's email (obtained via Gitkit)
-     * That's costly (relative to the marginal benefit, given the chance of a different merchant accepting a request is actually low)
-     * as we have to do a fetch of the stylerequest merchant
-     * */
-    @POST
-    @Path(ACCEPT_REQUEST_ENDPOINT)
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
-    public Response acceptRequest(@QueryParam("stylerequestId") Long styleRequestId, Preferences preferences) {
-        try {
-            styleRequestService.acceptStyleRequest(styleRequestId, preferences);
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
-        }
-
-        return Response.ok().build();
-    }
-
-    @POST
-    @Path(CANCEL_REQUEST_ENDPOINT)
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
-    public Response cancelRequest(@QueryParam("stylerequestId") Long styleRequestId, Preferences preferences) {
-        Assert.validId(styleRequestId);
-
-        try {
-            styleRequestService.cancelStyleRequest(styleRequestId, preferences);
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
-        }
-
-        return Response.ok().build();
-    }
-
-    @POST
-    @Path(COMPLETE_REQUEST_ENDPOINT)
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
-    public Response completeRequest(@QueryParam("stylerequestId") Long styleRequestId, Preferences preferences) {
-        Assert.validId(styleRequestId);
-
-        try {
-            styleRequestService.completeStyleRequest(styleRequestId, preferences);
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
-        }
-
-        return Response.ok().build();
-    }
 }

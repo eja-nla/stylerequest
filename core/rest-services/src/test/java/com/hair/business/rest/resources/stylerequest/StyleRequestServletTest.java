@@ -114,4 +114,19 @@ public class StyleRequestServletTest {
 //        assertThat(result_ok.getStatus(), is(Response.Status.OK.getStatusCode()));
 //    }
 
+    @Test
+    public void testAcceptRequest() throws Exception {
+        assertThat(styleRequestServlet.acceptRequest(1L, null).getStatus(), is(Response.Status.OK.getStatusCode()));
+    }
+
+    @Test
+    public void testCancelRequest() throws Exception {
+        assertThat(styleRequestServlet.cancelRequest(1L, null).getStatus(), is(Response.Status.OK.getStatusCode()));
+    }
+
+    @Test
+    public void testCompleteRequest() throws Exception {
+        assertThat(styleRequestServlet.completeRequest(1L, null).getStatus(), is(Response.Status.OK.getStatusCode()));
+    }
+
 }

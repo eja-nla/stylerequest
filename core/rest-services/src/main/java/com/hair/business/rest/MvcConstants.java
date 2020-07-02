@@ -28,7 +28,7 @@ public class MvcConstants {
     public static final String CREATE_MERCHANT_ENDPOINT = CREATE + MERCHANT_URI;
     public static final String CREATE_CUSTOMER_ENDPOINT = CREATE + CUSTOMER_URI;
     public static final String UPDATE_CUSTOMER_ENDPOINT = UPDATE + CUSTOMER_URI;
-    public static final String PUBLISH_STYLE_ENDPOINT = CREATE + STYLE_URI;
+    public static final String PUBLISH_STYLE_ENDPOINT = CREATE;
     public static final String UPDATE_PAYMENT_PATH = CUSTOMER_URI + UPDATE + "/payment";
     public static final String UPDATE_PREFERENCES_PATH = UPDATE + "/preferences";
     public static final String GET_APP_INFO_PATH = "/info/endpoints";
@@ -40,9 +40,9 @@ public class MvcConstants {
 
 
     ///accept/stylerequest
-    public static final String ACCEPT_REQUEST_ENDPOINT = "/accept" + STYLE_REQUEST_URI;
-    public static final String CANCEL_REQUEST_ENDPOINT = "/cancel" + STYLE_REQUEST_URI;
-    public static final String COMPLETE_REQUEST_ENDPOINT = "/complete" + STYLE_REQUEST_URI;
+    public static final String ACCEPT_REQUEST_ENDPOINT = "/accept";
+    public static final String CANCEL_REQUEST_ENDPOINT = "/cancel";
+    public static final String COMPLETE_REQUEST_ENDPOINT = "/complete";
 
     public static final String FIND_MERCHANT_PENDING_STYLEREQUEST_ENDPOINT = FIND_URI + MERCHANT_URI + PENDING_URI;
     public static final String FIND_MERCHANT_ACCEPTED_STYLEREQUEST_ENDPOINT = FIND_URI + MERCHANT_URI + ACCEPTED_URI;

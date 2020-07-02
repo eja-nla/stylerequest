@@ -2,6 +2,7 @@ package com.hair.business.rest.resources.style;
 
 import static com.hair.business.rest.MvcConstants.ID;
 import static com.hair.business.rest.MvcConstants.INFO;
+import static com.hair.business.rest.MvcConstants.PUBLISH_STYLE_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.STYLE_URI;
 import static com.hair.business.rest.MvcConstants.UPDATE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -59,6 +60,22 @@ public class StyleServlet extends AbstractRequestServlet {
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
+    }
+
+    @POST
+    @Path(PUBLISH_STYLE_ENDPOINT)
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    public Response publishStyle(Style style, @QueryParam("merchantId") Long merchantId) {
+        try {
+            //return Response.ok(styleService.publishStyle(styleName, estimatedDuration, merchantId, styleImages), MediaType.APPLICATION_JSON_TYPE).build();
+            return Response.ok(styleService.publishStyle(style, merchantId), MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
+        }
+
     }
 
     @POST

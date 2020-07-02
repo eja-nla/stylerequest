@@ -48,23 +48,4 @@ public class MerchantRequestServletTest {
         assertThat(merchantRequestServlet.createMerchant(request, new Merchant(), "fake-valid-nonce").getStatus(), is(Response.Status.OK.getStatusCode()));
     }
 
-    @Test
-    public void testPublishStyle() throws Exception {
-        assertThat(merchantRequestServlet.publishStyle(null, null).getStatus(), is(Response.Status.OK.getStatusCode()));
-    }
-
-    @Test
-    public void testAcceptRequest() throws Exception {
-        assertThat(merchantRequestServlet.acceptRequest(1L, null).getStatus(), is(Response.Status.OK.getStatusCode()));
-    }
-
-    @Test
-    public void testCancelRequest() throws Exception {
-        assertThat(merchantRequestServlet.cancelRequest(1L, null).getStatus(), is(Response.Status.OK.getStatusCode()));
-    }
-
-    @Test
-    public void testCompleteRequest() throws Exception {
-        assertThat(merchantRequestServlet.completeRequest(1L, null).getStatus(), is(Response.Status.OK.getStatusCode()));
-    }
 }
