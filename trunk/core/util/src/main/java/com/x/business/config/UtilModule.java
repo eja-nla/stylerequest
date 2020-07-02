@@ -27,7 +27,6 @@ public class UtilModule extends AbstractModule {
         bind(TaskQueue.class).annotatedWith(ApnsTaskQueue.class).to(ApnsTaskQueueImpl.class).in(Singleton.class);
         bind(TaskQueue.class).annotatedWith(EmailTaskQueue.class).to(EmailTaskQueueImpl.class).in(Singleton.class);
 
-        install(this);
     }
 
 }
