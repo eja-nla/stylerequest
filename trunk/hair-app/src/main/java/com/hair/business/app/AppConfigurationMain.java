@@ -38,17 +38,21 @@ public class AppConfigurationMain extends GuiceServletContextListener {
     @Override
     protected Injector getInjector() {
         log.info("Application initialization starting...");
-        Injector appInjector = Guice.createInjector(new DaoDatastoreModule(), new RestServicesModule(),
-                    new ServicesModule(), new SecurityModule(), new UtilModule(), new AbstractModule() {
-                @Override
-                protected void configure() {
-                    Properties props = loadProperties();
-                    log.info("found properties {}", props.propertyNames());
-                    Names.bindProperties(binder(), props);
+        Injector appInjector = Guice.createInjector(
+                new DaoDatastoreModule(),
+                new RestServicesModule(),
+                new ServicesModule(),
+                new SecurityModule(),
+                new UtilModule(),
+                new AbstractModule() {
+                    @Override
+                    protected void configure() {
+                        Properties props = loadProperties();
+                        log.info("found properties {}", props.propertyNames());
+                        Names.bindProperties(binder(), props);
+                    }
                 }
-            }
-
-        );
+            );
 
         log.info("Application initialization completed successfully");
 
