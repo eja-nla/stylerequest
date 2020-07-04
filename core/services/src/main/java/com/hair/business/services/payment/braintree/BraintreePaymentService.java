@@ -84,5 +84,5 @@ public interface BraintreePaymentService {
      * returns their ID
      **/
 
-    String createProfile(String email, String nonce);
+    String createProfile(String paymentId, String nonce);
 }
