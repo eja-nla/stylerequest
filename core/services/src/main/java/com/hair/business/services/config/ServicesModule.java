@@ -16,8 +16,8 @@ import com.hair.business.services.customer.CustomerServiceImpl;
 import com.hair.business.services.merchant.MerchantService;
 import com.hair.business.services.merchant.MerchantServiceImpl;
 import com.hair.business.services.metrics.ExecTimeLoggerInterceptor;
-import com.hair.business.services.payment.PaymentService;
-import com.hair.business.services.payment.braintree.BraintreePaymentServiceImpl;
+import com.hair.business.services.payment.stripe.StripePaymentService;
+import com.hair.business.services.payment.stripe.StripePaymentServiceImpl;
 import com.hair.business.services.pushNotification.PushNotificationServiceInternal;
 import com.hair.business.services.pushNotification.PushNotificationServiceNoopImpl;
 import com.hair.business.services.state.StylerequestStateMgr;
@@ -52,7 +52,8 @@ public class ServicesModule extends AbstractModule {
         bind(StyleRequestService.class).to(StyleRequestServiceImpl.class).in(Singleton.class);
         bind(StylerequestStateMgr.class).to(StylerequestStateMgrImpl.class).in(Singleton.class);
         bind(PushNotificationServiceInternal.class).to(PushNotificationServiceNoopImpl.class).in(Singleton.class);
-        bind(PaymentService.class).to(BraintreePaymentServiceImpl.class).in(Singleton.class);
+        //bind(PaymentService.class).to(BraintreePaymentServiceImpl.class).in(Singleton.class);
+        bind(StripePaymentService.class).to(StripePaymentServiceImpl.class).in(Singleton.class);
 
         bind(SalesTaxPalHttpClientImpl.class).in(Singleton.class);
 

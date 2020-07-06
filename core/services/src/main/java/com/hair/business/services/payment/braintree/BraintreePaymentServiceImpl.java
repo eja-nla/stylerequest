@@ -82,7 +82,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         Assert.notNull(style, "You cannot authorize a style request with a null style");
 
         final Customer customer = styleRequest.getCustomer();
-        Assert.notNull(customer.getId(), customer.getPayment());
+        Assert.notNull(customer.getId(), customer.getPaymentTrace());
 
         final double price = style.getPrice();
         final String stylrequestID = Long.toString(styleRequest.getId());
@@ -139,6 +139,16 @@ public class BraintreePaymentServiceImpl implements PaymentService {
         styleRequest.setSettledPayment(settledPayment);
 
         return styleRequest;
+    }
+
+    @Override
+    public String createCustomerProfile(String internalCustomerId) {
+        return null;
+    }
+
+    @Override
+    public String createMerchantProfile(String authorizationCode, String state) {
+        return null;
     }
 
     @Override
@@ -241,7 +251,7 @@ public class BraintreePaymentServiceImpl implements PaymentService {
     @Override
     public void updatePayment(Long customerId, PaymentMethod paymentMethod, PaymentType paymentType, String nonce, boolean isDefault) {
         final Customer customer = repository.findOne(customerId, Customer.class);
-        customer.getPayment().getPaymentItems().add(new PaymentItem(paymentType, paymentMethod, isDefault));
+        customer.getPaymentTrace().getPaymentItems().add(new PaymentItem(paymentType, paymentMethod, isDefault));
         addPaymentMethod(nonce, paymentMethod);
 
         repository.saveOne(customer);

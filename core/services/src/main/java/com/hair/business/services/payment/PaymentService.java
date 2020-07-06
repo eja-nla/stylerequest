@@ -12,9 +12,21 @@ import java.util.List;
 /**
  * Created by olukoredeaguda on 09/02/2017.
  *
+ *  Payment workflow looks like this:
+ *     //1. 7 days or less before appointment, charge the known total to the card (could be the estimatedPrice with or without addons)
+ *              We need 7 days or less because payment auth and charge only works within 7 days between this auth and the corresponding charge in step 3
+ *     //2. if customer/merchant cancel before the day, release the charge. No payment needed
+ *     //3. if they cancel on the day or don't show up, capture 20% of charge from 1
+ *     //4. when appt is completed, cancel the charge from 1, then authorize and charge (chargeNow) the total (style+addOn)
+ *
  * StyleRequest Payment processor
  */
 public interface PaymentService extends BraintreePaymentService {
+
+
+
+    String createCustomerProfile(String internalCustomerId);
+    String createMerchantProfile(String authorizationCode, String state);
 
     /**
      * Deduct one time payment with AddOns
@@ -35,4 +47,5 @@ public interface PaymentService extends BraintreePaymentService {
     ComputeTaxResponse computeTax(String stylerequestID, String styleName, double servicePrice, Address merchantAddress, Address customerAddress, List<AddOn> addOns);
 
     void updatePayment(Long customerId, PaymentMethod paymentMethod, PaymentType paymentType, boolean isDefault);
+
 }

@@ -61,4 +61,9 @@ public interface StyleRequestService extends AppointmentFinder {
      */
     void cancelStyleRequest(Long styleRequestId, Preferences preferences);
 
+    /**
+     * Mark this request as no show i.e. it's end of appointment date but customer didn't show up
+     */
+    void markNoShow(Long styleRequestId, Preferences preferences);
+
 }
