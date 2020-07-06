@@ -9,8 +9,10 @@ import com.hair.business.beans.abstracts.AbstractBean;
 public class AddOn extends AbstractBean {
     private String itemName;
     private String description;
-    private double amount;
+    private int amount;
+    private int totalAmount;
     private int quantity;
+    private int tax;
 
     public String getItemName() {
         return itemName;
@@ -28,11 +30,11 @@ public class AddOn extends AbstractBean {
         this.description = description;
     }
 
-    public double getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 
@@ -42,5 +44,21 @@ public class AddOn extends AbstractBean {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getTotalAmount() {
+        return amount * quantity;
+    }
+
+    public void setTotalAmount(int totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public int getTax() {
+        return tax;
+    }
+
+    public void setTax(int tax) {
+        this.tax = tax;
     }
 }

@@ -3,6 +3,7 @@ package com.hair.business.services;
 import static com.hair.business.beans.constants.StyleRequestState.ACCEPTED;
 import static com.hair.business.beans.constants.StyleRequestState.CANCELLED;
 import static com.hair.business.beans.constants.StyleRequestState.COMPLETED;
+import static com.hair.business.beans.constants.StyleRequestState.NOSHOW;
 import static com.hair.business.beans.constants.StyleRequestState.PENDING;
 import static com.x.business.utilities.MessageConstants.CUSTOMER_NOT_FOUND;
 import static com.x.business.utilities.MessageConstants.HAS_ACTIVE_BOOKING;
@@ -13,18 +14,22 @@ import static com.x.business.utilities.MessageConstants.STYLE_NOT_FOUND;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import com.hair.business.beans.constants.Preferences;
+import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
+import com.hair.business.beans.entity.PaymentTrace;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.merchant.MerchantService;
 import com.hair.business.services.payment.PaymentService;
+import com.hair.business.services.payment.stripe.StripePaymentService;
 import com.hair.business.services.pushNotification.PushNotificationServiceInternal;
 import com.hair.business.services.state.StylerequestStateMgr;
 import com.x.business.notif.AcceptedStyleRequestNotification;
 import com.x.business.notif.CancelledStyleRequestNotification;
 import com.x.business.notif.CompletedStyleRequestNotification;
+import com.x.business.notif.NoShowStyleRequestNotification;
 import com.x.business.notif.PlacedStyleRequestNotification;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.EmailTaskQueue;
@@ -33,6 +38,7 @@ import com.x.business.utilities.Assert;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
@@ -48,6 +54,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     private final TaskQueue emailTaskQueue;
 
     private final PaymentService paymentService;
+    private final StripePaymentService stripe;
     private final MerchantService merchantService;
     private final StylerequestStateMgr stateMgr;
     private final PushNotificationServiceInternal pushNotificationService;
@@ -58,7 +65,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
 
     @Inject
     StyleRequestServiceImpl(Repository repository,
-                            @EmailTaskQueue TaskQueue emailTaskQueue,
+                            @EmailTaskQueue TaskQueue emailTaskQueue, StripePaymentService stripe,
                             PaymentService paymentService, MerchantService merchantService, StylerequestStateMgr stateMgr, PushNotificationServiceInternal pushNotificationService) {
         super(repository);
         this.repository = repository;
@@ -68,6 +75,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         this.merchantService = merchantService;
         this.stateMgr = stateMgr;
         this.pushNotificationService = pushNotificationService;
+        this.stripe = stripe;
     }
 
     @Override
@@ -108,7 +116,11 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         styleRequest.setId(id);
         styleRequest.setPermanentId(id);
 
-        paymentService.authorize(authorizationToken, styleRequest);
+        //paymentService.authorize(authorizationToken, styleRequest);
+
+        PaymentTrace payTrace = new PaymentTrace();
+        styleRequest.getCustomer().setPaymentTrace(payTrace);
+        stripe.authorize(styleRequest.getCustomer().getPaymentId(), computeTotalPrice(style.getPrice(), styleRequest.getAddOns()), merchant.getPaymentId(), "Charge for style " + style.getName(), payTrace);
 
         emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
         pushNotificationService.scheduleSend(customer.getDevice().getDeviceId(), NEW_STYLE_REQUEST);
@@ -124,7 +136,6 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     public void updateStyleRequest(StyleRequest styleRequest) {
         repository.saveOne(styleRequest);
     }
-
     @Override
     public void acceptStyleRequest(Long styleRequestId, Preferences preferences) {
         Assert.validId(styleRequestId);
@@ -163,5 +174,25 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         //TODO notify merchant
         emailTaskQueue.add(new CancelledStyleRequestNotification(styleRequest, preferences));
 
+    }
+
+    @Override
+    public void markNoShow(Long styleRequestId, Preferences preferences) {
+        Assert.validId(styleRequestId);
+        final StyleRequest styleRequest = stateMgr.transition(styleRequestId, NOSHOW);
+        styleRequest.setNoShowTime(DateTime.now());
+        updateStyleRequest(styleRequest);
+
+// Deduct a percentage of the preauth'd amount here as per terms of service
+        //TODO notify merchant
+        emailTaskQueue.add(new NoShowStyleRequestNotification(styleRequest, preferences));
+    }
+
+    public int computeTotalPrice(int stylePrice, List<AddOn> items) {
+        int total = stylePrice;
+        for (int i = 0; i < items.size(); i++) {
+            total += items.get(i).getAmount();
+        }
+        return total * 100;
     }
 }

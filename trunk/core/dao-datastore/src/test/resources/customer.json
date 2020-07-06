@@ -48,7 +48,7 @@
     "completedNotificationEnabled" : true,
     "preferredPaymentType" : "PAYPAL"
   },
-  "payment" : {
+  "paymentTrace" : {
     "permanentId" : 1996041782170603606,
     "version" : 1,
     "createdDate" : "2017-03-09T20:18:22.287Z",

@@ -42,7 +42,7 @@ public class Style extends AbstractActorEnablerEntity {
 
     private int durationEstimate; // how long to make this style, in minutes
 
-    private double price;
+    private int price;
 
     public Style(){
         this.trending = true;
@@ -134,11 +134,11 @@ public class Style extends AbstractActorEnablerEntity {
         this.id = id;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

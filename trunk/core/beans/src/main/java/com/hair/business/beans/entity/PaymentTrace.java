@@ -4,6 +4,7 @@ import com.googlecode.objectify.annotation.Id;
 import com.hair.business.beans.abstracts.AbstractActorEnablerEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by olukoredeaguda on 09/02/2017.
@@ -11,7 +12,7 @@ import java.util.List;
  * Payment information object. A customer/merchant has one which contains
  * credit card or paypal or whatever their means of payment issue/collection is
  */
-public class PaymentInformation extends AbstractActorEnablerEntity {
+public class PaymentTrace extends AbstractActorEnablerEntity {
 
     @Id
     private Long id;
@@ -21,6 +22,12 @@ public class PaymentInformation extends AbstractActorEnablerEntity {
     private List<PaymentItem> paymentItems;
 
     private PaymentItem defaultPaymentMethod;
+
+    private Map<String, String> paymentTxnIds; // the ID,comment pair of any payment API call is added here for tracking
+
+    //state - Stripe needs this to prevent CSRF attacks.
+    // It should be a unique, not guessable value that’s generated and saved on your server. Stripe passes it back to your redirect after the user finishes the onboarding flow.
+    private String state;
 
     public Long getId() {
         return id;
@@ -42,6 +49,10 @@ public class PaymentInformation extends AbstractActorEnablerEntity {
         return paymentItems;
     }
 
+    public String getState() {
+        return state;
+    }
+
     public void setPaymentItems(List<PaymentItem> paymentItems) {
         this.paymentItems = paymentItems;
     }
@@ -60,5 +71,17 @@ public class PaymentInformation extends AbstractActorEnablerEntity {
         }
         defaultPaymentMethod.setDefault(true);
         this.defaultPaymentMethod = defaultPaymentMethod;
+    }
+
+    public Map<String, String> getPaymentTxnIds() {
+        return paymentTxnIds;
+    }
+
+    public void setPaymentTxnIds(Map<String, String> paymentTxnIds) {
+        this.paymentTxnIds = paymentTxnIds;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

@@ -11,9 +11,9 @@ import com.hair.business.beans.entity.GeoPointExt;
 import com.hair.business.beans.entity.Image;
 import com.hair.business.beans.entity.Location;
 import com.hair.business.beans.entity.Merchant;
-import com.hair.business.beans.entity.PaymentInformation;
 import com.hair.business.beans.entity.PaymentItem;
 import com.hair.business.beans.entity.PaymentMethod;
+import com.hair.business.beans.entity.PaymentTrace;
 import com.hair.business.beans.entity.Review;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
@@ -57,8 +57,8 @@ public class EntityTestConstants {
         c.setPhotoUrl("http://some.photo.url");
         c.setGender(Gender.M);
         c.setScore(4.5);
-        c.setPayment(createPaymentInfo(c.getId()));
-        c.setPaymentId(c.getPayment().getId().toString());
+        c.setPaymentTrace(createPaymentInfo(c.getId()));
+        c.setPaymentId(c.getPaymentTrace().getId().toString());
         c.getRatings().put(0, 0); c.getRatings().put(1, 0);c.getRatings().put(2, 0);c.getRatings().put(3, 0);c.getRatings().put(4, 3);c.getRatings().put(5, 2);
         return c;
     }
@@ -95,7 +95,7 @@ public class EntityTestConstants {
         m.setGender(Gender.F);
         m.getRatings().put(0, 0); m.getRatings().put(1, 0);m.getRatings().put(2, 0);m.getRatings().put(3, 0);m.getRatings().put(4, 3);m.getRatings().put(5, 2);
         m.setScore(4.5);
-        m.setPayment(createPaymentInfo(m.getId()));
+        m.setPaymentTrace(createPaymentInfo(m.getId()));
         return m;
     }
 
@@ -148,8 +148,8 @@ public class EntityTestConstants {
         return tax;
     }
 
-    public static PaymentInformation createPaymentInfo(Long custId){
-        PaymentInformation paymentInfo = new PaymentInformation();
+    public static PaymentTrace createPaymentInfo(Long custId){
+        PaymentTrace paymentInfo = new PaymentTrace();
         PaymentMethod pm = new PaymentMethod("agreementId", true, "custId");
         pm.setToken("9zfg8d");
         PaymentItem paymentItem = new PaymentItem(PaymentType.CARD, pm, true);

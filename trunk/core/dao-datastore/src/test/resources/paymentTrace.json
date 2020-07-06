@@ -39,7 +39,8 @@
       "default" : true
     },
     "default" : true
-  }
-
+  },
+  "paymentTxnIds" : {},
+  "state" : "stripeState"
 
 }

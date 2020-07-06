@@ -48,6 +48,7 @@ public class StyleRequest extends AbstractActorEnablerEntity {
     private @Index DateTime acceptedTime;
     private @Index DateTime cancelledTime;
     private @Index DateTime completedTime;
+    private @Index DateTime noShowTime;
 
     public StyleRequest(){
         this.addOns = Collections.emptyList();
@@ -68,6 +69,7 @@ public class StyleRequest extends AbstractActorEnablerEntity {
         this.customerPermanentId = customer.getPermanentId();
         this.merchantPermanentId = merchant.getPermanentId();
         this.locationPermanentId = location.getPermanentId();
+
     }
 
     public Long getId() {
@@ -201,5 +203,13 @@ public class StyleRequest extends AbstractActorEnablerEntity {
 
     public void setCompletedTime(DateTime completedTime) {
         this.completedTime = completedTime;
+    }
+
+    public DateTime getNoShowTime() {
+        return noShowTime;
+    }
+
+    public void setNoShowTime(DateTime noShowTime) {
+        this.noShowTime = noShowTime;
     }
 }
