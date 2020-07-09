@@ -6,11 +6,12 @@ import static com.hair.business.beans.constants.StyleRequestState.PENDING;
 
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.StyleRequest;
-import com.hair.business.beans.entity.StyleRequestPayment;
-import com.hair.business.beans.helper.PaymentStatus;
+import com.hair.business.beans.entity.TransactionResult;
+import com.hair.business.beans.helper.PaymentOperation;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.x.business.utilities.Assert;
 
+import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.inject.Inject;
@@ -49,9 +50,10 @@ public class StylerequestStateMgrImpl implements StylerequestStateMgr {
         final StyleRequest styleRequest = repository.findOne(id, StyleRequest.class);
         Assert.notNull(styleRequest, String.format("Transition failure. Style request with ID %s not found", styleRequest));
 
-        final StyleRequestPayment authorizedPayment = styleRequest.getAuthorizedPayment();
-        Assert.notNull(authorizedPayment, String.format("Transition failure. Style request {ID=%s} being accepted must have an authorized payment", styleRequest.getId()));
-        Assert.isTrue(authorizedPayment.getPaymentStatus() == PaymentStatus.AUTHORIZED, String.format("Transition failure. Style request {ID=%s} being accepted must have an authorized payment", styleRequest.getId()));
+        Optional<TransactionResult> authorizedPayment = styleRequest.getTransactionResults().stream().filter(t -> t.getOperation().equals(PaymentOperation.AUTHORIZE)).findFirst();
+        if (!authorizedPayment.isPresent()){
+            throw new IllegalStateException(String.format("Transition failure. Style request {ID=%s} being accepted must have an authorized payment", styleRequest.getId()));
+        }
 
         final StyleRequestState currentState = styleRequest.getState();
 

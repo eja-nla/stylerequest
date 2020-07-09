@@ -11,7 +11,7 @@ import org.aopalliance.intercept.MethodInvocation;
 /**
  * Created by olukoredeaguda on 21/01/2017.
  *
- * Transaction interceptor
+ * TransactionResult interceptor
  *
  * Lifted from https://github.com/objectify/objectify/wiki/Transactions
  */

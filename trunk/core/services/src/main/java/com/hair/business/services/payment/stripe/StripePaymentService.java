@@ -1,6 +1,10 @@
 package com.hair.business.services.payment.stripe;
 
-import com.hair.business.beans.entity.PaymentTrace;
+import com.hair.business.beans.entity.AddOn;
+import com.hair.business.beans.entity.StyleRequest;
+import com.hair.business.beans.entity.TransactionResult;
+
+import java.util.List;
 
 /**
  * Braintree payment service
@@ -9,19 +13,26 @@ import com.hair.business.beans.entity.PaymentTrace;
  */
 public interface StripePaymentService {
 
-    String createPaymentIntent(int amount, String customeStripeId, PaymentTrace paymentTrace);
+    TransactionResult createPaymentIntent(int amount, String customeStripeId);
 
     String createCustomer(String internalCustomerId);
 
-    String createMerchantAccount(String internalMerchantId, String stripeId);
+    String createMerchant(String authCode, String stripeId);
 
-    String authorize(String stripeCustomerId, int amount, String merchantStripeId, String chargeDescription, PaymentTrace paymentTrace);
+    TransactionResult authorize(StyleRequest styleRequest, String chargeDescription); //will not do DB lookup
+    TransactionResult authorize(Long styleRequestId, String chargeDescription);
 
-    void refund(int amount, String paymentIntentId, PaymentTrace paymentTrace);
+    TransactionResult refund(StyleRequest styleRequest, List<AddOn> addOns);
+    TransactionResult refund(Long styleRequestId, List<AddOn> addOns);
 
-    void cancelPayment(String paymentIntentId, PaymentTrace paymentTrace);
+    TransactionResult cancelPayment(Long styleRequestId);
+    TransactionResult cancelPayment(StyleRequest styleRequest);
 
-    void capture(int amount, String preauthToken, PaymentTrace paymentTrace);
+    TransactionResult capture(StyleRequest styleRequest);
+    TransactionResult capture(Long styleRequestId);
 
-    void chargeNow(String stripeCustomerId, int amount, String merchantStripeId, PaymentTrace paymentTrace);
+    TransactionResult chargeNow(StyleRequest styleRequest, List<AddOn> addOns);
+    TransactionResult chargeNow(Long styleRequestId, List<AddOn> addOns);
+
+    int calculateOrderAmount(int basePrice, List<AddOn> addOns);
 }

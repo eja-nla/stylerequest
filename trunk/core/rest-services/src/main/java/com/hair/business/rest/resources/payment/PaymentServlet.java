@@ -1,20 +1,20 @@
 package com.hair.business.rest.resources.payment;
 
-import static com.hair.business.rest.MvcConstants.BRAINTREE_AUTHORIZE_URI_ENDPOINT;
-import static com.hair.business.rest.MvcConstants.BRAINTREE_REFUND_SR_URI_ENDPOINT;
-import static com.hair.business.rest.MvcConstants.BRAINTREE_REFUND_TX_URI_ENDPOINT;
-import static com.hair.business.rest.MvcConstants.BRAINTREE_TOKEN_URI_ENDPOINT;
+import static com.hair.business.rest.MvcConstants.AUTHORIZE_URI_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.PAYMENT_URI;
+import static com.hair.business.rest.MvcConstants.REFUND_SR_URI_ENDPOINT;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import com.hair.business.beans.entity.StyleRequest;
+import com.hair.business.beans.entity.AddOn;
+import com.hair.business.beans.entity.TransactionResult;
+import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.rest.resources.AbstractRequestServlet;
-import com.hair.business.services.payment.PaymentService;
+import com.hair.business.services.payment.stripe.StripePaymentService;
 
-import java.math.BigDecimal;
+import java.util.List;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -33,11 +33,13 @@ import javax.ws.rs.core.Response;
 @Path(PAYMENT_URI)
 public class PaymentServlet extends AbstractRequestServlet {
 
-    private final PaymentService paymentService;
+    private final StripePaymentService stripe;
+    private final Repository repository;
 
     @Inject
-    public PaymentServlet(PaymentService paymentService) {
-        this.paymentService = paymentService;
+    public PaymentServlet(StripePaymentService stripe, Repository repository) {
+        this.stripe = stripe;
+        this.repository = repository;
     }
 
     /**
@@ -71,7 +73,7 @@ public class PaymentServlet extends AbstractRequestServlet {
     @Produces(APPLICATION_JSON)
     public Response createPaymentProfile(@QueryParam("code") String authCodeFromStripeAfterSignup, @QueryParam("state") String refId) {
         try {
-            paymentService.createMerchantProfile(authCodeFromStripeAfterSignup, refId.split("_")[1]);
+            stripe.createMerchant(authCodeFromStripeAfterSignup, refId.split("_")[1]);
             return Response.ok().build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
@@ -80,55 +82,46 @@ public class PaymentServlet extends AbstractRequestServlet {
         }
     }
 
+    /**
+     *
+     * */
     @POST
-    @Path(BRAINTREE_AUTHORIZE_URI_ENDPOINT)
+    @Path(AUTHORIZE_URI_ENDPOINT)
     @Produces(APPLICATION_JSON)
-    public Response authorizePayment(@QueryParam("tk") String nonce, @QueryParam("srId") Long styleRequestId, @QueryParam("cId") Long customerId) {
+    public Response authorizePayment(@QueryParam("srId") Long styleRequestId, @QueryParam("description") Long description) {
 
         try {
-            StyleRequest payment = paymentService.authorize(nonce, styleRequestId);
-            return Response.ok(payment).build();
+            TransactionResult result = stripe.authorize(styleRequestId, "Authorization for style " + description);
+            String message = result.getStatusMessage().equals("succeeded") ?
+                    String.format("Successfully refunded %s", result.getTotalAmount()) :
+                    String.format("Failed to refund for StyleRequest %s", styleRequestId);
+
+            return Response.ok(wrapString(message)).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }
     }
 
+    /**
+     * Refund for this StyleRequest.
+     * If partial refund, send the list of addons to refund.
+     * If full refund, send a null/empty addon list
+     * */
     @POST
-    @Path(BRAINTREE_REFUND_SR_URI_ENDPOINT)
+    @Path(REFUND_SR_URI_ENDPOINT)
+    @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response refundStyleRequest(@QueryParam("srId") Long stylerequestId, @QueryParam("amount") double amount) {
+    public Response refundStyleRequest(@QueryParam("srId") Long stylerequestId, List<AddOn> addOns) {
 
         try {
-            paymentService.refund(stylerequestId, amount);
-            return Response.ok().build();
+            TransactionResult result = stripe.refund(stylerequestId, addOns);
+            String message = result.getStatusMessage().equals("succeeded") ?
+                    String.format("Successfully refunded %s", result.getTotalAmount()) :
+                    String.format("Failed to refund for StyleRequest %s", stylerequestId);
+
+            return Response.ok(wrapString(message)).build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
-        }
-    }
-
-    @POST
-    @Path(BRAINTREE_REFUND_TX_URI_ENDPOINT)
-    @Produces(APPLICATION_JSON)
-    public Response refundTransaction(@QueryParam("trId") String transactionId, @QueryParam("amount") double amount) {
-
-        try {
-            paymentService.refund(transactionId, BigDecimal.valueOf(amount));
-            return Response.ok().build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
-        }
-    }
-
-    @POST
-    @Path(BRAINTREE_TOKEN_URI_ENDPOINT)
-    @Produces(APPLICATION_JSON)
-    public Response issueClientToken(@QueryParam("entityId") @Nullable String entityId) {
-
-        try {
-            String token = paymentService.issueClientToken(entityId);
-            return token == null ? Response.status(Response.Status.NOT_FOUND).build() : Response.ok(wrapString(token)).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
         }
     }
 }

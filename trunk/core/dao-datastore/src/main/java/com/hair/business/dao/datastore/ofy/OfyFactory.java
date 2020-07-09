@@ -13,7 +13,6 @@ import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Review;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
-import com.hair.business.beans.entity.StyleRequestPayment;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -41,7 +40,7 @@ public class OfyFactory extends ObjectifyFactory{
         this.register(Merchant.class);
         this.register(Style.class);
         this.register(StyleRequest.class);
-        this.register(StyleRequestPayment.class);
+//        this.register(TransactionResult.class);
         this.register(Address.class);
         this.register(Device.class);
         this.register(Image.class);

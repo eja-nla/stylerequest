@@ -5,7 +5,6 @@ import com.hair.business.beans.constants.Gender;
 import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Device;
-import com.hair.business.beans.entity.PaymentTrace;
 
 /**
  * Abstract actor entity e.g. Customer, Merchant etc.
@@ -22,7 +21,6 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
     private boolean active;
     private Address address;
     private Preferences preferences;
-    private PaymentTrace payment;
     private String paymentId;
 
     public String getEmail() {
@@ -87,14 +85,6 @@ public abstract class AbstractActorEntity extends AbstractTransactionEntity{
 
     public void setPreferences(Preferences preferences) {
         this.preferences = preferences;
-    }
-
-    public PaymentTrace getPaymentTrace() {
-        return payment;
-    }
-
-    public void setPaymentTrace(PaymentTrace payment) {
-        this.payment = payment;
     }
 
     public String getPaymentId() {

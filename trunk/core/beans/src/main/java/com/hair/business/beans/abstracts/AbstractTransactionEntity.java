@@ -1,7 +1,7 @@
 package com.hair.business.beans.abstracts;
 
 /**
- * Transaction entity.
+ * TransactionResult entity.
  *
  * Created by Olukorede Aguda on 25/04/2016.
  *

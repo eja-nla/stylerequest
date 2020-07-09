@@ -8,7 +8,7 @@ import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.StyleRequestService;
-import com.hair.business.services.payment.PaymentService;
+import com.hair.business.services.payment.stripe.StripePaymentService;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.ApnsTaskQueue;
 import com.x.business.scheduler.stereotype.EmailTaskQueue;
@@ -36,17 +36,17 @@ public class MerchantServiceImpl implements MerchantService {
     private final StyleRequestService styleRequestService;
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;
-    private final PaymentService paymentService;
+    private final StripePaymentService stripe;
 
     private final List<String> IS_BOOOKED_FILTER = Arrays.asList("merchantPermanentId", "state", "appointmentStartTime >=", "appointmentStartTime <=");
 
     @Inject
-    public MerchantServiceImpl(Repository repository, StyleRequestService styleRequestService, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue, PaymentService paymentService) {
+    public MerchantServiceImpl(Repository repository, StyleRequestService styleRequestService, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue, StripePaymentService stripe) {
         this.repository = repository;
         this.styleRequestService = styleRequestService;
         this.emailTaskQueue = emailTaskQueue;
         this.apnsQueue = apnsQueue;
-        this.paymentService = paymentService;
+        this.stripe = stripe;
     }
 
     @Override
@@ -91,9 +91,6 @@ public class MerchantServiceImpl implements MerchantService {
         merchant.setId(permId);
         merchant.setPermanentId(permId);
 
-        String paymentId = paymentService.createProfile(Long.toString(merchant.getId()), nonce);
-
-        merchant.setPaymentId(paymentId);
         updateMerchant(merchant);
 
         return permId.toString();

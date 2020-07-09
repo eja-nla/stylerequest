@@ -56,16 +56,14 @@ public class MvcConstants {
 
 
 
-    private static final String BRAINTREE_URI_BASE = "/braintree";
-    public static final String BRAINTREE_AUTHORIZE_URI_ENDPOINT = BRAINTREE_URI_BASE + "/authorize";
-    public static final String BRAINTREE_CAPTURE_URI_ENDPOINT = BRAINTREE_URI_BASE + "/capture";
-    public static final String BRAINTREE_TOKEN_URI_ENDPOINT = BRAINTREE_URI_BASE + "/token/issue";
-    public static final String BRAINTREE_REFUND_SR_URI_ENDPOINT = BRAINTREE_URI_BASE + "/refund/stylerequest";
-    public static final String BRAINTREE_REFUND_TX_URI_ENDPOINT = BRAINTREE_URI_BASE + "/refund/transaction";
+    private static final String PAYMENT_URI_BASE = "/payment";
+    public static final String AUTHORIZE_URI_ENDPOINT = PAYMENT_URI_BASE + "/authorize";
+    public static final String CAPTURE_URI_ENDPOINT = PAYMENT_URI_BASE + "/capture";
+    public static final String BRAINTREE_TOKEN_URI_ENDPOINT = PAYMENT_URI_BASE + "/token/issue";
+    public static final String REFUND_SR_URI_ENDPOINT = PAYMENT_URI_BASE + "/refund/stylerequest";
+    public static final String REFUND_TX_URI_ENDPOINT = PAYMENT_URI_BASE + "/refund/transaction";
 
     public static final String STYLE_REQUEST_PATH = "/request" + STYLE_URI;
-
-    public static final String STYLE_SEARCH_PATH = FIND_URI + "/zipcodes/";
 
     public static final String ID ="id";
 
