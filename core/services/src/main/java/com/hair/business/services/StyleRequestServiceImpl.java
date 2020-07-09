@@ -14,12 +14,11 @@ import static com.x.business.utilities.MessageConstants.STYLE_NOT_FOUND;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import com.hair.business.beans.constants.Preferences;
-import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
-import com.hair.business.beans.entity.PaymentTrace;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
+import com.hair.business.beans.entity.TransactionResult;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.merchant.MerchantService;
 import com.hair.business.services.payment.PaymentService;
@@ -38,7 +37,6 @@ import com.x.business.utilities.Assert;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
@@ -104,9 +102,6 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
 
         // TODO : further validations
         // is the merchant free at this time?
-        // is the customer and merchant's country and city the same? Na, we should warn client if > 5 miles.
-        // do we have this customer's sufficient payment info to make an authorization?
-        //- on rethink We really do not want to do this here. We should move to the client
 
         styleRequestCounter.set(style.getRequestCount());
         style.setRequestCount(styleRequestCounter.incrementAndGet());
@@ -116,11 +111,8 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         styleRequest.setId(id);
         styleRequest.setPermanentId(id);
 
-        //paymentService.authorize(authorizationToken, styleRequest);
-
-        PaymentTrace payTrace = new PaymentTrace();
-        styleRequest.getCustomer().setPaymentTrace(payTrace);
-        stripe.authorize(styleRequest.getCustomer().getPaymentId(), computeTotalPrice(style.getPrice(), styleRequest.getAddOns()), merchant.getPaymentId(), "Charge for style " + style.getName(), payTrace);
+        TransactionResult result = stripe.authorize(styleRequest, "Charge for style " + style.getName());
+        styleRequest.getTransactionResults().add(result);
 
         emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
         pushNotificationService.scheduleSend(customer.getDevice().getDeviceId(), NEW_STYLE_REQUEST);
@@ -186,13 +178,5 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
 // Deduct a percentage of the preauth'd amount here as per terms of service
         //TODO notify merchant
         emailTaskQueue.add(new NoShowStyleRequestNotification(styleRequest, preferences));
-    }
-
-    public int computeTotalPrice(int stylePrice, List<AddOn> items) {
-        int total = stylePrice;
-        for (int i = 0; i < items.size(); i++) {
-            total += items.get(i).getAmount();
-        }
-        return total * 100;
     }
 }

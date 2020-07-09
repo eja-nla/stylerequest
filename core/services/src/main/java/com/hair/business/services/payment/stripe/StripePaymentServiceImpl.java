@@ -1,11 +1,12 @@
 package com.hair.business.services.payment.stripe;
 
-import static java.util.Optional.ofNullable;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.Merchant;
-import com.hair.business.beans.entity.PaymentTrace;
+import com.hair.business.beans.entity.StyleRequest;
+import com.hair.business.beans.entity.TransactionResult;
+import com.hair.business.beans.helper.PaymentOperation;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.client.retry.RetryWithExponentialBackOff;
 import com.stripe.Stripe;
@@ -28,12 +29,12 @@ import com.stripe.param.RefundCreateParams;
 import com.x.business.exception.PaymentException;
 import com.x.business.utilities.Assert;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -56,7 +57,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
 //        Stripe.apiKey = System.getProperty("stripe.secret.key");
     }
 
-    public static void main(String[] args) throws StripeException {
+    public static void main(String[] args) {
         StripePaymentServiceImpl service = new StripePaymentServiceImpl(null);
 
 //        String id = service.createCustomer("intellijc1");
@@ -67,35 +68,33 @@ public class StripePaymentServiceImpl implements StripePaymentService {
 
   //      String intent = service.createPaymentIntent(2223, "cus_HaKp6AUpG8D4aL", null); // lets try to pay with a valid user and payment method
 
-        String res = service.authorize("cus_HaKp6AUpG8D4aL", 3000, "acct_1H0draCQiLLG2cvn","test service from intellij", null);
-        service.capture(3000, res, null);
+        //String res = service.authorize("cus_HaKp6AUpG8D4aL", 3000, "acct_1H0draCQiLLG2cvn","test service from intellij", null);
+       // service.capture(3000, res, null);
     }
 
 
     @Override
-    public String createPaymentIntent(int amount, String customeStripeId, PaymentTrace paymentTrace) {
+    public TransactionResult createPaymentIntent(int amount, String customerStripeId) {
 
         try {
             PaymentIntentCreateParams createParams = new PaymentIntentCreateParams.Builder()
                     .setCurrency(CURRENCY)
                     .setAmount((long) amount)
-                    .setCustomer(customeStripeId)
+                    .setCustomer(customerStripeId)
                     .setSetupFutureUsage(PaymentIntentCreateParams.SetupFutureUsage.OFF_SESSION)
                     .build();
 
             PaymentIntent intent = PaymentIntent.create(createParams);
 
             if (intent.getStatus().equals("succeeded")) {
-                logger.info("Payment intent succeeded for Stripe customerID={} amount={} paymentdID={}", customeStripeId, amount, intent.getId());
+                logger.info("Payment intent succeeded for Stripe customerID={} amount={} paymentdID={}", customerStripeId, amount, intent.getId());
             } else  {
-                logger.info("Payment intent failure for Stripe customerID={} amount={} paymentdID={} status='{}'", customeStripeId, amount, intent.getId(), intent.getStatus());
+                logger.info("Payment intent failure for Stripe customerID={} amount={} paymentdID={} status='{}'", customerStripeId, amount, intent.getId(), intent.getStatus());
             }
 
-            // we store a copy of txn IDs locally for payment reference/troubleshooting
-            ofNullable(paymentTrace).ifPresent(pi -> pi.getPaymentTxnIds().put(intent.getId() + DateTime.now().toString("mmddyy_hhmmss"), String.format("createPaymentIntent for amount %s", amount)));
-            return intent.getId();
+            return new TransactionResult(intent.getId(), PaymentOperation.INTENT, amount, intent.getStatus());
         } catch (StripeException e) {
-            logger.warn("Payment intent error from Stripe for customerId: {} amount: {} error:{}", customeStripeId, amount, e.getMessage());
+            logger.warn("Payment intent error from Stripe for customerId: {} amount: {} error:{}", customerStripeId, amount, e.getMessage());
             throw new PaymentException(e);
         }
     }
@@ -121,7 +120,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
      * we now take the authcode back to fetch the new connectedAccount (i.e. merchant) ID so we can store here.
      * */
     @Override
-    public String createMerchantAccount(String authCode, String refId){
+    public String createMerchant(String authCode, String refId){
 
         final Map<String, Object> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
@@ -145,7 +144,14 @@ public class StripePaymentServiceImpl implements StripePaymentService {
 
         merchant.setPaymentId(response.getStripeUserId());
 
+        repository.saveOne(merchant);
+
         return response.getStripeUserId();
+    }
+
+    @Override
+    public TransactionResult authorize(StyleRequest styleRequest, String chargeDescription) {
+        return authorize(styleRequest.getId(), chargeDescription);
     }
 
 
@@ -154,75 +160,133 @@ public class StripePaymentServiceImpl implements StripePaymentService {
      * */
 
     @Override
-    public String authorize(String customerStripeId, int amount, String merchantStripeId, String chargeDescription, PaymentTrace paymentTrace) {
+    public TransactionResult authorize(Long styleRequestId, String chargeDescription) {
+        final StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
+        Assert.notNull(styleRequest, String.format("Authorization failed. StyleRequest with ID %s not found", styleRequestId));
+        int amount = calculateOrderAmount(styleRequest.getStyle().getPrice(), styleRequest.getAddOns());
+        Charge chargeRes;
         try {
 
             final ChargeCreateParams.TransferData transferDataParams = ChargeCreateParams.TransferData.builder()
-                    .setDestination(merchantStripeId)
+                    .setDestination(styleRequest.getMerchant().getPaymentId())
                     .build();
 
             final ChargeCreateParams chargeParams = new ChargeCreateParams.Builder()
                     .setCurrency(CURRENCY)
                     .setAmount((long) amount)
                     .setDescription(chargeDescription)
-                    .setCustomer(customerStripeId)
+                    .setCustomer(styleRequest.getCustomer().getPaymentId())
                     .setApplicationFeeAmount((long) commission(amount)) //attach our commission
                     .setTransferData(transferDataParams)
                     .setCapture(false)
                     .build();
-            final Charge chargeRes = Charge.create(chargeParams);
+             chargeRes = Charge.create(chargeParams);
 
             if (chargeRes.getStatus().equals("succeeded")) {
-                logger.info("Authorization succeeded for Stripe customerID={} amount={} paymentdID={} description='{}'", customerStripeId, amount, chargeRes.getId(), chargeDescription);
+                logger.info("Authorization succeeded for Stripe. StyleRequestId={} customerID={} amount={} paymentdID={} description='{}'",
+                        styleRequestId, styleRequest.getCustomer().getPaymentId(), amount, chargeRes.getId(), chargeDescription);
             } else  {
-                logger.info("Authorization failure for Stripe customerID={} amount={} paymentdID={} status='{}' description='{}'", customerStripeId, amount, chargeRes.getId(), chargeRes.getStatus(), chargeDescription);
+                logger.info("Authorization failure for Stripe. StyleRequestId={} customerID={} amount={} paymentdID={} status='{}' description='{}'",
+                        styleRequestId, styleRequest.getCustomer().getPaymentId(), amount, chargeRes.getId(), chargeRes.getStatus(), chargeDescription);
             }
-            ofNullable(paymentTrace).ifPresent(pi -> pi.getPaymentTxnIds().put(chargeRes.getId() + DateTime.now().toString("mmddyy_hhmmss"), String.format("authorize for amount %s", amount)));
-
-            return chargeRes.getId();
 
         } catch (StripeException e) {
-            logger.warn("Authorization error from Stripe for customerId: {} amount: {} error:{}", customerStripeId, amount, e.getMessage());
+            logger.warn("Authorization error from Stripe for StyleRequestId={} customerId: {} amount: {} error:{}", styleRequestId, styleRequest.getCustomer().getPaymentId(), amount, e.getMessage());
             throw new PaymentException(e);
         }
+
+        TransactionResult tr = new TransactionResult(chargeRes.getId(), PaymentOperation.AUTHORIZE, amount, chargeRes.getStatus());
+        styleRequest.getTransactionResults().add(tr);
+        repository.saveOne(styleRequest);
+        return tr;
     }
 
     @Override
-    public void refund(int amount, String payId, PaymentTrace paymentTrace) {
+    public TransactionResult refund(StyleRequest styleRequest, List<AddOn> addOns) {
+        return refund(styleRequest.getId(), addOns);
+    }
+
+    @Override
+    public TransactionResult refund(Long styleRequestId, List<AddOn> addOns) {
+        StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
+        Assert.notNull(styleRequest, String.format("Refund failed. StyleRequest with ID %s not found", styleRequestId));
         Refund refund;
+
+        Optional<TransactionResult> settled = styleRequest.getTransactionResults().stream().filter(t -> t.getOperation().equals(PaymentOperation.CAPTURE)).findFirst();
+        
+        if(!settled.isPresent()) {
+            throw new PaymentException(String.format("Refund failed for stylerequestId %s. Unable to find a previously settled transaction", styleRequestId));
+        }
+
+        int amount = calculateOrderAmount(0, addOns);
         try {
+            Charge initial = Charge.retrieve(settled.get().getOwnId());
             refund = Refund.create(RefundCreateParams.builder()
                     .setAmount((long) amount)
-                    .setPaymentIntent(payId)
+                    .setPaymentIntent(initial.getPaymentIntent())
                     .build());
             if(!refund.getStatus().equals("succeeded")){
-                throw new PaymentException(String.format("Unable to complete refund for paymentId %s, amount %s", payId, amount));
+                throw new PaymentException(String.format("Unable to complete refund for styleReqiestId %s", styleRequestId));
             }
         } catch (StripeException e) {
             throw new PaymentException(e);
         }
 
-        ofNullable(paymentTrace).ifPresent(pi -> pi.getPaymentTxnIds().put(refund.getId() + DateTime.now().toString("mmddyy_hhmmss"), String.format("refund for amount %s", amount)));
-
+        TransactionResult tr = new TransactionResult(refund.getId(), PaymentOperation.REFUND, Math.toIntExact(refund.getAmount()), refund.getStatus());
+        styleRequest.getTransactionResults().add(tr);
+        repository.saveOne(styleRequest);
+        return tr;
     }
 
     @Override
-    public void cancelPayment(String paymentIntentId, PaymentTrace paymentTrace){
-        PaymentIntent intent;
-        try {
-            intent = PaymentIntent.retrieve(paymentIntentId);
-            intent.cancel();
-            ofNullable(paymentTrace).ifPresent(pi -> pi.getPaymentTxnIds().put(intent.getId() + DateTime.now().toString("mmddyy_hhmmss"), String.format("cancelPayment for amount %s", paymentIntentId)));
-        } catch (StripeException e) {
-            throw new PaymentException(String.format("Unable to cancel payment with intentId %s. Error: %s", paymentIntentId, e.getMessage()));
+    public TransactionResult cancelPayment(Long styleRequestId){
+        StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
+        Assert.notNull(styleRequest, String.format("Refund failed. StyleRequest with ID %s not found", styleRequestId));
+
+        Optional<TransactionResult> authorized = styleRequest.getTransactionResults().stream().filter(t -> t.getOperation().equals(PaymentOperation.AUTHORIZE)).findFirst();
+
+        if(!authorized.isPresent()) {
+            throw new PaymentException(String.format("Refund failed for stylerequestId %s. Unable to find a previously settled transaction", styleRequestId));
         }
+
+        PaymentIntent intent = null;
+        try {
+            intent = PaymentIntent.retrieve(authorized.get().getOwnId());
+            intent.cancel();
+        } catch (StripeException e) {
+            throw new PaymentException(String.format("Unable to cancel payment with StyleRequestId=%s intentId=%s Error: %s", styleRequestId, intent.getId(), e.getMessage()));
+        }
+
+        TransactionResult tr = new TransactionResult(intent.getId(), PaymentOperation.CANCEL, Math.toIntExact(intent.getAmount()), intent.getStatus());
+        styleRequest.getTransactionResults().add(tr);
+        repository.saveOne(styleRequest);
+        return tr;
     }
 
     @Override
-    public void capture(int amount, String chargeId, PaymentTrace paymentTrace) {
+    public TransactionResult cancelPayment(StyleRequest styleRequest) {
+        return cancelPayment(styleRequest.getId());
+    }
+
+    @Override
+    public TransactionResult capture(StyleRequest styleRequest) {
+        return capture(styleRequest.getId());
+    }
+
+    @Override
+    public TransactionResult capture(Long styleRequestId) {
+        final StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
+        Assert.notNull(styleRequest, String.format("Capture failed. StyleRequest with ID %s not found", styleRequestId));
+        int amount = calculateOrderAmount(styleRequest.getStyle().getPrice(), styleRequest.getAddOns());
+
+        Optional<TransactionResult> authorized = styleRequest.getTransactionResults().stream().filter(t -> t.getOperation().equals(PaymentOperation.AUTHORIZE)).findFirst();
+        if(!authorized.isPresent()) {
+            throw new PaymentException(String.format("Capture failed for stylerequestId %s. Unable to find a previously settled transaction", styleRequestId));
+        }
+
         Charge charge;
         try {
-            charge = Charge.retrieve(chargeId);
+            charge = Charge.retrieve(authorized.get().getOwnId());
 
             final long fees = commission(amount);
             final ChargeCaptureParams.TransferData transferDataParams = ChargeCaptureParams.TransferData.builder()
@@ -237,28 +301,45 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             charge.capture(capParams);
 
             if (charge.getStatus().equals("succeeded")) {
-                ofNullable(paymentTrace).ifPresent(pi -> pi.getPaymentTxnIds().put(charge.getId() + DateTime.now().toString("mmddyy_hhmmss"), String.format("capture for amount %s", amount)));
-                logger.info("Capture succeeded for Stripe ChargeId={} amount={}", chargeId, amount);
+                logger.info("Capture succeeded for Stripe ChargeId={} amount={}", authorized.get().getOwnId(), amount);
+            } else  {
+                logger.info("Capture failure for Stripe. StyleRequestId={} customerID={} amount={} paymentdID={} status='{}'",
+                        styleRequestId, styleRequest.getCustomer().getPaymentId(), amount, charge.getId(), charge.getStatus());
             }
         } catch (StripeException e) {
-            logger.warn("Capture error from Stripe for ChargeId: {} amount: {} error:{}", chargeId, amount, e.getMessage());
+            logger.warn("Capture error from Stripe for ChargeId: {} amount: {} error:{}", authorized.get().getOwnId(), amount, e.getMessage());
             throw new PaymentException(e);
 
         }
+
+        TransactionResult tr = new TransactionResult(charge.getId(), PaymentOperation.CAPTURE, amount, charge.getStatus());
+        styleRequest.getTransactionResults().add(tr);
+        repository.saveOne(styleRequest);
+        return tr;
     }
 
     @Override
-    public void chargeNow(String stripeCustomerId, int amount, String merchantStripeId, PaymentTrace paymentTrace) {
+    public TransactionResult chargeNow(StyleRequest styleRequest, List<AddOn> addOns) {
+        return chargeNow(styleRequest.getId(), addOns);
+    }
+
+    @Override
+    public TransactionResult chargeNow(Long styleRequestId, List<AddOn> addOns) {
+        final StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
+        Assert.notNull(styleRequest, String.format("ChargeNow failed. StyleRequest with ID %s not found", styleRequestId));
+        int amount = calculateOrderAmount(styleRequest.getStyle().getPrice(), addOns);
+
+        PaymentIntent paymentIntent;
         try {
             // List the customer's payment methods to find one to charge
             final PaymentMethodListParams listParams = new PaymentMethodListParams.Builder()
-                    .setCustomer(stripeCustomerId)
+                    .setCustomer(styleRequest.getCustomer().getPaymentId())
                     .setType(PaymentMethodListParams.Type.CARD)
                     .build();
 
             final long fees = commission(amount);
             final PaymentIntentCreateParams.TransferData transferDataParams = PaymentIntentCreateParams.TransferData.builder()
-                    .setDestination(merchantStripeId)
+                    .setDestination(styleRequest.getMerchant().getPaymentId())
                     .build();
 
             final PaymentMethodCollection paymentMethods = PaymentMethod.list(listParams);
@@ -268,36 +349,38 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     .setApplicationFeeAmount(fees)
                     .setTransferData(transferDataParams)
                     .setPaymentMethod(paymentMethods.getData().get(0).getId())
-                    .setCustomer(stripeCustomerId)
+                    .setCustomer(styleRequest.getCustomer().getPaymentId())
                     .setConfirm(true)
                     .setOffSession(PaymentIntentCreateParams.OffSession.ONE_OFF).build();
 
-            final PaymentIntent paymentIntent = PaymentIntent.create(createParams);
+            paymentIntent = PaymentIntent.create(createParams);
 
             if (paymentIntent.getStatus().equals("succeeded")) {
-                ofNullable(paymentTrace).ifPresent(pi -> pi.getPaymentTxnIds().put(paymentIntent.getId() + DateTime.now().toString("mmddyy_hhmmss"), String.format("chargeNow for amount %s", amount)));
-                logger.info("Payment succeeded for Stripe customerID={} amount={} net={} fees={}", stripeCustomerId, amount, fees);
+                logger.info("Payment succeeded for Stripe customerID={} amount={} net={} fees={}", styleRequest.getCustomer().getPaymentId(), amount, fees);
             }
         } catch (StripeException e) {
-            logger.warn("Payment error from Stripe for customerId: {} amount: {} error:{}", stripeCustomerId, amount, e.getMessage());
+            logger.warn("Payment error from Stripe for customerId: {} amount: {} error:{}", styleRequest.getCustomer().getPaymentId(), amount, e.getMessage());
             throw new PaymentException(e);
         }
+
+        TransactionResult tr = new TransactionResult(paymentIntent.getId(), PaymentOperation.PAYNOW, amount, paymentIntent.getStatus());
+        styleRequest.getTransactionResults().add(tr);
+        repository.saveOne(styleRequest);
+        return tr;
     }
 
-    private int commission(int amount) {
-        // Take a 15% cut.
-        return (int) (0.15 * amount);
-    }
-
-    private int calculateOrderAmount(List<AddOn> addOns) {
-        // Replace this constant with a calculation of the order's amount
-        // Calculate the order total on the server to prevent
-        // people from directly manipulating the amount on the client
-        int total = 0;
+    @Override
+    public int calculateOrderAmount(int basePrice, List<AddOn> addOns) {
+        int total = basePrice;
         for (AddOn each : addOns){
             total += each.getTotalAmount();
         }
 
         return total * 100;
+    }
+
+    private int commission(int amount) {
+        // Take a 15% cut.
+        return (int) (0.15 * amount);
     }
 }

@@ -147,12 +147,11 @@
   "customerPermanentId" : "1117821921828817150",
   "merchantPermanentId" : "-3306812695753391028",
   "locationPermanentId" : "-3193905381353190639",
-  "authorizedPayment" : {},
-  "settledPayment" : {},
+  "transactionResults" : [],
   "addOns" : [],
   "placedTime": "2017-08-29T20:23:32.617Z",
   "acceptedTime": "2018-08-29T20:23:32.617Z",
   "cancelledTime": "2019-08-29T20:23:32.617Z",
   "completedTime": "2019-08-29T20:23:32.617Z",
-  "noShowTime": "2019-08-29T20:23:32.617Z"
+  "noShowTime" : "2020-08-07T01:55:32.617Z"
 }

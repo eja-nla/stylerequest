@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 /**
  * Created by olukoredeaguda on 21/01/2017.
  *
- * Transaction stereotype for Ofy
+ * TransactionResult stereotype for Ofy
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})

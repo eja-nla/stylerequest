@@ -3,13 +3,16 @@ package com.hair.business.services;
 import static com.x.y.EntityTestConstants.createCustomer;
 import static com.x.y.EntityTestConstants.createMerchant;
 import static com.x.y.EntityTestConstants.createStyle;
+import static com.x.y.EntityTestConstants.createTransactionResult;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.joda.time.DateTime.now;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.braintreegateway.test.Nonce;
 import com.hair.business.beans.constants.Preferences;
@@ -18,8 +21,8 @@ import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
-import com.hair.business.beans.entity.StyleRequestPayment;
-import com.hair.business.beans.helper.PaymentStatus;
+import com.hair.business.beans.entity.TransactionResult;
+import com.hair.business.beans.helper.PaymentOperation;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.customer.AbstractServicesTestBase;
 import com.hair.business.services.merchant.MerchantService;
@@ -61,6 +64,8 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
         repository = injector.getInstance(Repository.class);
         stateMgr = new StylerequestStateMgrImpl(repository);
         srs = new StyleRequestServiceImpl(repository, emailQueue, stripe, paymentService, merchantService, stateMgr, pushNotification);
+
+        when(stripe.authorize(any(StyleRequest.class), anyString())).thenReturn(createTransactionResult());
     }
 
     @Before
@@ -113,9 +118,9 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     @Test
     public void testAcceptStyleRequest() {
         StyleRequest sr = initStyleRequest(StyleRequestState.PENDING);
-        StyleRequestPayment srp = new StyleRequestPayment();
-        srp.setPaymentStatus(PaymentStatus.AUTHORIZED);
-        sr.setAuthorizedPayment(srp);
+        TransactionResult srp = new TransactionResult();
+        srp.setOperation(PaymentOperation.AUTHORIZE);
+        sr.getTransactionResults().add(srp);
         srs.acceptStyleRequest(sr.getId(), new Preferences());
         assertThat(sr.getState(), is(StyleRequestState.ACCEPTED));
     }
@@ -123,9 +128,9 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     @Test
     public void testCancelStyleRequest() {
         StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
-        StyleRequestPayment srp = new StyleRequestPayment();
-        srp.setPaymentStatus(PaymentStatus.AUTHORIZED);
-        sr.setAuthorizedPayment(srp);
+        TransactionResult srp = new TransactionResult();
+        srp.setOperation(PaymentOperation.AUTHORIZE);
+        sr.getTransactionResults().add(srp);
         srs.cancelStyleRequest(sr.getId(), new Preferences());
 
         StyleRequest updatedSr = srs.findStyleRequest(sr.getId());
@@ -136,9 +141,9 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     @Test
     public void testCompleteStyleRequest() {
         StyleRequest sr = initStyleRequest(StyleRequestState.ACCEPTED);
-        StyleRequestPayment srp = new StyleRequestPayment();
-        srp.setPaymentStatus(PaymentStatus.AUTHORIZED);
-        sr.setAuthorizedPayment(srp);
+        TransactionResult srp = new TransactionResult();
+        srp.setOperation(PaymentOperation.AUTHORIZE);
+        sr.getTransactionResults().add(srp);
         srs.completeStyleRequest(sr.getId(), new Preferences());
         StyleRequest updatedSr = srs.findStyleRequest(sr.getId());
         assertThat(updatedSr.getState(), is(StyleRequestState.COMPLETED));
