@@ -67,17 +67,18 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
 
+    /**
+     * Create a new customer
+     * Payment profile will be created later with an explicit call to the payment profile creator API  by client.
+     * */
     @Override
-    public String createCustomer(Customer customer, String nonce) {
+    public String createCustomer(Customer customer) {
 
         Assert.notNull(customer, "customer cannot be null");
-        Assert.notNull(nonce, "Nonce cannot be null");
 
         Long permId = repository.allocateId(Customer.class);
         customer.setId(permId);
         customer.setPermanentId(permId);
-
-        customer.setPaymentId(stripe.createCustomer(Long.toString(customer.getId())));
 
         saveCustomer(customer);
 

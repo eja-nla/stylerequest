@@ -14,6 +14,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import com.google.firebase.auth.FirebaseToken;
 
 import com.hair.business.beans.constants.Preferences;
+import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.StyleRequestService;
@@ -23,6 +24,8 @@ import com.x.business.utilities.Assert;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +62,7 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
     @Path(CREATE_CUSTOMER_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response createNewCustomer(final @Context HttpServletRequest request, Customer customer, final @QueryParam("token") String nonce) {
+    public Response createNewCustomer(final @Context HttpServletRequest request, Customer customer) {
         log.info("Creating new customer '{}'", customer.getEmail());
 
         try {
@@ -68,7 +71,7 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
 
             Assert.notNull(customer.getFirstName(), "User must have a first name");
 
-            return Response.ok(wrapString(customerService.createCustomer(customer, nonce)), MediaType.APPLICATION_JSON_TYPE).build();
+            return Response.ok(wrapString(customerService.createCustomer(customer)), MediaType.APPLICATION_JSON_TYPE).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {
@@ -98,11 +101,13 @@ public class CustomerRequestServlet extends AbstractRequestServlet {
 
     @POST
     @Path(STYLE_REQUEST_PATH)
+    @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response placeStyleRequest(@QueryParam("token") String token, @QueryParam("styleId") Long styleId, @QueryParam("customerId") Long customerId, @QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String when) {
+    public Response placeStyleRequest(List<AddOn> addOns, @QueryParam("styleId") Long styleId, @QueryParam("customerId") Long customerId,
+                                      @QueryParam("merchantId") Long merchantId, @QueryParam("dateTime") String when) {
         try {
             DateTime dateOfRequest = DateTime.parse(when);
-            return Response.ok(styleRequestService.placeStyleRequest(token, styleId, customerId, merchantId, dateOfRequest)).build();
+            return Response.ok(styleRequestService.placeStyleRequest(addOns, styleId, customerId, merchantId, dateOfRequest)).build();
         } catch (IllegalArgumentException | PaymentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {

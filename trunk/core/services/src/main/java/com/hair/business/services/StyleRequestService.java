@@ -1,9 +1,12 @@
 package com.hair.business.services;
 
 import com.hair.business.beans.constants.Preferences;
+import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.StyleRequest;
 
 import org.joda.time.DateTime;
+
+import java.util.List;
 
 /**
  * Style Service
@@ -19,20 +22,15 @@ public interface StyleRequestService extends AppointmentFinder {
 
     /**
      * Place a new style request for this customer
-     * @param authorizationToken token from client indicating authorization. Could be anything e.g. nonce from braintree.
+     * @param addOns List of AddOns that comes with the style request
      * @param styleId the ID of the style to be requested
      * @param customerId customer id
      * @param merchantId merchant id
      * @param appointmentTime when the customer will be styled
-     *
-     * Sets the location to the location of the merchant
-     *
-     * Do paypal authorization here.
-     * Note to self: because paypal guarantees capture for only the first 3 days of authorization period,
-     *               if the style is placed > 3 days in advance, we might have to reauthorize within
-     *               a 3 day period of the request date to guarantee payment capture on the fulfillment date
-     */
-    StyleRequest placeStyleRequest(String authorizationToken, Long styleId, Long customerId, Long merchantId, DateTime appointmentTime);
+*
+* Sets the location to the location of the merchant
+**/
+    StyleRequest placeStyleRequest(List<AddOn> addOns, Long styleId, Long customerId, Long merchantId, DateTime appointmentTime);
 
     /**
      * Update style request

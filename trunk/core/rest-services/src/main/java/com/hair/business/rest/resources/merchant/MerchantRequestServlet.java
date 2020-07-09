@@ -12,8 +12,6 @@ import com.google.firebase.auth.FirebaseToken;
 
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.rest.resources.AbstractRequestServlet;
-import com.hair.business.services.StyleRequestService;
-import com.hair.business.services.StyleService;
 import com.hair.business.services.merchant.MerchantService;
 import com.x.business.utilities.Assert;
 
@@ -40,22 +38,18 @@ import javax.ws.rs.core.Response;
 public class MerchantRequestServlet extends AbstractRequestServlet {
 
     private final MerchantService merchantService;
-    private final StyleService styleService;
-    private final StyleRequestService styleRequestService;
 
     private static final Logger log = getLogger(MerchantRequestServlet.class);
 
     @Inject
-    public MerchantRequestServlet(MerchantService merchantService, StyleService styleService, StyleRequestService styleRequestService) {
+    public MerchantRequestServlet(final MerchantService merchantService) {
         this.merchantService = merchantService;
-        this.styleService = styleService;
-        this.styleRequestService = styleRequestService;
     }
 
     @GET
     @Path(INFO)
     @Produces(APPLICATION_JSON)
-    public Response getMerchantInfo(@QueryParam(ID) Long merchantId) {
+    public Response getMerchantInfo(final @QueryParam(ID) Long merchantId) {
         try {
             Assert.validId(merchantId);
 
@@ -71,16 +65,16 @@ public class MerchantRequestServlet extends AbstractRequestServlet {
     @Path(CREATE_MERCHANT_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response createMerchant(@Context HttpServletRequest request, Merchant merchant, final @QueryParam("token") String nonce) {
+    public Response createMerchant(final @Context HttpServletRequest request, final Merchant merchant) {
         log.info("Creating new merchant '{}'", merchant.getEmail());
 
         try {
-            FirebaseToken user = (FirebaseToken) request.getAttribute(REST_USER_ATTRIBUTE);
+            final FirebaseToken user = (FirebaseToken) request.getAttribute(REST_USER_ATTRIBUTE);
             Assert.notNull(user, "Required user attributes not set.");
 
             Assert.notNull(merchant.getFirstName(), "User must have a first name");
             
-            return Response.ok(wrapString(merchantService.createMerchant(merchant, nonce)), MediaType.APPLICATION_JSON_TYPE).build();
+            return Response.ok(wrapString(merchantService.createMerchant(merchant)), MediaType.APPLICATION_JSON_TYPE).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {

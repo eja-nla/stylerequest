@@ -3,6 +3,7 @@ package com.x.y;
 import com.hair.business.beans.constants.DeviceType;
 import com.hair.business.beans.constants.Gender;
 import com.hair.business.beans.constants.StyleRequestState;
+import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.Address;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Device;
@@ -24,6 +25,7 @@ import org.joda.time.DateTime;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -99,6 +101,26 @@ public class EntityTestConstants {
         r.setId(new Random().nextLong());
         r.setPermanentId(r.getId());
         return r;
+    }
+
+    public static List<AddOn> createAddOns(){
+        AddOn addOn1 = new AddOn();
+        addOn1.setItemName("blow dry");
+        addOn1.setDescription("some description");
+        addOn1.setAmount(1322);
+        addOn1.setTotalAmount(1322);
+        addOn1.setQuantity(1);
+        addOn1.setTax(3);
+        AddOn addOn2 = new AddOn();
+        addOn2.setItemName("blow dry");
+        addOn2.setDescription("some description");
+        addOn2.setAmount(1322);
+        addOn2.setTotalAmount(1322);
+        addOn2.setQuantity(1);
+        addOn2.setTax(3);
+
+        return Arrays.asList(addOn1, addOn2);
+
     }
 
     public static TransactionResult createTransactionResult(){

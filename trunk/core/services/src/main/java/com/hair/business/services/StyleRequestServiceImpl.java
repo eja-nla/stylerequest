@@ -5,6 +5,7 @@ import static com.hair.business.beans.constants.StyleRequestState.CANCELLED;
 import static com.hair.business.beans.constants.StyleRequestState.COMPLETED;
 import static com.hair.business.beans.constants.StyleRequestState.NOSHOW;
 import static com.hair.business.beans.constants.StyleRequestState.PENDING;
+import static com.hair.business.services.payment.stripe.StripePaymentService.NO_SHOW_CHARGE;
 import static com.x.business.utilities.MessageConstants.CUSTOMER_NOT_FOUND;
 import static com.x.business.utilities.MessageConstants.HAS_ACTIVE_BOOKING;
 import static com.x.business.utilities.MessageConstants.MERCHANT_NOT_FOUND;
@@ -14,6 +15,7 @@ import static com.x.business.utilities.MessageConstants.STYLE_NOT_FOUND;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import com.hair.business.beans.constants.Preferences;
+import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
@@ -36,6 +38,7 @@ import com.x.business.utilities.Assert;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
@@ -82,10 +85,9 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
 
     /**
      *  Places a style request
-     *  Goal is to keep this as simple as possible and move most validations upstream to the client
      * */
     @Override
-    public final StyleRequest placeStyleRequest(String authorizationToken, Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
+    public final StyleRequest placeStyleRequest(List<AddOn> addOns, Long styleId, Long customerId, Long merchantId, DateTime appointmentTime) {
         Assert.validIds(styleId, customerId, merchantId);
         Assert.dateInFuture(appointmentTime);
 
@@ -107,8 +109,9 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         final Long id = repository.allocateId(StyleRequest.class);
         styleRequest.setId(id);
         styleRequest.setPermanentId(id);
+        styleRequest.setAddOns(addOns);
 
-        TransactionResult result = stripe.authorize(styleRequest, "Charge for style " + style.getName());
+        TransactionResult result = stripe.authorize(styleRequest, "Charge for " + style.getName());
         styleRequest.getTransactionResults().add(result);
 
         emailTaskQueue.add(new PlacedStyleRequestNotification(styleRequest, merchant.getPreferences()));
@@ -146,7 +149,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         Assert.validId(styleRequestId);
         final StyleRequest styleRequest = stateMgr.transition(styleRequestId, COMPLETED);
 
-        stripe.authorize(styleRequest, "Charge settlement for style " + styleRequest.getStyle().getName());
+        styleRequest.getTransactionResults().add(stripe.capture(styleRequest));
         styleRequest.setCompletedTime(DateTime.now());
         updateStyleRequest(styleRequest);
 
@@ -158,6 +161,11 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         Assert.validId(styleRequestId);
         final StyleRequest styleRequest = stateMgr.transition(styleRequestId, CANCELLED);
         styleRequest.setCancelledTime(DateTime.now());
+
+        // FIXME
+        // if they cancel on the day of the request, chargenow 15%
+        // if they cancel before the day, release the full authorized charge
+        //styleRequest.getTransactionResults().add(stripe.cancel(styleRequest));
         updateStyleRequest(styleRequest);
 
         //TODO notify merchant
@@ -171,11 +179,10 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         final StyleRequest styleRequest = stateMgr.transition(styleRequestId, NOSHOW);
         styleRequest.setNoShowTime(DateTime.now());
 
-        //payment service updated the stylerequest (payment service must always update stylerequest with the transactionResult)
-        //so no need for update here
-        // Deduct a percentage of the preauth'd amount here as per terms of service
-        int price = stripe.calculateOrderAmount((int) (.20 * styleRequest.getStyle().getPrice()), null); // we charge 20% of the stylerequest price (excluding addons) for no show
-        stripe.capture(styleRequest, price);
+        int price = stripe.calculateOrderAmount((int) (NO_SHOW_CHARGE * styleRequest.getStyle().getPrice()), null); // we charge 20% of the stylerequest price (excluding addons) for no show
+        styleRequest.getTransactionResults().add(stripe.capture(styleRequest, price));
+
+        updateStyleRequest(styleRequest);
 
         //TODO notify merchant
         emailTaskQueue.add(new NoShowStyleRequestNotification(styleRequest, preferences));

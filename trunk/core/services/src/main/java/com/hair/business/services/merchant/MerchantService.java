@@ -29,7 +29,7 @@ public interface MerchantService {
     /**
      * Creates a new Merchant
      * */
-    String createMerchant(Merchant merchant, String nonce);
+    String createMerchant(Merchant merchant);
 
     void updateMerchant(Merchant merchant);
 

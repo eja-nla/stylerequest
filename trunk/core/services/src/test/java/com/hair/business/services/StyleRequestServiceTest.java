@@ -1,5 +1,6 @@
 package com.hair.business.services;
 
+import static com.x.y.EntityTestConstants.createAddOns;
 import static com.x.y.EntityTestConstants.createCustomer;
 import static com.x.y.EntityTestConstants.createMerchant;
 import static com.x.y.EntityTestConstants.createStyle;
@@ -14,7 +15,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.braintreegateway.test.Nonce;
 import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
@@ -171,6 +171,6 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
         Merchant m = createMerchant();
         repository.saveFew(style, customer, m);
 
-        return srs.placeStyleRequest(Nonce.Transactable, style.getId(), customer.getId(), m.getId(), now().plusHours(3));
+        return srs.placeStyleRequest(createAddOns(), style.getId(), customer.getId(), m.getId(), now().plusHours(3));
     }
 }
