@@ -26,7 +26,6 @@ import com.hair.business.beans.helper.PaymentOperation;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.customer.AbstractServicesTestBase;
 import com.hair.business.services.merchant.MerchantService;
-import com.hair.business.services.payment.PaymentService;
 import com.hair.business.services.payment.stripe.StripePaymentService;
 import com.hair.business.services.pushNotification.PushNotificationServiceInternal;
 import com.hair.business.services.pushNotification.SendPushNotificationToApnsTask;
@@ -54,7 +53,6 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     private StyleRequestService srs;
     private TaskQueue emailQueue = Mockito.mock(TaskQueue.class);
     private TaskQueue apnsQueue = Mockito.mock(TaskQueue.class);
-    private PaymentService paymentService = Mockito.mock(PaymentService.class);
     private StripePaymentService stripe = Mockito.mock(StripePaymentService.class);
     private MerchantService merchantService = Mockito.mock(MerchantService.class);
     private PushNotificationServiceInternal pushNotification = Mockito.mock(PushNotificationServiceInternal.class);
@@ -63,7 +61,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     public StyleRequestServiceTest() {
         repository = injector.getInstance(Repository.class);
         stateMgr = new StylerequestStateMgrImpl(repository);
-        srs = new StyleRequestServiceImpl(repository, emailQueue, stripe, paymentService, merchantService, stateMgr, pushNotification);
+        srs = new StyleRequestServiceImpl(repository, emailQueue, stripe, merchantService, stateMgr, pushNotification);
 
         when(stripe.authorize(any(StyleRequest.class), anyString())).thenReturn(createTransactionResult());
     }
@@ -71,7 +69,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
     @Before
     public void setUp(){
         repository = injector.getInstance(Repository.class);
-        srs = new StyleRequestServiceImpl(repository, emailQueue, stripe, paymentService, merchantService, stateMgr, pushNotification);
+        srs = new StyleRequestServiceImpl(repository, emailQueue, stripe, merchantService, stateMgr, pushNotification);
 
         // See sendgrid section in appengine-web.xml
         try {

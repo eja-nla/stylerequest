@@ -21,7 +21,6 @@ import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.beans.entity.TransactionResult;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.services.merchant.MerchantService;
-import com.hair.business.services.payment.PaymentService;
 import com.hair.business.services.payment.stripe.StripePaymentService;
 import com.hair.business.services.pushNotification.PushNotificationServiceInternal;
 import com.hair.business.services.state.StylerequestStateMgr;
@@ -51,7 +50,6 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     private final Repository repository;
     private final TaskQueue emailTaskQueue;
 
-    private final PaymentService paymentService;
     private final StripePaymentService stripe;
     private final MerchantService merchantService;
     private final StylerequestStateMgr stateMgr;
@@ -64,12 +62,11 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     @Inject
     StyleRequestServiceImpl(Repository repository,
                             @EmailTaskQueue TaskQueue emailTaskQueue, StripePaymentService stripe,
-                            PaymentService paymentService, MerchantService merchantService, StylerequestStateMgr stateMgr, PushNotificationServiceInternal pushNotificationService) {
+                            MerchantService merchantService, StylerequestStateMgr stateMgr, PushNotificationServiceInternal pushNotificationService) {
         super(repository);
         this.repository = repository;
         this.emailTaskQueue = emailTaskQueue;
 
-        this.paymentService = paymentService;
         this.merchantService = merchantService;
         this.stateMgr = stateMgr;
         this.pushNotificationService = pushNotificationService;
@@ -149,7 +146,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         Assert.validId(styleRequestId);
         final StyleRequest styleRequest = stateMgr.transition(styleRequestId, COMPLETED);
 
-        paymentService.settlePreAuthPayment(styleRequest);
+        stripe.authorize(styleRequest, "Charge settlement for style " + styleRequest.getStyle().getName());
         styleRequest.setCompletedTime(DateTime.now());
         updateStyleRequest(styleRequest);
 
@@ -173,9 +170,13 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         Assert.validId(styleRequestId);
         final StyleRequest styleRequest = stateMgr.transition(styleRequestId, NOSHOW);
         styleRequest.setNoShowTime(DateTime.now());
-        updateStyleRequest(styleRequest);
 
-// Deduct a percentage of the preauth'd amount here as per terms of service
+        //payment service updated the stylerequest (payment service must always update stylerequest with the transactionResult)
+        //so no need for update here
+        // Deduct a percentage of the preauth'd amount here as per terms of service
+        int price = stripe.calculateOrderAmount((int) (.20 * styleRequest.getStyle().getPrice()), null); // we charge 20% of the stylerequest price (excluding addons) for no show
+        stripe.capture(styleRequest, price);
+
         //TODO notify merchant
         emailTaskQueue.add(new NoShowStyleRequestNotification(styleRequest, preferences));
     }

@@ -8,7 +8,7 @@ import static org.hamcrest.core.IsNot.not;
 import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
-import com.hair.business.services.payment.PaymentService;
+import com.hair.business.services.payment.stripe.StripePaymentService;
 import com.x.business.scheduler.TaskQueue;
 
 import org.junit.Before;
@@ -31,14 +31,14 @@ public class CustomerServiceTest extends AbstractServicesTestBase {
     private Repository repository;
     private TaskQueue emailQueue = Mockito.mock(TaskQueue.class);
     private TaskQueue apnsQueue = Mockito.mock(TaskQueue.class);
-    private PaymentService paymentService = Mockito.mock(PaymentService.class);
+    private StripePaymentService stripe = Mockito.mock(StripePaymentService.class);
 
     private Customer customer;
 
     @Before
     public void setUp(){
         repository = injector.getInstance(Repository.class);
-        cs = new CustomerServiceImpl(repository, emailQueue, apnsQueue, paymentService);
+        cs = new CustomerServiceImpl(repository, emailQueue, apnsQueue, stripe);
 
         customer = createCustomer();
         repository.saveOne(customer);
