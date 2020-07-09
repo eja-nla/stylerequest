@@ -30,7 +30,7 @@ public class MerchantRequestServletTest {
     private final StyleService styleService = mock(StyleService.class);
     private final StyleRequestService styleRequestService = mock(StyleRequestService.class);
 
-    private final MerchantRequestServlet merchantRequestServlet = new MerchantRequestServlet(merchantService, styleService, styleRequestService);
+    private final MerchantRequestServlet merchantRequestServlet = new MerchantRequestServlet(merchantService);
 
     @Test
     public void testGetMerchantInfo() throws Exception {
@@ -45,7 +45,7 @@ public class MerchantRequestServletTest {
         FirebaseToken user = Mockito.mock(FirebaseToken.class);
         when(user.getName()).thenReturn("mark spencer");
         when(request.getAttribute("user")).thenReturn(user);
-        assertThat(merchantRequestServlet.createMerchant(request, new Merchant(), "fake-valid-nonce").getStatus(), is(Response.Status.OK.getStatusCode()));
+        assertThat(merchantRequestServlet.createMerchant(request, new Merchant()).getStatus(), is(Response.Status.OK.getStatusCode()));
     }
 
 }

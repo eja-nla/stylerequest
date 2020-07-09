@@ -175,10 +175,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             throw new PaymentException(e);
         }
 
-        TransactionResult tr = new TransactionResult(chargeRes.getId(), PaymentOperation.AUTHORIZE, amount, chargeRes.getStatus());
-        styleRequest.getTransactionResults().add(tr);
-        repository.saveOne(styleRequest);
-        return tr;
+        return new TransactionResult(chargeRes.getId(), PaymentOperation.AUTHORIZE, amount, chargeRes.getStatus());
     }
 
 
@@ -217,10 +214,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             throw new PaymentException(e);
         }
 
-        TransactionResult tr = new TransactionResult(refund.getId(), PaymentOperation.REFUND, Math.toIntExact(refund.getAmount()), refund.getStatus());
-        styleRequest.getTransactionResults().add(tr);
-        repository.saveOne(styleRequest);
-        return tr;
+        return new TransactionResult(refund.getId(), PaymentOperation.REFUND, Math.toIntExact(refund.getAmount()), refund.getStatus());
     }
 
     @Override
@@ -230,19 +224,19 @@ public class StripePaymentServiceImpl implements StripePaymentService {
     }
 
     @Override
-    public TransactionResult cancelPayment(Long styleRequestId){
+    public TransactionResult cancel(Long styleRequestId){
         final StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
-        return cancelPayment(styleRequest);
+        return cancel(styleRequest);
     }
 
     @Override
-    public TransactionResult cancelPayment(StyleRequest styleRequest) {
-        Assert.notNull(styleRequest, String.format("Refund failed. StyleRequest with ID %s not found", styleRequest.getId()));
+    public TransactionResult cancel(StyleRequest styleRequest) {
+        Assert.notNull(styleRequest, String.format("Cancel failed. StyleRequest with ID %s not found", styleRequest.getId()));
 
         Optional<TransactionResult> authorized = styleRequest.getTransactionResults().stream().filter(t -> t.getOperation().equals(PaymentOperation.AUTHORIZE)).findFirst();
 
         if(!authorized.isPresent()) {
-            throw new PaymentException(String.format("Refund failed for stylerequestId %s. Unable to find a previously settled transaction", styleRequest.getId()));
+            throw new PaymentException(String.format("Cancel failed for stylerequestId %s. Unable to find a previously settled transaction", styleRequest.getId()));
         }
 
         PaymentIntent intent;
@@ -253,10 +247,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             throw new PaymentException(String.format("Unable to cancel payment with StyleRequestId=%s Error: %s", styleRequest.getId(), e.getMessage()));
         }
 
-        TransactionResult tr = new TransactionResult(intent.getId(), PaymentOperation.CANCEL, Math.toIntExact(intent.getAmount()), intent.getStatus());
-        styleRequest.getTransactionResults().add(tr);
-        repository.saveOne(styleRequest);
-        return tr;
+        return new TransactionResult(intent.getId(), PaymentOperation.CANCEL, Math.toIntExact(intent.getAmount()), intent.getStatus());
     }
 
     @Override
@@ -307,10 +298,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
 
         }
 
-        TransactionResult tr = new TransactionResult(charge.getId(), PaymentOperation.CAPTURE, price, charge.getStatus());
-        styleRequest.getTransactionResults().add(tr);
-        repository.saveOne(styleRequest);
-        return tr;
+        return new TransactionResult(charge.getId(), PaymentOperation.CAPTURE, price, charge.getStatus());
     }
 
     /**
@@ -367,10 +355,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             throw new PaymentException(e);
         }
 
-        TransactionResult tr = new TransactionResult(paymentIntent.getId(), PaymentOperation.PAYNOW, amount, paymentIntent.getStatus());
-        styleRequest.getTransactionResults().add(tr);
-        repository.saveOne(styleRequest);
-        return tr;
+        return new TransactionResult(paymentIntent.getId(), PaymentOperation.PAYNOW, amount, paymentIntent.getStatus());
     }
 
     @Override
@@ -381,11 +366,10 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                 total += each.getTotalAmount();
             }
         }
-        return total * 100;
+        return total;
     }
 
     private int commission(int amount) {
-        // Take a 15% cut.
-        return (int) (0.15 * amount);
+        return (int) (COMMISSION * amount);
     }
 }

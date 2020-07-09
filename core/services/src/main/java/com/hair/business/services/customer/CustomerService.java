@@ -39,7 +39,7 @@ public interface CustomerService {
      *  It is expected that before the user can subsequently do things requiring payment, the client will
      *      direct user to payment gateway to collect their payment details and come back to us here with a
      * */
-    String createCustomer(Customer customer, String nonce);
+    String createCustomer(Customer customer);
 
     /**
      * Saves new customer

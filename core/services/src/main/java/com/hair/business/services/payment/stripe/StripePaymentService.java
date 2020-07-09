@@ -13,6 +13,9 @@ import java.util.List;
  */
 public interface StripePaymentService {
 
+    double COMMISSION = .15;
+    double NO_SHOW_CHARGE = .20;
+
     TransactionResult createPaymentIntent(int amount, String customeStripeId);
 
     String createCustomer(String internalCustomerId);
@@ -25,8 +28,8 @@ public interface StripePaymentService {
     TransactionResult refund(StyleRequest styleRequest, List<AddOn> addOns);
     TransactionResult refund(Long styleRequestId, List<AddOn> addOns);
 
-    TransactionResult cancelPayment(Long styleRequestId);
-    TransactionResult cancelPayment(StyleRequest styleRequest);
+    TransactionResult cancel(Long styleRequestId);
+    TransactionResult cancel(StyleRequest styleRequest);
 
     TransactionResult capture(StyleRequest styleRequest);
     TransactionResult capture(StyleRequest styleRequest, int price);

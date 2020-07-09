@@ -6,10 +6,12 @@ import static com.hair.business.rest.MvcConstants.REFUND_SR_URI_ENDPOINT;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import com.hair.business.beans.entity.AddOn;
+import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.TransactionResult;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.payment.stripe.StripePaymentService;
+import com.x.business.utilities.Assert;
 
 import java.util.List;
 
@@ -71,10 +73,33 @@ public class PaymentServlet extends AbstractRequestServlet {
     @POST
     @Path("onboard/redirect")
     @Produces(APPLICATION_JSON)
-    public Response createPaymentProfile(@QueryParam("code") String authCodeFromStripeAfterSignup, @QueryParam("state") String refId) {
+    public Response createMerchantPaymentProfile(@QueryParam("code") String authCodeFromStripeAfterSignup, @QueryParam("state") String refId) {
         try {
             stripe.createMerchant(authCodeFromStripeAfterSignup, refId.split("_")[1]);
             return Response.ok().build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(generateErrorResponse(e)).build();
+        }
+    }
+
+    /**
+     * Create new stripe customer
+     * */
+    @POST
+    @Path("onboard/customer")
+    @Produces(APPLICATION_JSON)
+    public Response createCustomerPaymentProfile(@QueryParam("id") String internalCustomerId) {
+        try {
+            String stripeID = stripe.createCustomer(internalCustomerId);
+            Customer customer = repository.findOne(Long.valueOf(internalCustomerId), Customer.class);
+            Assert.notNull(customer, String.format("Customer with id %s not found", internalCustomerId));
+
+            customer.setPaymentId(stripeID);
+            repository.saveOne(customer);
+
+            return Response.ok(stripeID).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {

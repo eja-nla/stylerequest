@@ -81,10 +81,13 @@ public class MerchantServiceImpl implements MerchantService {
         return null;
     }
 
+    /**
+     * The merchant is created here first, returning an ID to the client
+     * Client takes the ID and uses it for the Merchant payment account creation process with payment gateway
+     * */
     @Override
-    public String createMerchant(Merchant merchant, String nonce) {
+    public String createMerchant(Merchant merchant) {
         Assert.notNull(merchant, "Merchant cannot be null");
-        Assert.notNull(nonce, "Nonce cannot be null");
         Assert.notNull(merchant.getBusinessName(), "Merchant must have a business name");
 
         Long permId = repository.allocateId(Merchant.class);

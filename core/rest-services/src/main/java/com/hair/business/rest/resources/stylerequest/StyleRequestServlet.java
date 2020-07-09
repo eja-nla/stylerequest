@@ -211,14 +211,14 @@ public class StyleRequestServlet extends AbstractRequestServlet {
      * This stylerequest's customer didn't show up
      * */
     @POST
-    @Path(COMPLETE_REQUEST_ENDPOINT)
+    @Path("/noshow")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     public Response noShowRequest(@QueryParam("stylerequestId") Long styleRequestId, Preferences preferences) {
         Assert.validId(styleRequestId);
 
         try {
-            styleRequestService.completeStyleRequest(styleRequestId, preferences);
+            styleRequestService.markNoShow(styleRequestId, preferences);
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {
