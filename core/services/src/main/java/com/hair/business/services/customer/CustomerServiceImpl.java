@@ -11,7 +11,7 @@ import com.hair.business.beans.entity.Merchant;
 import com.hair.business.beans.entity.Style;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
-import com.hair.business.services.payment.PaymentService;
+import com.hair.business.services.payment.stripe.StripePaymentService;
 import com.x.business.exception.DuplicateEntityException;
 import com.x.business.scheduler.TaskQueue;
 import com.x.business.scheduler.stereotype.ApnsTaskQueue;
@@ -40,15 +40,15 @@ public class CustomerServiceImpl implements CustomerService {
     private final Repository repository;
     private final TaskQueue emailTaskQueue;
     private final TaskQueue apnsQueue;
-    private final PaymentService paymentService;
+    private final StripePaymentService stripe;
     private static final String CUSTOMER_NOT_FOUND_MESSAGE = "Customer with Id %s not found";
 
     @Inject
-    CustomerServiceImpl(Repository repository, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue, PaymentService paymentService) {
+    CustomerServiceImpl(Repository repository, @EmailTaskQueue TaskQueue emailTaskQueue, @ApnsTaskQueue TaskQueue apnsQueue, StripePaymentService stripe) {
         this.repository = repository;
         this.emailTaskQueue = emailTaskQueue;
         this.apnsQueue = apnsQueue;
-        this.paymentService = paymentService;
+        this.stripe = stripe;
     }
 
     @Override
@@ -77,7 +77,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setId(permId);
         customer.setPermanentId(permId);
 
-        customer.setPaymentId(paymentService.createProfile(Long.toString(customer.getId()), nonce));
+        customer.setPaymentId(stripe.createCustomer(Long.toString(customer.getId())));
 
         saveCustomer(customer);
 
@@ -130,6 +130,10 @@ public class CustomerServiceImpl implements CustomerService {
         return null;
     }
 
+    /**
+     * if there is a valid appointment (up until when the appointment is completed),
+     * a customer should be able to contact the merchant through us
+     * */
     @Override
     public void contactMerchant(Long merchantId, String message) {
 

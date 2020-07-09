@@ -29,6 +29,7 @@ public interface StripePaymentService {
     TransactionResult cancelPayment(StyleRequest styleRequest);
 
     TransactionResult capture(StyleRequest styleRequest);
+    TransactionResult capture(StyleRequest styleRequest, int price);
     TransactionResult capture(Long styleRequestId);
 
     TransactionResult chargeNow(StyleRequest styleRequest, List<AddOn> addOns);
