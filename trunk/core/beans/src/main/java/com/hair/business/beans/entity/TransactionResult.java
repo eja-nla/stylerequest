@@ -12,6 +12,7 @@ public class TransactionResult {
     private int totalAmount;
     private String statusMessage;
     private String ownId;
+    private String recieptUrl;
 
     public TransactionResult() {
     }
@@ -55,4 +56,11 @@ public class TransactionResult {
         return ownId;
     }
 
+    public String getRecieptUrl() {
+        return recieptUrl;
+    }
+
+    public void setRecieptUrl(String recieptUrl) {
+        this.recieptUrl = recieptUrl;
+    }
 }

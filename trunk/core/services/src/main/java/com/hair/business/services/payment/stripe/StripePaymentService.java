@@ -7,16 +7,16 @@ import com.hair.business.beans.entity.TransactionResult;
 import java.util.List;
 
 /**
- * Braintree payment service
+ * Stripe payment service
  *
- * Created by olukoredeaguda on 06/03/2017.
+ * Created by olukoredeaguda on 06/07/2020.
  */
 public interface StripePaymentService {
 
     double COMMISSION = .15;
     double NO_SHOW_CHARGE = .20;
 
-    TransactionResult createPaymentIntent(int amount, String customeStripeId);
+    TransactionResult createPaymentIntent(int amount, String customeStripeId, String refId);
 
     String createCustomer(String internalCustomerId);
 
