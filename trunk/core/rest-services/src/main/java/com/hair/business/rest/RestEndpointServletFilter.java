@@ -1,6 +1,7 @@
 package com.hair.business.rest;
 
 import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -8,8 +9,9 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.inject.servlet.GuiceFilter;
 
+import org.slf4j.Logger;
+
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -27,17 +29,12 @@ import javax.servlet.http.HttpServletResponse;
 
 public final class RestEndpointServletFilter extends GuiceFilter {
 
-    private static final Logger log = Logger.getLogger(RestEndpointServletFilter.class.getName());
+    private static final Logger logger = getLogger(RestEndpointServletFilter.class);
 
-    private static final String loginUrl = System.getProperty("login.url");
     private static final String userSessionName = System.getProperty("session.cookie.name");
     public static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance(FirebaseApp.initializeApp(System.getProperty("firebase.appname")));
 
     public RestEndpointServletFilter(){
-    }
-
-    public RestEndpointServletFilter(FirebaseAuth firebaseAuth){
-        this.firebaseAuth = firebaseAuth;
     }
 
     @Override
@@ -82,6 +79,7 @@ public final class RestEndpointServletFilter extends GuiceFilter {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(e.getMessage());
             ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            logger.warn("Session cookie is unavailable, invalid or revoked. Denying request. Error message {} code {}", e.getMessage(), e.getErrorCode());
         }
     }
 }
