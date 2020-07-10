@@ -64,13 +64,14 @@ public class StripePaymentServiceImpl implements StripePaymentService {
     }
 
     @Override
-    public TransactionResult createPaymentIntent(int amount, String customerStripeId) {
+    public TransactionResult createPaymentIntent(int amount, String customerStripeId, String refId) {
 
         try {
             PaymentIntentCreateParams createParams = new PaymentIntentCreateParams.Builder()
                     .setCurrency(CURRENCY)
                     .setAmount((long) amount)
                     .setCustomer(customerStripeId)
+                    .putMetadata("refId", refId)
                     .setSetupFutureUsage(PaymentIntentCreateParams.SetupFutureUsage.OFF_SESSION)
                     .build();
 
@@ -159,6 +160,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     .setApplicationFeeAmount((long) commission(amount)) //attach our commission
                     .setTransferData(transferDataParams)
                     .setCapture(false)
+                    .putMetadata("refId", styleRequest.getId().toString())
                     .build();
             chargeRes = Charge.create(chargeParams);
 
@@ -175,7 +177,9 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             throw new PaymentException(e);
         }
 
-        return new TransactionResult(chargeRes.getId(), PaymentOperation.AUTHORIZE, amount, chargeRes.getStatus());
+        TransactionResult res = new TransactionResult(chargeRes.getId(), PaymentOperation.AUTHORIZE, amount, chargeRes.getStatus());
+        res.setRecieptUrl(chargeRes.getReceiptUrl());
+        return res;
     }
 
 
@@ -210,6 +214,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             refund = Refund.create(RefundCreateParams.builder()
                     .setAmount((long) total)
                     .setCharge(settled.get().getOwnId())
+                    .putMetadata("refId", styleRequest.getId().toString())
                     .build());
             if(!refund.getStatus().equals("succeeded")){
                 throw new PaymentException(String.format("Unable to complete refund for styleReqiestId %s", styleRequest.getId()));
@@ -302,7 +307,9 @@ public class StripePaymentServiceImpl implements StripePaymentService {
 
         }
 
-        return new TransactionResult(charge.getId(), PaymentOperation.CAPTURE, price, charge.getStatus());
+        TransactionResult res = new TransactionResult(charge.getId(), PaymentOperation.CAPTURE, price, charge.getStatus());
+        res.setRecieptUrl(charge.getReceiptUrl());
+        return res;
     }
 
     /**
@@ -347,6 +354,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     .setPaymentMethod(paymentMethods.getData().get(0).getId())
                     .setCustomer(styleRequest.getCustomer().getPaymentId())
                     .setConfirm(true)
+                    .putMetadata("refId", styleRequest.getId().toString())
                     .setOffSession(PaymentIntentCreateParams.OffSession.ONE_OFF).build();
 
             paymentIntent = PaymentIntent.create(createParams);
