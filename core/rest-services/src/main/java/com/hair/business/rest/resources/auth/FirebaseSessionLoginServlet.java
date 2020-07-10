@@ -30,21 +30,17 @@ public class FirebaseSessionLoginServlet extends AbstractRequestServlet {
 
     // see https://github.com/firebase/firebase-admin-java/blob/master/src/test/java/com/google/firebase/snippets/FirebaseAuthSnippets.java
 
-    // Set session expiration to 5 days.
+    // Set session expiration to x days.
     private static final SessionCookieOptions options = SessionCookieOptions.builder().setExpiresIn(TimeUnit.DAYS.toMillis(10)).build();
     private static final String loginUrl = System.getProperty("login.url");
     private static final String userSessionName = System.getProperty("session.cookie.name");
 
-//    public FirebaseSessionLoginServlet(FirebaseAuth firebaseAuth) {
-//        this.firebaseAuth = firebaseAuth;
-//    }
-
-    @POST
-    @Path("/sessionLogin")
-    @Consumes(APPLICATION_JSON)
     /**
      * Endpoint that must be called whenever the client signs in a new user so we can create their session cookie
      * */
+    @POST
+    @Path("/sessionLogin")
+    @Consumes(APPLICATION_JSON)
     public Response createSessionCookie(LoginRequest request) {
 
         try {

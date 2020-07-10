@@ -25,8 +25,8 @@ public interface StripePaymentService {
     TransactionResult authorize(StyleRequest styleRequest, String chargeDescription); //will not do DB lookup
     TransactionResult authorize(Long styleRequestId, String chargeDescription);
 
-    TransactionResult refund(StyleRequest styleRequest, List<AddOn> addOns);
-    TransactionResult refund(Long styleRequestId, List<AddOn> addOns);
+    TransactionResult refund(StyleRequest styleRequest, int amount, List<AddOn> addOns);
+    TransactionResult refund(Long styleRequestId, int amount, List<AddOn> addOns);
 
     TransactionResult cancel(Long styleRequestId);
     TransactionResult cancel(StyleRequest styleRequest);

@@ -189,8 +189,13 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         return authorize(styleRequest, chargeDescription);
     }
 
+    /**
+     * Only the merchant can issue a refund so its safe to take amount param from them
+     * If amount is given, we use it. If it's not i.e. 0, we refund the totals of addons
+     * We do this because the amount a merchant might choose to refund may not necessarily be the ahe price of the style request or addons e.g. "gift to client"
+     * */
     @Override
-    public TransactionResult refund(StyleRequest styleRequest, List<AddOn> addOns) {
+    public TransactionResult refund(StyleRequest styleRequest, int amount, List<AddOn> addOns) {
         Assert.notNull(styleRequest, String.format("Refund failed. StyleRequest with ID %s not found", styleRequest.getId()));
         Refund refund;
 
@@ -200,12 +205,11 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             throw new PaymentException(String.format("Refund failed for stylerequestId %s. Unable to find a previously settled transaction", styleRequest.getId()));
         }
 
-        int amount = calculateOrderAmount(0, addOns);
+        int total = amount <= 0 ? calculateOrderAmount(0, addOns) : amount;
         try {
-            Charge initial = Charge.retrieve(settled.get().getOwnId());
             refund = Refund.create(RefundCreateParams.builder()
-                    .setAmount((long) amount)
-                    .setPaymentIntent(initial.getPaymentIntent())
+                    .setAmount((long) total)
+                    .setCharge(settled.get().getOwnId())
                     .build());
             if(!refund.getStatus().equals("succeeded")){
                 throw new PaymentException(String.format("Unable to complete refund for styleReqiestId %s", styleRequest.getId()));
@@ -218,9 +222,9 @@ public class StripePaymentServiceImpl implements StripePaymentService {
     }
 
     @Override
-    public TransactionResult refund(Long styleRequestId, List<AddOn> addOns) {
+    public TransactionResult refund(Long styleRequestId, int amount, List<AddOn> addOns) {
         final StyleRequest styleRequest = repository.findOne(styleRequestId, StyleRequest.class);
-        return refund(styleRequest, addOns);
+        return refund(styleRequest, amount, addOns);
     }
 
     @Override

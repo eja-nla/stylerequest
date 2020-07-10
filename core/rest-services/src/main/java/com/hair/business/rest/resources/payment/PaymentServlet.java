@@ -1,26 +1,33 @@
 package com.hair.business.rest.resources.payment;
 
-import static com.hair.business.rest.MvcConstants.AUTHORIZE_URI_ENDPOINT;
 import static com.hair.business.rest.MvcConstants.PAYMENT_URI;
-import static com.hair.business.rest.MvcConstants.REFUND_SR_URI_ENDPOINT;
+import static com.hair.business.rest.RestServicesConstants.REST_USER_ATTRIBUTE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.slf4j.LoggerFactory.getLogger;
+
+import com.google.firebase.auth.FirebaseToken;
 
 import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.Customer;
+import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.beans.entity.TransactionResult;
 import com.hair.business.dao.datastore.abstractRepository.Repository;
 import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.payment.stripe.StripePaymentService;
 import com.x.business.utilities.Assert;
 
+import org.slf4j.Logger;
+
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 /**
@@ -34,6 +41,9 @@ import javax.ws.rs.core.Response;
 
 @Path(PAYMENT_URI)
 public class PaymentServlet extends AbstractRequestServlet {
+
+    private static final Logger logger = getLogger(PaymentServlet.class);
+
 
     private final StripePaymentService stripe;
     private final Repository repository;
@@ -71,7 +81,7 @@ public class PaymentServlet extends AbstractRequestServlet {
      *          Save.
      * */
     @POST
-    @Path("onboard/redirect")
+    @Path("/onboard/redirect")
     @Produces(APPLICATION_JSON)
     public Response createMerchantPaymentProfile(@QueryParam("code") String authCodeFromStripeAfterSignup, @QueryParam("state") String refId) {
         try {
@@ -88,7 +98,7 @@ public class PaymentServlet extends AbstractRequestServlet {
      * Create new stripe customer
      * */
     @POST
-    @Path("onboard/customer")
+    @Path("/onboard/customer")
     @Produces(APPLICATION_JSON)
     public Response createCustomerPaymentProfile(@QueryParam("id") String internalCustomerId) {
         try {
@@ -99,7 +109,7 @@ public class PaymentServlet extends AbstractRequestServlet {
             customer.setPaymentId(stripeID);
             repository.saveOne(customer);
 
-            return Response.ok(stripeID).build();
+            return Response.ok(wrapString(stripeID)).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {
@@ -111,7 +121,7 @@ public class PaymentServlet extends AbstractRequestServlet {
      *
      * */
     @POST
-    @Path(AUTHORIZE_URI_ENDPOINT)
+    @Path("/authorize")
     @Produces(APPLICATION_JSON)
     public Response authorizePayment(@QueryParam("srId") Long styleRequestId, @QueryParam("description") Long description) {
 
@@ -129,22 +139,40 @@ public class PaymentServlet extends AbstractRequestServlet {
 
     /**
      * Refund for this StyleRequest.
+     *
+     * If the requester is not the merchant, deny the request
+     *
      * If partial refund, send the list of addons to refund.
      * If full refund, send a null/empty addon list
      * */
     @POST
-    @Path(REFUND_SR_URI_ENDPOINT)
+    @Path("/refund/stylerequest")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response refundStyleRequest(@QueryParam("srId") Long stylerequestId, List<AddOn> addOns) {
+    public Response refundStyleRequest(@Context HttpServletRequest request, @QueryParam("srId") Long stylerequestId, int amount, List<AddOn> addOns) {
 
         try {
-            TransactionResult result = stripe.refund(stylerequestId, addOns);
-            String message = result.getStatusMessage().equals("succeeded") ?
-                    String.format("Successfully refunded %s", result.getTotalAmount()) :
-                    String.format("Failed to refund for StyleRequest %s", stylerequestId);
 
-            return Response.ok(wrapString(message)).build();
+            final FirebaseToken userDetails = (FirebaseToken) request.getAttribute(REST_USER_ATTRIBUTE);
+            final StyleRequest styleRequest = repository.findOne(stylerequestId, StyleRequest.class);
+
+            Assert.notNull(styleRequest, String.format("StyleRequest with id %s not found", stylerequestId));
+
+            // validate the requester is the merchant
+            if (userDetails != null && userDetails.getEmail().equals(styleRequest.getMerchant().getEmail())){
+                logger.warn("StyleRequest ID={} refund denied for merchant email {}", stylerequestId, userDetails.getEmail());
+                return Response.status(Response.Status.UNAUTHORIZED).entity(wrapString("Not authorized to issue this refund")).build();
+            }
+
+            final TransactionResult result = stripe.refund(styleRequest, amount, addOns);
+
+            // failed
+            if (!result.getStatusMessage().equals("succeeded")) {
+                return Response.status(Response.Status.NOT_MODIFIED).entity(wrapString("Refund operation failed")).build();
+            }
+
+            // success
+            return Response.ok(wrapString(result.getStatusMessage())).build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         }
