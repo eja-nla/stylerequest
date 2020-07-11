@@ -12,7 +12,6 @@ import static com.hair.business.rest.MvcConstants.FIND_MERCHANT_COMPLETED_STYLER
 import static com.hair.business.rest.MvcConstants.STYLE_REQUEST_URI;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.entity.StyleRequest;
 import com.hair.business.rest.resources.AbstractRequestServlet;
 import com.hair.business.services.StyleRequestService;
@@ -159,9 +158,9 @@ public class StyleRequestServlet extends AbstractRequestServlet {
     @Path(ACCEPT_REQUEST_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response acceptRequest(@QueryParam("stylerequestId") Long styleRequestId, Preferences preferences) {
+    public Response acceptRequest(@QueryParam("stylerequestId") Long styleRequestId) {
         try {
-            styleRequestService.acceptStyleRequest(styleRequestId, preferences);
+            styleRequestService.acceptStyleRequest(styleRequestId);
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {
@@ -175,11 +174,11 @@ public class StyleRequestServlet extends AbstractRequestServlet {
     @Path(CANCEL_REQUEST_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response cancelRequest(@QueryParam("stylerequestId") Long styleRequestId, Preferences preferences) {
+    public Response cancelRequest(@QueryParam("stylerequestId") Long styleRequestId) {
         Assert.validId(styleRequestId);
 
         try {
-            styleRequestService.cancelStyleRequest(styleRequestId, preferences);
+            styleRequestService.cancelStyleRequest(styleRequestId);
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {
@@ -193,11 +192,11 @@ public class StyleRequestServlet extends AbstractRequestServlet {
     @Path(COMPLETE_REQUEST_ENDPOINT)
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response completeRequest(@QueryParam("stylerequestId") Long styleRequestId, Preferences preferences) {
+    public Response completeRequest(@QueryParam("stylerequestId") Long styleRequestId) {
         Assert.validId(styleRequestId);
 
         try {
-            styleRequestService.completeStyleRequest(styleRequestId, preferences);
+            styleRequestService.completeStyleRequest(styleRequestId);
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {
@@ -214,11 +213,11 @@ public class StyleRequestServlet extends AbstractRequestServlet {
     @Path("/noshow")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response noShowRequest(@QueryParam("stylerequestId") Long styleRequestId, Preferences preferences) {
+    public Response noShowRequest(@QueryParam("stylerequestId") Long styleRequestId) {
         Assert.validId(styleRequestId);
 
         try {
-            styleRequestService.markNoShow(styleRequestId, preferences);
+            styleRequestService.markNoShow(styleRequestId);
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(generateErrorResponse(e)).build();
         } catch (Exception e) {

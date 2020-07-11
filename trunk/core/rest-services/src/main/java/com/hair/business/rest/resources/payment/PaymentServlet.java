@@ -149,7 +149,7 @@ public class PaymentServlet extends AbstractRequestServlet {
     @Path("/refund/stylerequest")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
-    public Response refundStyleRequest(@Context HttpServletRequest request, @QueryParam("srId") Long stylerequestId, int amount, List<AddOn> addOns) {
+    public Response refundStyleRequest(@Context HttpServletRequest request, @QueryParam("srId") Long stylerequestId, @QueryParam("amount") int amount, List<AddOn> addOns) {
 
         try {
 

@@ -46,8 +46,7 @@
     "placedNotificationEnabled" : true,
     "acceptedNotificationEnabled" : true,
     "cancelledNotificationEnabled" : true,
-    "completedNotificationEnabled" : true,
-    "preferredPaymentType" : "PAYPAL"
+    "completedNotificationEnabled" : true
   },
   "id" : 6621510167243271896,
   "businessName" : "Midas Touch",

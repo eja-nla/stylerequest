@@ -19,7 +19,7 @@ public class MvcConstants {
     private static final String FIND_URI="/find";
     public static final String STYLE_REQUEST_URI="/stylerequest";
     public static final String ADMIN_URI = "/admin";
-    public static final String PAYMENT_URI = ADMIN_URI + "/payment";
+    public static final String PAYMENT_URI = "/payment";
 
     public static final String CREATE_MERCHANT_ENDPOINT = CREATE;
     public static final String CREATE_CUSTOMER_ENDPOINT = CREATE;

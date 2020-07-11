@@ -27,7 +27,7 @@ public class StyleRequestServletTest {
     private final StyleRequestServlet styleRequestServlet = new StyleRequestServlet(styleRequestService);
 
     @Test
-    public void findMerchantAcceptedAppointments() throws Exception {
+    public void findMerchantAcceptedAppointments(){
         Response result_bad_request = styleRequestServlet.findMerchantAcceptedAppointments(1L, "bad date1", "bad date2");
         verify(styleRequestService, never()).findMerchantAcceptedAppointments(anyLong(), any(DateTime.class), any(DateTime.class));
         assertThat(result_bad_request.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
@@ -38,7 +38,7 @@ public class StyleRequestServletTest {
     }
 
     @Test
-    public void findMerchantCancelledAppointments() throws Exception {
+    public void findMerchantCancelledAppointments(){
         Response result_bad_request = styleRequestServlet.findMerchantCancelledAppointments(1L, "bad date1", "bad date2");
         verify(styleRequestService, never()).findMerchantCancelledAppointments(anyLong(), any(DateTime.class), any(DateTime.class));
         assertThat(result_bad_request.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
@@ -49,7 +49,7 @@ public class StyleRequestServletTest {
     }
 
 //    @Test
-//    public void findMerchantPendingAppointments() throws Exception {
+//    public void findMerchantPendingAppointments(){
 //        Response result_bad_request = styleRequestServlet.findMerchantPendingAppointments(1L, "bad date1", "bad date2");
 //        verify(styleRequestService, never()).findMerchantPendingAppointments(anyLong(), any(DateTime.class), any(DateTime.class));
 //        assertThat(result_bad_request.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
@@ -60,7 +60,7 @@ public class StyleRequestServletTest {
 //    }
 
     @Test
-    public void findMerchantCompletedAppointments() throws Exception {
+    public void findMerchantCompletedAppointments(){
         Response result_bad_request = styleRequestServlet.findMerchantCompletedAppointments(1L, "bad date1", "bad date2");
         verify(styleRequestService, never()).findMerchantCompletedAppointments(anyLong(), any(DateTime.class), any(DateTime.class));
         assertThat(result_bad_request.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
@@ -71,7 +71,7 @@ public class StyleRequestServletTest {
     }
 
 //    @Test
-//    public void findCustomerAcceptedAppointments() throws Exception {
+//    public void findCustomerAcceptedAppointments(){
 //        Response result_bad_request = styleRequestServlet.findCustomerAcceptedAppointments(1L, "bad date1", "bad date2");
 //        verify(styleRequestService, never()).findCustomerAcceptedAppointments(anyLong(), any(DateTime.class), any(DateTime.class));
 //        assertThat(result_bad_request.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
@@ -82,7 +82,7 @@ public class StyleRequestServletTest {
 //    }
 
     @Test
-    public void findCustomerCancelledAppointments() throws Exception {
+    public void findCustomerCancelledAppointments(){
         Response result_bad_request = styleRequestServlet.findCustomerCancelledAppointments(1L, "bad date1", "bad date2");
         verify(styleRequestService, never()).findCustomerCancelledAppointments(anyLong(), any(DateTime.class), any(DateTime.class));
         assertThat(result_bad_request.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
@@ -93,7 +93,7 @@ public class StyleRequestServletTest {
     }
 
     @Test
-    public void findCustomerPendingAppointments() throws Exception {
+    public void findCustomerPendingAppointments(){
         Response result_bad_request = styleRequestServlet.findCustomerPendingAppointments(1L, "bad date1", "bad date2");
         verify(styleRequestService, never()).findCustomerPendingAppointments(anyLong(), any(DateTime.class), any(DateTime.class));
         assertThat(result_bad_request.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
@@ -104,7 +104,7 @@ public class StyleRequestServletTest {
     }
 
 //    @Test
-//    public void findCustomerCompletedAppointments() throws Exception {
+//    public void findCustomerCompletedAppointments(){
 //        Response result_bad_request = styleRequestServlet.findCustomerCompletedAppointments(1L, "bad date1", "bad date2");
 //        verify(styleRequestService, never()).findCustomerCompletedAppointments(anyLong(), any(DateTime.class), any(DateTime.class));
 //        assertThat(result_bad_request.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
@@ -115,18 +115,18 @@ public class StyleRequestServletTest {
 //    }
 
     @Test
-    public void testAcceptRequest() throws Exception {
-        assertThat(styleRequestServlet.acceptRequest(1L, null).getStatus(), is(Response.Status.OK.getStatusCode()));
+    public void testAcceptRequest(){
+        assertThat(styleRequestServlet.acceptRequest(1L).getStatus(), is(Response.Status.OK.getStatusCode()));
     }
 
     @Test
-    public void testCancelRequest() throws Exception {
-        assertThat(styleRequestServlet.cancelRequest(1L, null).getStatus(), is(Response.Status.OK.getStatusCode()));
+    public void testCancelRequest(){
+        assertThat(styleRequestServlet.cancelRequest(1L).getStatus(), is(Response.Status.OK.getStatusCode()));
     }
 
     @Test
-    public void testCompleteRequest() throws Exception {
-        assertThat(styleRequestServlet.completeRequest(1L, null).getStatus(), is(Response.Status.OK.getStatusCode()));
+    public void testCompleteRequest(){
+        assertThat(styleRequestServlet.completeRequest(1L).getStatus(), is(Response.Status.OK.getStatusCode()));
     }
 
 }

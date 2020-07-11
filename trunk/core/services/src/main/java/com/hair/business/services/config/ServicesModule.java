@@ -6,7 +6,6 @@ import static com.google.inject.matcher.Matchers.any;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
-import com.braintreegateway.BraintreeGateway;
 import com.hair.business.services.StyleRequestService;
 import com.hair.business.services.StyleRequestServiceImpl;
 import com.hair.business.services.StyleService;
@@ -52,7 +51,6 @@ public class ServicesModule extends AbstractModule {
         bind(StyleRequestService.class).to(StyleRequestServiceImpl.class).in(Singleton.class);
         bind(StylerequestStateMgr.class).to(StylerequestStateMgrImpl.class).in(Singleton.class);
         bind(PushNotificationServiceInternal.class).to(PushNotificationServiceNoopImpl.class).in(Singleton.class);
-        //bind(PaymentService.class).to(BraintreePaymentServiceImpl.class).in(Singleton.class);
         bind(StripePaymentService.class).to(StripePaymentServiceImpl.class).in(Singleton.class);
 
         bind(SalesTaxPalHttpClientImpl.class).in(Singleton.class);
@@ -65,12 +63,6 @@ public class ServicesModule extends AbstractModule {
     @Provides
     public CloseableHttpClient clientProvider() {
         return HttpClients.custom().setSSLSocketFactory(createSSLContext()).build();
-    }
-
-    @Singleton
-    @Provides
-    BraintreeGateway gatewayProvider(){
-        return new BraintreeGateway(System.getProperty("braintree.environment"), System.getProperty("braintree.merchant.id"), System.getProperty("braintree.public.key"), System.getProperty("braintree.private.key"));
     }
 
     private SSLConnectionSocketFactory createSSLContext(){

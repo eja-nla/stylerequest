@@ -36,7 +36,6 @@ public class StyleServlet extends AbstractRequestServlet {
 
     private final StyleService styleService;
     private final HairstyleElasticsearchRepositoryExt hairstyleElasticsearchRepository;
-    private final String NULL_MESSAGE = "Incoming object cannot be null";
 
     @Inject
     public StyleServlet(StyleService styleService, HairstyleElasticsearchRepositoryExt hairstyleElasticsearchRepository) {
@@ -52,7 +51,7 @@ public class StyleServlet extends AbstractRequestServlet {
             Assert.validId(styleId);
             Style style = styleService.findStyle(styleId);
             if (style == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity(NULL_MESSAGE).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Incoming object cannot be null").build();
             }
 
             return Response.ok(style, MediaType.APPLICATION_JSON).build();
@@ -97,8 +96,7 @@ public class StyleServlet extends AbstractRequestServlet {
     @Path("/geoStyles")
     @Produces(APPLICATION_JSON)
     public Response geoStyles(@QueryParam("lon") double lon, @QueryParam("lat") double lat, @QueryParam("radius") int radiusInKm, @QueryParam("pageSize") int pageSize) {
-        /**
-         * We will return pages of ~100 styles, preloading 20 at a time at the client side.*/
+        // We will return pages of ~100 styles, preloading 20 at a time at the client side.*/
         try {
             Assert.isTrue(lon != 0, "Longitude cannot be zero");
             Assert.isTrue(lat != 0, "Latitude cannot be zero");

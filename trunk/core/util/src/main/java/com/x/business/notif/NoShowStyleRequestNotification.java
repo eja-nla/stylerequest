@@ -22,9 +22,9 @@ public class NoShowStyleRequestNotification extends AbstractStyleRequestNotifica
             System.getProperty("sendgrid.noshow.merchant.stylerequest.email.template")
     );
 
-    public NoShowStyleRequestNotification(StyleRequest styleRequest, Preferences preferences) {
+    public NoShowStyleRequestNotification(StyleRequest styleRequest) {
 
-        this.merchantPreferences = preferences;
+        this.merchantPreferences = styleRequest.getMerchant().getPreferences();
         this.tokenizedCustomerEmailBody = tokenizeCustomer(styleRequest);
         this.tokenizedMerchantEmailBody = merchantPreferences.isCancelledNotificationEnabled() ? tokenizeMerchant(styleRequest) : null;
     }

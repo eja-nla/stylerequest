@@ -14,7 +14,6 @@ import static com.x.business.utilities.MessageConstants.PLACED_STYLE_REQUEST;
 import static com.x.business.utilities.MessageConstants.STYLE_NOT_FOUND;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
@@ -129,7 +128,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         repository.saveOne(styleRequest);
     }
     @Override
-    public void acceptStyleRequest(Long styleRequestId, Preferences preferences) {
+    public void acceptStyleRequest(Long styleRequestId) {
         Assert.validId(styleRequestId);
 
         final StyleRequest styleRequest = stateMgr.transition(styleRequestId, ACCEPTED);
@@ -145,7 +144,7 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
     }
 
     @Override
-    public void completeStyleRequest(Long styleRequestId, Preferences preferences) {
+    public void completeStyleRequest(Long styleRequestId) {
         Assert.validId(styleRequestId);
         final StyleRequest styleRequest = stateMgr.transition(styleRequestId, COMPLETED);
 
@@ -153,11 +152,11 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         styleRequest.setCompletedTime(DateTime.now());
         updateStyleRequest(styleRequest);
 
-        emailTaskQueue.add(new CompletedStyleRequestNotification(styleRequest, preferences));
+        emailTaskQueue.add(new CompletedStyleRequestNotification(styleRequest));
     }
 
     @Override
-    public void cancelStyleRequest(Long styleRequestId, Preferences preferences) {
+    public void cancelStyleRequest(Long styleRequestId) {
         Assert.validId(styleRequestId);
         final StyleRequest styleRequest = stateMgr.transition(styleRequestId, CANCELLED);
         styleRequest.setCancelledTime(DateTime.now());
@@ -169,12 +168,12 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         updateStyleRequest(styleRequest);
 
         //TODO notify merchant
-        emailTaskQueue.add(new CancelledStyleRequestNotification(styleRequest, preferences));
+        emailTaskQueue.add(new CancelledStyleRequestNotification(styleRequest));
 
     }
 
     @Override
-    public void markNoShow(Long styleRequestId, Preferences preferences) {
+    public void markNoShow(Long styleRequestId) {
         Assert.validId(styleRequestId);
         final StyleRequest styleRequest = stateMgr.transition(styleRequestId, NOSHOW);
         styleRequest.setNoShowTime(DateTime.now());
@@ -185,6 +184,6 @@ public class StyleRequestServiceImpl extends AppointmentFinderExt implements Sty
         updateStyleRequest(styleRequest);
 
         //TODO notify merchant
-        emailTaskQueue.add(new NoShowStyleRequestNotification(styleRequest, preferences));
+        emailTaskQueue.add(new NoShowStyleRequestNotification(styleRequest));
     }
 }
