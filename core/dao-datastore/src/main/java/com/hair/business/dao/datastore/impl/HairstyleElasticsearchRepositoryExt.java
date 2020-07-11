@@ -25,6 +25,7 @@ public class HairstyleElasticsearchRepositoryExt extends AbstractElasticsearchRe
 
     private static final DateTime dateTime = DateTime.now();
     private static final String styleIndexName = "hairstyles" + "_" + dateTime.getMonthOfYear() + "_" + dateTime.getYear();
+    private static final String inactiveStyleIndexName = "hairstyles" + "_archived_" + dateTime.getMonthOfYear() + "_" + dateTime.getYear();
 
     public static final String DISTANCE_QUERY = "{\n" +
             "    \"query\": {\n" +
@@ -106,20 +107,29 @@ public class HairstyleElasticsearchRepositoryExt extends AbstractElasticsearchRe
     }
 
     @Override
-    protected String getIndex() {
+    protected String getActiveIndex() {
         return styleIndexName;
+    }
+    @Override
+    protected String getArchivedIndex() {
+        return inactiveStyleIndexName;
     }
 
     @Override
-    protected String getAlias() {
+    protected String getActiveAlias() {
         return "active_hairstyles";
     }
 
     @Override
-    protected String getMapping(){
+    protected String getArchivedAlias() {
+        return "archived_hairstyles";
+    }
+
+    @Override
+    protected String getMapping(String alias){
         try {
             String mapping = IOUtils.toString(new FileInputStream(new File("WEB-INF/elasticsearch/hairstyle_mapping.json")));
-            return String.format(mapping, getAlias());
+            return String.format(mapping, alias);
         } catch (IOException e) {
             throw new RuntimeException("Mappings file for " + styleIndexName + " could not be loaded.");
         }

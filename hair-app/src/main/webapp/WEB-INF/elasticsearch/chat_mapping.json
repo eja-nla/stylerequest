@@ -1,0 +1,55 @@
+{
+  "settings" : {
+    "index" : {
+      "number_of_shards" : 2,
+      "number_of_replicas" : 1
+    }
+  },
+  "mappings" : {
+      "properties": {
+        "id": {
+          "type": "long"
+        },
+        "permanentId": {
+          "type": "long"
+        },
+        "customerId": {
+          "type": "long"
+        },
+        "merchantId": {
+          "type": "long"
+        },
+        "styleRequestId": {
+          "type": "long"
+        },
+        "messages": {
+          "properties": {
+            "text": {
+              "type": "text"
+            },
+            "sent": {
+              "type": "text"
+            },
+            "received": {
+              "type": "text"
+            },
+            "senderDisplayName": {
+              "type": "text"
+            },
+            "receiverDisplayName": {
+              "type": "text"
+            }
+          }
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "createdDate": {
+          "type": "date"
+        }
+      }
+    },
+  "aliases" : {
+    "%s" : {}
+  }
+}

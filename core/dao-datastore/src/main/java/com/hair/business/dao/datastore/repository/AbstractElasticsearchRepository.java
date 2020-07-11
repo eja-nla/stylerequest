@@ -3,12 +3,14 @@ package com.hair.business.dao.datastore.repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hair.business.beans.abstracts.AbstractPersistenceEntity;
 import com.hair.business.beans.entity.GeoPointExt;
+import com.x.business.exception.EntityNotFoundException;
 
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.RestClient;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Provider;
 
@@ -25,25 +27,55 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
 
     private final RestClient client;
     private final ObjectMapper objectMapper;
+    private final AtomicLong atomicLong = new AtomicLong();
 
     protected AbstractElasticsearchRepository(Provider<RestClient> clientProvider, Provider<ObjectMapper> objectMapperProvider) {
         this.client = clientProvider.get();
         this.objectMapper = objectMapperProvider.get();
     }
 
-    private void createIndex() throws IOException {
-        final Request request = new Request("PUT","/" + getIndex());
-        request.setJsonEntity(this.getMapping());
+    private void createIndex(String indexName, String mapping) throws IOException {
+        final Request request = new Request("PUT","/" + indexName);
+        request.setJsonEntity(mapping);
         client.performRequest(request);
+    }
+
+    /**
+     * Convenient method to help migrate entities from the activeIndex to the archivedIndex when we no longer need it
+     * e.g. when a Chat is created, we put in active and facilitate the conversation between two actors. When the chat ends, we archive it
+     *
+     * */
+    public T archive(Long id, Class<T> tClass){
+        final Request getOneRequest = new Request("GET", "/" + getActiveIndex() + "/_source/" + id);
+        T response;
+        try {
+            InputStream res = client.performRequest(getOneRequest).getEntity().getContent(); // fetch from active
+            response = objectMapper.readValue(res, tClass);
+            response.setActive(false);
+            saveOne(response, getArchivedIndex());  // write to archived index
+            deleteOne(id); // delete from active
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return response;
     }
 
     /**
      * Saves to the given index
      * **/
     public T saveOne(T requestEntity){
+        return saveOne(requestEntity, getActiveIndex());
+    }
+
+    /**
+     * Saves to the given index
+     * **/
+    private T saveOne(T requestEntity, String index){
         //ES 7.x mandates use of default _doc type
-        final Request saveOneRequest = new Request("POST", "/" + getIndex() + "/_doc/" + requestEntity.getPermanentId());
+        final Request saveOneRequest = new Request("POST", "/" + index + "/_doc/" + requestEntity.getPermanentId());
         try {
+            requestEntity.setVersion(atomicLong.incrementAndGet());
             String c = objectMapper.writeValueAsString(requestEntity);
             saveOneRequest.setJsonEntity(c);
             client.performRequest(saveOneRequest);
@@ -58,12 +90,25 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
      * Gets from the provided aliases
      * **/
     public T findOne(Long id, Class<T> tClass){
-        final Request getOneRequest = new Request("GET", "/" + getIndex() + "/_source/" + id);
+        final Request getOneRequest = new Request("GET", "/" + getActiveIndex() + "/_source/" + id);
         try {
             InputStream res = client.performRequest(getOneRequest).getEntity().getContent();
             return objectMapper.readValue(res, tClass);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new EntityNotFoundException(e);
+        }
+    }
+
+    /**
+     * Deletes from the provided aliases
+     * Must not be exposed. Use archive method instead
+     * **/
+    private void deleteOne(Long id){
+        final Request deleteOneRequest = new Request("DELETE", "/" + getActiveIndex() + "/_doc/" + id);
+        try {
+            client.performRequest(deleteOneRequest).getEntity().getContent();
+        } catch (IOException e) {
+            throw new EntityNotFoundException(e);
         }
     }
 
@@ -76,13 +121,13 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
     public InputStream searchWithScroll(String queryString, int scrollTimeout, int size){
         // remember to only search style.active = true;
         //{ "query": { "term": { "active": true } } }
-        final Request searchRequest = new Request("POST", "/" + getAlias() + "/_search?scroll=" + scrollTimeout + "&size=" + size);
+        final Request searchRequest = new Request("POST", "/" + getActiveAlias() + "/_search?scroll=" + scrollTimeout + "&size=" + size);
         searchRequest.setJsonEntity(queryString);
 
         try {
             return client.performRequest(searchRequest).getEntity().getContent();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new EntityNotFoundException(e);
         }
     }
 
@@ -93,13 +138,13 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
      * */
     public InputStream search(String queryString, int size, String filter){
         // remember to only search style.active = true; GET /active_hairstyles/_search?q=active:true&size=2
-        final Request searchRequest = new Request("POST", "/" + getAlias() + "/_search?size=" + size + filter);
+        final Request searchRequest = new Request("POST", "/" + getActiveAlias() + "/_search?size=" + size + filter);
         searchRequest.setJsonEntity(queryString);
 
         try {
             return client.performRequest(searchRequest).getEntity().getContent();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new EntityNotFoundException(e);
         }
     }
 
@@ -108,13 +153,13 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
      * We return the json to upstream, no marshalling needed.
      * */
     public InputStream searchRadius(String query, int kilometers, GeoPointExt geoPoint, int pageSize){
-        final Request searchRequest = new Request("POST", "/" + getAlias() + "/_search?scroll=1m&size=" + pageSize);
+        final Request searchRequest = new Request("POST", "/" + getActiveAlias() + "/_search?scroll=1m&size=" + pageSize);
         searchRequest.setJsonEntity(String.format(query, kilometers, geoPoint.getLat(), geoPoint.getLon()));
 
         try {
             return client.performRequest(searchRequest).getEntity().getContent();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new EntityNotFoundException(e);
         }
     }
 
@@ -128,7 +173,7 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
         try {
             return client.performRequest(searchRequest).getEntity().getContent();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new EntityNotFoundException(e);
         }
     }
 
@@ -146,23 +191,35 @@ public abstract class AbstractElasticsearchRepository<T extends AbstractPersiste
         try {
             return client.performRequest(searchRequest).getEntity().getContent();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new EntityNotFoundException(e);
         }
     }
 
     protected void verifyIndex(){
-        final Request request = new Request("HEAD","/" + getIndex());
+        final Request request = new Request("HEAD","/" + getActiveIndex());
         try {
             if (client.performRequest(request).getStatusLine().getStatusCode() != 200){
-                createIndex();
+                //we haven't created this index before, so we create the active and archived indices
+                // with the same mapping but different aliases
+                createIndex(getActiveIndex(), getMapping(getActiveAlias()));
+                createIndex(getArchivedIndex(), getMapping(getArchivedAlias()));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new EntityNotFoundException(e);
         }
     }
 
-    protected abstract String getIndex();
-    protected abstract String getMapping();
-    protected abstract String getAlias();
+    /**
+     * We store in ActiveIndex by default
+     * Whenever we deep the entity to no longer be active,
+     * we fetch the latest from ActiveIndex and move to ArchivedIndex
+     * */
+    protected abstract String getMapping(String alias);
+
+    protected abstract String getActiveIndex();
+    protected abstract String getArchivedIndex();
+
+    protected abstract String getArchivedAlias();
+    protected abstract String getActiveAlias();
 
 }

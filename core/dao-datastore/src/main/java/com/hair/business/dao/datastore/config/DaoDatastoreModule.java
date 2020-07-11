@@ -5,6 +5,7 @@ import com.google.inject.Provides;
 import com.google.inject.matcher.Matchers;
 
 import com.hair.business.dao.datastore.abstractRepository.Repository;
+import com.hair.business.dao.datastore.impl.ChatBotElasticRepositoryExt;
 import com.hair.business.dao.datastore.impl.HairstyleElasticsearchRepositoryExt;
 import com.hair.business.dao.datastore.ofy.OfyService;
 import com.hair.business.dao.datastore.repository.DatastoreTransactInterceptor;
@@ -36,6 +37,7 @@ public class DaoDatastoreModule extends AbstractModule {
         bindInterceptor(Matchers.any(), Matchers.annotatedWith(DatastoreTransaction.class), new DatastoreTransactInterceptor());
 
         bind(HairstyleElasticsearchRepositoryExt.class).in(Singleton.class);
+        bind(ChatBotElasticRepositoryExt.class).in(Singleton.class);
 
         requireBinding(Repository.class);
 
