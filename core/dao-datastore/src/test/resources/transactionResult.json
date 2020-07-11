@@ -2,6 +2,6 @@
   "operation" : "CANCEL",
   "totalAmount" : 1,
   "statusMessage" : "succeeded",
-  "ownId" : "someidfromstripe"
-
+  "ownId" : "someidfromstripe",
+  "recieptUrl" : "https://pay.stripe.com/receipts/acct_1ErXp3Bq4OJOyM7S/ch_1H2u22Bq4OJOyM7SrUg2939m/rcpt_HcPSdCco1livKwAc3QxkEvn38BYvs0N"
 }

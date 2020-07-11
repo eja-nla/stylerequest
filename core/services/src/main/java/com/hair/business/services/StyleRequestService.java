@@ -1,6 +1,5 @@
 package com.hair.business.services;
 
-import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.entity.AddOn;
 import com.hair.business.beans.entity.StyleRequest;
 
@@ -43,25 +42,24 @@ public interface StyleRequestService extends AppointmentFinder {
     /**
      * Accept a style request
      * @param styleRequestId stylerequest Id to be accepted
-     * @param preferences user preferences, used for notifications etc
      */
-    void acceptStyleRequest(Long styleRequestId, Preferences preferences);
+    void acceptStyleRequest(Long styleRequestId);
 
     /**
      * Completes the request cycle.
      *
      * Must ensure payment is settled. For paypal payments, we do the authorization capture here.
      * */
-    void completeStyleRequest(Long styleRequestId, Preferences preferences);
+    void completeStyleRequest(Long styleRequestId);
 
     /**
      * Cancels a placed style request
      */
-    void cancelStyleRequest(Long styleRequestId, Preferences preferences);
+    void cancelStyleRequest(Long styleRequestId);
 
     /**
      * Mark this request as no show i.e. it's end of appointment date but customer didn't show up
      */
-    void markNoShow(Long styleRequestId, Preferences preferences);
+    void markNoShow(Long styleRequestId);
 
 }

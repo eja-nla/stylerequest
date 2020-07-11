@@ -20,9 +20,9 @@ public class CancelledStyleRequestNotification extends AbstractStyleRequestNotif
             System.getProperty("sendgrid.cancelled.merchant.stylerequest.email.template")
     );
 
-    public CancelledStyleRequestNotification(StyleRequest styleRequest, Preferences preferences) {
+    public CancelledStyleRequestNotification(StyleRequest styleRequest) {
 
-        this.merchantPreferences = preferences;
+        this.merchantPreferences = styleRequest.getMerchant().getPreferences();
         this.tokenizedCustomerEmailBody = tokenizeCustomer(styleRequest);
         this.tokenizedMerchantEmailBody = merchantPreferences.isCancelledNotificationEnabled() ? tokenizeMerchant(styleRequest) : null;
     }

@@ -15,7 +15,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.hair.business.beans.constants.Preferences;
 import com.hair.business.beans.constants.StyleRequestState;
 import com.hair.business.beans.entity.Customer;
 import com.hair.business.beans.entity.Merchant;
@@ -106,7 +105,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
 
     @Ignore("until apns feature activation")
     @Test
-    public void testPlaceStyleRequestWithAPNS() throws Exception {
+    public void testPlaceStyleRequestWithAPNS() {
         placeStyleRequest();
 
         verify(apnsQueue, times(1)).add(any(SendPushNotificationToApnsTask.class));
@@ -119,7 +118,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
         TransactionResult srp = new TransactionResult();
         srp.setOperation(PaymentOperation.AUTHORIZE);
         sr.getTransactionResults().add(srp);
-        srs.acceptStyleRequest(sr.getId(), new Preferences());
+        srs.acceptStyleRequest(sr.getId());
         assertThat(sr.getState(), is(StyleRequestState.ACCEPTED));
     }
 
@@ -129,7 +128,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
         TransactionResult srp = new TransactionResult();
         srp.setOperation(PaymentOperation.AUTHORIZE);
         sr.getTransactionResults().add(srp);
-        srs.cancelStyleRequest(sr.getId(), new Preferences());
+        srs.cancelStyleRequest(sr.getId());
 
         StyleRequest updatedSr = srs.findStyleRequest(sr.getId());
 
@@ -142,7 +141,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
         TransactionResult srp = new TransactionResult();
         srp.setOperation(PaymentOperation.AUTHORIZE);
         sr.getTransactionResults().add(srp);
-        srs.completeStyleRequest(sr.getId(), new Preferences());
+        srs.completeStyleRequest(sr.getId());
         StyleRequest updatedSr = srs.findStyleRequest(sr.getId());
         assertThat(updatedSr.getState(), is(StyleRequestState.COMPLETED));
     }
@@ -165,7 +164,7 @@ public class StyleRequestServiceTest extends AbstractServicesTestBase {
         return sr;
     }
 
-    StyleRequest placeStyleRequest(){
+    private StyleRequest placeStyleRequest(){
         Style style = createStyle();
         Customer customer = createCustomer();
         Merchant m = createMerchant();

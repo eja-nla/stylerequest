@@ -20,9 +20,9 @@ public class CompletedStyleRequestNotification extends AbstractStyleRequestNotif
             System.getProperty("sendgrid.completed.merchant.stylerequest.email.template")
     );
 
-    public CompletedStyleRequestNotification(StyleRequest styleRequest, Preferences preferences) {
+    public CompletedStyleRequestNotification(StyleRequest styleRequest) {
 
-        this.merchantPreferences = preferences;
+        this.merchantPreferences = styleRequest.getMerchant().getPreferences();
         this.tokenizedCustomerEmailBody = tokenizeCustomer(styleRequest);
         this.tokenizedMerchantEmailBody = merchantPreferences.isCompletedNotificationEnabled() ? tokenizeMerchant(styleRequest) : null;
     }

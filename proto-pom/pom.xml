@@ -24,7 +24,6 @@
         <jersey.jackson.core>2.7.4</jersey.jackson.core>
         <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
         <paypal.version>LATEST</paypal.version>
-        <braintree.version>2.83.1</braintree.version>
         <stripe.version>19.27.0</stripe.version>
         <elastic.version>7.2.0</elastic.version>
         <firebase.version>6.8.1</firebase.version>
@@ -111,10 +110,6 @@
             <artifactId>joda-time</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.braintreepayments.gateway</groupId>
-            <artifactId>braintree-java</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
@@ -342,11 +337,6 @@
                 <groupId>com.sendgrid</groupId>
                 <artifactId>sendgrid-java</artifactId>
                 <version>3.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.braintreepayments.gateway</groupId>
-                <artifactId>braintree-java</artifactId>
-                <version>${braintree.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.stripe</groupId>

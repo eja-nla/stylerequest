@@ -45,8 +45,7 @@
     "placedNotificationEnabled" : true,
     "acceptedNotificationEnabled" : true,
     "cancelledNotificationEnabled" : true,
-    "completedNotificationEnabled" : true,
-    "preferredPaymentType" : "PAYPAL"
+    "completedNotificationEnabled" : true
   },
   "id" : 7145856800753873508,
   "ratings" : {
