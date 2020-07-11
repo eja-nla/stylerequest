@@ -15,12 +15,15 @@ public abstract class AbstractPersistenceEntity extends AbstractBean {
 
     private Long version;
 
+    private boolean active;
+
     private DateTime createdDate;
     private DateTime lastUpdated;
 
     AbstractPersistenceEntity(){
         this.version = 1L;
         this.createdDate = DateTime.now();
+        this.active = true;
     }
 
     @Override
@@ -83,5 +86,13 @@ public abstract class AbstractPersistenceEntity extends AbstractBean {
 
     public void setLastUpdated(DateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

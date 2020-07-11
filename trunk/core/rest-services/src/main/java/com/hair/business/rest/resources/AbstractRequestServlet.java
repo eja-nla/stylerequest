@@ -25,4 +25,8 @@ public abstract class AbstractRequestServlet {
         return String.format("{\"key\" : \"%s\"}", entity);
     }
 
+    protected String wrapString(String keyString, String entity) {
+        return String.format("{\"%s\" : \"%s\"}", keyString, entity);
+    }
+
 }

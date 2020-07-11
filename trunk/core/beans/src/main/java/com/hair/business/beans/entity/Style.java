@@ -30,8 +30,6 @@ public class Style extends AbstractActorEnablerEntity {
 
     private boolean trending; // separate batch job will run queries and set this field based on a defined criteria
 
-    private boolean active;
-
     private Long publisherId;
 
     private Location location;
@@ -46,7 +44,6 @@ public class Style extends AbstractActorEnablerEntity {
 
     public Style(){
         this.trending = true;
-        this.active = true;
     }
 
     public Style(String name, int durationEstimate, Long publisherId, Location location, List<Image> styleImages) {
@@ -88,14 +85,6 @@ public class Style extends AbstractActorEnablerEntity {
 
     public void setTrending(boolean trending) {
         this.trending = trending;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public Location getLocation() {
