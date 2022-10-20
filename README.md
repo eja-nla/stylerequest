@@ -11,4 +11,4 @@ Though we built the product, the idea eventually got shelved in 2021.
 
 Thank you to everyone who provided feedback, encouragement, criticism. They've made me a better thinker and doer.
 
-Bye for now.
+-Kore
